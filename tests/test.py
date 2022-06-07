@@ -11,7 +11,7 @@ sys.path.insert(0,'C:/Projects/tmsi-python-interface')
 from TMSiSDK.file_readers import Poly5Reader
 
 
-sys.path.insert(0, 'C:/Projects/rsemg')
+sys.path.insert(0, 'C:/Projects/ReSurfEMG')
 
 # converter_functions
 from resurfemg.converter_functions import poly5unpad
