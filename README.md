@@ -1,4 +1,6 @@
-### Hi there 👋
+### Hi there 👋 We are currently moving from a different repository, so our present state is temporary. 
+
+Nonetheless, this is the home of ReSurfEMG. Stay tuned.
 
 <!--
 **ReSurfEMG/ReSurfEMG** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
