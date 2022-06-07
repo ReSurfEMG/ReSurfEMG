@@ -14,26 +14,26 @@ from TMSiSDK.file_readers import Poly5Reader
 sys.path.insert(0, 'C:/Projects/rsemg')
 
 # converter_functions
-from rsemg.converter_functions import poly5unpad
-from rsemg.converter_functions import hash_it_up_right_all
+from resurfemg.converter_functions import poly5unpad
+from resurfemg.converter_functions import hash_it_up_right_all
 # helper_functions
-from rsemg.helper_functions import bad_end_cutter
-from rsemg.helper_functions import bad_end_cutter_better
-from rsemg.helper_functions import bad_end_cutter_for_samples
-from rsemg.helper_functions import count_decision_array
-from rsemg.helper_functions import emg_bandpass_butter
-from rsemg.helper_functions import emg_bandpass_butter_sample
-from rsemg.helper_functions import notch_filter
-from rsemg.helper_functions import show_my_power_spectrum
-from rsemg.helper_functions import naive_rolling_rms
-from rsemg.helper_functions import vect_naive_rolling_rms
+from resurfemg.helper_functions import bad_end_cutter
+from resurfemg.helper_functions import bad_end_cutter_better
+from resurfemg.helper_functions import bad_end_cutter_for_samples
+from resurfemg.helper_functions import count_decision_array
+from resurfemg.helper_functions import emg_bandpass_butter
+from resurfemg.helper_functions import emg_bandpass_butter_sample
+from resurfemg.helper_functions import notch_filter
+from resurfemg.helper_functions import show_my_power_spectrum
+from resurfemg.helper_functions import naive_rolling_rms
+from resurfemg.helper_functions import vect_naive_rolling_rms
 
-from rsemg.helper_functions import zero_one_for_jumps_base
-from rsemg.helper_functions import compute_ICA_two_comp
-from rsemg.helper_functions import working_pipeline_exp
-from rsemg.helper_functions import entropical
-from rsemg.helper_functions import smooth_for_baseline
-from rsemg.helper_functions import smooth_for_baseline_with_overlay
+from resurfemg.helper_functions import zero_one_for_jumps_base
+from resurfemg.helper_functions import compute_ICA_two_comp
+from resurfemg.helper_functions import working_pipeline_exp
+from resurfemg.helper_functions import entropical
+from resurfemg.helper_functions import smooth_for_baseline
+from resurfemg.helper_functions import smooth_for_baseline_with_overlay
 
 sample_emg = os.path.join('not_pushed','Test_lung_data','2022-05-13_11-51-04','002','EMG_recording'+'.Poly5')
 
