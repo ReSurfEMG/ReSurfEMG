@@ -23,6 +23,9 @@ class Range(namedtuple('RangeBase', 'start,end')):
     """
     
     def intersects(self, other):
+        """
+        This defines intersectinos
+        """
         return (
             (self.end >= other.end) and (self.start < other.end) or
             (self.end >= other.start) and (self.start < other.start) or
@@ -30,9 +33,15 @@ class Range(namedtuple('RangeBase', 'start,end')):
         )
     
     def precedes(self, other):
+        """
+        This defines which precedes.
+        """
         return self.end < other.start
     
     def to_slice(self):
+        """
+        Slicer.
+        """
         return slice(*map(int, self)) # maps whole tuple set
 
 
@@ -316,7 +325,7 @@ def naive_rolling_rms(x, N):
     To do this it uses number of sample values N .
 
     :param x: samples from the emg
-    :type x:`~numpy.ndarray`
+    :type x: :class: `~numpy.ndarray`
     :param N: legnth of the sample use as window for function
     :type N: :class:  int
     
@@ -334,7 +343,8 @@ def vect_naive_rolling_rms(x, N):
     by the way the signal is put in.
 
     :param xc: samples from the emg
-    :type xc:`~numpy.ndarray`
+    :type xc: :class: `~numpy.ndarray`
+
     :param N: legnth of the sample use as window for function
     :type N: :class:  int
     
