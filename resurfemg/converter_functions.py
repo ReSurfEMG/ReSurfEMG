@@ -1,7 +1,8 @@
+"""
 # This file contains functions to work with various EMG file types from various hardware/software combinationation,
 # and convert them down to an array.
 # Additionally this file contains hash functions to track data
-
+"""
 
 import sys
 import glob
