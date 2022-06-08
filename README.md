@@ -1,4 +1,4 @@
-### Hi there 👋 We are currently moving from a different repository, so our present state is temporary. 
+### Hi there 👋 We are currently moving from a different repository, so our present state (which may include a few bugs)  is temporary. 
 
 Nonetheless, this is the home of ReSurfEMG. Stay tuned.
 

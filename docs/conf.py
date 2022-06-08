@@ -13,16 +13,17 @@
 import sys, subprocess
 import os
 
-# TODO(makeda): This is wrong, the rsemg module needs to have an __init__.py file.
-# Once that happens, the rsemg component should be removed from this path, and
+# TODO(makeda): This is wrong, the resurfemg module needs to have an __init__.py file.
+# Once that happens, the resurfemg component should be removed from this path, and
 # the modules inside rsemg folder will become its submodules.
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'rsemg')))
+
+# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resurfemg')))
 
 # -- Project information -----------------------------------------------------
 
-project = 'rsemg'
-copyright = '2022, doctormakeda@gmail.com'
-author = 'doctormakeda@gmail.com'
+project = 'resurfemg'
+copyright = '2022, c.moore@esciencecenter.nl'
+author = 'c.moore@esciencecenter.nl'
 
 # The full version, including alpha/beta/rc tags
 try:
