@@ -1,7 +1,7 @@
 .. resurfemg documentation master
 
 ReSurfEMG documentation
-===================
+=======================
 
 Here is some general information about the ReSurfEMG  package. We are working on
 documentation for programmers and medical professionals with some coding
@@ -19,8 +19,6 @@ this part of the documentation is for you.
    :caption: Contents:
 
    resurfemg
-   converter_functions
-   helper_functions
 
 Developer's Guide
 -----------------
