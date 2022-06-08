@@ -38,8 +38,7 @@ Up to date documentation can be generated in command-line as follows (in bash te
 
 ``` sh
 sphinx-apidoc -o ./docs  -f --separate ./resurfemg 
-rm -rf ./build_documentation
-mkdir ./build_documentation
+rm -rf ./built_documentation
 sphinx-build -b html ./docs ./built_documentation
 ```
 
@@ -47,7 +46,7 @@ If you are working in a VScode command line interface (terminal cmd):
 
 ``` sh
 sphinx-apidoc -o ./docs  -f --separate ./resurfemg 
-rm -rf ./build_documentation
+rm -rf ./built_documentation
 sphinx-build -b html ./docs ./built_documentation
 ```
 
