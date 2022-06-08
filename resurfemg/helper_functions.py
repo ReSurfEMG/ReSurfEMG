@@ -1,4 +1,6 @@
-# helper functions
+"""
+This file contains functions to work with various EMG arrays and other types of data arrays e.g. ventilator signals
+"""
 
 from scipy import signal
 from scipy.fft import fft, fftfreq

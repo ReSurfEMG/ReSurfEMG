@@ -1,7 +1,7 @@
 """
-# This file contains functions to work with various EMG file types from various hardware/software combinationation,
-# and convert them down to an array.
-# Additionally this file contains hash functions to track data
+This file contains functions to work with various EMG file types from various hardware/software combinations,
+and convert them down to an array that can be further processed with helper_functions or other modules.
+Additionally this file contains hash functions to track data
 """
 
 import sys
