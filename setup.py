@@ -1,6 +1,6 @@
  #!/usr/bin/env python
 
-
+## this setup.py is under development. please don't bother taking it seriously, this is template pasting
 import setuptools
 
 from setuptools import setup
@@ -21,3 +21,32 @@ setup(
        "numpy",
    ],
 )
+
+
+        # packages=['ReSurfEMG',
+        # ],
+        # cmdclass={
+        #     'test': UnitTest,
+        #     'lint': Pep8,
+        #     'apidoc': SphinxApiDoc,
+        #     'genconda': GenerateCondaYaml,
+        #     'install': Install,
+        #     # TODO(makeda): CI for real 
+        #     'install_dev': InstallDev,
+        #     'find_egg': FindEgg,
+        #     'anaconda_upload': AnacondaUpload,
+        #     'anaconda_gen_env': GenCondaEnv,
+        # },
+        # tests_require=['unittest'],
+        # command_options={
+        #     'build_sphinx': {
+        #         'project': ('setup.py', name),
+        #         'version': ('setup.py', version),
+        #         'source_dir': ('setup.py', './docs'),
+        #         'config_dir': ('setup.py', './docs'),
+        #     },
+        # },
+        # setup_requires=['sphinx'],
+        # install_requires=install_requires(versions),
+        
+        # zip_safe=False,

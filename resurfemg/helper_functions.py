@@ -235,38 +235,49 @@ def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
     return output_signal
 
 
-def cnotch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
-    """
-    This is a filter designed to take out a specific frequency. 
-    In the EU in some data electrical cords can interfere at around 50 herts.
-    In some other locations the interference is at 60 Hertz. The specificities 
-    of a local power grid may neccesitate notch filtering. It computes some
-    additional info on the results, and we may change it to return all the 
-    information. Pending. 
+# def cnotch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
+#     """
+#     This is a filter designed to take out a specific frequency. 
+#     In the EU in some data electrical cords can interfere at around 50 herts.
+#     In some other locations the interference is at 60 Hertz. The specificities 
+#     of a local power grid may neccesitate notch filtering. It computes some
+#     additional info on the results, and we may change it to return all the 
+#     information. Pending. 
 
 
-    """
-    # create notch filter
-    samp_freq = sample_frequ # Sample frequency (Hz)
-    notch_freq = freq_to_pull # Frequency to be removed from signal (Hz)
-    quality_factor = quality_factor_q # Quality factor
+#     """
+#     # create notch filter
+#     samp_freq = sample_frequ # Sample frequency (Hz)
+#     notch_freq = freq_to_pull # Frequency to be removed from signal (Hz)
+#     quality_factor = quality_factor_q # Quality factor
 
-    # design a notch filter using signal.iirnotch
-    b_notch, a_notch = signal.iirnotch(notch_freq, quality_factor, samp_freq)
+#     # design a notch filter using signal.iirnotch
+#     b_notch, a_notch = signal.iirnotch(notch_freq, quality_factor, samp_freq)
 
-    # compute magnitude response of the designed filter
-    freq, h = signal.freqz(b_notch, a_notch, fs=samp_freq)
-    # make the output signal
-    output_signal = signal.filtfilt(b_notch, a_notch, sample)
-    return output_signal
+#     # compute magnitude response of the designed filter
+#     freq, h = signal.freqz(b_notch, a_notch, fs=samp_freq)
+#     # make the output signal
+#     output_signal = signal.filtfilt(b_notch, a_notch, sample)
+#     return output_signal
 
 
 def show_my_power_spectrum(sample, sample_rate, upper_window):
     """
     This function plots a power spectrum
     of the frequencies comtained in an emg based on
-    a forier transform. It does not return.
+    a fourier transform. It does not return the graph, rather the values
+    but plots the graph before it return.
     Sample should be one single row. (1 dimensional array)
+
+    :param sample: the sample array
+    :type sample: :class:  array
+    :param sample_rate: number of samples per second
+    :type sample_rate: :class:  int
+    :param upper_window: the end ofwindow over which values will be plotted
+    :type upper_window: :class:  int
+
+    :return yf,xf: the values for plotting the power spectrum
+    :rtype: :class: tuple of fourier transformed array and frequencies
     """
     N = len(sample)
     # for our emgs samplerate is usually 2048
@@ -276,6 +287,7 @@ def show_my_power_spectrum(sample, sample_rate, upper_window):
     plt.plot(xf, np.abs(yf))
     plt.xlim(0, upper_window)
     plt.show()
+    return (yf, xf)
 
 
 def emg_highpass_butter(data_emg, cut_above, sample_rate):
@@ -355,12 +367,13 @@ def zero_one_for_jumps_base(array, cut_off):
 
 def compute_ICA_two_comp(emg_samples):
     """
-    Here we have a function that performs an ICA on EMG data.
-    Inputs:
-        emg_samples: three layer array of the time series EMG data
+    A function that performs an independant component analysis (ICA) on EMG data.
     
-    Output:
-        two signals one of which represents ecg components, theother emg
+    :param emg_samples: original signal array with three layers
+    :type emg_samples: :class:  array
+
+    :return array_list: two arrays of independent components, one ECG-like, the other emg
+    :rtype: :class: `~numpy.ndarray`
     """
     X = np.c_[emg_samples[0], emg_samples[2]]
     ica = FastICA(n_components=2)
