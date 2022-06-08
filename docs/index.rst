@@ -1,9 +1,9 @@
-.. rsemg documentation master
+.. resurfemg documentation master
 
-rsemg documentation
+ReSurfEMG documentation
 ===================
 
-Here is some general information about the rsemg package. We are working on
+Here is some general information about the ReSurfEMG  package. We are working on
 documentation for programmers and medical professionals with some coding
 experience. 
 
@@ -18,7 +18,7 @@ this part of the documentation is for you.
    :maxdepth: 2
    :caption: Contents:
 
-   rsemg
+   resurfemg
    converter_functions
    helper_functions
 

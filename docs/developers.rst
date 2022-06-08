@@ -33,7 +33,7 @@ If you want to develop using Anaconda Python, you would:
 
 Follow the instructions on the readme
 
-Similar to above, this will create a virtual environment, build
+This will create a virtual environment, build
 `conda` package, install it and then add development dependencies to
 what was installed. 
 
@@ -66,7 +66,8 @@ There are several problems with traditional way Python programmers are
 taught to organize their development environment.  The way a typical
 Python project is developed, it is designed to support a single
 version of Python, rarely multiple Python distributions or operating
-systems. We are working to support multiple Pythons. Pending.
+systems. We are working to support multiple Pythons. Pending. But for
+now we are doing what is simple and fast.
 
 
 
@@ -79,7 +80,7 @@ You may run:
 
   python ./tests/test.py 
 
-Under the hood, this runs unittest:
+Under the hood, this runs unittest.
 
 
 
@@ -98,7 +99,7 @@ Continuous Integration
 ^^^^^^^^^^^^^^^^^^^^^^
 
 This project has no extensive CI setup that uses GitHub Actions platform.
-This is a templatebut it's far from
+This is a template but it's far from
 being ready yet, and we currently don't work on it.
 
 .. warning::
