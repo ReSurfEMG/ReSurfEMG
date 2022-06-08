@@ -1,6 +1,6 @@
-### Hi there 👋 We are currently moving from a different repository, so our present state (which may include a few bugs)  is temporary. 
+## ReSurfEMG. 
 
-Nonetheless, this is the home of ReSurfEMG. Stay tuned.
+ReSurfEMG is an open source collaborative python library for analysis of respiratory electromyography (EMG). The library was initially built for surface EMG, however many functions will also work for respiratory EMG directly acquired (trans-esophageal). This library supports the ongoing research at University of Twente on respiratory EMG.   
 
 
 ### Folders and Notebooks
