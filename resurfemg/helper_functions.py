@@ -19,12 +19,12 @@ import builtins
 class Range(namedtuple('RangeBase', 'start,end')):
     """
     This class creates an object of a tuple that
-    related to a range in an array...
+    relates to ranges in arrays.
     """
     
     def intersects(self, other):
         """
-        This defines intersectinos
+        This defines intersections of two arrays
         """
         return (
             (self.end >= other.end) and (self.start < other.end) or
@@ -34,13 +34,13 @@ class Range(namedtuple('RangeBase', 'start,end')):
     
     def precedes(self, other):
         """
-        This defines which precedes.
+        This defines which array precedes.
         """
         return self.end < other.start
     
     def to_slice(self):
         """
-        Slicer.
+        This is a special slicer which maps the whole tuple set.
         """
         return slice(*map(int, self)) # maps whole tuple set
 
@@ -398,7 +398,13 @@ def pick_more_peaks_array(components_tuple):
     Here we have a function that takes a tuple with the two parts of ICA,
     and finds the one with more peaks and anti-peaks. The EMG if without
     a final envelope will have more peaks
+
     Note: data should not have been finally filtered to envelope level
+    :param components_tuple: tuple of two arrays representing different signals
+    :type components_tuple: :class: tuple
+
+    :return emg_component: array with more peaks (should usually be the emg as opposed to ecg)
+    :rtype: :class: `~numpy.ndarray`
     """
     c0= components_tuple[0]
     c1 = components_tuple[1]
@@ -423,12 +429,11 @@ def pick_more_peaks_array(components_tuple):
 
 def working_pipeline_exp(our_chosen_file): 
     """
-    This function produces a filtered respiraotry EMG signal from a 3 lead sEMG file.
-    Inputs:
-        our_chosen_file: string of filename
-        
-    Output:
-        processed emg signal filtered and seperated from ecg components
+    This function produces a filtered respiratory EMG signal from a 3 lead sEMG file.
+    The inputs is our_chosen_file which we give the function as a string of filename. The 
+    output is the processed emg signal filtered and seperated from ecg components.
+
+
     """
     cut_file_data = bad_end_cutter(our_chosen_file, percent_to_cut=3, tolerance_percent=5)
     bd_filtered_file_data = emg_bandpass_butter_sample(cut_file_data, 5, 450, 2048, output='sos')
@@ -448,12 +453,8 @@ def working_pipeline_exp(our_chosen_file):
 def slices_slider(array_sample, slice_len):
     """
     This function produces continous sequential slices over an array of a certain legnth.
-    Inputs:
-        array_sample: signal
-        slice_len: the window which you wish to slide with
-
-    Output:
-        the function yields, and does not return these slices
+    The inputs are the following- array_sample, the signal and slice_len- the window which
+    you wish to slide with. The function yields, and does not return these slices.
     """
     for i in range(len(array_sample) - slice_len + 1):
         yield array_sample[i:i + slice_len]
@@ -461,11 +462,8 @@ def slices_slider(array_sample, slice_len):
 def entropical(listy):
     """
     This function computes a certain type of entropy of a series signal array.
-    Inputs:
-        listy: signal
-
-    Output:
-        an array of entropy measurements
+    Input is listy, the signal, and output is an array of entropy measurements.
+    
     """
     probabilities = [n_x/len(listy) for x,n_x in collections.Counter(listy).items()]
     e_x = [-p_x*math.log(p_x,2) for p_x in probabilities]
@@ -475,13 +473,10 @@ def entropical(listy):
 def compute_power_loss(original_signal, original_signal_sampling_frequency, processed_signal, processed_signal_sampling_frequency):
     """
     This function computes the percentage of power loss after the processing of a signal.
-    Inputs:
-        original_signal: signal before the processing
-        original_signal_sampling_frequency: sampling frequency of the signal before processing
-        processed_signal: signal after processing
-        processed_signal_sampling_frequency: sampling frequency of the signal after processing
-    Output:
-        percentage of power loss
+    Inputs include the original_signal (signal before the processing),original_signal_sampling_frequency
+    ( sampling frequency of the signal before processing), processed_signal (signal after processing),
+    processed_signal_sampling_frequency (sampling frequency of the signal after processing). 
+    Output is the percentage of power loss.
     
     :param original_signal: array.
     :type  original_signal: :class:`~numpy.ndarray`
@@ -511,9 +506,8 @@ def compute_power_loss(original_signal, original_signal_sampling_frequency, proc
 
 def count_decision_array(decision_array):
     """
-    This is a function that practically speakingcounts events on a time series array that
-    has been reduced down to a binary (0,1) output. It counts changes then divides by two
-    input
+    This is a function that, practically speaking, counts events on a time series array that
+    has been reduced down to a binary (0,1) output. It counts changes then divides by two.
 
     :param decision_array: array.
     :type decisions_array: :class:`~numpy.ndarray`
@@ -611,7 +605,7 @@ def smooth_for_baseline_with_overlay(my_own_array, threshold=10, start=None, end
 def ranges_of(array):
     """
     This function is made to work with Range class objects,
-    such that is selects ranges and returns tuples of boundaries....
+    such that is selects ranges and returns tuples of boundaries.
     """
     marks = np.logical_xor(array[1:], array[:-1])
     boundaries = np.hstack((np.zeros(1), np.where(marks != 0)[0], np.zeros(1) + len(array) - 1))
@@ -622,8 +616,18 @@ def ranges_of(array):
 
 def intersections(left, right):
     """
-    This function does a sort of "merge" over two arrays,
-    left and right, that does not blend them, rather...
+    This function works over two arrays,left and right, and allows 
+    a picking based on intersections. It only takes ranges on
+    the left that intersect ranges on the right.
+
+    :param left: range
+    :type left: :class: array
+    :param right: range
+    :type right: :class:array
+    
+    :return: result
+    :rtype: :class:list
+
     """
     i, j = 0, 0
     result = []
