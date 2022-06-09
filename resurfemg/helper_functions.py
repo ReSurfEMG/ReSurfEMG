@@ -463,7 +463,7 @@ def entropical(listy):
     """
     This function computes a certain type of entropy of a series signal array.
     Input is listy, the signal, and output is an array of entropy measurements.
-    
+
     """
     probabilities = [n_x/len(listy) for x,n_x in collections.Counter(listy).items()]
     e_x = [-p_x*math.log(p_x,2) for p_x in probabilities]
@@ -641,3 +641,27 @@ def intersections(left, right):
         elif lelt.precedes(relt):
             i += 1
     return result
+
+
+def raw_overlap_percent(signal1, signal2):
+    """
+    This function takes two binary 0/1 signal arrays and gives the percentage of overlap
+
+    :param signal1: binary signal 1
+    :type signal1: :class: array
+    :param rsignal2: binary signal 2
+    :type rsignal2: :class:array
+    
+    :return: raw_overlap_percent
+    :rtype: :class: float
+
+    """
+    if len(signal1) != len(signal2):
+        print('Warning: legnth of arrays is not matched')
+        longer_signal_len = np.max([len(signal1), len(signal2)])
+
+    else: 
+        longer_signal_len= len(signal1)
+
+    raw_overlap_percent = sum(signal1.astype(int) & signal2.astype(int))/longer_signal_len
+    return raw_overlap_percent
