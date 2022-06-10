@@ -76,3 +76,5 @@ venv.bak/
 /not_pushed/
 /notebooks/my_saved_experiments.csv
 /built_documentation/
+.eggs/
+*.egg-info/

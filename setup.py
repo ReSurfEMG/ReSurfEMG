@@ -70,25 +70,19 @@ class TestCommand(Command):
         self.run_tests()
 
 
-class PyTest(TestCommand):
-
-    user_options = TestCommand.user_options + [
-        ("pytest-args=", "a", "Arguments to pass into py.test"),
-    ]
+class UnitTest(TestCommand):
 
     description = "run unit tests"
 
-    def initialize_options(self):
-        self.pytest_args = "--color no --tb native"
-        super().initialize_options()
-
     def run_tests(self):
-        import pytest
+        import unittest
 
         if self.fast:
             here = os.path.dirname(os.path.abspath(__file__))
             sys.path.insert(0, here)
-        errno = pytest.main(shlex.split(self.pytest_args))
+        #errno = pytest.main(shlex.split(self.pytest_args))
+        test_loader = unittest.TestLoader()
+        test_suite = test_loader.discover('tests', pattern='test.py')
         sys.exit(errno)
 
 
@@ -178,25 +172,32 @@ class InstallDev(InstallCommand):
         super().do_egg_install()
 
 
+import unittest
+def my_test_suite():
+    test_loader = unittest.TestLoader()
+    test_suite = test_loader.discover('tests', pattern='test.py')
+    return test_suite
+
 if __name__ == "__main__":
     setup(
         name=name,
         version=version,
         author='An Awesome Team from the Netherlands eScience Center!',
         author_email='c.moore@esciencecenter.nl',
-        packages=['ReSurfEMG', 'ReSurfEMG.test'],
+        packages=['ReSurfEMG'],
         url='https://github.com/ReSurfEMG/ReSurfEMG',
         license='LICENSE.md',
         description='A package that helps with analysis of respiratory EMG data',
         long_description=open('README.md').read(),
         package_data={"": ("README.md",)},
         cmdclass={
-            "test": PyTest,
+            # "test": UnitTest,
             "lint": Pep8,
             "isort": Isort,
             "apidoc": SphinxApiDoc,
             "install_dev": InstallDev,
         },
+        test_suite='setup.my_test_suite',
         tests_require=["pytest", "pycodestyle", "isort", "wheel"],
         command_options={
             "build_sphinx": {
