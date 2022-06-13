@@ -50,14 +50,13 @@ def emg_bandpass_butter(data_emg, low_pass, high_pass):
     the emg after a bandpass as made here.
 
     :param data_emg: Poly5 file with the samples to work over
-    :type data_emg: :class:  Poly5
+    :type data_emg: Poly5
     :param low_pass: the number to cut off frequenciesabove
-    :type low_pass: :class:  int
+    :type low_pass: int
     :param high_pass: the number to cut off frequenceisbelow
-    :type high_pass: :class:  int
-
-    :return emg_filtered: the bandpass filtered emg sample data
-    :rtype: :class: `~numpy.ndarray`
+    :type high_pass: int
+    :returns: the bandpass filtered emg sample data
+    :rtype: :class:`~numpy.ndarray`
     """
     sos = signal.butter(
         3,
@@ -396,15 +395,15 @@ def vect_naive_rolling_rms(x, N):
 def zero_one_for_jumps_base(array, cut_off):
     """
     This function takes an array and makes it
-    binary (0,1) based on a cut-off value.
+    binary (0, 1) based on a cut-off value.
 
     :param array: an array
-    :type array:`~numpy.ndarray`
+    :type array: :class:`~numpy.ndarray`
     :param cut_off: the number defining a cut-off line for binarization
-    :type cut_off: :class:  float
+    :type cut_off: float
 
-    :return array_list: binarized array
-    :rtype: :class: `~numpy.ndarray`
+    :returns: binarized array
+    :rtype: :class:`~numpy.ndarray`
     """
     array_list = []
     for i in array:

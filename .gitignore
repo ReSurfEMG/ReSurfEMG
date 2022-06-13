@@ -78,3 +78,6 @@ venv.bak/
 /built_documentation/
 .eggs/
 *.egg-info/
+/build/
+/dist/
+*~
