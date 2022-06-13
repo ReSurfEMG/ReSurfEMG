@@ -21,7 +21,7 @@ class Range(namedtuple('RangeBase', 'start,end')):
     This class creates an object of a tuple that
     relates to ranges in arrays.
     """
-    
+
     def intersects(self, other):
         """
         This defines intersections of two arrays
@@ -31,7 +31,7 @@ class Range(namedtuple('RangeBase', 'start,end')):
             (self.end >= other.start) and (self.start < other.start) or
             (self.end < other.end) and (self.start >= other.start)
         )
-    
+
     def precedes(self, other):
         """
         This defines which array precedes.
@@ -246,12 +246,12 @@ def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
 
 # def cnotch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
 #     """
-#     This is a filter designed to take out a specific frequency. 
-#     In the EU in some data electrical cords can interfere at around 50 herts.
-#     In some other locations the interference is at 60 Hertz. The specificities 
+#     This is a filter designed to take out a specific frequency.
+#     In the EU in some data electrical cords can interfere at around 50 hertzs.
+#     In some other locations the interference is at 60 Hertz. The specificities
 #     of a local power grid may neccesitate notch filtering. It computes some
-#     additional info on the results, and we may change it to return all the 
-#     information. Pending. 
+#     additional info on the results, and we may change it to return all the
+#     information. Pending.
 
 
 #     """
@@ -310,7 +310,7 @@ def emg_highpass_butter(data_emg, cut_above, sample_rate):
     :type cut_above: :class:  int
     :param sample_rate: the number of samples per second i.e. Hertz
     :type sample_rate: :class:  int
-    
+
     :return emg_filtered: the bandpass filtered emg sample data
     :rtype: :class: `~numpy.ndarray`
     """
@@ -318,6 +318,7 @@ def emg_highpass_butter(data_emg, cut_above, sample_rate):
     # sos (output parameter)is second order section  -> "stabilizes" ?
     emg_filtered = signal.sosfiltfilt(sos, data_emg)
     return emg_filtered
+
 
 def naive_rolling_rms(x, N):
     """
@@ -328,32 +329,34 @@ def naive_rolling_rms(x, N):
     :type x: :class: `~numpy.ndarray`
     :param N: legnth of the sample use as window for function
     :type N: :class:  int
-    
+
     :return emg_rms: the root-mean-squared emg sample data
     :rtype: :class: `~numpy.ndarray`
     """
     xc = np.cumsum(abs(x)**2)
-    emg_rms = np.sqrt((xc[N:] - xc[:-N])/N )
+    emg_rms = np.sqrt((xc[N:] - xc[:-N])/N)
     return emg_rms
+
 
 def vect_naive_rolling_rms(x, N):
     """
     This function computes a root mean squared envelope over an array x.
-    To do this it uses number of sample values N . It differs from naive_rolling_rms
-    by the way the signal is put in.
+    To do this it uses number of sample values N . It differs from
+    naive_rolling_rms by the way the signal is put in.
 
     :param xc: samples from the emg
     :type xc: :class: `~numpy.ndarray`
 
     :param N: legnth of the sample use as window for function
     :type N: :class:  int
-    
+
     :return emg_rms: the root-mean-squared emg sample data
     :rtype: :class: `~numpy.ndarray`
     """
     xc = np.cumsum(np.abs(x)**2)
     emg_rms = np.sqrt((xc[N:] - xc[:-N])/N )
     return emg_rms
+
 
 def zero_one_for_jumps_base(array, cut_off):
     """
@@ -371,18 +374,21 @@ def zero_one_for_jumps_base(array, cut_off):
     for i in array:
         if i < cut_off:
             i = 0
-        else: i = 1
+        else: 
+            i = 1
         array_list.append(i)
     return array_list
 
+
 def compute_ICA_two_comp(emg_samples):
     """
-    A function that performs an independant component analysis (ICA) on EMG data.
+    A function that performs an independant component analysis (ICA)
+    meant for EMG data that includes stacked three arrays.
 
     :param emg_samples: original signal array with three layers
     :type emg_samples: :class:  array
 
-    :return array_list: two arrays of independent components, one ECG-like, the other emg
+    :return array_list: two arrays of independent components (ecg-like and emg)
     :rtype: :class: `~numpy.ndarray`
     """
     X = np.c_[emg_samples[0], emg_samples[2]]
@@ -396,7 +402,7 @@ def compute_ICA_two_comp(emg_samples):
 def pick_more_peaks_array(components_tuple):
     """
     Here we have a function that takes a tuple with the two parts 
-    of ICA, and finds the one with more peaks and anti-peaks. 
+    of ICA, and finds the one with more peaks and anti-peaks.
     The EMG if without a final envelope will have more peaks
 
     Note: data should not have been finally filtered to envelope level
@@ -411,17 +417,20 @@ def pick_more_peaks_array(components_tuple):
     c1 = components_tuple[1]
     low_border_c0 = (c0.max() -c0.mean())/4
     peaks0, _0 = find_peaks(c0, height=low_border_c0, distance=10)
-    antipeaks0, anti_0 = find_peaks((c0*(-1)), height=-low_border_c0, distance=10)
+    antipeaks0, anti_0 = find_peaks(
+        (c0*(-1)),
+        height=-low_border_c0,
+        distance=10)
     low_border_c1 = (c1.max() - c1.mean())/4
-    peaks1, _1 = find_peaks(c1, height=low_border_c1, distance = 10)
+    peaks1, _1 = find_peaks(c1, height=low_border_c1, distance=10)
     antipeaks1, anti_1 = find_peaks(
         (c1*(-1)),
         height=-low_border_c1,
         distance=10,
     )
 
-    sum_peaks_0= len(peaks0) + len(antipeaks0)
-    sum_peaks_1= len(peaks1) + len(antipeaks1)
+    sum_peaks_0 = len(peaks0) + len(antipeaks0)
+    sum_peaks_1 = len(peaks1) + len(antipeaks1)
 
     if sum_peaks_0 > sum_peaks_1:
         emg_component = components_tuple[0]
@@ -441,7 +450,11 @@ def working_pipeline_exp(our_chosen_file):
 
 
     """
-    cut_file_data = bad_end_cutter(our_chosen_file, percent_to_cut=3, tolerance_percent=5)
+    cut_file_data = bad_end_cutter(
+        our_chosen_file,
+        percent_to_cut=3,
+        tolerance_percent=5,
+    )
     bd_filtered_file_data = emg_bandpass_butter_sample(
         cut_file_data,
         5,
@@ -484,12 +497,16 @@ def entropical(sig):
     Input is sig, the signal, and output is an array of entropy measurements.
 
     """
-    probabilities = [n_x/len(sig) for x,n_x in collections.Counter(sig).items()]
-    e_x = [-p_x*math.log(p_x, 2) for p_x in probabilities]
+    probabilit = [n_x/len(sig) for x, n_x in collections.Counter(sig).items()]
+    e_x = [-p_x*math.log(p_x, 2) for p_x in probabilit]
     return sum(e_x)
 
 
-def compute_power_loss(original_signal, original_signal_sampling_frequency, processed_signal, processed_signal_sampling_frequency):
+def compute_power_loss(
+    original_signal,
+    original_signal_sampling_frequency,
+    processed_signal,
+    processed_signal_sampling_frequency):
     """
     This function computes the percentage of power loss after the processing of
     a signal. Inputs include the original_signal (signal before the
