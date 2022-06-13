@@ -16,7 +16,6 @@ from collections import namedtuple
 import builtins
 
 
-
 class Range(namedtuple('RangeBase', 'start,end')):
     """
     This class creates an object of a tuple that
@@ -418,7 +417,7 @@ def pick_more_peaks_array(components_tuple):
         
     sum_peaks_0= len(peaks0) + len(antipeaks0)
     sum_peaks_1= len(peaks1) + len(antipeaks1)
-        
+
     if sum_peaks_0 > sum_peaks_1:
         emg_component = components_tuple[0]
     elif sum_peaks_1 > sum_peaks_0:
@@ -428,7 +427,7 @@ def pick_more_peaks_array(components_tuple):
     return emg_component
 
 
-def working_pipeline_exp(our_chosen_file): 
+def working_pipeline_exp(our_chosen_file):
     """
     This function produces a filtered respiratory EMG signal from a
     3 lead sEMG file.The inputs is our_chosen_file which we give the
@@ -440,26 +439,33 @@ def working_pipeline_exp(our_chosen_file):
     cut_file_data = bad_end_cutter(our_chosen_file, percent_to_cut=3, tolerance_percent=5)
     bd_filtered_file_data = emg_bandpass_butter_sample(cut_file_data, 5, 450, 2048, output='sos')
     # step 3 end-cutting again to get rid of filtering artifacts
-    re_cut_file_data = bad_end_cutter_for_samples(bd_filtered_file_data, percent_to_cut=3, tolerance_percent=5)
+    re_cut_file_data = bad_end_cutter_for_samples(
+        bd_filtered_file_data,
+        percent_to_cut=3,
+        tolerance_percent=5,
+    )
     # skip step4 and do step 5 ICA
     components = compute_ICA_two_comp(re_cut_file_data)
     #     the secret hidden step!
-    emg= pick_more_peaks_array(components)
+    emg = pick_more_peaks_array(components)
     # now process it in final steps
     abs_values = abs(emg)
     final_envelope_d = emg_highpass_butter(abs_values, 150, 2048)
     final_envelope_a = naive_rolling_rms(final_envelope_d, 300)
-        
+
     return final_envelope_a
+
 
 def slices_slider(array_sample, slice_len):
     """
-    This function produces continous sequential slices over an array of a certain legnth.
-    The inputs are the following- array_sample, the signal and slice_len- the window which
-    you wish to slide with. The function yields, and does not return these slices.
+    This function produces continous sequential slices over an
+    array of a certain legnth.The inputs are the following- array_sample,
+    the signal and slice_len- the window which
+    you wish to slide with. The function yields, does not return these slices.
     """
     for i in range(len(array_sample) - slice_len + 1):
         yield array_sample[i:i + slice_len]
+
 
 def entropical(listy):
     """
@@ -468,7 +474,7 @@ def entropical(listy):
 
     """
     probabilities = [n_x/len(listy) for x,n_x in collections.Counter(listy).items()]
-    e_x = [-p_x*math.log(p_x,2) for p_x in probabilities]
+    e_x = [-p_x*math.log(p_x, 2) for p_x in probabilities]
     return sum(e_x)
 
 
@@ -476,11 +482,12 @@ def compute_power_loss(original_signal, original_signal_sampling_frequency, proc
     """
     This function computes the percentage of power loss after the processing of
     a signal. Inputs include the original_signal (signal before the processing),
-    original_signal_sampling_frequency (sampling frequency of the signal before processing),
-    processed_signal (signal after processing),
-    processed_signal_sampling_frequency (sampling frequency of the signal after processing).
+    original_signal_sampling_frequency (sampling frequency of the signal before
+    processing), processed_signal (signal after processing),
+    processed_signal_sampling_frequency (sampling frequency of
+    the signal after processing).
     Output is the percentage of power loss.
-    
+
     :param original_signal: array.
     :type  original_signal: :class:`~numpy.ndarray`
     :param original_signal_sampling_frequency: sampling freq. original signal
@@ -494,17 +501,17 @@ def compute_power_loss(original_signal, original_signal_sampling_frequency, proc
     :return: power_loss
     :rtype: :class:float
     """
-
     nperseg = 1024
     noverlap = 512
 
-    # power spectrum density of the original and processed signals using Welch method
-    Pxx_den_orig = signal.welch(
+    # power spectrum density of the original and 
+    # processed signals using Welch method
+    Pxx_den_orig = signal.welch(  # as per Lu et al. 2009
         original_signal,
         original_signal_sampling_frequency,
         nperseg=nperseg,
         noverlap=noverlap,
-    ) # as per Lu et al. 2009
+    )
     Pxx_den_processed = signal.welch(
         processed_signal,
         processed_signal_sampling_frequency,
