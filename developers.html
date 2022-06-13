@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Developer’s Guide &#8212; resurfemg 0.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Developer’s Guide</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="developer-s-guide">
+<h1>Developer’s Guide<a class="headerlink" href="#developer-s-guide" title="Permalink to this heading">¶</a></h1>
+<section id="sending-your-work">
+<h2>Sending Your Work<a class="headerlink" href="#sending-your-work" title="Permalink to this heading">¶</a></h2>
+<p>We accept pull requests made through GitHub.  Alternatively, you can
+send patch files in an email (please find developers’ emails on their
+profile pages).  As is usual, we request that the changes be rebased
+on the branch they are to be integrated into.  We also request that
+you pre-lint and test anything you send</p>
+<p>We’ll try our best to attribute
+your work to you, however, you need to release your work under
+compatible license for us to be able to use it.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>We don’t use <cite>git-merge</cite> command, and if your submission has merge
+commits, we’ll have to remove them.  This means that in such case
+commit hashes will be different from those in your original
+submission.</p>
+</div>
+</section>
+<section id="setting-up-development-environment">
+<h2>Setting Up Development Environment<a class="headerlink" href="#setting-up-development-environment" title="Permalink to this heading">¶</a></h2>
+<section id="the-way-we-do-it">
+<h3>The Way We Do It<a class="headerlink" href="#the-way-we-do-it" title="Permalink to this heading">¶</a></h3>
+<p>If you want to develop using Anaconda Python, you would:</p>
+<p>Follow the instructions on the readme</p>
+<p>This will create a virtual environment, build
+<cite>conda</cite> package, install it and then add development dependencies to
+what was installed.</p>
+</section>
+<section id="the-traditional-ways">
+<h3>The Traditional Ways<a class="headerlink" href="#the-traditional-ways" title="Permalink to this heading">¶</a></h3>
+<p>Regradless of the downsides of this approach, we try to support more
+common ways to work with Python projects.  It’s a common practice to
+“install” a project during development by either using <cite>pip install
+–editable</cite> command, or by using <cite>conda</cite> environment files.</p>
+<p>We provide limited support for approaches not based on Anaconda right now.  For instance, if you
+want to work on the project using <cite>pip</cite>, you could try it, and contact us:</p>
+<p>.</p>
+<p>The environment files are generated using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda env create -f ./environment.yml
+</pre></div>
+</div>
+</section>
+<section id="rationale">
+<h3>Rationale<a class="headerlink" href="#rationale" title="Permalink to this heading">¶</a></h3>
+<p>There are several problems with traditional way Python programmers are
+taught to organize their development environment.  The way a typical
+Python project is developed, it is designed to support a single
+version of Python, rarely multiple Python distributions or operating
+systems. We are working to support multiple Pythons. Pending. But for
+now we are doing what is simple and fast.</p>
+</section>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this heading">¶</a></h2>
+<p>You may run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python ./tests/test.py
+</pre></div>
+</div>
+<p>Under the hood, this runs unittest.</p>
+<section id="style-guide-for-python-code">
+<h3>Style Guide for Python Code<a class="headerlink" href="#style-guide-for-python-code" title="Permalink to this heading">¶</a></h3>
+<p>We have yet to install a linter, but we will soon change it so you can run one from the setup we need to write</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python ./setup.py lint
+</pre></div>
+</div>
+</section>
+<section id="continuous-integration">
+<h3>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this heading">¶</a></h3>
+<p>This project has no extensive CI setup that uses GitHub Actions platform.
+This is a template but it’s far from
+being ready yet, and we currently don’t work on it.</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Developer’s Guide</a><ul>
+<li><a class="reference internal" href="#sending-your-work">Sending Your Work</a></li>
+<li><a class="reference internal" href="#setting-up-development-environment">Setting Up Development Environment</a><ul>
+<li><a class="reference internal" href="#the-way-we-do-it">The Way We Do It</a></li>
+<li><a class="reference internal" href="#the-traditional-ways">The Traditional Ways</a></li>
+<li><a class="reference internal" href="#rationale">Rationale</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#testing">Testing</a><ul>
+<li><a class="reference internal" href="#style-guide-for-python-code">Style Guide for Python Code</a></li>
+<li><a class="reference internal" href="#continuous-integration">Continuous Integration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/developers.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Developer’s Guide</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, c.moore@esciencecenter.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.1.
+    </div>
+  </body>
+</html>
