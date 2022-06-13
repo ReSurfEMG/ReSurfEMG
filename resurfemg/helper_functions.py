@@ -18,8 +18,7 @@ import builtins
 
 class Range(namedtuple('RangeBase', 'start,end')):
     """
-    This class creates an object of a tuple that
-    relates to ranges in arrays.
+    This class creates an object of a tuple that relates to ranges in arrays.
     """
 
     def intersects(self, other):
@@ -37,18 +36,19 @@ class Range(namedtuple('RangeBase', 'start,end')):
         This defines which array precedes.
         """
         return self.end < other.start
-    
+
     def to_slice(self):
         """
         This is a special slicer which maps the whole tuple set.
         """
-        return slice(*map(int, self)) # maps whole tuple set
+        return slice(*map(int, self))   # maps whole tuple set
 
 
 def emg_bandpass_butter(data_emg, low_pass, high_pass):
     """
-    The paramemter taken in here is the Poly5 file. Output is the emg after a bandpass as made here.
-    
+    The paramemter taken in here is the Poly5 file. Output is
+    the emg after a bandpass as made here.
+
     :param data_emg: Poly5 file with the samples to work over
     :type data_emg: :class:  Poly5
     :param low_pass: the number to cut off frequenciesabove
@@ -59,14 +59,28 @@ def emg_bandpass_butter(data_emg, low_pass, high_pass):
     :return emg_filtered: the bandpass filtered emg sample data
     :rtype: :class: `~numpy.ndarray`
     """
-    sos = signal.butter(3, [low_pass, high_pass], 'bandpass', fs=data_emg.sample_rate, output='sos')
+    sos = signal.butter(
+        3,
+        [low_pass, high_pass],
+        'bandpass',
+        fs=data_emg.sample_rate,
+        output='sos',
+    )
     # sos (output parameter)is second order section  -> "stabilizes" ?
     emg_filtered = signal.sosfiltfilt(sos, data_emg.samples)
     return emg_filtered
 
-def emg_bandpass_butter_sample(data_emg_samp, low_pass, high_pass, sample_rate, output='sos'):
+
+def emg_bandpass_butter_sample(
+    data_emg_samp,
+    low_pass,
+    high_pass,
+    sample_rate,
+    output='sos'
+):
     """
-    The paramemter taken in here is the Poly5 file. Output is the emg after a bandpass as made here.
+    The paramemter taken in here is the Poly5 file.
+    Output is the emg after a bandpass as made here.
 
     :param data_emg_samp: The array in the poly5 or other sample
     :type data_emg_samp: :class:  array
@@ -82,22 +96,29 @@ def emg_bandpass_butter_sample(data_emg_samp, low_pass, high_pass, sample_rate, 
     :return emg_filtered: the bandpass filtered emg sample data
     :rtype: :class: `~numpy.ndarray`
     """
-    sos = signal.butter(3, [low_pass, high_pass], 'bandpass', fs = sample_rate, output='sos')
+    sos = signal.butter(
+        3,
+        [low_pass, high_pass],
+        'bandpass',
+        fs=sample_rate,
+        output='sos',
+    )
     # sos (output parameter)is second order section  -> "stabilizes" ?
     emg_filtered = signal.sosfiltfilt(sos, data_emg_samp)
     return emg_filtered
 
+
 def bad_end_cutter(data_emg, percent_to_cut=7, tolerance_percent=10):
     """
-    This algorithm takes the end off of EMGs where the end is radically altered, 
-    or if not radically altered cuts the last 10 values
+    This algorithm takes the end off of EMGs where the end
+    is radically altered, or if not radically altered cuts the last 10 values
     but returns only the array, not an altered Poly5.
 
     :param data_emg: a poly5
     :type data_emg: :class:  Poly5file
     :param percent_to_cut: percentage to look at on the end
     :type percent_to_cut: :class:  int
-    :param tolerance_percent: percentage variation tolerance to allow without cutting automatically
+    :param tolerance_percent: percentage variation tolerance to allow w/o cutting
     :type tolerance_percent: :class:  int
 
     :return sample_cut: the cut emg sample data
@@ -106,11 +127,11 @@ def bad_end_cutter(data_emg, percent_to_cut=7, tolerance_percent=10):
     sample = data_emg.samples
     len_sample = len(data_emg.samples[0])
 
-    last_half = data_emg.samples[:,int(len_sample/2):]
+    last_half = data_emg.samples[:, int(len_sample/2):]
     percent = abs(int(percent_to_cut))
-    cut_number_last = int(((100- percent)/100)*len_sample)
+    cut_number_last = int(((100- percent)/100) * len_sample)
 
-    last_part = data_emg.samples[:,cut_number_last:]
+    last_part = data_emg.samples[:, cut_number_last: ]
     leads = last_half.shape[0]
     percent_off_list = []
     for l in range(0,leads):
@@ -128,16 +149,21 @@ def bad_end_cutter(data_emg, percent_to_cut=7, tolerance_percent=10):
         else:
             booly = False
             tolerance_list.append(booly)
-            
+
     if True in tolerance_list:
-        sample_cut = sample[:,:cut_number_last]
-    else:sample_cut = sample[:,:-10]
+        sample_cut = sample[:, :cut_number_last]
+    else:sample_cut = sample[:, :-10]
         
     return sample_cut
 
-def bad_end_cutter_for_samples(data_emg, percent_to_cut=7, tolerance_percent=10):
+
+def bad_end_cutter_for_samples(
+    data_emg,
+    percent_to_cut=7,
+    tolerance_percent=10
+):
     """
-    This algorithm takes the end off of EMGs where the end is radically altered, 
+    This algorithm takes the end off of EMGs where the end is radically altered,
     or if not radically altered cuts the last 10 values
     but returns only the array .
 
@@ -145,7 +171,7 @@ def bad_end_cutter_for_samples(data_emg, percent_to_cut=7, tolerance_percent=10)
     :type data_emg: :class:   `~numpy.ndarray`
     :param percent_to_cut: percentage to look at on the end
     :type percent_to_cut: :class:  int
-    :param tolerance_percent: percentage variation tolerance to allow without cutting automatically
+    :param tolerance_percent: percentage variation tolerance to allow without cutting
     :type tolerance_percent: :class:  int
 
     :return sample_cut: the cut emg sample data
@@ -154,9 +180,9 @@ def bad_end_cutter_for_samples(data_emg, percent_to_cut=7, tolerance_percent=10)
     sample = data_emg
     len_sample = len(data_emg[0])
 
-    last_half = data_emg[:,int(len_sample/2):]
+    last_half = data_emg[:, int(len_sample/2):]
     percent = abs(int(percent_to_cut))
-    cut_number_last = int(((100- percent)/100)*len_sample)
+    cut_number_last = int(((100- percent)/100) * len_sample)
 
     last_part = data_emg[:,cut_number_last:]
     leads = last_half.shape[0]
@@ -165,27 +191,28 @@ def bad_end_cutter_for_samples(data_emg, percent_to_cut=7, tolerance_percent=10)
     for l in range(leads):
         last_half_means = last_half[l].mean()
         last_part_means = last_part[l].mean()
-        difference = abs(last_half_means- last_part_means)/last_half_means
+        difference = abs(last_half_means - last_part_means)/last_half_means
         percent_off_list.append(difference)
     tolerance = tolerance_percent / 100
     if any(elt >= tolerance for elt in percent_off_list):
         sample_cut = sample[:, :cut_number_last]
-    else:sample_cut = sample[:, :-10]
-        
+    else:
+        sample_cut = sample[:, :-10]
+
     return sample_cut
 
 
 def bad_end_cutter_better(data_emg, percent_to_cut=7, tolerance_percent=10):
     """
-    This algorithm takes the end off of EMGs where the end is radically altered, 
-    or if not radically altered cuts the last 10 values
-    but returns only the array not an altered Poly5.
+    This algorithm takes the end off of EMGs where the end
+    is radically altered, or if not radically altered cuts the last
+    10 values but returns only the array not an altered Poly5.
 
     :param data_emg: a poly5
     :type data_emg: :class:  Poly5file
     :param percent_to_cut: percentage to look at on the end
     :type percent_to_cut: :class:  int
-    :param tolerance_percent: percentage variation tolerance to allow without cutting automatically
+    :param tolerance_percent: percentage variation to allow without cut
     :type tolerance_percent: :class:  int
 
     :return sample_cut: the cut emg sample data
@@ -196,35 +223,36 @@ def bad_end_cutter_better(data_emg, percent_to_cut=7, tolerance_percent=10):
 
     last_half = data_emg.samples[:,int(len_sample/2):]
     percent = abs(int(percent_to_cut))
-    cut_number_last = int(((100- percent)/100)*len_sample)
+    cut_number_last = int(((100- percent)/100) * len_sample)
 
-    last_part = data_emg.samples[:,cut_number_last:]
+    last_part = data_emg.samples[:, cut_number_last:]
     leads = last_half.shape[0]
     percent_off_list = []
     # get rid of for loop, take advange of numpy array- next version
     for l in range(leads):
         last_half_means = last_half[l].mean()
         last_part_means = last_part[l].mean()
-        difference = abs(last_half_means- last_part_means)/last_half_means
+        difference = abs(last_half_means - last_part_means)/last_half_means
         percent_off_list.append(difference)
     tolerance = tolerance_percent / 100
     if any(elt >= tolerance for elt in percent_off_list):
         sample_cut = sample[:, :cut_number_last]
-    else:sample_cut = sample[:, :-10]
-        
+    else:
+        sample_cut = sample[:, :-10]
+
     return sample_cut
 
 
 def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
     """
-    This is a filter designed to take out a specific frequency. 
+    This is a filter designed to take out a specific frequency.
     In the EU in some data electrical cords can interfere at around 50 herts.
-    In some other locations the interference is at 60 Hertz. The specificities 
-    of a local power grid may neccesitate notch filtering. 
-    
-    :param sample: percentage variation tolerance to allow without cutting automatically
+    In some other locations the interference is at 60 Hertz. The specificities
+    of a local power grid may neccesitate notch filtering.
+
+    :param sample: percentage variation tolerance to allow without cutting
     :type sample: :class:  int
-    :param sample_frequ: the frequency at which the sample was captured, often 2048
+    :param sample_frequ: the frequency at which the sample was captured
     :type sample_frequ: :class:  int
     :param freq_to_pull: the frequency you desire to remove from teh signal
     :type freq_to_pull: :class:  int
@@ -237,8 +265,11 @@ def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
     """
     # create notch filter
     # design a notch filter using signal.iirnotch
-    b_notch, a_notch = signal.iirnotch(freq_to_pull, quality_factor_q, sample_frequ)
-    
+    b_notch, a_notch = signal.iirnotch(
+        freq_to_pull,
+        quality_factor_q,
+        sample_frequ)
+
     # make the output signal
     output_signal = signal.filtfilt(b_notch, a_notch, sample)
     return output_signal
@@ -247,8 +278,10 @@ def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
 # def cnotch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
 #     """
 #     This is a filter designed to take out a specific frequency.
-#     In the EU in some data electrical cords can interfere at around 50 hertzs.
-#     In some other locations the interference is at 60 Hertz. The specificities
+#     In the EU in some data electrical cords can interfere at
+#     around 50 hertzs.
+#     In some other locations the interference is at 60 Hertz.
+#     The specificities
 #     of a local power grid may neccesitate notch filtering. It computes some
 #     additional info on the results, and we may change it to return all the
 #     information. Pending.
@@ -354,13 +387,14 @@ def vect_naive_rolling_rms(x, N):
     :rtype: :class: `~numpy.ndarray`
     """
     xc = np.cumsum(np.abs(x)**2)
-    emg_rms = np.sqrt((xc[N:] - xc[:-N])/N )
+    emg_rms = np.sqrt((xc[N:] - xc[:-N])/N)
     return emg_rms
 
 
 def zero_one_for_jumps_base(array, cut_off):
     """
-    This function takes an array and makes it binary (0,1) based on a cut-off value.
+    This function takes an array and makes it
+    binary (0,1) based on a cut-off value.
 
     :param array: an array
     :type array:`~numpy.ndarray`
@@ -374,7 +408,7 @@ def zero_one_for_jumps_base(array, cut_off):
     for i in array:
         if i < cut_off:
             i = 0
-        else: 
+        else:
             i = 1
         array_list.append(i)
     return array_list
@@ -401,7 +435,7 @@ def compute_ICA_two_comp(emg_samples):
 
 def pick_more_peaks_array(components_tuple):
     """
-    Here we have a function that takes a tuple with the two parts 
+    Here we have a function that takes a tuple with the two parts
     of ICA, and finds the one with more peaks and anti-peaks.
     The EMG if without a final envelope will have more peaks
 
@@ -415,7 +449,7 @@ def pick_more_peaks_array(components_tuple):
     """
     c0 = components_tuple[0]
     c1 = components_tuple[1]
-    low_border_c0 = (c0.max() -c0.mean())/4
+    low_border_c0 = (c0.max() - c0.mean())/4
     peaks0, _0 = find_peaks(c0, height=low_border_c0, distance=10)
     antipeaks0, anti_0 = find_peaks(
         (c0*(-1)),
@@ -506,7 +540,8 @@ def compute_power_loss(
     original_signal,
     original_signal_sampling_frequency,
     processed_signal,
-    processed_signal_sampling_frequency):
+    processed_signal_sampling_frequency
+):
     """
     This function computes the percentage of power loss after the processing of
     a signal. Inputs include the original_signal (signal before the

@@ -16,9 +16,7 @@ import numpy as np
 import hashlib
 import h5py
 import re
-
-# IMPORT Ole's fixed TMSiSDK python interfacwe- may change
-sys.path.insert(0, 'C:/Projects/tmsi-python-interface')
+sys.path.insert(0, 'C:/Projects/tmsi-python-interface')  # this will change on new release of tmsisdk
 from TMSiSDK.file_readers import Poly5Reader
 
 
