@@ -12,6 +12,7 @@ from setuptools import Command, setup
 from setuptools.command.easy_install import easy_install as EZInstallCommand
 from setuptools.command.install import install as InstallCommand
 from setuptools.dist import Distribution
+import unittest
 
 
 project_dir = os.path.dirname(os.path.realpath(__file__))
@@ -75,15 +76,14 @@ class UnitTest(TestCommand):
     description = "run unit tests"
 
     def run_tests(self):
-        import unittest
 
         if self.fast:
             here = os.path.dirname(os.path.abspath(__file__))
             sys.path.insert(0, here)
-        #errno = pytest.main(shlex.split(self.pytest_args))
+        # errno = pytest.main(shlex.split(self.pytest_args))
         test_loader = unittest.TestLoader()
         test_suite = test_loader.discover('tests', pattern='test.py')
-        #sys.exit(errno)
+        # sys.exit(errno)
 
 
 class Pep8(TestCommand):
@@ -172,22 +172,22 @@ class InstallDev(InstallCommand):
         super().do_egg_install()
 
 
-import unittest
 def my_test_suite():
     test_loader = unittest.TestLoader()
     test_suite = test_loader.discover('tests', pattern='test.py')
     return test_suite
 
+
 if __name__ == "__main__":
     setup(
         name=name,
         version=version,
-        author='A team from the Netherlands eScience Center and the University of Twente',
+        author='A team including the NLeSC and the U. of Twente',
         author_email='c.moore@esciencecenter.nl',
         packages=['ReSurfEMG'],
         url='https://github.com/ReSurfEMG/ReSurfEMG',
         license='LICENSE.md',
-        description='A package that helps with analysis of respiratory EMG data',
+        description='A package for analysis of respiratory EMG data',
         long_description=open('README.md').read(),
         package_data={"": ("README.md",)},
         cmdclass={

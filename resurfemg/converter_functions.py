@@ -18,8 +18,9 @@ import h5py
 import re
 
 # IMPORT Ole's fixed TMSiSDK python interfacwe- may change
-sys.path.insert(0 ,'C:/Projects/tmsi-python-interface')
+sys.path.insert(0, 'C:/Projects/tmsi-python-interface')
 from TMSiSDK.file_readers import Poly5Reader
+
 
 def poly5unpad(to_be_read):
     """
@@ -33,8 +34,8 @@ def poly5unpad(to_be_read):
     :return df: dataframe with hashes for what is in folder
     :rtype: :class: `~numpy.ndarray`
     """
-    read_object=  Poly5Reader(to_be_read)
-    sample_number= read_object.num_samples
+    read_object = Poly5Reader(to_be_read)
+    sample_number = read_object.num_samples
     unpadded = read_object.samples[:, :sample_number]
     return unpadded
 
@@ -68,10 +69,10 @@ def hash_it_up_right_all(origin_folder1, file_extension):
         result = sha256.hexdigest()
         hash_list.append(result)
         file_names.append(file)
-        
+
     df = pd.DataFrame(hash_list, file_names)
     df.columns = ["hash"]
-    df = df.reset_index() 
-    df = df.rename(columns = {'index':'file_name'})
-    
+    df = df.reset_index()
+    df = df.rename(columns={'index': 'file_name'})
+
     return df

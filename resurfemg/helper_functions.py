@@ -1,5 +1,6 @@
 """
-This file contains functions to work with various EMG arrays and other types of data arrays e.g. ventilator signals
+This file contains functions to work with various EMG arrays
+and other types of data arrays e.g. ventilator signals
 """
 
 from scipy import signal
@@ -429,9 +430,10 @@ def pick_more_peaks_array(components_tuple):
 
 def working_pipeline_exp(our_chosen_file): 
     """
-    This function produces a filtered respiratory EMG signal from a 3 lead sEMG file.
-    The inputs is our_chosen_file which we give the function as a string of filename. The 
-    output is the processed emg signal filtered and seperated from ecg components.
+    This function produces a filtered respiratory EMG signal from a
+    3 lead sEMG file.The inputs is our_chosen_file which we give the
+    function as a string of filename. The output is the processed
+    emg signal filtered and seperated from ecg components.
 
 
     """
@@ -472,19 +474,20 @@ def entropical(listy):
 
 def compute_power_loss(original_signal, original_signal_sampling_frequency, processed_signal, processed_signal_sampling_frequency):
     """
-    This function computes the percentage of power loss after the processing of a signal.
-    Inputs include the original_signal (signal before the processing),original_signal_sampling_frequency
-    ( sampling frequency of the signal before processing), processed_signal (signal after processing),
-    processed_signal_sampling_frequency (sampling frequency of the signal after processing). 
+    This function computes the percentage of power loss after the processing of
+    a signal. Inputs include the original_signal (signal before the processing),
+    original_signal_sampling_frequency (sampling frequency of the signal before processing),
+    processed_signal (signal after processing),
+    processed_signal_sampling_frequency (sampling frequency of the signal after processing).
     Output is the percentage of power loss.
     
     :param original_signal: array.
     :type  original_signal: :class:`~numpy.ndarray`
-    :param original_signal_sampling_frequency: sampling frequency of original signal
+    :param original_signal_sampling_frequency: sampling freq. original signal
     :type original_signal_sampling_frequency: :class: int
     :param processed_signal: array.
     :type  processed_signal: :class:`~numpy.ndarray`
-    :param processed_signal_sampling_frequency: sampling frequency of processed signal
+    :param processed_signal_sampling_frequency: sampling freq. processed signal
     :type processed_signal_sampling_frequency: :class: int
 
 
@@ -494,20 +497,30 @@ def compute_power_loss(original_signal, original_signal_sampling_frequency, proc
 
     nperseg = 1024
     noverlap = 512
-    
+
     # power spectrum density of the original and processed signals using Welch method
-    Pxx_den_orig = signal.welch(original_signal, original_signal_sampling_frequency, nperseg=nperseg, noverlap = noverlap) #as per Lu et al. 2009
-    Pxx_den_processed = signal.welch(processed_signal, processed_signal_sampling_frequency, nperseg=nperseg, noverlap = noverlap) 
-    
+    Pxx_den_orig = signal.welch(
+        original_signal,
+        original_signal_sampling_frequency,
+        nperseg=nperseg,
+        noverlap=noverlap,
+    ) # as per Lu et al. 2009
+    Pxx_den_processed = signal.welch(
+        processed_signal,
+        processed_signal_sampling_frequency,
+        nperseg=nperseg,
+        noverlap=noverlap,)
     # compute the percentage of power loss
     power_loss = 100*(1-(np.sum(Pxx_den_processed)/np.sum(Pxx_den_orig)))
-    
+
     return power_loss
+
 
 def count_decision_array(decision_array):
     """
-    This is a function that, practically speaking, counts events on a time series array that
-    has been reduced down to a binary (0,1) output. It counts changes then divides by two.
+    This is a function that, practically speaking, counts events
+    on a time series array that has been reduced down to a
+    binary (0,1) output. It counts changes then divides by two.
 
     :param decision_array: array.
     :type decisions_array: :class:`~numpy.ndarray`
@@ -519,7 +532,10 @@ def count_decision_array(decision_array):
     count = ups_and_downs.sum()/2
     return count
 
-def smooth_for_baseline(single_filtered_array, start=None, end=None, smooth=100):
+
+def smooth_for_baseline(
+    single_filtered_array, start=None, end=None, smooth=100
+):
     """
     This is an adaptive smoothing a series that overvalues closer numbers.
 
@@ -531,11 +547,11 @@ def smooth_for_baseline(single_filtered_array, start=None, end=None, smooth=100)
     :type end: :class:int
     :param smooth: the number of samples to work over
     :type smooth: :class:int
-    
+
     :return: array
     :rtype: :class:`~numpy.ndarray`
     """
-    
+
     array = single_filtered_array[start:end]
     dists = np.zeros(len(array))
     # print(len(array), array.max(), array.min())
@@ -554,9 +570,12 @@ def smooth_for_baseline(single_filtered_array, start=None, end=None, smooth=100)
     return array, dists
 
 
-def smooth_for_baseline_with_overlay(my_own_array, threshold=10, start=None, end=None, smooth=100):
+def smooth_for_baseline_with_overlay(
+    my_own_array, threshold=10, start=None, end=None, smooth=100
+):
     """
-    This is the same as smooth for baseline, but we also get an overlay 0/1 mask tagging the baseline
+    This is the same as smooth for baseline, but we also get an
+    overlay 0/1 mask tagging the baseline
     :param my_own_array: array.
     :type  my_own_array: :class:`~numpy.ndarray`
     :param threshold: number where to cut the mask for overlay
@@ -567,7 +586,7 @@ def smooth_for_baseline_with_overlay(my_own_array, threshold=10, start=None, end
     :type end: :class:int
     :param smooth: the number of samples to work over
     :type smooth: :class:int
-    
+
     :return: array
     :rtype: :class:`~numpy.ndarray`
     """
@@ -601,22 +620,26 @@ def smooth_for_baseline_with_overlay(my_own_array, threshold=10, start=None, end
     return array, overlay, dists
 
 
-
 def ranges_of(array):
     """
     This function is made to work with Range class objects,
     such that is selects ranges and returns tuples of boundaries.
     """
     marks = np.logical_xor(array[1:], array[:-1])
-    boundaries = np.hstack((np.zeros(1), np.where(marks != 0)[0], np.zeros(1) + len(array) - 1))
+    boundaries = np.hstack(
+        (np.zeros(1), np.where(marks != 0)[0], np.zeros(1) + len(array) - 1)
+        )
     if not array[0]:
         boundaries = boundaries[1:]
-    return tuple(Range(*boundaries[i:i+2]) for i in range(0, len(boundaries), 2))
+    range_return = tuple(
+        Range(*boundaries[i:i+2]) for i in range(0, len(boundaries), 2)
+        )
+    return range_return
 
 
 def intersections(left, right):
     """
-    This function works over two arrays,left and right, and allows 
+    This function works over two arrays,left and right, and allows
     a picking based on intersections. It only takes ranges on
     the left that intersect ranges on the right.
 
@@ -624,7 +647,7 @@ def intersections(left, right):
     :type left: :class: array
     :param right: range
     :type right: :class:array
-    
+
     :return: result
     :rtype: :class:list
 
@@ -645,13 +668,14 @@ def intersections(left, right):
 
 def raw_overlap_percent(signal1, signal2):
     """
-    This function takes two binary 0/1 signal arrays and gives the percentage of overlap
+    This function takes two binary 0/1 signal arrays and
+    gives the percentage of overlap
 
     :param signal1: binary signal 1
     :type signal1: :class: array
     :param rsignal2: binary signal 2
     :type rsignal2: :class:array
-    
+
     :return: raw_overlap_percent
     :rtype: :class: float
 
@@ -660,8 +684,9 @@ def raw_overlap_percent(signal1, signal2):
         print('Warning: legnth of arrays is not matched')
         longer_signal_len = np.max([len(signal1), len(signal2)])
 
-    else: 
-        longer_signal_len= len(signal1)
+    else:
+        longer_signal_len = len(signal1)
 
-    raw_overlap_percent = sum(signal1.astype(int) & signal2.astype(int))/longer_signal_len
+    raw_overlap_percent = sum(
+        signal1.astype(int) & signal2.astype(int))/longer_signal_len
     return raw_overlap_percent
