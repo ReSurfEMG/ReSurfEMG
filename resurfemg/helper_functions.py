@@ -134,17 +134,17 @@ def bad_end_cutter(data_emg, percent_to_cut=7, tolerance_percent=10):
     last_part = data_emg.samples[:, cut_number_last: ]
     leads = last_half.shape[0]
     percent_off_list = []
-    for l in range(0,leads):
-        last_half_means = last_half[l].mean()
-        last_part_means = last_part[l].mean()
+    for i in range(0,leads):
+        last_half_means = last_half[i].mean()
+        last_part_means = last_part[i].mean()
         difference = abs(last_half_means- last_part_means)/last_half_means
         percent_off_list.append(difference)
     tolerance_list = []
     for element in percent_off_list:
         tolerance = tolerance_percent/100
-        
+
         if element >= tolerance:
-            booly= True
+            booly = True
             tolerance_list.append(booly)
         else:
             booly = False
@@ -152,8 +152,9 @@ def bad_end_cutter(data_emg, percent_to_cut=7, tolerance_percent=10):
 
     if True in tolerance_list:
         sample_cut = sample[:, :cut_number_last]
-    else:sample_cut = sample[:, :-10]
-        
+    else:
+        sample_cut = sample[:, :-10]
+
     return sample_cut
 
 
@@ -163,15 +164,15 @@ def bad_end_cutter_for_samples(
     tolerance_percent=10
 ):
     """
-    This algorithm takes the end off of EMGs where the end is radically altered,
-    or if not radically altered cuts the last 10 values
+    This algorithm takes the end off of EMGs where the end is radically
+    altered, or if not radically altered cuts the last 10 values
     but returns only the array .
 
     :param data_emg: array of samples
     :type data_emg: :class:   `~numpy.ndarray`
     :param percent_to_cut: percentage to look at on the end
     :type percent_to_cut: :class:  int
-    :param tolerance_percent: percentage variation tolerance to allow without cutting
+    :param tolerance_percent: percent variation to allow without cutting
     :type tolerance_percent: :class:  int
 
     :return sample_cut: the cut emg sample data
@@ -188,9 +189,9 @@ def bad_end_cutter_for_samples(
     leads = last_half.shape[0]
     percent_off_list = []
     # get rid of for loop, take advange of numpy array- next version
-    for l in range(leads):
-        last_half_means = last_half[l].mean()
-        last_part_means = last_part[l].mean()
+    for i in range(leads):
+        last_half_means = last_half[i].mean()
+        last_part_means = last_part[i].mean()
         difference = abs(last_half_means - last_part_means)/last_half_means
         percent_off_list.append(difference)
     tolerance = tolerance_percent / 100
@@ -221,7 +222,7 @@ def bad_end_cutter_better(data_emg, percent_to_cut=7, tolerance_percent=10):
     sample = data_emg.samples
     len_sample = len(data_emg.samples[0])
 
-    last_half = data_emg.samples[:,int(len_sample/2):]
+    last_half = data_emg.samples[:, int(len_sample/2):]
     percent = abs(int(percent_to_cut))
     cut_number_last = int(((100- percent)/100) * len_sample)
 
@@ -229,9 +230,9 @@ def bad_end_cutter_better(data_emg, percent_to_cut=7, tolerance_percent=10):
     leads = last_half.shape[0]
     percent_off_list = []
     # get rid of for loop, take advange of numpy array- next version
-    for l in range(leads):
-        last_half_means = last_half[l].mean()
-        last_part_means = last_part[l].mean()
+    for i in range(leads):
+        last_half_means = last_half[i].mean()
+        last_part_means = last_part[i].mean()
         difference = abs(last_half_means - last_part_means)/last_half_means
         percent_off_list.append(difference)
     tolerance = tolerance_percent / 100
