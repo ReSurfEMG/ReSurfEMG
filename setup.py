@@ -184,7 +184,7 @@ if __name__ == "__main__":
         version=version,
         author='A team including the NLeSC and the U. of Twente',
         author_email='c.moore@esciencecenter.nl',
-        packages=['ReSurfEMG'],
+        packages=['resurfemg'],
         url='https://github.com/ReSurfEMG/ReSurfEMG',
         license='LICENSE.md',
         description='A package for analysis of respiratory EMG data',
