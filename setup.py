@@ -16,32 +16,32 @@ import unittest
 
 
 project_dir = os.path.dirname(os.path.realpath(__file__))
-name = "resurfemg"
+name = 'resurfemg'
 try:
     tag = subprocess.check_output(
         [
-            "git",
-            "--no-pager",
-            "describe",
-            "--abbrev=0",
-            "--tags",
+            'git',
+            '--no-pager',
+            'describe',
+            '--abbrev=0',
+            '--tags',
         ],
         stderr=subprocess.DEVNULL,
     ).strip().decode()
 except subprocess.CalledProcessError as e:
-    tag = "v0.0.0"
+    tag = 'v0.0.0'
 
 version = tag[1:]
 
-with open(os.path.join(project_dir, "README.md"), "r") as f:
+with open(os.path.join(project_dir, 'README.md'), 'r') as f:
     readme = f.read()
 
 
 class TestCommand(Command):
 
     user_options = [
-        ("fast", "f", (
-            "Don\"t install dependencies, test in the current environment"
+        ('fast', 'f', (
+            'Don\'t install dependencies, test in the current environment'
         )),
     ]
 
@@ -73,7 +73,7 @@ class TestCommand(Command):
 
 class UnitTest(TestCommand):
 
-    description = "run unit tests"
+    description = 'run unit tests'
 
     def run_tests(self):
 
@@ -88,16 +88,16 @@ class UnitTest(TestCommand):
 
 class Pep8(TestCommand):
 
-    description = "validate sources against PEP8"
+    description = 'validate sources against PEP8'
 
     def run_tests(self):
         from pycodestyle import StyleGuide
 
         package_dir = os.path.dirname(os.path.abspath(__file__))
         sources = glob(
-            os.path.join(package_dir, "resurfemg", "**/*.py"),
+            os.path.join(package_dir, 'resurfemg', '**/*.py'),
             recursive=True,
-        ) + [os.path.join(package_dir, "setup.py")]
+        ) + [os.path.join(package_dir, 'setup.py')]
         style_guide = StyleGuide(paths=sources)
         options = style_guide.options
 
@@ -106,30 +106,30 @@ class Pep8(TestCommand):
 
         if report.total_errors:
             if options.count:
-                sys.stderr.write(str(report.total_errors) + "\n")
+                sys.stderr.write(str(report.total_errors) + '\n')
             sys.exit(1)
 
 
 class Isort(TestCommand):
 
-    description = "validate imports"
+    description = 'validate imports'
 
     def run_tests(self):
         from isort.main import main as imain
 
         package_dir = os.path.dirname(os.path.abspath(__file__))
         sources = glob(
-            os.path.join(package_dir, "resurfemg", "**/*.py"),
+            os.path.join(package_dir, 'resurfemg', '**/*.py'),
             recursive=True,
-        ) + [os.path.join(package_dir, "setup.py")]
+        ) + [os.path.join(package_dir, 'setup.py')]
 
-        if imain(["-c", "--lai", "2", "-m" "3"] + sources):
+        if imain(['-c', '--lai', '2', '-m' '3'] + sources):
             sys.exit(1)
 
 
 class SphinxApiDoc(Command):
 
-    description = "run apidoc to generate documentation"
+    description = 'run apidoc to generate documentation'
 
     user_options = []
 
@@ -142,12 +142,14 @@ class SphinxApiDoc(Command):
     def run(self):
         from sphinx.ext.apidoc import main
 
-        src = os.path.join(project_dir, "docs")
+        src = os.path.join(project_dir, 'docs')
         special = (
-            "index.rst",
+            'index.rst',
+            'developers.rst',
+            'medical-professionals.rst',
         )
 
-        for f in glob(os.path.join(src, "*.rst")):
+        for f in glob(os.path.join(src, '*.rst')):
             for end in special:
                 if f.endswith(end):
                     os.utime(f, None)
@@ -156,10 +158,10 @@ class SphinxApiDoc(Command):
                 os.unlink(f)
 
         sys.exit(main([
-            "-o", src,
-            "-f",
-            os.path.join(project_dir, "resurfemg"),
-            "--separate",
+            '-o', src,
+            '-f',
+            os.path.join(project_dir, 'resurfemg'),
+            '--separate',
         ]))
 
 
@@ -167,7 +169,7 @@ class InstallDev(InstallCommand):
 
     def run(self):
         self.distribution.install_requires.extend(
-            self.distribution.extras_require["dev"],
+            self.distribution.extras_require['dev'],
         )
         super().do_egg_install()
 
@@ -178,7 +180,7 @@ def my_test_suite():
     return test_suite
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     setup(
         name=name,
         version=version,
@@ -189,28 +191,34 @@ if __name__ == "__main__":
         license='LICENSE.md',
         description='A package for analysis of respiratory EMG data',
         long_description=open('README.md').read(),
-        package_data={"": ("README.md",)},
+        package_data={'': ('README.md',)},
         cmdclass={
-            # "test": UnitTest,
-            "lint": Pep8,
-            "isort": Isort,
-            "apidoc": SphinxApiDoc,
-            "install_dev": InstallDev,
+            # 'test': UnitTest,
+            'lint': Pep8,
+            'isort': Isort,
+            'apidoc': SphinxApiDoc,
+            'install_dev': InstallDev,
         },
         test_suite='setup.my_test_suite',
-        tests_require=["pytest", "pycodestyle", "isort", "wheel"],
+        install_requires=[
+            'pandas',
+            'scipy',
+            'matplotlib',
+            'h5py',
+            'sklearn',
+        ],
+        tests_require=['pytest', 'pycodestyle', 'isort', 'wheel'],
         command_options={
-            "build_sphinx": {
-                "project": ("setup.py", name),
-                "version": ("setup.py", version),
-                "source_dir": ("setup.py", "./docs"),
-                "config_dir": ("setup.py", "./docs"),
+            'build_sphinx': {
+                'project': ('setup.py', name),
+                'version': ('setup.py', version),
+                'source_dir': ('setup.py', './docs'),
+                'config_dir': ('setup.py', './docs'),
             },
         },
-        setup_requires=["sphinx", "wheel"],
-        install_requires=["lark"],
+        setup_requires=['sphinx', 'wheel'],
         extras_require={
-            "dev": ["pytest", "codestyle", "isort", "wheel"],
+            'dev': ['pytest', 'codestyle', 'isort', 'wheel'],
         },
         zip_safe=False,
     )
