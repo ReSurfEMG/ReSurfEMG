@@ -1,6 +1,7 @@
 """
-This file contains functions to work with various EMG file types from various hardware/software combinations,
-and convert them down to an array that can be further processed with helper_functions or other modules.
+This file contains functions to work with various EMG file types
+from various hardware/software combinations,and convert them down to
+an array that can be further processed with helper_functions or other modules.
 Additionally this file contains hash functions to track data
 """
 
@@ -17,13 +18,14 @@ import h5py
 import re
 
 # IMPORT Ole's fixed TMSiSDK python interfacwe- may change
-sys.path.insert(0,'C:/Projects/tmsi-python-interface')
+sys.path.insert(0 ,'C:/Projects/tmsi-python-interface')
 from TMSiSDK.file_readers import Poly5Reader
 
 def poly5unpad(to_be_read):
     """
     This function converts a Poly5 read into an array without padding.
-    Note there is a quirk in the python Poly5 interface that pads with zeros on the end.
+    Note there is a quirk in the python Poly5 interface that pads with
+    zeros on the end.
 
     :param to_be_read: filename of python read Poly5
     :type to_be_read: :class:  str
@@ -39,7 +41,8 @@ def poly5unpad(to_be_read):
 
 def hash_it_up_right_all(origin_folder1, file_extension):
     """
-    Hashing function to check files are not corrupted or to assure files are changed.
+    Hashing function to check files are not corrupted or to assure files are
+    changed.
 
     :param origin_folder1: the string of the folder with files to hash
     :type origin_folder1: :class:  str

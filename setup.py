@@ -83,7 +83,7 @@ class UnitTest(TestCommand):
         #errno = pytest.main(shlex.split(self.pytest_args))
         test_loader = unittest.TestLoader()
         test_suite = test_loader.discover('tests', pattern='test.py')
-        sys.exit(errno)
+        #sys.exit(errno)
 
 
 class Pep8(TestCommand):
@@ -182,7 +182,7 @@ if __name__ == "__main__":
     setup(
         name=name,
         version=version,
-        author='An Awesome Team from the Netherlands eScience Center!',
+        author='A team from the Netherlands eScience Center and the University of Twente',
         author_email='c.moore@esciencecenter.nl',
         packages=['ReSurfEMG'],
         url='https://github.com/ReSurfEMG/ReSurfEMG',
