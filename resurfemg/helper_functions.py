@@ -378,7 +378,7 @@ def zero_one_for_jumps_base(array, cut_off):
 def compute_ICA_two_comp(emg_samples):
     """
     A function that performs an independant component analysis (ICA) on EMG data.
-    
+
     :param emg_samples: original signal array with three layers
     :type emg_samples: :class:  array
 
@@ -392,29 +392,34 @@ def compute_ICA_two_comp(emg_samples):
     component_1 = S.T[1]
     return component_0, component_1
 
-# now write a function to show which array in tuple has more peaks, and choose it
+
 def pick_more_peaks_array(components_tuple):
     """
-    Here we have a function that takes a tuple with the two parts of ICA,
-    and finds the one with more peaks and anti-peaks. The EMG if without
-    a final envelope will have more peaks
+    Here we have a function that takes a tuple with the two parts 
+    of ICA, and finds the one with more peaks and anti-peaks. 
+    The EMG if without a final envelope will have more peaks
 
     Note: data should not have been finally filtered to envelope level
     :param components_tuple: tuple of two arrays representing different signals
     :type components_tuple: :class: tuple
 
-    :return emg_component: array with more peaks (should usually be the emg as opposed to ecg)
+    :return emg_component: array with more peaks (
+        should usually be the emg as opposed to ecg)
     :rtype: :class: `~numpy.ndarray`
     """
-    c0= components_tuple[0]
+    c0 = components_tuple[0]
     c1 = components_tuple[1]
     low_border_c0 = (c0.max() -c0.mean())/4
-    peaks0, _0 = find_peaks(c0, height=low_border_c0, distance = 10)
-    antipeaks0, anti_0 = find_peaks((c0*(-1)), height=-low_border_c0, distance = 10)
-    low_border_c1 =(c1.max() -c1.mean())/4
+    peaks0, _0 = find_peaks(c0, height=low_border_c0, distance=10)
+    antipeaks0, anti_0 = find_peaks((c0*(-1)), height=-low_border_c0, distance=10)
+    low_border_c1 = (c1.max() - c1.mean())/4
     peaks1, _1 = find_peaks(c1, height=low_border_c1, distance = 10)
-    antipeaks1, anti_1 = find_peaks((c1*(-1)), height=-low_border_c1, distance = 10)
-        
+    antipeaks1, anti_1 = find_peaks(
+        (c1*(-1)),
+        height=-low_border_c1,
+        distance=10,
+    )
+
     sum_peaks_0= len(peaks0) + len(antipeaks0)
     sum_peaks_1= len(peaks1) + len(antipeaks1)
 
@@ -437,7 +442,13 @@ def working_pipeline_exp(our_chosen_file):
 
     """
     cut_file_data = bad_end_cutter(our_chosen_file, percent_to_cut=3, tolerance_percent=5)
-    bd_filtered_file_data = emg_bandpass_butter_sample(cut_file_data, 5, 450, 2048, output='sos')
+    bd_filtered_file_data = emg_bandpass_butter_sample(
+        cut_file_data,
+        5,
+        450,
+        2048,
+        output='sos',
+    )
     # step 3 end-cutting again to get rid of filtering artifacts
     re_cut_file_data = bad_end_cutter_for_samples(
         bd_filtered_file_data,
@@ -467,13 +478,13 @@ def slices_slider(array_sample, slice_len):
         yield array_sample[i:i + slice_len]
 
 
-def entropical(listy):
+def entropical(sig):
     """
     This function computes a certain type of entropy of a series signal array.
-    Input is listy, the signal, and output is an array of entropy measurements.
+    Input is sig, the signal, and output is an array of entropy measurements.
 
     """
-    probabilities = [n_x/len(listy) for x,n_x in collections.Counter(listy).items()]
+    probabilities = [n_x/len(sig) for x,n_x in collections.Counter(sig).items()]
     e_x = [-p_x*math.log(p_x, 2) for p_x in probabilities]
     return sum(e_x)
 
@@ -481,9 +492,9 @@ def entropical(listy):
 def compute_power_loss(original_signal, original_signal_sampling_frequency, processed_signal, processed_signal_sampling_frequency):
     """
     This function computes the percentage of power loss after the processing of
-    a signal. Inputs include the original_signal (signal before the processing),
-    original_signal_sampling_frequency (sampling frequency of the signal before
-    processing), processed_signal (signal after processing),
+    a signal. Inputs include the original_signal (signal before the
+    processing), original_signal_sampling_frequency (sampling frequency of the
+    signal before processing), processed_signal (signal after processing),
     processed_signal_sampling_frequency (sampling frequency of
     the signal after processing).
     Output is the percentage of power loss.
@@ -504,7 +515,7 @@ def compute_power_loss(original_signal, original_signal_sampling_frequency, proc
     nperseg = 1024
     noverlap = 512
 
-    # power spectrum density of the original and 
+    # power spectrum density of the original and
     # processed signals using Welch method
     Pxx_den_orig = signal.welch(  # as per Lu et al. 2009
         original_signal,
