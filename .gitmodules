@@ -1,0 +1,3 @@
+[submodule "tmsisdk"]
+	path = .vendor/tmsisdk
+	url = https://github.com/wvxvw/TMSiSDK.git

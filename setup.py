@@ -186,7 +186,7 @@ if __name__ == '__main__':
         version=version,
         author='A team including the NLeSC and the U. of Twente',
         author_email='c.moore@esciencecenter.nl',
-        package_dir={'.': '', 'TMSiSDK': '_vendor/tmsisdk/TMSiSDK'},
+        package_dir={'.': '', 'TMSiSDK': '.vendor/tmsisdk/TMSiSDK'},
         packages=['resurfemg', 'TMSiSDK'],
         url='https://github.com/ReSurfEMG/ReSurfEMG',
         license='LICENSE.md',
