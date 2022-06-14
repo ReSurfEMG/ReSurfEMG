@@ -117,12 +117,7 @@ def bad_end_cutter(data_emg, percent_to_cut=7, tolerance_percent=10):
     :type data_emg: :class:  Poly5file
     :param percent_to_cut: percentage to look at on the end
     :type percent_to_cut: :class:  int
-<<<<<<< HEAD
-    :param tolerance_percent: percentage variation tolerance to allow
-        without cutting
-=======
     :param tolerance_percent: percent variation tolerance to allow w/o cutting
->>>>>>> 807483b (last lint for now)
     :type tolerance_percent: :class:  int
 
     :return sample_cut: the cut emg sample data
@@ -133,26 +128,15 @@ def bad_end_cutter(data_emg, percent_to_cut=7, tolerance_percent=10):
 
     last_half = data_emg.samples[:, int(len_sample/2):]
     percent = abs(int(percent_to_cut))
-<<<<<<< HEAD
-    cut_number_last = int(((100 - percent) / 100) * len_sample)
-=======
     cut_number_last = int(((100 - percent)/100) * len_sample)
->>>>>>> 807483b (last lint for now)
-
+    cut_number_last = int(((100 - percent)/100) * len_sample)
     last_part = data_emg.samples[:, cut_number_last:]
     leads = last_half.shape[0]
     percent_off_list = []
-<<<<<<< HEAD
-    for i in range(leads):
-        last_half_means = last_half[i].mean()
-        last_part_means = last_part[i].mean()
-        difference = abs(last_half_means - last_part_means) / last_half_means
-=======
     for i in range(0, leads):
         last_half_means = last_half[i].mean()
         last_part_means = last_part[i].mean()
         difference = abs(last_half_means - last_part_means)/last_half_means
->>>>>>> 807483b (last lint for now)
         percent_off_list.append(difference)
     tolerance_list = []
     for element in percent_off_list:
@@ -198,11 +182,7 @@ def bad_end_cutter_for_samples(
 
     last_half = data_emg[:, int(len_sample/2):]
     percent = abs(int(percent_to_cut))
-<<<<<<< HEAD
-    cut_number_last = int(((100 - percent) / 100) * len_sample)
-=======
     cut_number_last = int(((100 - percent)/100) * len_sample)
->>>>>>> 807483b (last lint for now)
 
     last_part = data_emg[:, cut_number_last:]
     leads = last_half.shape[0]
@@ -243,11 +223,7 @@ def bad_end_cutter_better(data_emg, percent_to_cut=7, tolerance_percent=10):
 
     last_half = data_emg.samples[:, int(len_sample/2):]
     percent = abs(int(percent_to_cut))
-<<<<<<< HEAD
-    cut_number_last = int(((100 - percent) / 100) * len_sample)
-=======
     cut_number_last = int(((100 - percent)/100) * len_sample)
->>>>>>> 807483b (last lint for now)
 
     last_part = data_emg.samples[:, cut_number_last:]
     leads = last_half.shape[0]
