@@ -13,6 +13,9 @@ jobs:
           python-version: 3.8
       - run: python3 -m venv .venv
       - run: .venv/bin/python -m pip install wheel
+      # TODO(wvxvw): We shouldn't need this. We need to fix test
+      # command to install things correctly.
+      - run: .venv/bin/python setup.py install
       - run: .venv/bin/python setup.py test
   
   Lint:
