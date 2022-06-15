@@ -55,25 +55,20 @@ Additionally this file contains hash functions to track data</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.converter_functions.hash_it_up_right_all">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">hash_it_up_right_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin_folder1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.hash_it_up_right_all" title="Permalink to this definition">¶</a></dt>
-<dd><p>Hashing function to check files are not corrupted or to assure files are
-changed.</p>
+<dd><p>Hashing function to check files are not corrupted or to assure
+files are changed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>origin_folder1</strong> – the string of the folder with files to hash</p></li>
-<li><p><strong>file_extension</strong> – file extension</p></li>
+<li><p><strong>origin_folder1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The string of the folder with files to hash</p></li>
+<li><p><strong>file_extension</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – File extension</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return df<span class="colon">:</span></dt>
-<dd class="field-even"><p>dataframe with hashes for what is in folder</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dataframe with hashes for what is in folder</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><dl class="field-list simple">
-<dt class="field-odd">class<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>pandas.DataFrame</cite></p>
-</dd>
-</dl>
-</p>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.2)"><em>DataFrame</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -81,23 +76,18 @@ changed.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.converter_functions.poly5unpad">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">poly5unpad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_be_read</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.poly5unpad" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function converts a Poly5 read into an array without padding.
-Note there is a quirk in the python Poly5 interface that pads with
-zeros on the end.</p>
+<dd><p>This function converts a Poly5 read into an array without
+padding.  Note there is a quirk in the python Poly5 interface that
+pads with zeros on the end.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>to_be_read</strong> – filename of python read Poly5</p>
+<dd class="field-odd"><p><strong>to_be_read</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Filename of python read Poly5</p>
 </dd>
-<dt class="field-even">Return df<span class="colon">:</span></dt>
-<dd class="field-even"><p>dataframe with hashes for what is in folder</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dataframe with hashes for what is in folder</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><dl class="field-list simple">
-<dt class="field-odd">class<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>~numpy.ndarray</cite></p>
-</dd>
-</dl>
-</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
