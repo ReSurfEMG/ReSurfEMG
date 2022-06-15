@@ -81,3 +81,5 @@ venv.bak/
 /build/
 /dist/
 *~
+*.zip
+not_pushed
