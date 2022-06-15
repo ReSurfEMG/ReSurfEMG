@@ -131,7 +131,7 @@ cutting</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The cut emg sample data</p>
+<dd class="field-even"><p>The cut EMG sample data</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a></p>
@@ -154,7 +154,7 @@ values but returns only the array not an altered Poly5.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the cut emg sample data</p>
+<dd class="field-even"><p>The cut EMG sample data</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a></p>
@@ -177,7 +177,7 @@ values but returns only the array.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the cut emg sample data</p>
+<dd class="field-even"><p>The cut EMG sample data</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a></p>
@@ -192,10 +192,10 @@ values but returns only the array.</p>
 (ICA) meant for EMG data that includes stacked three arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>emg_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a>) – original signal array with three layers</p>
+<dd class="field-odd"><p><strong>emg_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a>) – Original signal array with three layers</p>
 </dd>
-<dt class="field-even">Return array_list<span class="colon">:</span></dt>
-<dd class="field-even"><p>two arrays of independent components (ecg-like and emg)</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Two arrays of independent components (ECG-like and EMG)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a></p>
@@ -244,7 +244,7 @@ on a time series array that has been reduced down to a binary
 <dd class="field-odd"><p><strong>decision_array</strong> – Array.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>number of events</p>
+<dd class="field-even"><p>Number of events</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
@@ -266,7 +266,7 @@ the emg after a bandpass as made here.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the bandpass filtered emg sample data</p>
+<dd class="field-even"><p>The bandpass filtered EMG sample data</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a></p>
@@ -302,17 +302,17 @@ EMG after a bandpass as made here.</p>
 <dt class="sig sig-object py" id="resurfemg.helper_functions.emg_highpass_butter">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">emg_highpass_butter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_emg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut_above</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.emg_highpass_butter" title="Permalink to this definition">¶</a></dt>
 <dd><p>The paramemter taken in here is the Poly5 file’s samples or
-another array.  Output is the emg after a bandpass as made here.</p>
+another array.  Output is the EMG after a bandpass as made here.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_emg</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a>) – Samples from the emg</p></li>
+<li><p><strong>data_emg</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a>) – Samples from the EMG</p></li>
 <li><p><strong>cut_above</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number to cut off <code class="code docutils literal notranslate"><span class="pre">frequenceisbelow</span></code></p></li>
 <li><p><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number of samples per second i.e. Hertz</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The bandpass filtered emg sample data</p>
+<dd class="field-even"><p>The bandpass filtered EMG sample data</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a></p>
@@ -391,7 +391,7 @@ filtering.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the filterered sample data</p>
+<dd class="field-even"><p>The filterered sample data</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a></p>
@@ -494,9 +494,9 @@ not return these slices.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>single_filtered_array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a>) – Array.</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the number on samples to work from</p></li>
-<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the number on samples to work until</p></li>
-<li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the number of samples to work over</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number on samples to work from</p></li>
+<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number on samples to work until</p></li>
+<li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number of samples to work over</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -542,12 +542,12 @@ the signal is put in.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>xc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a>) – Samples from the emg</p></li>
+<li><p><strong>xc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a>) – Samples from the EMG</p></li>
 <li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Legnth of the sample use as window for function</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The root-mean-squared emg sample data</p>
+<dd class="field-even"><p>The root-mean-squared EMG sample data</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a></p>
@@ -577,7 +577,7 @@ on a cut-off value.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>binarized array</p>
+<dd class="field-even"><p>Binarized array</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>ndarray</em></a></p>
