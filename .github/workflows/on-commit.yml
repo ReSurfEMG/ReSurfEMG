@@ -37,7 +37,7 @@ jobs:
     if: |
       github.ref == 'refs/heads/main' ||
       github.ref == 'refs/heads/wvxvw/documentation-fixes' ||
-      github.ref == 'refs/heads/wvxvw/ci-improvements'
+      github.ref == 'refs/heads/wvxvw/readthedocs-integration'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -51,7 +51,7 @@ jobs:
       - run: .venv/bin/python -m pip install wheel
       - run: .venv/bin/python setup.py install
       - run: .venv/bin/python setup.py apidoc
-      - run: .venv/bin/python setup.py build_sphinx
+      - run: .venv/bin/python setup.py build_sphinx -W
       - name: Publish Docs to Pages
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:

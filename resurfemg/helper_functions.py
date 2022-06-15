@@ -17,13 +17,22 @@ import builtins
 
 
 class Range(namedtuple('RangeBase', 'start,end')):
-    """
-    This class creates an object of a tuple that relates to ranges in arrays.
+    """Utility class for working with ranges (intervals).
+
+    :ivar start: Start of the range
+    :type start: ~number.Number
+    :ivar end: End of the range
+    :type end: ~number.Number
     """
 
     def intersects(self, other):
-        """
-        This defines intersections of two arrays
+        """Returns :code:`True` if this range intersects :code:`other` range.
+
+        :param other: Another range to compare this one to
+        :type other: ~resurfemg.helper_functions.Range
+
+        :returns: :code:`True` if this range intersects another range
+        :rtype: bool
         """
         return (
             (self.end >= other.end) and (self.start < other.end) or
@@ -32,31 +41,40 @@ class Range(namedtuple('RangeBase', 'start,end')):
         )
 
     def precedes(self, other):
-        """
-        This defines which array precedes.
+        """Returns :code:`True` if this range precedes :code:`other` range.
+
+        :param other: Another range to compare this one to
+        :type other: ~resurfemg.helper_functions.Range
+
+        :returns: :code:`True` if this range strictly precedes another
+            range
+        :rtype: bool
         """
         return self.end < other.start
 
     def to_slice(self):
-        """
-        This is a special slicer which maps the whole tuple set.
+        """Converts this range to a :class:`slice`.
+
+        :returns: A slice with its start set to this range's start and
+            end set to this range's end
+        :rtype: slice
         """
         return slice(*map(int, self))   # maps whole tuple set
 
 
 def emg_bandpass_butter(data_emg, low_pass, high_pass):
-    """
-    The paramemter taken in here is the Poly5 file. Output is
+    """The paramemter taken in here is the Poly5 file. Output is
     the emg after a bandpass as made here.
 
     :param data_emg: Poly5 file with the samples to work over
-    :type data_emg: Poly5
-    :param low_pass: the number to cut off frequenciesabove
+    :type data_emg: ~TMSiSDK.file_readers.Poly5Reader
+    :param low_pass: The number to cut off :code:`frequenciesabove`
     :type low_pass: int
-    :param high_pass: the number to cut off frequenceisbelow
+    :param high_pass: The number to cut off :code:`frequenceisbelow`
     :type high_pass: int
-    :returns: the bandpass filtered emg sample data
-    :rtype: :class:`~numpy.ndarray`
+
+    :returns: The bandpass filtered EMG sample data
+    :rtype: ~numpy.ndarray
     """
     sos = signal.butter(
         3,
@@ -77,23 +95,22 @@ def emg_bandpass_butter_sample(
     sample_rate,
     output='sos'
 ):
-    """
-    The paramemter taken in here is the Poly5 file.
-    Output is the emg after a bandpass as made here.
+    """The paramemter taken in here is the Poly5 file.  Output is the
+    EMG after a bandpass as made here.
 
     :param data_emg_samp: The array in the poly5 or other sample
-    :type data_emg_samp: :class:  array
-    :param low_pass: the number to cut off frequenciesabove
-    :type low_pass: :class:  int
-    :param high_pass: the number to cut off frequenceisbelow
-    :type high_pass: :class:  int
-    :param sample_rate: the number of samples per second i.e. Hertz
-    :type sample_rate: :class:  int
-    :param output: the type of sampling stabilizor
-    :type high_pass: :class:  str
+    :type data_emg_samp: ~numpy.ndarray
+    :param low_pass: The number to cut off :code:`frequenciesabove`
+    :type low_pass: int
+    :param high_pass: The number to cut off :code:`frequenceisbelow`
+    :type high_pass: int
+    :param sample_rate: The number of samples per second i.e. Hertz
+    :type sample_rate: int
+    :param output: The type of sampling stabilizor
+    :type high_pass: str
 
-    :return emg_filtered: the bandpass filtered emg sample data
-    :rtype: :class: `~numpy.ndarray`
+    :returns: The bandpass filtered EMG sample data
+    :rtype: ~numpy.ndarray
     """
     sos = signal.butter(
         3,
@@ -108,20 +125,20 @@ def emg_bandpass_butter_sample(
 
 
 def bad_end_cutter(data_emg, percent_to_cut=7, tolerance_percent=10):
-    """
-    This algorithm takes the end off of EMGs where the end
-    is radically altered, or if not radically altered cuts the last 10 values
-    but returns only the array, not an altered Poly5.
+    """This algorithm takes the end off of EMGs where the end is
+    radically altered, or if not radically altered cuts the last 10
+    values but returns only the array, not an altered Poly5.
 
-    :param data_emg: a poly5
-    :type data_emg: :class:  Poly5file
-    :param percent_to_cut: percentage to look at on the end
-    :type percent_to_cut: :class:  int
-    :param tolerance_percent: percent variation tolerance to allow w/o cutting
-    :type tolerance_percent: :class:  int
+    :param data_emg: A poly5
+    :type data_emg: ~TMSiSDK.file_readers.Poly5Reader
+    :param percent_to_cut: Percentage to look at on the end
+    :type percent_to_cut: int
+    :param tolerance_percent: Percent variation tolerance to allow without
+        cutting
+    :type tolerance_percent: int
 
-    :return sample_cut: the cut emg sample data
-    :rtype: :class: `~numpy.ndarray`
+    :returns: The cut EMG sample data
+    :rtype: ~numpy.ndarray
     """
     sample = data_emg.samples
     len_sample = len(data_emg.samples[0])
@@ -162,20 +179,19 @@ def bad_end_cutter_for_samples(
     percent_to_cut=7,
     tolerance_percent=10
 ):
-    """
-    This algorithm takes the end off of EMGs where the end is radically
-    altered, or if not radically altered cuts the last 10 values
-    but returns only the array.
+    """This algorithm takes the end off of EMGs where the end is
+    radically altered, or if not radically altered cuts the last 10
+    values but returns only the array.
 
-    :param data_emg: array of samples
-    :type data_emg: :class:   `~numpy.ndarray`
-    :param percent_to_cut: percentage to look at on the end
-    :type percent_to_cut: :class:  int
-    :param tolerance_percent: percent variation to allow without cutting
-    :type tolerance_percent: :class:  int
+    :param data_emg: Array of samples
+    :type data_emg: ~numpy.ndarray
+    :param percent_to_cut: Percentage to look at on the end
+    :type percent_to_cut: int
+    :param tolerance_percent: Percent variation to allow without cutting
+    :type tolerance_percent: int
 
-    :return sample_cut: the cut emg sample data
-    :rtype: :class: `~numpy.ndarray`
+    :returns: The cut EMG sample data
+    :rtype: ~numpy.ndarray
     """
     sample = data_emg
     len_sample = len(data_emg[0])
@@ -203,20 +219,19 @@ def bad_end_cutter_for_samples(
 
 
 def bad_end_cutter_better(data_emg, percent_to_cut=7, tolerance_percent=10):
-    """
-    This algorithm takes the end off of EMGs where the end
-    is radically altered, or if not radically altered cuts the last
-    10 values but returns only the array not an altered Poly5.
+    """This algorithm takes the end off of EMGs where the end is
+    radically altered, or if not radically altered cuts the last 10
+    values but returns only the array not an altered Poly5.
 
-    :param data_emg: a poly5
-    :type data_emg: :class:  Poly5file
-    :param percent_to_cut: percentage to look at on the end
-    :type percent_to_cut: :class:  int
-    :param tolerance_percent: percentage variation to allow without cut
-    :type tolerance_percent: :class:  int
+    :param data_emg: A poly5
+    :type data_emg: ~TMSiSDK.file_readers.Poly5Reader
+    :param percent_to_cut: Percentage to look at on the end
+    :type percent_to_cut: int
+    :param tolerance_percent: Percentage variation to allow without cut
+    :type tolerance_percent: int
 
-    :return sample_cut: the cut emg sample data
-    :rtype: :class: `~numpy.ndarray`
+    :returns: The cut EMG sample data
+    :rtype: ~numpy.ndarray
     """
     sample = data_emg.samples
     len_sample = len(data_emg.samples[0])
@@ -244,23 +259,23 @@ def bad_end_cutter_better(data_emg, percent_to_cut=7, tolerance_percent=10):
 
 
 def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
-    """
-    This is a filter designed to take out a specific frequency.
-    In the EU in some data electrical cords can interfere at around 50 herts.
-    In some other locations the interference is at 60 Hertz. The specificities
-    of a local power grid may neccesitate notch filtering.
+    """This is a filter designed to take out a specific frequency.  In
+    the EU in some data electrical cords can interfere at around 50
+    herts.  In some other locations the interference is at 60 Hertz.
+    The specificities of a local power grid may neccesitate notch
+    filtering.
 
-    :param sample: percentage variation tolerance to allow without cutting
-    :type sample: :class:  int
-    :param sample_frequ: the frequency at which the sample was captured
-    :type sample_frequ: :class:  int
-    :param freq_to_pull: the frequency you desire to remove from teh signal
-    :type freq_to_pull: :class:  int
-    :param quality_factor_q: how high the quality of the removal is
-    :type quality_factor_q: :class:  int
+    :param sample: Percentage variation tolerance to allow without cutting
+    :type sample: int
+    :param sample_frequ: The frequency at which the sample was captured
+    :type sample_frequ: int
+    :param freq_to_pull: The frequency you desire to remove from teh signal
+    :type freq_to_pull: int
+    :param quality_factor_q: How high the quality of the removal is
+    :type quality_factor_q: int
 
-    :return sample_cut: the filterered sample data
-    :rtype: :class: `~numpy.ndarray`
+    :return: The filterered sample data
+    :rtype: ~numpy.ndarray
 
     """
     # create notch filter
@@ -304,22 +319,21 @@ def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
 
 
 def show_my_power_spectrum(sample, sample_rate, upper_window):
-    """
-    This function plots a power spectrum
-    of the frequencies comtained in an emg based on
-    a fourier transform. It does not return the graph, rather the values
-    but plots the graph before it return.
-    Sample should be one single row. (1 dimensional array)
+    """This function plots a power spectrum of the frequencies
+    comtained in an emg based on a fourier transform.  It does not
+    return the graph, rather the values but plots the graph before it
+    return.  Sample should be one single row (1-dimensional array.)
 
-    :param sample: the sample array
-    :type sample: :class:  array
-    :param sample_rate: number of samples per second
-    :type sample_rate: :class:  int
-    :param upper_window: the end ofwindow over which values will be plotted
-    :type upper_window: :class:  int
+    :param sample: The sample array
+    :type sample: ~numpy.ndarray
+    :param sample_rate: Number of samples per second
+    :type sample_rate: int
+    :param upper_window: The end ofwindow over which values will be plotted
+    :type upper_window: int
 
-    :return yf,xf: the values for plotting the power spectrum
-    :rtype: :class: tuple of fourier transformed array and frequencies
+    :return: :code:`yf, xf` tuple of fourier transformed array and
+        frequencies (the values for plotting the power spectrum)
+    :rtype: Tuple[float, float]
     """
     N = len(sample)
     # for our emgs samplerate is usually 2048
@@ -333,19 +347,18 @@ def show_my_power_spectrum(sample, sample_rate, upper_window):
 
 
 def emg_highpass_butter(data_emg, cut_above, sample_rate):
-    """
-    The paramemter taken in here is the Poly5 file's samples or another array.
-     Output is the emg after a bandpass as made here.
+    """The paramemter taken in here is the Poly5 file's samples or
+    another array.  Output is the EMG after a bandpass as made here.
 
-    :param data_emg: samples from the emg
-    :type data_emg:`~numpy.ndarray`
-    :param cut_above: the number to cut off frequenceisbelow
-    :type cut_above: :class:  int
-    :param sample_rate: the number of samples per second i.e. Hertz
-    :type sample_rate: :class:  int
+    :param data_emg: Samples from the EMG
+    :type data_emg: ~numpy.ndarray
+    :param cut_above: The number to cut off :code:`frequenceisbelow`
+    :type cut_above: int
+    :param sample_rate: The number of samples per second i.e. Hertz
+    :type sample_rate: int
 
-    :return emg_filtered: the bandpass filtered emg sample data
-    :rtype: :class: `~numpy.ndarray`
+    :returns: The bandpass filtered EMG sample data
+    :rtype: ~numpy.ndarray
     """
     sos = signal.butter(3, cut_above, 'highpass', fs=sample_rate, output='sos')
     # sos (output parameter)is second order section  -> "stabilizes" ?
@@ -354,17 +367,17 @@ def emg_highpass_butter(data_emg, cut_above, sample_rate):
 
 
 def naive_rolling_rms(x, N):
-    """
-    This function computes a root mean squared envelope over an array x.
-    To do this it uses number of sample values N .
+    """This function computes a root mean squared envelope over an
+    array :code:`x`.  To do this it uses number of sample values
+    :code:`N`.
 
-    :param x: samples from the emg
-    :type x: :class: `~numpy.ndarray`
-    :param N: legnth of the sample use as window for function
-    :type N: :class:  int
+    :param x: Samples from the EMG
+    :type x: ~numpy.ndarray
+    :param N: Legnth of the sample use as window for function
+    :type N: int
 
-    :return emg_rms: the root-mean-squared emg sample data
-    :rtype: :class: `~numpy.ndarray`
+    :returns: The root-mean-squared EMG sample data
+    :rtype: ~numpy.ndarray
     """
     xc = np.cumsum(abs(x)**2)
     emg_rms = np.sqrt((xc[N:] - xc[:-N])/N)
@@ -372,19 +385,19 @@ def naive_rolling_rms(x, N):
 
 
 def vect_naive_rolling_rms(x, N):
-    """
-    This function computes a root mean squared envelope over an array x.
-    To do this it uses number of sample values N . It differs from
-    naive_rolling_rms by the way the signal is put in.
+    """This function computes a root mean squared envelope over an
+    array :code:`x`.  To do this it uses number of sample values
+    :code:`N`. It differs from :func:`naive_rolling_rms` by the way
+    the signal is put in.
 
-    :param xc: samples from the emg
-    :type xc: :class: `~numpy.ndarray`
+    :param xc: Samples from the EMG
+    :type xc: ~numpy.ndarray
 
-    :param N: legnth of the sample use as window for function
-    :type N: :class:  int
+    :param N: Legnth of the sample use as window for function
+    :type N: int
 
-    :return emg_rms: the root-mean-squared emg sample data
-    :rtype: :class: `~numpy.ndarray`
+    :return: The root-mean-squared EMG sample data
+    :rtype: ~numpy.ndarray
     """
     xc = np.cumsum(np.abs(x)**2)
     emg_rms = np.sqrt((xc[N:] - xc[:-N])/N)
@@ -392,17 +405,16 @@ def vect_naive_rolling_rms(x, N):
 
 
 def zero_one_for_jumps_base(array, cut_off):
-    """
-    This function takes an array and makes it
-    binary (0, 1) based on a cut-off value.
+    """This function takes an array and makes it binary (0, 1) based
+    on a cut-off value.
 
-    :param array: an array
-    :type array: :class:`~numpy.ndarray`
-    :param cut_off: the number defining a cut-off line for binarization
+    :param array: An array
+    :type array: ~numpy.ndarray
+    :param cut_off: The number defining a cut-off line for binarization
     :type cut_off: float
 
-    :returns: binarized array
-    :rtype: :class:`~numpy.ndarray`
+    :returns: Binarized array
+    :rtype: ~numpy.ndarray
     """
     array_list = []
     for i in array:
@@ -415,15 +427,14 @@ def zero_one_for_jumps_base(array, cut_off):
 
 
 def compute_ICA_two_comp(emg_samples):
-    """
-    A function that performs an independant component analysis (ICA)
-    meant for EMG data that includes stacked three arrays.
+    """A function that performs an independant component analysis
+    (ICA) meant for EMG data that includes stacked three arrays.
 
-    :param emg_samples: original signal array with three layers
-    :type emg_samples: :class:  array
+    :param emg_samples: Original signal array with three layers
+    :type emg_samples: ~numpy.ndarray
 
-    :return array_list: two arrays of independent components (ecg-like and emg)
-    :rtype: :class: `~numpy.ndarray`
+    :returns: Two arrays of independent components (ECG-like and EMG)
+    :rtype: ~numpy.ndarray
     """
     X = np.c_[emg_samples[0], emg_samples[2]]
     ica = FastICA(n_components=2)
@@ -434,18 +445,19 @@ def compute_ICA_two_comp(emg_samples):
 
 
 def pick_more_peaks_array(components_tuple):
-    """
-    Here we have a function that takes a tuple with the two parts
-    of ICA, and finds the one with more peaks and anti-peaks.
-    The EMG if without a final envelope will have more peaks
+    """Here we have a function that takes a tuple with the two parts
+    of ICA, and finds the one with more peaks and anti-peaks.  The EMG
+    if without a final envelope will have more peaks
 
-    Note: data should not have been finally filtered to envelope level
+    .. note::
+        Data should not have been finally filtered to envelope level
+
     :param components_tuple: tuple of two arrays representing different signals
-    :type components_tuple: :class: tuple
+    :type components_tuple: Tuple[~numpy.ndarray, ~numpy.ndarray]
 
-    :return emg_component: array with more peaks (
-        should usually be the emg as opposed to ecg)
-    :rtype: :class: `~numpy.ndarray`
+    :return: Array with more peaks (should usually be the EMG as
+        opposed to ECG)
+    :rtype: ~numpy.ndarray
     """
     c0 = components_tuple[0]
     c1 = components_tuple[1]
@@ -476,13 +488,10 @@ def pick_more_peaks_array(components_tuple):
 
 
 def working_pipeline_exp(our_chosen_file):
-    """
-    This function produces a filtered respiratory EMG signal from a
-    3 lead sEMG file.The inputs is our_chosen_file which we give the
-    function as a string of filename. The output is the processed
-    emg signal filtered and seperated from ecg components.
-
-
+    """This function produces a filtered respiratory EMG signal from a
+    3 lead sEMG file.  The inputs is :code:`our_chosen_file` which we
+    give the function as a string of filename.  The output is the
+    processed EMG signal filtered and seperated from ecg components.
     """
     cut_file_data = bad_end_cutter(
         our_chosen_file,
@@ -515,21 +524,20 @@ def working_pipeline_exp(our_chosen_file):
 
 
 def slices_slider(array_sample, slice_len):
-    """
-    This function produces continous sequential slices over an
-    array of a certain legnth.The inputs are the following- array_sample,
-    the signal and slice_len- the window which
-    you wish to slide with. The function yields, does not return these slices.
+    """This function produces continous sequential slices over an
+    array of a certain legnth.  The inputs are the following -
+    :code:`array_sample`, the signal and :code:`slice_len` - the
+    window which you wish to slide with.  The function yields, does
+    not return these slices.
     """
     for i in range(len(array_sample) - slice_len + 1):
         yield array_sample[i:i + slice_len]
 
 
 def entropical(sig):
-    """
-    This function computes a certain type of entropy of a series signal array.
-    Input is sig, the signal, and output is an array of entropy measurements.
-
+    """This function computes a certain type of entropy of a series
+    signal array.  Input is sig, the signal, and output is an array of
+    entropy measurements.
     """
     probabilit = [n_x/len(sig) for x, n_x in collections.Counter(sig).items()]
     e_x = [-p_x*math.log(p_x, 2) for p_x in probabilit]
@@ -542,27 +550,28 @@ def compute_power_loss(
     processed_signal,
     processed_signal_sampling_frequency
 ):
-    """
-    This function computes the percentage of power loss after the processing of
-    a signal. Inputs include the original_signal (signal before the
-    processing), original_signal_sampling_frequency (sampling frequency of the
-    signal before processing), processed_signal (signal after processing),
-    processed_signal_sampling_frequency (sampling frequency of
+    """This function computes the percentage of power loss after the
+    processing of a signal. Inputs include the original_signal (signal
+    before the processing), :code:`original_signal_sampling_frequency`
+    (sampling frequency of the signal before processing),
+    :code:`processed_signal` (signal after processing),
+    :code:`processed_signal_sampling_frequency` (sampling frequency of
     the signal after processing).
+
     Output is the percentage of power loss.
 
-    :param original_signal: array.
-    :type  original_signal: :class:`~numpy.ndarray`
-    :param original_signal_sampling_frequency: sampling freq. original signal
-    :type original_signal_sampling_frequency: :class: int
-    :param processed_signal: array.
-    :type  processed_signal: :class:`~numpy.ndarray`
-    :param processed_signal_sampling_frequency: sampling freq. processed signal
-    :type processed_signal_sampling_frequency: :class: int
+    :param original_signal: Array.
+    :type  original_signal: ~numpy.ndarray
+    :param original_signal_sampling_frequency: Sampling freq. original signal
+    :type original_signal_sampling_frequency: int
+    :param processed_signal: Array.
+    :type  processed_signal: ~numpy.ndarray
+    :param processed_signal_sampling_frequency: Sampling frequency processed
+        signal
+    :type processed_signal_sampling_frequency: int
 
-
-    :return: power_loss
-    :rtype: :class:float
+    :returns: Power loss
+    :rtype: float
     """
     nperseg = 1024
     noverlap = 512
@@ -587,16 +596,15 @@ def compute_power_loss(
 
 
 def count_decision_array(decision_array):
-    """
-    This is a function that, practically speaking, counts events
-    on a time series array that has been reduced down to a
-    binary (0,1) output. It counts changes then divides by two.
+    """This is a function that, practically speaking, counts events
+    on a time series array that has been reduced down to a binary
+    (0, 1) output. It counts changes then divides by two.
 
-    :param decision_array: array.
-    :type decisions_array: :class:`~numpy.ndarray`
+    :param decision_array: Array.
+    :type decisions_array: ~numpy.ndarray
 
-    :return: number of events
-    :rtype: :class:float
+    :returns: Number of events
+    :rtype: float
     """
     ups_and_downs = np.logical_xor(decision_array[1:], decision_array[:-1])
     count = ups_and_downs.sum()/2
@@ -609,19 +617,18 @@ def smooth_for_baseline(
     """
     This is an adaptive smoothing a series that overvalues closer numbers.
 
-    :param single_filtered_array: array.
-    :type single_filtered_array: :class:`~numpy.ndarray`
-    :param start: the number on samples to work from
-    :type start: :class:int
-    :param end: the number on samples to work until
-    :type end: :class:int
-    :param smooth: the number of samples to work over
-    :type smooth: :class:int
+    :param single_filtered_array: Array.
+    :type single_filtered_array: ~numpy.ndarray
+    :param start: The number on samples to work from
+    :type start: int
+    :param end: The number on samples to work until
+    :type end: int
+    :param smooth: The number of samples to work over
+    :type smooth: int
 
-    :return: array
-    :rtype: :class:`~numpy.ndarray`
+    :return: Array
+    :rtype: ~numpy.ndarray
     """
-
     array = single_filtered_array[start:end]
     dists = np.zeros(len(array))
     # print(len(array), array.max(), array.min())
@@ -643,22 +650,22 @@ def smooth_for_baseline(
 def smooth_for_baseline_with_overlay(
     my_own_array, threshold=10, start=None, end=None, smooth=100
 ):
-    """
-    This is the same as smooth for baseline, but we also get an
-    overlay 0/1 mask tagging the baseline
-    :param my_own_array: array.
-    :type  my_own_array: :class:`~numpy.ndarray`
-    :param threshold: number where to cut the mask for overlay
-    :type threshold: :class: int
-    :param start: the number on samples to work from
-    :type start: :class:int
-    :param end: the number on samples to work until
-    :type end: :class:int
-    :param smooth: the number of samples to work over
-    :type smooth: :class:int
+    """This is the same as smooth for baseline, but we also get an
+    overlay 0 or 1 mask tagging the baseline.
 
-    :return: array
-    :rtype: :class:`~numpy.ndarray`
+    :param my_own_array: Array
+    :type  my_own_array: ~numpy.ndarray
+    :param threshold: Number where to cut the mask for overlay
+    :type threshold: int
+    :param start: The number on samples to work from
+    :type start: int
+    :param end: The number on samples to work until
+    :type end: int
+    :param smooth: The number of samples to work over
+    :type smooth: int
+
+    :return: Array
+    :rtype: ~numpy.ndarray
     """
     array = my_own_array[start:end]
     overlay = np.zeros(len(array)).astype('int8')
@@ -691,36 +698,34 @@ def smooth_for_baseline_with_overlay(
 
 
 def ranges_of(array):
-    """
-    This function is made to work with Range class objects,
-    such that is selects ranges and returns tuples of boundaries.
+    """This function is made to work with :class:`Range` class objects, such
+    that is selects ranges and returns tuples of boundaries.
     """
     marks = np.logical_xor(array[1:], array[:-1])
     boundaries = np.hstack(
         (np.zeros(1), np.where(marks != 0)[0], np.zeros(1) + len(array) - 1)
-        )
+    )
     if not array[0]:
         boundaries = boundaries[1:]
     range_return = tuple(
         Range(*boundaries[i:i+2]) for i in range(0, len(boundaries), 2)
-        )
+    )
     return range_return
 
 
 def intersections(left, right):
-    """
-    This function works over two arrays,left and right, and allows
-    a picking based on intersections. It only takes ranges on
-    the left that intersect ranges on the right.
+    """This function works over two arrays, :code:`left` and
+    :code:`right`, and allows a picking based on intersections.  It
+    only takes ranges on the left that intersect ranges on the right.
 
-    :param left: range
-    :type left: :class: array
-    :param right: range
-    :type right: :class:array
+    :param left: List of ranges
+    :type left: List[Range]
+    :param right: List of ranges
+    :type right: List[Range]
 
-    :return: result
-    :rtype: :class:list
-
+    :returns: Ranges from the :code:`left` that intersect ranges from
+        the :code:`right`.
+    :rtype: List[Range]
     """
     i, j = 0, 0
     result = []
@@ -737,26 +742,24 @@ def intersections(left, right):
 
 
 def raw_overlap_percent(signal1, signal2):
-    """
-    This function takes two binary 0/1 signal arrays and
-    gives the percentage of overlap
+    """This function takes two binary 0 or 1 signal arrays and gives
+    the percentage of overlap.
 
-    :param signal1: binary signal 1
-    :type signal1: :class: array
-    :param rsignal2: binary signal 2
-    :type rsignal2: :class:array
+    :param signal1: Binary signal 1
+    :type signal1: ~numpy.ndarray
+    :param rsignal2: Binary signal 2
+    :type rsignal2: ~numpy.ndarray
 
-    :return: raw_overlap_percent
-    :rtype: :class: float
-
+    :returns: Raw overlap percent
+    :rtype: float
     """
     if len(signal1) != len(signal2):
         print('Warning: legnth of arrays is not matched')
         longer_signal_len = np.max([len(signal1), len(signal2)])
-
     else:
         longer_signal_len = len(signal1)
 
     raw_overlap_percent = sum(
-        signal1.astype(int) & signal2.astype(int))/longer_signal_len
+        signal1.astype(int) & signal2.astype(int)
+    ) / longer_signal_len
     return raw_overlap_percent
