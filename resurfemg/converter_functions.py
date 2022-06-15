@@ -20,16 +20,15 @@ from TMSiSDK.file_readers import Poly5Reader
 
 
 def poly5unpad(to_be_read):
-    """
-    This function converts a Poly5 read into an array without padding.
-    Note there is a quirk in the python Poly5 interface that pads with
-    zeros on the end.
+    """This function converts a Poly5 read into an array without
+    padding.  Note there is a quirk in the python Poly5 interface that
+    pads with zeros on the end.
 
-    :param to_be_read: filename of python read Poly5
-    :type to_be_read: :class:  str
+    :param to_be_read: Filename of python read Poly5
+    :type to_be_read: str
 
-    :return df: dataframe with hashes for what is in folder
-    :rtype: :class: `~numpy.ndarray`
+    :returns: Dataframe with hashes for what is in folder
+    :rtype: ~numpy.ndarray
     """
     read_object = Poly5Reader(to_be_read)
     sample_number = read_object.num_samples
@@ -38,17 +37,16 @@ def poly5unpad(to_be_read):
 
 
 def hash_it_up_right_all(origin_folder1, file_extension):
-    """
-    Hashing function to check files are not corrupted or to assure files are
-    changed.
+    """Hashing function to check files are not corrupted or to assure
+    files are changed.
 
-    :param origin_folder1: the string of the folder with files to hash
-    :type origin_folder1: :class:  str
-    :param file_extension: file extension
-    :type file_extension: :class: str
+    :param origin_folder1: The string of the folder with files to hash
+    :type origin_folder1: str
+    :param file_extension: File extension
+    :type file_extension: str
 
-    :return df: dataframe with hashes for what is in folder
-    :rtype: :class: `pandas.DataFrame`
+    :returns: Dataframe with hashes for what is in folder
+    :rtype: ~pandas.DataFrame
     """
     hash_list = []
     file_names = []
