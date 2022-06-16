@@ -22,7 +22,6 @@ compatible license for us to be able to use it.
    commit hashes will be different from those in your original
    submission.
 
-
 Setting Up Development Environment
 ==================================
 
@@ -32,11 +31,11 @@ The Way We Do It
 
 If you want to develop using Anaconda Python, you would:
 
-Follow the instructions on the readme.
+Follow the instructions on the readme
 
-This will create a virtual environment, build `conda` package, install
-it and then add development dependencies to what was installed.
-
+This will create a virtual environment, build
+`conda` package, install it and then add development dependencies to
+what was installed. 
 
 The Traditional Ways
 ^^^^^^^^^^^^^^^^^^^^
@@ -46,9 +45,8 @@ common ways to work with Python projects.  It's a common practice to
 "install" a project during development by either using `pip install
 --editable` command, or by using `conda` environment files.
 
-We provide limited support for approaches not based on Anaconda right
-now.  For instance, if you want to work on the project using `pip`,
-you could try it, and contact us:
+We provide limited support for approaches not based on Anaconda right now.  For instance, if you
+want to work on the project using `pip`, you could try it, and contact us:
 
 .
 
@@ -89,8 +87,7 @@ Under the hood, this runs unittest.
 Style Guide for Python Code
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We have yet to install a linter, but we will soon change it so you can
-run one from the setup we need to write
+We have yet to install a linter, but we will soon change it so you can run one from the setup we need to write
 
 .. code-block:: bash
 
@@ -101,10 +98,13 @@ run one from the setup we need to write
 Continuous Integration
 ^^^^^^^^^^^^^^^^^^^^^^
 
-This project has no extensive CI setup that uses GitHub Actions
-platform.  This is a template but it's far from being ready yet, and
-we currently don't work on it.
+This project has no extensive CI setup that uses GitHub Actions platform.
+This is a template but it's far from
+being ready yet, and we currently don't work on it.
 
+.. warning::
+
+   
 
 .. _GitHub repo: https://github.com/..
 .. _GitHub Actions dashboard: https://github.com/...

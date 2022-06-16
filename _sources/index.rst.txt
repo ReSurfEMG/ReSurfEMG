@@ -18,9 +18,7 @@ this part of the documentation is for you.
    :maxdepth: 2
    :caption: Contents:
 
-   modules
-   developers
-   medical-professionals
+   resurfemg
 
 Developer's Guide
 -----------------
