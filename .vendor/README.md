@@ -3,7 +3,7 @@ This directory is intended for submodules.
 In order to pull all submodules run:
 
 ``` sh
-git sumbodule update --init --recursive
+git submodule update --init --recursive
 ```
 
 ## Submodules used in this project
