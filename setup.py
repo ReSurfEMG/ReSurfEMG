@@ -218,6 +218,7 @@ if __name__ == '__main__':
             'sklearn',
             'pyxdf',
             'mne',
+            'textdistance',
         ],
         tests_require=['pytest', 'pycodestyle', 'isort', 'wheel'],
         command_options={
