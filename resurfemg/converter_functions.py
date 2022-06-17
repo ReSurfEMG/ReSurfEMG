@@ -15,7 +15,7 @@ import numpy as np
 import hashlib
 import h5py
 import re
-
+# sys.path.insert(0,'C:/Projects/tmsi-python-interface')
 from TMSiSDK.file_readers import Poly5Reader
 
 

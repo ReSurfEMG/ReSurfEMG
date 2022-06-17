@@ -43,7 +43,7 @@ navbardefault = {
 }
 
 # static images
-image_filename = 'resources/rsemgU.png'
+image_filename = 'resources/resurfemg.png'
 # pylint: disable=consider-using-with
 encoded_image = base64.b64encode(open(image_filename, 'rb').read())
 
@@ -66,7 +66,7 @@ def get_header():
         html.Div([], className='two columns'),
 
         html.Div([
-            html.H1(children='RSEMG Dashboard',
+            html.H1(children='ReSurfEMG Dashboard',
                     style={'textAlign': 'center'}
                     )],
             className='eight columns',

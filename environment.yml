@@ -1,11 +1,12 @@
 #  environment document
 
-name: remgenv-6
+name: emgandash
 channels:
   - conda-forge
 dependencies:
   - python=3.8.6
 
+  - dash=2.4.1
   - ipympl
   - ipywidgets=7.7.0
   - jupyter=1.0.0
@@ -18,6 +19,7 @@ dependencies:
   - pip=20.2
   - pyxdf
   - sphinx=4.5.0
+  - textdistance =4.2.1
 
 
 
@@ -30,4 +32,5 @@ dependencies:
     # - jupyter-core==4.9.2
     # - jupyter-console==6.4.3
     - mcfly==3.1.0
+    - dash-uploader==0.6.0
     # - jupyter-client==7.2.2

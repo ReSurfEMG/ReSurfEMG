@@ -5,9 +5,7 @@ import utils
 import numpy as np
 import base64
 import sys, os
-
-sys.path.append(os.path.dirname(sys.path[0]))
-from rsemg import converter_functions
+import resurfemg.converter_functions as cv
 
 du.configure_upload(app, r"C:\tmp\Uploads", use_upload_id=True)
 
@@ -20,7 +18,7 @@ ventilator_data_raw = None
     id='upload-emg-data',
 )
 def parse_emg(status):
-    emg_data = converter_functions.poly5unpad(status[0])
+    emg_data = cv.poly5unpad(status[0])
     global emg_data_raw
     emg_data_raw = emg_data
     # children = utils.add_emg_graphs(emg_data)
