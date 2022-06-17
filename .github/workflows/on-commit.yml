@@ -14,10 +14,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           registry: docker.io
-          image: resurfemg-poly5-test-files:latest
+          image: crabbone/resurfemg-poly5-test-files:latest
           options: -v ${{ github.workspace }}:/ci
           run: |
             cd /ci
+            ln -sT /ReSurfEMG/tests/not_pushed/  ./not_pushed/
             python3 -m venv .venv
             .venv/bin/python -m pip install wheel
             .venv/bin/python setup.py install
