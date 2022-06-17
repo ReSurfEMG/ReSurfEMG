@@ -15,10 +15,15 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           registry: docker.io
           image: crabbone/resurfemg-poly5-test-files:latest
-          options: -v ${{ github.workspace }}:/ci
+          options: >-
+            -v ${{ github.workspace }}:/ci
+            --cap-add=SYS_ADMIN
+            --privileged=true
           run: |
+            set -xe
             cd /ci
-            ln -sT /ReSurfEMG/tests/not_pushed/  ./not_pushed/
+            mkdir -p ./tests/not_pushed/
+            mount --bind /ReSurfEMG/tests/not_pushed/ ./tests/not_pushed/
             python3 -m venv .venv
             .venv/bin/python -m pip install wheel
             .venv/bin/python setup.py install

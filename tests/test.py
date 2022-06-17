@@ -7,12 +7,8 @@ import glob
 import sys
 import numpy as np
 from tempfile import TemporaryDirectory
-# IMPORT Ole's fixed TMSiSDK python interfacwe- may change
-sys.path.insert(0,'C:/Projects/tmsi-python-interface')
 from TMSiSDK.file_readers import Poly5Reader
 
-
-sys.path.insert(0, 'C:/Projects/ReSurfEMG')
 
 # converter_functions
 from resurfemg.converter_functions import poly5unpad
@@ -37,7 +33,14 @@ from resurfemg.helper_functions import smooth_for_baseline
 from resurfemg.helper_functions import smooth_for_baseline_with_overlay
 from resurfemg.helper_functions import relative_levenshtein
 
-sample_emg = os.path.join('not_pushed','Test_lung_data','2022-05-13_11-51-04','002','EMG_recording'+'.Poly5')
+sample_emg = os.path.join(
+    os.path.abspath(os.path.dirname(__file__)),
+    'not_pushed',
+    'Test_lung_data',
+    '2022-05-13_11-51-04',
+    '002',
+    'EMG_recording.Poly5',
+)
 
 
 
