@@ -11,6 +11,7 @@ from sklearn.decomposition import FastICA
 from scipy.signal import find_peaks
 import collections
 import math
+import textdistance
 from math import log, e
 from collections import namedtuple
 import builtins
@@ -763,3 +764,24 @@ def raw_overlap_percent(signal1, signal2):
         signal1.astype(int) & signal2.astype(int)
     ) / longer_signal_len
     return raw_overlap_percent
+
+
+def relative_levenshtein(signal1, signal2):
+    """
+    Here we take two arrays, and create an edit distance based on Levelshtien
+    edit distance The distance is then normalized between 0 and one regardless
+    of signal legnth
+
+    """
+    signal1_list = []
+    signal2_list = []
+    for element in signal1:
+        signal1_list.append(element)
+    for element in signal2:
+        signal2_list.append(element)
+    distance = textdistance.levenshtein.similarity(signal1_list, signal2_list)
+    if len(signal1) != len(signal2):
+        print('Warning: legnth of arrays is not matched')
+    longer_signal_len = np.max([len(signal1), len(signal2)])
+    normalized_distance = distance / longer_signal_len
+    return normalized_distance
