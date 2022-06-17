@@ -5,6 +5,7 @@ import unittest
 import os
 import glob
 import sys
+import numpy as np
 from tempfile import TemporaryDirectory
 # IMPORT Ole's fixed TMSiSDK python interfacwe- may change
 sys.path.insert(0,'C:/Projects/tmsi-python-interface')
@@ -34,6 +35,7 @@ from resurfemg.helper_functions import working_pipeline_exp
 from resurfemg.helper_functions import entropical
 from resurfemg.helper_functions import smooth_for_baseline
 from resurfemg.helper_functions import smooth_for_baseline_with_overlay
+from resurfemg.helper_functions import relative_levenshtein
 
 sample_emg = os.path.join('not_pushed','Test_lung_data','2022-05-13_11-51-04','002','EMG_recording'+'.Poly5')
 
@@ -102,6 +104,16 @@ class TestCuttingingMethods(unittest.TestCase):
             (len(sample_emg_cut[0])),
             len(sample_read.samples[0]) ,
         )
+
+class TestVentCompareMethods(unittest.TestCase):
+
+    def test_relative_levenshtein(self):
+        array1 = np.array([1,0,1,0,1,0])
+        array2 = np.array([1,0,1,0,1,0])
+        array3 = np.array([1,0,1,0,1,0])
+        our_result12 = (relative_levenshtein(array1,array2))
+        our_result13 = (relative_levenshtein(array1,array3))
+        self.assertEqual(our_result12, our_result13)
     
 
 
