@@ -15,3 +15,6 @@ python:
   install:
    - method: setuptools
      path: .
+
+submodules:
+  include: all
