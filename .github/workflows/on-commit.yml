@@ -24,10 +24,7 @@ jobs:
             cd /ci
             mkdir -p ./tests/not_pushed/
             mount --bind /ReSurfEMG/tests/not_pushed/ ./tests/not_pushed/
-            python3 -m venv .venv
-            .venv/bin/python -m pip install wheel
-            .venv/bin/python setup.py install
-            .venv/bin/python setup.py test
+            python setup.py test
 
   Lint:
     runs-on: ubuntu-latest
