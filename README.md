@@ -16,6 +16,10 @@ EMG.
 researcher_interface:
 - These are a growing series of interactive notebooks that allow
   researchers to investigate questions about their own EMG data
+  - ⚡ Important: in almost all data there will be a time 
+  difference between EMG signals and ventilator signals. You can
+  pre-process to correct for this lead or lag with the notebook
+  called lead_lag_mismatch_upsample.
 
 open_work:
 - This folder contains experimental work by core members of the rsemg
@@ -70,6 +74,7 @@ sphinx-build -b html ./docs ./built_documentation
 
 Online documentation can be found at
 https://resurfemg.github.io/ReSurfEMG/
+or on https://readthedocs.org/ by searching for ReSurfEMG
 
 
 
