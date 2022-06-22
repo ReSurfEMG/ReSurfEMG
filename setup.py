@@ -63,7 +63,7 @@ class TestCommand(Command):
         self.test_args = []
         self.test_suite = True
 
-    def sources(sefl):
+    def sources(self):
         return glob(
             os.path.join(project_dir, 'resurfemg', '**/*.py'),
             recursive=True,
