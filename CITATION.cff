@@ -1,0 +1,26 @@
+# YAML 1.2
+---
+authors:
+  -
+    affiliation: "Netherlands eScience Center"
+    family-names: Moore
+    given-names: Candace Makeda
+    orcid: "https://orcid.org/0000-0003-1672-7565"
+  -
+    affiliation: "Netherlands eScience Center"
+    family-names: Baccinelli
+    given-names: Walter
+    orcid: "https://orcid.org/0000-0001-8888-4792"
+  -
+cff-version: "1.1.0"
+date-released: PENDING
+doi: PENDING
+keywords:
+  - EMG
+  - respiratory
+  - Python
+license: Apache-2.0
+message: "If you use this software, please cite it using these metadata."
+repository-code: "https://github.com/NLeSC/python-template"
+title: "ReSurfEMG"
+version: "0.0.0"
