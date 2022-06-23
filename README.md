@@ -77,6 +77,8 @@ https://resurfemg.github.io/ReSurfEMG/
 or on https://readthedocs.org/ by searching for ReSurfEMG
 
 
+✨Copyright 2022 Netherlands eScience Center and U. Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.✨
 
 <!--
 **ReSurfEMG/ReSurfEMG** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.

@@ -1,4 +1,8 @@
 """
+Copyright 2022 Netherlands eScience Center and U. Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.
+
+
 This file contains functions to work with various EMG file types
 from various hardware/software combinations,and convert them down to
 an array that can be further processed with helper_functions or other modules.
