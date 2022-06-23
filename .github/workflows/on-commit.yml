@@ -22,8 +22,8 @@ jobs:
           run: |
             set -xe
             cd /ci
-            mkdir -p ./tests/not_pushed/
-            mount --bind /ReSurfEMG/tests/not_pushed/ ./tests/not_pushed/
+            mkdir -p ./not_pushed/
+            mount --bind /ReSurfEMG/tests/not_pushed/ ./not_pushed/
             python setup.py test
 
   Lint:
