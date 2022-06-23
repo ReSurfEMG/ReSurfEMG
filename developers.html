@@ -48,9 +48,8 @@
 <h1>Developer’s Guide<a class="headerlink" href="#developer-s-guide" title="Permalink to this heading">¶</a></h1>
 <section id="sending-your-work">
 <h2>Sending Your Work<a class="headerlink" href="#sending-your-work" title="Permalink to this heading">¶</a></h2>
-<p>We accept pull requests made through GitHub.  Alternatively, you can
-send patch files in an email (please find developers’ emails on their
-profile pages).  As is usual, we request that the changes be rebased
+<p>We accept pull requests made through GitHub. As is usual,
+we request that the changes be rebased
 on the branch they are to be integrated into.  We also request that
 you pre-lint and test anything you send</p>
 <p>We’ll try our best to attribute
@@ -105,19 +104,30 @@ now we are doing what is simple and fast.</p>
 </pre></div>
 </div>
 <p>Under the hood, this runs unittest.</p>
+<p>Alternatively,
+you can run tests from the setup.py file
+i.e.
+.. code-block:: bash</p>
+<blockquote>
+<div><p>python setup.py test</p>
+</div></blockquote>
 <section id="style-guide-for-python-code">
 <h3>Style Guide for Python Code<a class="headerlink" href="#style-guide-for-python-code" title="Permalink to this heading">¶</a></h3>
-<p>We have yet to install a linter, but we will soon change it so you can
-run one from the setup we need to write</p>
+<p>We have have linting!</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python ./setup.py lint
 </pre></div>
 </div>
 </section>
 <section id="continuous-integration">
 <h3>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this heading">¶</a></h3>
-<p>This project has no extensive CI setup that uses GitHub Actions
-platform.  This is a template but it’s far from being ready yet, and
-we currently don’t work on it.</p>
+<p>This project has CI setup that uses GitHub Actions
+platform.</p>
+</section>
+<section id="style">
+<h3>Style<a class="headerlink" href="#style" title="Permalink to this heading">¶</a></h3>
+<p>When it comes to style, beyond linting we are trying
+to conform, more or less, to the Google Python style
+<a class="reference external" href="https://google.github.io/styleguide/pyguide.html">https://google.github.io/styleguide/pyguide.html</a></p>
 </section>
 </section>
 </section>
@@ -143,6 +153,7 @@ we currently don’t work on it.</p>
 <li><a class="reference internal" href="#testing">Testing</a><ul>
 <li><a class="reference internal" href="#style-guide-for-python-code">Style Guide for Python Code</a></li>
 <li><a class="reference internal" href="#continuous-integration">Continuous Integration</a></li>
+<li><a class="reference internal" href="#style">Style</a></li>
 </ul>
 </li>
 </ul>

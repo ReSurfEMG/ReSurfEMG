@@ -5,9 +5,8 @@ Developer's Guide
 Sending Your Work
 =================
 
-We accept pull requests made through GitHub.  Alternatively, you can
-send patch files in an email (please find developers' emails on their
-profile pages).  As is usual, we request that the changes be rebased
+We accept pull requests made through GitHub. As is usual,
+we request that the changes be rebased
 on the branch they are to be integrated into.  We also request that
 you pre-lint and test anything you send
 
@@ -36,6 +35,7 @@ Follow the instructions on the readme.
 
 This will create a virtual environment, build `conda` package, install
 it and then add development dependencies to what was installed.
+
 
 
 The Traditional Ways
@@ -84,13 +84,19 @@ You may run:
 
 Under the hood, this runs unittest.
 
+Alternatively,
+you can run tests from the setup.py file
+i.e. 
+.. code-block:: bash
+
+   python setup.py test
+
 
 
 Style Guide for Python Code
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We have yet to install a linter, but we will soon change it so you can
-run one from the setup we need to write
+We have have linting!
 
 .. code-block:: bash
 
@@ -101,10 +107,17 @@ run one from the setup we need to write
 Continuous Integration
 ^^^^^^^^^^^^^^^^^^^^^^
 
-This project has no extensive CI setup that uses GitHub Actions
-platform.  This is a template but it's far from being ready yet, and
-we currently don't work on it.
+This project has CI setup that uses GitHub Actions
+platform.  
 
 
-.. _GitHub repo: https://github.com/..
-.. _GitHub Actions dashboard: https://github.com/...
+.. _GitHub repo: https://github.com/ReSurfEMG/ReSurfEMG
+.. _GitHub Actions dashboard: https://github.com/ReSurfEMG/ReSurfEMG/actions
+
+
+Style
+^^^^^
+
+When it comes to style, beyond linting we are trying
+to conform, more or less, to the Google Python style
+https://google.github.io/styleguide/pyguide.html
