@@ -35,8 +35,8 @@ from resurfemg.helper_functions import relative_levenshtein
 
 temp_path_fix = 'C:/Projects/ReSurfEMG/'
 sample_emg = os.path.join(
-   # os.path.abspath(os.path.dirname(__file__)),
-    temp_path_fix,
+    os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
+    # temp_path_fix,
     'not_pushed',
     'Test_lung_data',
     '2022-05-13_11-51-04',
