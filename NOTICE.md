@@ -3,4 +3,4 @@ ReSurfEMG
 
   This product includes software developed at
   The Netherlands eScience Center (https://www.esciencecenter.nl/)
-  For the Development of a software tool for automated surface EMG project.
+  For the 'development of a software tool for automated surface EMG' project.
