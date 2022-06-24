@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import shlex
 import site
 import subprocess
 import sys
