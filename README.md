@@ -29,14 +29,15 @@ open_work:
 ### Program files
 
 The main program in this repository contains functions for analysis of
-EMG.
+EMG and other electrophysiological signals. This analysis often includes
+analysis of signals from machiens i.e. ventilators as well.
 
 
 ## Data sets
 
 The notebooks are configured to run on various datasets.  Contact
-Candace Makeda Moore (c.moore@esciencecenter.nl) to discuss any
-questions on data configuration.
+Candace Makeda Moore ( 📫 c.moore@esciencecenter.nl) to discuss any
+questions on data configuration for your datasets.
 
 
 ## Getting started
@@ -87,7 +88,8 @@ or on https://readthedocs.org/ by searching for ReSurfEMG
 
 ## Automation
 
-The project comes with several modifications to the default `setup.py`.
+The project comes with several modifications to the typical
+default `setup.py`.
 
 At the moment, the support for Anaconda Python is lacking.  The
 instructions and the commands listed below will work in Anaconda
@@ -103,12 +105,13 @@ it installable and configurable from `setup.py` too.  As the project
 was developoed using Anaconda Python, the integration with the later
 needs to happen first.
 
-As of today, we had no choice but to package TMSiSDK together with our
+As of today, we use out own version of the package TMSiSDK together with our
 project.  Hopefully, this is a temporary measure, and, eventually,
-TMSiSDK will become an independent project we may depend on.  The
-project is added as a submodule containing our patched fork of the
-original code.  You will need to pull Git submodules in order to be
-able to properly install and run the project.
+TMSiSDK will become just another independent project we may depend on.
+The TMSiSDK project (which has an Apache 2 license) can be added as a submodule
+containing our patched fork of the original code.
+You will need to pull Git submodules in order to be able to properly
+install and run the project.
 
 ### New commands
 
@@ -119,7 +122,7 @@ new virtual environment and install necessary dependencies there
 before execution.  This is primarily intended for use in CI to create
 controlled environment.
 
-while not new, note that documentation is built using `sphinx` command
+Please note that documentation is built using `sphinx` command
 for `setuptools`: `setup.py build_sphinx`, but `sphinx` is not
 installed as part of development dependencies, rather it is declared
 as a dependancy of `setup.py` itself.  There are cases when `setup.py`
@@ -150,10 +153,10 @@ them manually.
 
 The traditional way to install from source is to run `setup.py
 install` or `setup.py develop`.  Both of these will
-work... incorrectly.  This is the default behavior inherited from
+work... sort of.  This is because of the default behavior inherited from
 `setuptools`.  The problem here is that instead of creating a
 distributable package and installing that, `setuptools` does it
-backwards: it installs the package in order to create a distributable
+in the other order: it installs the package in order to create a distributable
 one.
 
 As was already mentioned earlier, Anaconda Python will need better
@@ -163,7 +166,7 @@ enable that.
 We are not planning on patching `setup.py develop` as we don't believe
 it is a good practice to use this command.  It is not removed,
 however, and should work in the same way it would work with a typical
-`setuptools` project.  If you are feeling adventurous, you may try that.
+`setuptools` project.  
 
 Note that `pip install -e .` and `pip install -e '.[dev]'` are
 discouranged by association (since that is just a wrapper around
@@ -176,6 +179,8 @@ don't work, it's on you.
 
 The project doesn't include testing data.  It was packaged into a Docker
 image which can be found at `crabbone/resurfemg-poly5-test-files:latest`.
+This test data was created by taking a signal from equipment, not a human,
+and certainly not a patient.
 
 It is possible to run tests in container created from this image.
 Alternatively, you may download the image and extract directory
