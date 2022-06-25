@@ -19,6 +19,9 @@ import venv
 
 
 project_dir = os.path.dirname(os.path.realpath(__file__))
+project_url = 'https://github.com/ReSurfEMG/ReSurfEMG'
+project_description = 'A package for analysis of respiratory EMG data'
+project_license = 'Apache v2'
 name = 'resurfemg'
 try:
     tag = subprocess.check_output(
@@ -227,6 +230,163 @@ class InstallDev(InstallCommand):
         super().do_egg_install()
 
 
+class GenerateCondaYaml(Command):
+
+    description = 'generate metadata for conda package'
+
+    user_options = [(
+        'target-python=',
+        't',
+        'Python version to build the package for',
+    )]
+
+    user_options = [(
+        'target-conda=',
+        'c',
+        'Conda version to build the package for',
+    )]
+
+    def meta_yaml(self):
+        python = 'python=='.format(self.target_python)
+        conda = 'conda=='.format(self.target_conda)
+
+        return {
+            'package': {
+                'name': name,
+                'version': version,
+            },
+            'source': {'git_url': '..'},
+            'requirements': {
+                'host': [python, conda, 'sphinx'],
+                'build': ['setuptools'],
+                'run': [python, conda] + self.distribution.install_requires,
+            },
+            'test': {
+                'requires': [python, conda],
+                'imports': [name],
+            },
+            'about': {
+                'home': project_url,
+                'license': project_license,
+                'summary': project_description,
+            },
+        }
+
+    def initialize_options(self):
+        self.target_python = None
+        self.target_conda = None
+
+    def finalize_options(self):
+        if self.target_python is None:
+            self.target_python = '.'.join(sys.version_info[:2])
+        if self.target_conda is None:
+            conda_exe = os.environ.get('CONDA_EXE', 'conda')
+            self.target_conda = subprocess.check_output(
+                [conda_exe, '--version'],
+            ).split()[-1].decode()
+
+    def run(self):
+        meta_yaml_path = os.path.join(project_dir, 'conda-pkg', 'meta.yaml')
+        with open(meta_yaml_path, 'w') as f:
+            json.dump(self.meta_yaml(), f)
+
+
+class AnacondaUpload(Command):
+
+    description = 'upload packages for Anaconda'
+
+    user_options = [
+        ('token=', 't', 'Anaconda token'),
+        ('package=', 'p', 'Package to upload'),
+    ]
+
+    def initialize_options(self):
+        self.token = None
+        self.package = None
+
+    def finalize_options(self):
+        if (self.token is None) or (self.package is None):
+            sys.stderr.write('Token and package are required\n')
+            raise SystemExit(2)
+
+    def run(self):
+        env = dict(os.environ)
+        env['ANACONDA_API_TOKEN'] = self.token
+        upload = glob(self.package)[0]
+        sys.stderr.write('Uploading: {}\n'.format(upload))
+        args = ['upload', '--force', '--label', 'main', upload]
+        try:
+            proc = subprocess.Popen(
+                ['anaconda'] + args,
+                env=env,
+                stderr=subprocess.PIPE,
+            )
+        except FileNotFoundError:
+            for elt in os.environ.get('PATH', '').split(os.pathsep):
+                found = False
+                sys.stderr.write('Searching for anaconda: {!r}\n'.format(elt))
+                base = os.path.basename(elt)
+                if base == 'condabin':
+                    # My guess is conda is adding path to shell
+                    # profile with backslashes.  Wouldn't be the first
+                    # time they do something like this...
+                    sub = os.path.join(os.path.dirname(elt), 'conda', 'bin')
+                    sys.stderr.write(
+                        'Anacondas hiding place: {}\n'.format(sub),
+                    )
+                    sys.stderr.write(
+                        '    {}: {}\n'.format(elt, os.path.isdir(elt)),
+                    )
+                    sys.stderr.write(
+                        '    {}: {}\n'.format(sub, os.path.isdir(sub)),
+                    )
+                    if os.path.isdir(sub):
+                        elt = sub
+                    executable = os.path.join(elt, 'anaconda')
+                    exists = os.path.isfile(executable)
+                    sys.stderr.write(
+                        '    {}: {}\n'.format(executable, exists),
+                    )
+                    sys.stderr.write('    Possible matches:\n')
+                    for g in glob(os.path.join(elt, '*anaconda*')):
+                        sys.stderr.write('        {}\n'.format(g))
+                elif base == 'miniconda':
+                    # Another thing that might happen is that whoever
+                    # configured our environment forgot to add
+                    # miniconda/bin messed up the directory name somehow
+                    minibin = os.path.join(elt, 'bin')
+                    if os.path.isdir(minibin):
+                        sys.stderr.write(
+                            'Maybe anaconda is here:{}\n'.format(minibin),
+                        )
+                        elt = minibin
+                for p in glob(os.path.join(elt, 'anaconda')):
+                    sys.stderr.write('Found anaconda: {}'.format(p))
+                    anaconda = p
+                    found = True
+                    break
+                if found:
+                    proc = subprocess.Popen(
+                        [anaconda] + args,
+                        env=env,
+                        stderr=subprocess.PIPE,
+                    )
+                    break
+            else:
+                import traceback
+                traceback.print_exc()
+                raise
+
+        _, err = proc.communicate()
+        if proc.returncode:
+            sys.stderr.write('Upload to Anaconda failed\n')
+            sys.stderr.write('Stderr:\n')
+            for line in err.decode().split('\n'):
+                sys.stderr.write(line)
+                sys.stderr.write('\n')
+            raise SystemExit(1)
+
+
 if __name__ == '__main__':
     setup(
         name=name,
@@ -244,9 +404,10 @@ if __name__ == '__main__':
             'TMSiSDK.filters',
             'TMSiSDK.plotters',
         ],
-        url='https://github.com/ReSurfEMG/ReSurfEMG',
-        license='LICENSE.md',
-        description='A package for analysis of respiratory EMG data',
+        url=project_url,
+        license=project_license,
+        license_files=('LICENSE.md',),
+        description=project_description,
         long_description=open('README.md').read(),
         package_data={'': ('README.md',)},
         cmdclass={
