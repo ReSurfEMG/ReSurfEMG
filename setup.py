@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
+import json
 import os
+import re
 import site
 import subprocess
 import sys
+import shutil
 from distutils.dir_util import copy_tree
 from glob import glob
 from tempfile import TemporaryDirectory
@@ -41,6 +44,39 @@ version = tag[1:]
 
 with open(os.path.join(project_dir, 'README.md'), 'r') as f:
     readme = f.read()
+
+
+def find_conda():
+    conda_exe = os.environ.get('CONDA_EXE', 'conda')
+    return subprocess.check_output(
+        [conda_exe, '--version'],
+    ).split()[-1].decode()
+
+
+def run_and_log(cmd, **kwargs):
+    sys.stderr.write('> {}\n'.format(' '.join(cmd)))
+    return subprocess.call(cmd, **kwargs)
+
+
+def translate_reqs(packages):
+    tr = {
+        'sklearn': 'scikit-learn',
+        'codestyle': 'pycodestyle',
+        # Apparently, there isn't mne-base on PyPI...
+        'mne': 'mne-base',
+    }
+    result = []
+
+    for p in packages:
+        parts = re.split(r'[ <>=]', p, maxsplit=1)
+        name = parts[0]
+        version = p[len(name):]
+        if name in tr:
+            result.append(tr[name] + version)
+        else:
+            result.append(p)
+
+    return result
 
 
 class ContextVenvBuilder(venv.EnvBuilder):
@@ -224,10 +260,31 @@ class SphinxApiDoc(Command):
 class InstallDev(InstallCommand):
 
     def run(self):
-        self.distribution.install_requires.extend(
-            self.distribution.extras_require['dev'],
-        )
-        super().do_egg_install()
+        if os.environ.get('CONDA_DEFAULT_ENV'):
+            bdist_conda = BdistConda(self.distribution)
+            bdist_conda.run()
+            cmd = [
+                'conda',
+                'install',
+                '--strict-channel-priority',
+                '--override-channels',
+                '-c', 'conda-forge',
+                '--use-local',
+                '--update-deps',
+                '--force-reinstall',
+                '-y',
+                name,
+                'python=={}'.format('.'.join(map(str, sys.version_info[:2]))),
+                'conda=={}'.format(find_conda()),
+            ] + translate_reqs(self.distribution.extras_require['dev'])
+            if run_and_log(cmd):
+                sys.stderr.write('Couldn\'t install {} package\n'.format(name))
+                raise SystemExit(6)
+        else:
+            self.distribution.install_requires.extend(
+                self.distribution.extras_require['dev'],
+            )
+            super().do_egg_install()
 
 
 class GenerateCondaYaml(Command):
@@ -247,8 +304,8 @@ class GenerateCondaYaml(Command):
     )]
 
     def meta_yaml(self):
-        python = 'python=='.format(self.target_python)
-        conda = 'conda=='.format(self.target_conda)
+        python = 'python=={}'.format(self.target_python)
+        conda = 'conda=={}'.format(self.target_conda)
 
         return {
             'package': {
@@ -259,7 +316,9 @@ class GenerateCondaYaml(Command):
             'requirements': {
                 'host': [python, conda, 'sphinx'],
                 'build': ['setuptools'],
-                'run': [python, conda] + self.distribution.install_requires,
+                'run': [python, conda] + translate_reqs(
+                    self.distribution.install_requires,
+                )
             },
             'test': {
                 'requires': [python, conda],
@@ -278,12 +337,9 @@ class GenerateCondaYaml(Command):
 
     def finalize_options(self):
         if self.target_python is None:
-            self.target_python = '.'.join(sys.version_info[:2])
+            self.target_python = '.'.join(map(str, sys.version_info[:2]))
         if self.target_conda is None:
-            conda_exe = os.environ.get('CONDA_EXE', 'conda')
-            self.target_conda = subprocess.check_output(
-                [conda_exe, '--version'],
-            ).split()[-1].decode()
+            self.target_conda = find_conda()
 
     def run(self):
         meta_yaml_path = os.path.join(project_dir, 'conda-pkg', 'meta.yaml')
@@ -315,76 +371,81 @@ class AnacondaUpload(Command):
         upload = glob(self.package)[0]
         sys.stderr.write('Uploading: {}\n'.format(upload))
         args = ['upload', '--force', '--label', 'main', upload]
-        try:
-            proc = subprocess.Popen(
-                ['anaconda'] + args,
-                env=env,
-                stderr=subprocess.PIPE,
-            )
-        except FileNotFoundError:
-            for elt in os.environ.get('PATH', '').split(os.pathsep):
-                found = False
-                sys.stderr.write('Searching for anaconda: {!r}\n'.format(elt))
-                base = os.path.basename(elt)
-                if base == 'condabin':
-                    # My guess is conda is adding path to shell
-                    # profile with backslashes.  Wouldn't be the first
-                    # time they do something like this...
-                    sub = os.path.join(os.path.dirname(elt), 'conda', 'bin')
-                    sys.stderr.write(
-                        'Anacondas hiding place: {}\n'.format(sub),
-                    )
-                    sys.stderr.write(
-                        '    {}: {}\n'.format(elt, os.path.isdir(elt)),
-                    )
-                    sys.stderr.write(
-                        '    {}: {}\n'.format(sub, os.path.isdir(sub)),
-                    )
-                    if os.path.isdir(sub):
-                        elt = sub
-                    executable = os.path.join(elt, 'anaconda')
-                    exists = os.path.isfile(executable)
-                    sys.stderr.write(
-                        '    {}: {}\n'.format(executable, exists),
-                    )
-                    sys.stderr.write('    Possible matches:\n')
-                    for g in glob(os.path.join(elt, '*anaconda*')):
-                        sys.stderr.write('        {}\n'.format(g))
-                elif base == 'miniconda':
-                    # Another thing that might happen is that whoever
-                    # configured our environment forgot to add
-                    # miniconda/bin messed up the directory name somehow
-                    minibin = os.path.join(elt, 'bin')
-                    if os.path.isdir(minibin):
-                        sys.stderr.write(
-                            'Maybe anaconda is here:{}\n'.format(minibin),
-                        )
-                        elt = minibin
-                for p in glob(os.path.join(elt, 'anaconda')):
-                    sys.stderr.write('Found anaconda: {}'.format(p))
-                    anaconda = p
-                    found = True
-                    break
-                if found:
-                    proc = subprocess.Popen(
-                        [anaconda] + args,
-                        env=env,
-                        stderr=subprocess.PIPE,
-                    )
-                    break
-            else:
-                import traceback
-                traceback.print_exc()
-                raise
-
-        _, err = proc.communicate()
-        if proc.returncode:
+        if run_and_log(['anaconda'] + args, env=env):
             sys.stderr.write('Upload to Anaconda failed\n')
-            sys.stderr.write('Stderr:\n')
-            for line in err.decode().split('\n'):
-                sys.stderr.write(line)
-                sys.stderr.write('\n')
-            raise SystemExit(1)
+            raise SystemExit(7)
+
+
+# TODO(wvxvw): Replace this with more generic Windows support to
+# eliminate the ugliness of bld.bat
+class FindEgg(Command):
+
+    description = 'find Eggs built by this script'
+
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        print(glob('./dist/*.egg')[0])
+
+
+class BdistConda(BDistEgg):
+
+    def run(self):
+        frozen = '.'.join(map(str, sys.version_info[:2]))
+        conda = find_conda()
+        cmd = [
+            'conda',
+            'install', '-y',
+            '--strict-channel-priority',
+            '--override-channels',
+            '-c', 'conda-forge',
+            '-c', 'anaconda',
+            'pycryptosat',
+            'conda-build',
+            'conda-verify',
+            'python=={}'.format(frozen),
+            'conda=={}'.format(conda),
+        ]
+        if run_and_log(cmd):
+            sys.stderr.write('Failed to install conda-build\n')
+            raise SystemExit(3)
+        shutil.rmtree(
+            os.path.join(project_dir, 'dist'),
+            ignore_errors=True,
+        )
+        shutil.rmtree(
+            os.path.join(project_dir, 'build'),
+            ignore_errors=True,
+        )
+
+        cmd = [
+            'conda',
+            'config',
+            '--set', 'sat_solver', 'pycryptosat',
+            '--set', 'channel_priority', 'strict',
+            '--set', 'safety_checks', 'disabled',
+            '--env',
+        ]
+        if run_and_log(cmd):
+            sys.stderr.write('Couldn\'t update conda config\n')
+            raise SystemExit(4)
+        cmd = [
+            'conda',
+            'build',
+            '--no-anaconda-upload',
+            '--override-channels',
+            '-c', 'conda-forge',
+            os.path.join(project_dir, 'conda-pkg'),
+        ]
+        if run_and_log(cmd):
+            sys.stderr.write('Couldn\'t build {} package\n'.format(name))
+            raise SystemExit(5)
 
 
 if __name__ == '__main__':
@@ -416,17 +477,20 @@ if __name__ == '__main__':
             'isort': Isort,
             'apidoc': SphinxApiDoc,
             'install_dev': InstallDev,
+            'anaconda_upload': AnacondaUpload,
+            'anaconda_gen_meta': GenerateCondaYaml,
+            'bdist_conda': BdistConda,
         },
         test_suite='setup.my_test_suite',
         install_requires=[
+            'pyxdf',
+            'mne',
+            'textdistance',
             'pandas',
             'scipy',
             'matplotlib',
             'h5py',
             'sklearn',
-            'pyxdf',
-            'mne',
-            'textdistance',
         ],
         tests_require=['pytest', 'pycodestyle', 'isort', 'wheel'],
         command_options={
