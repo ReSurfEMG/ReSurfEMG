@@ -1,0 +1,4 @@
+,file_chosen,number_file,units,start_cut,end_cut,my_hand_count,automated_breath_count,maxima,maxima_values
+0,../not_pushed\topspin_data_anonymized\M001\001\EMG_recording.Poly5,0,Seconds,24,40,7,8.0,"[1321, 2182, 5356, 7757, 9119, 10682, 12900, 14875, 18990, 24146, 27126, 28444, 29636, 32766]","[0.00665961 0.00040183 0.00518619 0.0002167  0.00039705 0.00595622
+ 0.00037979 0.00619405 0.00585451 0.00640638 0.00047061 0.00548729
+ 0.0004833  0.00464932]"

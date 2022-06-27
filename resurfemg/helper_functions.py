@@ -712,6 +712,8 @@ def ranges_of(array):
     )
     if not array[0]:
         boundaries = boundaries[1:]
+    if len(boundaries) % 2 != 0:
+        boundaries = boundaries[:-1]
     range_return = tuple(
         Range(*boundaries[i:i+2]) for i in range(0, len(boundaries), 2)
     )
