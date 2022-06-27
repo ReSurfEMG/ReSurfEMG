@@ -22,8 +22,8 @@ researcher_interface:
   called lead_lag_mismatch_upsample.
 
 open_work:
-- This folder contains experimental work by core members of the rsemg
-  team
+- This folder contains experimental work by core members of the ReSurfEMG
+  team (Dr. Eline Mos-Oppersma, Rob Warnaar, Dr. Walter Baccinelli and Dr. Candace Makeda Moore)
 
 
 ### Program files
