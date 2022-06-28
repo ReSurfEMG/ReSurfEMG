@@ -705,6 +705,7 @@ def smooth_for_baseline_with_overlay(
 def ranges_of(array):
     """This function is made to work with :class:`Range` class objects, such
     that is selects ranges and returns tuples of boundaries.
+    This needs more documentation.
     """
     marks = np.logical_xor(array[1:], array[:-1])
     boundaries = np.hstack(
