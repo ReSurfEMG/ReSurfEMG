@@ -406,7 +406,6 @@ class BdistConda(BDistEgg):
             '--override-channels',
             '-c', 'conda-forge',
             '-c', 'anaconda',
-            'pycryptosat',
             'conda-build',
             'conda-verify',
             'python=={}'.format(frozen),
@@ -427,7 +426,6 @@ class BdistConda(BDistEgg):
         cmd = [
             'conda',
             'config',
-            '--set', 'sat_solver', 'pycryptosat',
             '--set', 'channel_priority', 'strict',
             '--set', 'safety_checks', 'disabled',
             '--env',
