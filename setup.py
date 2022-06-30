@@ -425,16 +425,6 @@ class BdistConda(BDistEgg):
 
         cmd = [
             'conda',
-            'config',
-            '--set', 'channel_priority', 'strict',
-            '--set', 'safety_checks', 'disabled',
-            '--env',
-        ]
-        if run_and_log(cmd):
-            sys.stderr.write('Couldn\'t update conda config\n')
-            raise SystemExit(4)
-        cmd = [
-            'conda',
             'build',
             '--no-anaconda-upload',
             '--override-channels',
