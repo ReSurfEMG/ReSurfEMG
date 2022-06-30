@@ -9,8 +9,7 @@ jobs:
   PyPIBuild:
     if: ${{ github.repository == 'resurfemg/resurfemg' }}
     name: Tagged Release
-    runs-on: windows-latest
-
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -23,7 +22,7 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - run: python -m venv .venv
+      - run: python3.8 -m venv .venv
       - run: .venv/bin/python -m pip install wheel twine
       - run: .venv/bin/python setup.py bdist_wheel
       - run: .venv/bin/python setup.py bdist_egg
