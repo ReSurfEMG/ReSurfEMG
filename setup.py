@@ -428,6 +428,7 @@ class BdistConda(BDistEgg):
             'build',
             '--no-anaconda-upload',
             '--override-channels',
+            '--output-folder', os.path.join(project_dir, 'dist'),
             '-c', 'conda-forge',
             os.path.join(project_dir, 'conda-pkg'),
         ]
