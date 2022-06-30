@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - run: python3.8 -m venv .venv
+      - run: python3 -m venv .venv
       - run: .venv/bin/python -m pip install wheel twine
       - run: .venv/bin/python setup.py bdist_wheel
       - run: .venv/bin/python setup.py bdist_egg
@@ -69,18 +69,8 @@ jobs:
           python=${{ matrix.python-version }}
       - name: Generate conda meta.yaml (Python 3.8)
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8' }}
-        run: conda run -n resurfemg-build python setup.py genconda
-        env:
-          STRICT_PACKAGE_VERSIONS: 1
-      - name: Generate conda meta.yaml
-        if: ${{ matrix.os != 'ubuntu-latest' || matrix.python-version != '3.8' }}
-        run: conda run -n resurfemg-build python setup.py genconda
-      - run: >-
-          conda build
-          --override-channels
-          -c conda-forge
-          --output-folder ./dist
-          ./conda-pkg/
+        run: conda run -n resurfemg-build python setup.py anaconda_gen_meta
+        run: conda run -n resurfemg-build python setup.py bdist_conda
       - run: >-
           conda run -n resurfemg
           python setup.py anaconda_upload
