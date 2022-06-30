@@ -470,6 +470,7 @@ if __name__ == '__main__':
         license_files=('LICENSE.md',),
         description=project_description,
         long_description=open('README.md').read(),
+        long_description_content_type='text/markdown',
         package_data={'': ('README.md',)},
         cmdclass={
             'test': UnitTest,

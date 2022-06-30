@@ -54,24 +54,17 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: conda config --remove channels defaults
       # anaconda. Not sure why we needed this, lets see if it works without.
-      - run: >
-          conda install
-          conda-build
-          anaconda-client
-          conda-verify
-          $(conda --version | tr ' ' '=')
-          python=${{ matrix.python-version }}
       - run: >-
           conda create
           --override-channels
-          --name resurfemg-build
+          --name resurfemg
           --strict-channel-priority
           -c conda-forge
           python=${{ matrix.python-version }}
       - name: Generate conda meta.yaml (Python 3.8)
-        run: conda run -n resurfemg-build python setup.py anaconda_gen_meta
+        run: conda run -n resurfemg python setup.py anaconda_gen_meta
       - name: Create Anaconda package
-        run: conda run -n resurfemg-build python setup.py bdist_conda
+        run: conda run -n resurfemg python setup.py bdist_conda
       - name: Upload Anaconda package
         run: >-
           conda run -n resurfemg
