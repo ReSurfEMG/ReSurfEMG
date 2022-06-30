@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - run: python3 -m venv .venv
+      - run: python -m venv .venv
       - run: .venv/bin/python -m pip install wheel twine
       - run: .venv/bin/python setup.py bdist_wheel
       - run: .venv/bin/python setup.py bdist_egg
