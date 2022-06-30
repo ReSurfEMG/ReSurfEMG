@@ -68,10 +68,11 @@ jobs:
           -c conda-forge
           python=${{ matrix.python-version }}
       - name: Generate conda meta.yaml (Python 3.8)
-        if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8' }}
         run: conda run -n resurfemg-build python setup.py anaconda_gen_meta
+      - name: Create Anaconda package
         run: conda run -n resurfemg-build python setup.py bdist_conda
-      - run: >-
+      - name: Upload Anaconda package
+        run: >-
           conda run -n resurfemg
           python setup.py anaconda_upload
           --token=${{ secrets.ANACONDA_TOKEN }}
