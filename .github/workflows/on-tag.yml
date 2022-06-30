@@ -9,7 +9,7 @@ jobs:
   PyPIBuild:
     if: ${{ github.repository == 'resurfemg/resurfemg' }}
     name: Tagged Release
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -18,11 +18,7 @@ jobs:
         # Unfortunately, wheel will try to do setup.py install to
         # build a wheel... and we need this stuff to be able to build
         # for CPython.
-      - run: >-
-          sudo apt-get install -y
-          libleptonica-dev
-          tesseract-ocr-all
-          libtesseract-dev
+      
       - name: Set up Python 3.8
         uses: actions/setup-python@v1
         with:
@@ -45,7 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.8]
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v2
@@ -104,7 +100,7 @@ jobs:
           path: dist
       - uses: marvinpinto/action-automatic-releases@latest
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          repo_token: "${{ secrets.GITHUBTOKEN }}"
           prerelease: false
           files: |
             ./dist/*/linux-64/resurfemg-*.tar.bz2
