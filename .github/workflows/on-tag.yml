@@ -7,7 +7,7 @@ on:
 
 jobs:
   PyPIBuild:
-    if: ${{ github.repository == 'drcandacemakedamoore/cleanX' }}
+    if: ${{ github.repository == 'resurfemg/resurfemg' }}
     name: Tagged Release
     runs-on: ubuntu-latest
 
@@ -67,18 +67,18 @@ jobs:
       - run: >-
           conda create
           --override-channels
-          --name cleanx-build
+          --name resurfemg-build
           --strict-channel-priority
           -c conda-forge
           python=${{ matrix.python-version }}
       - name: Generate conda meta.yaml (Python 3.8)
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8' }}
-        run: conda run -n cleanx-build python setup.py genconda
+        run: conda run -n resurfemg-build python setup.py genconda
         env:
           STRICT_PACKAGE_VERSIONS: 1
       - name: Generate conda meta.yaml
         if: ${{ matrix.os != 'ubuntu-latest' || matrix.python-version != '3.8' }}
-        run: conda run -n cleanx-build python setup.py genconda
+        run: conda run -n resurfemg-build python setup.py genconda
       - run: >-
           conda build
           --override-channels
@@ -86,7 +86,7 @@ jobs:
           --output-folder ./dist
           ./conda-pkg/
       - run: >-
-          conda run -n cleanx-build
+          conda run -n resurfemg
           python setup.py anaconda_upload
           --token=${{ secrets.ANACONDA_TOKEN }}
           --package=./dist/*/*.tar.bz2
@@ -107,8 +107,8 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            ./dist/*/linux-64/cleanx-*.tar.bz2
-            ./dist/*/osx-64/cleanx-*.tar.bz2
-            ./dist/*/win-64/cleanx-*.tar.bz2
+            ./dist/*/linux-64/resurfemg-*.tar.bz2
+            ./dist/*/osx-64/resurfemg-*.tar.bz2
+            ./dist/*/win-64/resurfemg-*.tar.bz2
             ./dist/pypi-build/*.whl
             ./dist/pypi-build/*.egg
