@@ -12,6 +12,11 @@ authors:
     given-names: Walter
     orcid: "https://orcid.org/0000-0001-8888-4792"
   -
+    affiliation: "University of Twente"
+    family-names: Mos-Oppersma
+    given-names: Eline
+    orcid: "https://orcid.org/0000-0002-0150-306X"
+
 cff-version: "1.1.0"
 date-released: PENDING
 doi: PENDING
@@ -19,8 +24,9 @@ keywords:
   - EMG
   - respiratory
   - Python
+  - surface EMG
 license: Apache-2.0
 message: "If you use this software, please cite it using these metadata."
-repository-code: "https://github.com/NLeSC/python-template"
+repository-code: "https://github.com/ReSurfEMG/ReSurfEMG"
 title: "ReSurfEMG"
 version: "0.0.0"
