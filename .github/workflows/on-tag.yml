@@ -62,9 +62,9 @@ jobs:
           -c conda-forge
           python=${{ matrix.python-version }}
       - name: Generate conda meta.yaml (Python 3.8)
-        run: conda run -n resurfemg python setup.py anaconda_gen_meta
+        run: conda run -n resurfemg python -u setup.py anaconda_gen_meta
       - name: Create Anaconda package
-        run: conda run -n resurfemg python setup.py bdist_conda
+        run: conda run -n resurfemg python -u setup.py bdist_conda
       - name: Upload Anaconda package
         run: >-
           conda run -n resurfemg
