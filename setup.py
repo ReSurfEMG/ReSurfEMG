@@ -7,10 +7,12 @@ import site
 import subprocess
 import sys
 import shutil
+import sysconfig
 from distutils.dir_util import copy_tree
 from glob import glob
 from tempfile import TemporaryDirectory
 from contextlib import contextmanager
+
 
 from setuptools import Command, setup
 from setuptools.command.easy_install import easy_install as EZInstallCommand
@@ -376,11 +378,9 @@ class AnacondaUpload(Command):
             raise SystemExit(7)
 
 
-# TODO(wvxvw): Replace this with more generic Windows support to
-# eliminate the ugliness of bld.bat
-class FindEgg(Command):
+class SdistConda(Command):
 
-    description = 'find Eggs built by this script'
+    description = 'Helper for conda-build to make it work on Windows'
 
     user_options = []
 
@@ -391,7 +391,27 @@ class FindEgg(Command):
         pass
 
     def run(self):
-        print(glob('./dist/*.egg')[0])
+        bdist_egg = BDistEgg(self.distribution)
+        bdist_egg.initialize_options()
+        bdist_egg.finalize_options()
+        bdist_egg.run()
+        egg = glob('./dist/*.egg')[0]
+        sys.stderr.write('Finished building {}'.format(egg))
+        
+        ezcmd = EZInstallCommand(self.distribution)
+        ezcmd.initialize_options()
+        ezcmd.no_deps = True
+        ezcmd.record = 'record.txt'
+        ezcmd.args = [egg]
+        ezcmd.install_dir = sysconfig.get_path('platlib')
+        ezcmd.install_base = ezcmd.install_dir
+        ezcmd.install_purelib = ezcmd.install_dir
+        ezcmd.install_platlib = ezcmd.install_dir
+        # import pdb
+        # pdb.set_trace()
+        # ezcmd.root = self.root
+        ezcmd.finalize_options()
+        ezcmd.run()
 
 
 class BdistConda(BDistEgg):
@@ -408,6 +428,7 @@ class BdistConda(BDistEgg):
             '-c', 'anaconda',
             'conda-build',
             'conda-verify',
+            'anaconda-client',
             'python=={}'.format(frozen),
             'conda=={}'.format(conda),
         ]
@@ -470,6 +491,7 @@ if __name__ == '__main__':
             'anaconda_upload': AnacondaUpload,
             'anaconda_gen_meta': GenerateCondaYaml,
             'bdist_conda': BdistConda,
+            'sdist_conda': SdistConda,
         },
         test_suite='setup.my_test_suite',
         install_requires=[
