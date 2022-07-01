@@ -1,12 +1,12 @@
 """
-Copyright 2022 Netherlands eScience Center and U. Twente
+Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 
 This file contains functions to work with various EMG file types
-from various hardware/software combinations,and convert them down to
+from various hardware/software combinations, and convert them down to
 an array that can be further processed with helper_functions or other modules.
-Additionally this file contains hash functions to track data
+Additionally this file contains hash functions to track data.
 """
 
 import sys
@@ -25,7 +25,7 @@ from TMSiSDK.file_readers import Poly5Reader
 
 def poly5unpad(to_be_read):
     """This function converts a Poly5 read into an array without
-    padding.  Note there is a quirk in the python Poly5 interface that
+    padding. Note there is a quirk in the python Poly5 interface that
     pads with zeros on the end.
 
     :param to_be_read: Filename of python read Poly5
