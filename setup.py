@@ -1,26 +1,15 @@
 #!/usr/bin/env python
 
-import json
+import importlib
 import os
-import re
-import site
 import subprocess
 import sys
-import shutil
-import sysconfig
-from distutils.dir_util import copy_tree
 from glob import glob
-from tempfile import TemporaryDirectory
 from contextlib import contextmanager
 
-
 from setuptools import Command, setup
-from setuptools.command.easy_install import easy_install as EZInstallCommand
 from setuptools.command.bdist_egg import bdist_egg as BDistEgg
 from setuptools.command.install import install as InstallCommand
-from setuptools.dist import Distribution
-import unittest
-import venv
 
 
 project_dir = os.path.dirname(os.path.realpath(__file__))
@@ -61,6 +50,7 @@ def run_and_log(cmd, **kwargs):
 
 
 def translate_reqs(packages):
+    re = importlib.import_module('re')
     tr = {
         'sklearn': 'scikit-learn',
         'codestyle': 'pycodestyle',
@@ -79,13 +69,6 @@ def translate_reqs(packages):
             result.append(p)
 
     return result
-
-
-class ContextVenvBuilder(venv.EnvBuilder):
-
-    def ensure_directories(self, env_dir):
-        self.context = super().ensure_directories(env_dir)
-        return self.context
 
 
 class TestCommand(Command):
@@ -111,9 +94,22 @@ class TestCommand(Command):
 
     @contextmanager
     def prepare(self):
+        tf = importlib.import_module('tempfile')
+        site = importlib.import_module('site')
+        st = importlib.import_module('setuptools.dist')
+        venv = importlib.import_module('venv')
+        ei = importlib.import_module('setuptools.command.easy_install')
+        EZInstallCommand = ei.easy_install
+
+        class ContextVenvBuilder(venv.EnvBuilder):
+
+            def ensure_directories(self, env_dir):
+                self.context = super().ensure_directories(env_dir)
+                return self.context
+
         recs = self.distribution.tests_require
 
-        with TemporaryDirectory() as builddir:
+        with tf.TemporaryDirectory() as builddir:
             vbuilder = ContextVenvBuilder(with_pip=True)
             vbuilder.create(os.path.join(builddir, '.venv'))
             env_python = vbuilder.context.env_exe
@@ -131,7 +127,7 @@ class TestCommand(Command):
             egg.finalize_options()
             egg.run()
 
-            test_dist = Distribution()
+            test_dist = st.Distribution()
             test_dist.install_requires = recs
             ezcmd = EZInstallCommand(test_dist)
             ezcmd.initialize_options()
@@ -164,6 +160,7 @@ class UnitTest(TestCommand):
     description = 'run unit tests'
 
     def run_tests(self, env_python=None):
+        unittest = importlib.import_module('unittest')
         if env_python is None:
             loader = unittest.TestLoader()
             suite = loader.discover('tests', pattern='test.py')
@@ -314,7 +311,7 @@ class GenerateCondaYaml(Command):
                 'name': name,
                 'version': version,
             },
-            'source': {'git_url': '..'},
+            'source': {'path': '..'},
             'requirements': {
                 'host': [python, conda, 'sphinx'],
                 'build': ['setuptools'],
@@ -344,6 +341,8 @@ class GenerateCondaYaml(Command):
             self.target_conda = find_conda()
 
     def run(self):
+        json = importlib.import_module('json')
+
         meta_yaml_path = os.path.join(project_dir, 'conda-pkg', 'meta.yaml')
         with open(meta_yaml_path, 'w') as f:
             json.dump(self.meta_yaml(), f)
@@ -390,33 +389,119 @@ class SdistConda(Command):
     def finalize_options(self):
         pass
 
-    def run(self):
+    def run(self, install_dir=None, record='record.txt'):
+        sysconfig = importlib.import_module('sysconfig')
+        ei = importlib.import_module('setuptools.command.easy_install')
+        EZInstallCommand = ei.easy_install
+
+        if install_dir is None:
+            install_dir = sysconfig.get_path('platlib')
+
         bdist_egg = BDistEgg(self.distribution)
         bdist_egg.initialize_options()
         bdist_egg.finalize_options()
         bdist_egg.run()
-        egg = glob('./dist/*.egg')[0]
+        egg = glob(os.path.join(project_dir, 'dist/*.egg'))[0]
         sys.stderr.write('Finished building {}'.format(egg))
 
         ezcmd = EZInstallCommand(self.distribution)
         ezcmd.initialize_options()
         ezcmd.no_deps = True
-        ezcmd.record = 'record.txt'
+        ezcmd.record = record
         ezcmd.args = [egg]
-        ezcmd.install_dir = sysconfig.get_path('platlib')
-        ezcmd.install_base = ezcmd.install_dir
-        ezcmd.install_purelib = ezcmd.install_dir
-        ezcmd.install_platlib = ezcmd.install_dir
-        # import pdb
-        # pdb.set_trace()
-        # ezcmd.root = self.root
+        ezcmd.install_dir = install_dir
+        ezcmd.install_base = install_dir
+        ezcmd.install_purelib = install_dir
+        ezcmd.install_platlib = install_dir
         ezcmd.finalize_options()
         ezcmd.run()
 
 
+class PopenWrapper:
+
+    distribution = None
+
+    def __init__(self, *args, **kwargs):
+        self.elapsed = 0
+        self.disk = 0
+        self.processes = 0
+        self.cpu_user = 0
+        self.cpu_sys = 0
+        self.rss = 0
+        self.vms = 0
+
+        if args[0][-1].endswith('build.sh'):
+            self.run(*args, **kwargs)
+        else:
+            self.run_in_subprocess(*args, **kwargs)
+
+    def run(self, *args, **kwargs):
+        io = importlib.import_module('io')
+        sc = SdistConda(self.distribution)
+        sc.run(
+            kwargs['env']['SP_DIR'],
+            os.path.join(kwargs['env']['SRC_DIR'], 'record.txt'),
+        )
+        self.returncode = 0
+        self.err = self.out = io.StringIO()
+
+    def run_in_subprocess(self, *args, **kwargs):
+        proc = subprocess.Popen(*args, **kwargs)
+        while proc.returncode is None:
+            proc.poll()
+        self.returncode = proc.returncode
+        self.out = proc.stdout
+        self.err = proc.stderr
+
+
 class BdistConda(BDistEgg):
 
+    description = 'Helper for conda-build to make it work on Windows'
+
+    user_options = [
+        (
+            'optimize-low-memory',
+            'o',
+            'Optimize for low memory environment (Github Actions CI)',
+        ),
+    ]
+    boolean_options = [
+        'optimize-low-memory',
+    ]
+
+    def initialize_options(self):
+        self.optimize_low_memory = False
+
+    def finalize_options(self):
+        pass
+
+    def patch_conda_build(self):
+        conda_index = importlib.import_module('conda_build.index')
+        conda_utils = importlib.import_module('conda_build.utils')
+        ds = importlib.import_module('distutils.spawn')
+
+        conda_index.update_index.__defaults__ = (
+            False,
+            None,
+            None,
+            1,                  # This is the number of threads
+            False,
+            False,
+            None,
+            None,
+            True,
+            None,
+            False,
+            None,
+        )
+        conda_index.ChannelIndex.__init__.__defaults__ = None, 1, False, False
+        conda_utils.PopenWrapper = PopenWrapper
+        PopenWrapper.distribution = self.distribution
+        ds.spawn = lambda *args: None
+
     def run(self):
+        shutil = importlib.import_module('shutil')
+
         frozen = '.'.join(map(str, sys.version_info[:2]))
         conda = find_conda()
         cmd = [
@@ -444,18 +529,23 @@ class BdistConda(BDistEgg):
             ignore_errors=True,
         )
 
+        conda_build = importlib.import_module('conda_build.cli.main_build')
+
         cmd = [
-            'conda',
-            'build',
             '--no-anaconda-upload',
             '--override-channels',
             '--output-folder', os.path.join(project_dir, 'dist'),
             '-c', 'conda-forge',
+            '--no-locking',
             os.path.join(project_dir, 'conda-pkg'),
         ]
-        if run_and_log(cmd):
-            sys.stderr.write('Couldn\'t build {} package\n'.format(name))
-            raise SystemExit(5)
+
+        if self.optimize_low_memory:
+            cmd.insert(0, '--no-test')
+            self.patch_conda_build()
+
+        rc = conda_build.execute(cmd)
+        sys.stderr.write('Built package: {}'.format(rc[0]))
 
 
 if __name__ == '__main__':
