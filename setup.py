@@ -397,7 +397,7 @@ class SdistConda(Command):
         bdist_egg.run()
         egg = glob('./dist/*.egg')[0]
         sys.stderr.write('Finished building {}'.format(egg))
-        
+
         ezcmd = EZInstallCommand(self.distribution)
         ezcmd.initialize_options()
         ezcmd.no_deps = True
