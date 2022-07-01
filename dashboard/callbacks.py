@@ -31,7 +31,7 @@ def parse_emg(status):
     id='upload-ventilator-data',
 )
 def parse_vent(status):
-    vent_data = converter_functions.poly5unpad(status[0])
+    vent_data = cv.poly5unpad(status[0])
     global ventilator_data_raw
     ventilator_data_raw = vent_data
     # children = utils.add_ventilator_graphs(vent_data)
