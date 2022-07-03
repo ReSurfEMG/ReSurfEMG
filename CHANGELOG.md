@@ -6,32 +6,23 @@
 * First unreleased version of ReSurfEMG, containing:
 	- Tests,
 	- Documentation,
-	- Change log
-	- License
-	- README
+	- Change log,
+	- License,
+	- README,
 * 
 
 ### Changed
 
 *
-
-### Removed
-
-
+## Release 0.0.0
 
 ### Added
 
-* First version of the Python project template that follows the Netherlands eScience Center software development guide, containing:
-	- Tests,
-	- Documentation,
-	- Code style checking
-	- Editorconfig
-	- Default Travis configuration
-	- Change log
-	- Code of Conduct
-	- Contributing guidelines
-	- License
-	- Manifest.in
-	- README
-	- Requirements.txt
-	- Setup configuration
+* First version of thos Python project to follow the Netherlands eScience Center software development guide, containing (added to this version):
+
+	- Code style checking,
+	- Editorconfig,
+	- Code of Conduct,
+	- Contributing guidelines,
+	- Setup configuration,
+	- files for installation/building release (pypi, condabuild)
