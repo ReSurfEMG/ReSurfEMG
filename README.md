@@ -46,12 +46,12 @@ How to get the notebooks running? Assuming the raw data set and
 metadata is available.
 
 0. If you want to work with the stable version create an empty
-environment, then install with:
-    'conda install -c conda-forge -c resurfemg resurfemg'
+    environment, then install with:
+    `conda install -c conda-forge -c resurfemg resurfemg`
 
-1. To worh with the most current versions:
-Install all Python packages required, using conda and the
-   `environment.yml` file.
+1. To work with the most current versions:
+    Install all Python packages required, using conda and the
+    `environment.yml` file.
    * The command for Windows/Anaconda users can be something like:
      `conda env create -f environment.yml`.
    * Linux users can create their own environment by hand.
