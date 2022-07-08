@@ -1,5 +1,5 @@
-# YAML 1.2
----
+cff-version: 1.1.0
+message: "If you use this software please cite as below"
 authors:
   -
     affiliation: "Netherlands eScience Center"
@@ -17,16 +17,14 @@ authors:
     given-names: Eline
     orcid: "https://orcid.org/0000-0002-0150-306X"
 
-cff-version: "1.1.0"
-date-released: PENDING
-doi: PENDING
 keywords:
   - EMG
   - respiratory
   - Python
   - surface EMG
 license: Apache-2.0
-message: "If you use this software, please cite it using these metadata."
+
 repository-code: "https://github.com/ReSurfEMG/ReSurfEMG"
 title: "ReSurfEMG"
-version: "0.0.0"
+version: "0.0.3"
+date-released: 08/07/2022
