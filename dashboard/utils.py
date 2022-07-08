@@ -1,3 +1,4 @@
+import numpy as np
 import plotly.graph_objects as go
 from dash import html, dcc
 
@@ -51,7 +52,7 @@ def blank_fig(text=None):
     return fig
 
 
-def add_emg_graphs(emg_data):
+def add_emg_graphs(emg_data, frequency):
 
     if emg_data is None:
         return []
@@ -59,10 +60,11 @@ def add_emg_graphs(emg_data):
     graphs = [html.H1(children='EMG data')]
 
     for i in range(emg_data.shape[0]):
-        fig=go.Figure(data=go.Scatter(y=emg_data[i], mode='lines'))
+        time_array=get_time_array(emg_data.shape[1], frequency)
+        fig=go.Figure(data=go.Scatter(x=time_array, y=emg_data[i], mode='lines'))
         fig.update_layout(
             title="EMG Track " + str(i),
-            xaxis_title="Sample n",
+            xaxis_title="Time [s]",
             yaxis_title="micro Volts",
             legend_title="Legend Title"
         )
@@ -74,7 +76,7 @@ def add_emg_graphs(emg_data):
     return graphs
 
 
-def add_ventilator_graphs(vent_data):
+def add_ventilator_graphs(vent_data, frequency):
 
     if vent_data is None:
         return []
@@ -82,10 +84,11 @@ def add_ventilator_graphs(vent_data):
     graphs = [html.H1(children='Ventilator data')]
 
     for i in range(vent_data.shape[0]):
-        fig=go.Figure(data=go.Scatter(y=vent_data[i], mode='lines'))
+        time_array=get_time_array(vent_data.shape[1], frequency)
+        fig=go.Figure(data=go.Scatter(x=time_array, y=vent_data[i], mode='lines'))
         fig.update_layout(
             title="Ventilator Track " + str(i),
-            xaxis_title="Sample n",
+            xaxis_title="Time [s]",
             legend_title="Legend Title"
         )
         graphs.append(dcc.Graph(
@@ -94,3 +97,9 @@ def add_ventilator_graphs(vent_data):
         ))
 
     return graphs
+
+
+def get_time_array(data_size, frequency):
+    time_array = np.arange(0, data_size / frequency, 1 / frequency)
+
+    return time_array
