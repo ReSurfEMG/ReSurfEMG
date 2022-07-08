@@ -39,6 +39,19 @@ The notebooks are configured to run on various datasets.  Contact
 Candace Makeda Moore ( 📫 c.moore@esciencecenter.nl) to discuss any
 questions on data configuration for your datasets.
 
+### Test data
+
+You can get test data by extracting it from the Docker image like
+this:
+
+``` sh
+mkdir -p not_pushed
+cd ./not_pushed
+docker create --name test-data crabbone/resurfemg-poly5-test-files:latest
+docker cp test-data:/ReSurfEMG/tests/not_pushed/. .
+docker rm -f test-data
+```
+
 
 ## Getting started
 
