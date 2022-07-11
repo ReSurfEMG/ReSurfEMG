@@ -1,6 +1,7 @@
 # Run this app with `python index.py` and
 # visit http://127.0.0.1:8050/ in your web browser.
 import base64
+import callbacks
 import dash
 import dash_bootstrap_components as dbc
 from dash import html
