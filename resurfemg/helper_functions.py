@@ -19,6 +19,7 @@ import textdistance
 from math import log, e
 from collections import namedtuple
 import builtins
+import copy
 
 
 class Range(namedtuple('RangeBase', 'start,end')):
@@ -791,3 +792,119 @@ def relative_levenshtein(signal1, signal2):
     longer_signal_len = np.max([len(signal1), len(signal2)])
     normalized_distance = distance / longer_signal_len
     return normalized_distance
+
+def gating(
+    src_signal, 
+    gate_peaks, 
+    gate_width=205, 
+    method='interpolate'
+):
+    """
+    Eliminate peaks (e.g. QRS) from src_signal using gates
+    of width gate_width. The gate either filled by zeros or interpolation.
+    :param src_signal: Signal to process
+    :type src_signalsignal: ~numpy.ndarray
+    :param gate_peaks: Peaks to be gated
+    :type gate_peaks: ~list
+    :param gate_width: width of the gate
+    :type gate_peaks: int
+    :param method: filling method of gate. 
+        "interpolate": Interpolation samples before and after (default)
+        "zero": filled with zeros
+
+    """
+    
+    src_signal_gated = copy.deepcopy(src_signal)
+
+    gate_samples = list()
+    for i in range(len(gate_peaks)):
+        for k in range(int(gate_peaks[i]-gate_width/2),int(gate_peaks[i]+gate_width/2)):
+            gate_samples.append(k)
+
+    
+    src_signal_gated[gate_samples] = 0
+    if method == 'interpolate':
+        for i in range(len(gate_peaks)):
+            pre_ave_EMG = src_signal[int(gate_peaks[i]-gate_width/2-1)]
+                
+            if int(gate_peaks[i]+gate_width/2+1) < src_signal_gated.shape[0]:
+                post_ave_EMG = src_signal[int(gate_peaks[i]+gate_width/2+1)]
+            else:
+                post_ave_EMG = 0
+
+            k_start = max([0, int(gate_peaks[i]-gate_width/2)])
+            k_end = min([int(gate_peaks[i]+gate_width/2), src_signal_gated.shape[0]])
+            for k in range(k_start, k_end):
+                f = (k - gate_peaks[i] + gate_width/2)/gate_width
+                src_signal_gated[k] = (1 - f)*pre_ave_EMG + f*post_ave_EMG
+    
+    return src_signal_gated
+
+def full_rolling_rms(x, N):
+    """This function computes a root mean squared envelope over an
+    array :code:`x`.  To do this it uses number of sample values
+    :code:`N`. It differs from :func:`naive_rolling_rms` by that the
+    output is the same length as the input vector.
+
+    :param x: Samples from the EMG
+    :type x: ~numpy.ndarray
+    :param N: Legnth of the sample use as window for function
+    :type N: int
+
+    :returns: The root-mean-squared EMG sample data
+    :rtype: ~numpy.ndarray 
+    """
+    x2 = np.power(x,2)
+    window = np.ones(N)/float(N)
+    emg_rms = np.sqrt(np.convolve(x2, window, 'valid'))
+    return emg_rms
+
+def RMS_gating(
+    src_signal, 
+    gate_peaks, 
+    gate_width=205, 
+    RMS_N = 200,
+    method='interpolate'
+):
+    """
+    Eliminate peaks (e.g. QRS) from src_signal using gates
+    of width gate_width. The gate either filled by zeros or interpolation.
+    :param src_signal: Signal to process
+    :type src_signalsignal: ~numpy.ndarray
+    :param gate_peaks: Peaks to be gated
+    :type gate_peaks: ~list
+    :param gate_width: width of the gate
+    :type gate_peaks: int
+    :param method: filling method of gate. 
+        "interpolate": Interpolation samples before and after (default)
+        "zero": filled with zeros
+
+    """
+    
+    gate_samples = list()
+    for i in range(len(gate_peaks)):
+        for k in range(int(gate_peaks[i]-gate_width/2),int(gate_peaks[i]+gate_width/2)):
+            gate_samples.append(k)
+
+    
+    src_signal_gated = copy.deepcopy(src_signal)
+    src_signal_gated[gate_samples] = 0
+
+    src_signal_RMS_gated = full_rolling_rms(src_signal_gated, RMS_N)
+    if method == 'interpolate':
+        for i in range(len(gate_peaks)):
+            pre_ave_EMG = src_signal_RMS_gated[int(gate_peaks[i]-gate_width/2)-1]
+                
+            if int(gate_peaks[i]+gate_width/2+1) < src_signal_RMS_gated.shape[0]:
+                post_ave_EMG = src_signal_RMS_gated[int(gate_peaks[i]+gate_width/2)+1]
+            else:
+                post_ave_EMG = 0
+
+            k_start = max([0, int(gate_peaks[i]-gate_width/2)])
+            k_end = min([int(gate_peaks[i]+gate_width/2), src_signal_RMS_gated.shape[0]])
+            for k in range(k_start, k_end):
+                f = (k - gate_peaks[i] + gate_width/2)/gate_width
+                src_signal_RMS_gated[k] = (1 - f)*pre_ave_EMG + f*post_ave_EMG
+    
+    return src_signal_RMS_gated
+
