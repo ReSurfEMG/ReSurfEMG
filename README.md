@@ -75,7 +75,6 @@ metadata is available.
     Install all Python packages required, using conda and the
     `environment.yml` file.
    * The command for Windows/Anaconda users can be something like:
-      Within the blank environment (`conda activate blank`)
      `conda env create -f environment.yml`.
    * Linux users can create their own environment by hand.
 
