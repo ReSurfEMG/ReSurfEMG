@@ -61,7 +61,7 @@ metadata is available.
 0. If you want to work with the stable version create an empty
     environment, and install there:
     * Make sure you are in no environment:
-      `conda deactivate` (twice if you are now in the base)
+      `conda deactivate` (repeat if you are in the base environment)
       You should be in no environment now 
 
     * Create a blank environment
