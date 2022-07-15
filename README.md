@@ -59,8 +59,17 @@ How to get the notebooks running? Assuming the raw data set and
 metadata is available.
 
 0. If you want to work with the stable version create an empty
-    environment, then install with:
-    `conda install -c conda-forge -c resurfemg resurfemg jupyter`
+    environment, and install there:
+    * Make sure you are in no environment:
+      `conda deactivate` (repeat if you are in the base environment)
+      You should be in no environment now 
+
+    * Create a blank environment
+      `conda create -n blank`
+
+    * Install within the blank environment:
+      `conda activate blank`
+      `conda install -c conda-forge -c resurfemg resurfemg jupyter`
 
 1. To work with the most current versions:
     Install all Python packages required, using conda and the
