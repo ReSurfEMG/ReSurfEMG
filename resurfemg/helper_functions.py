@@ -853,7 +853,7 @@ def full_rolling_rms(x, N):
     :returns: The root-mean-squared EMG sample data
     :rtype: ~numpy.ndarray 
     """
-    x_pad = np.pad(x, (int(np.floor(float(N)/2)), int(np.floor(float(N)/2))), 'constant', constant_values=(0, 0))
+    x_pad = np.pad(x, (0, N-1), 'constant', constant_values=(0, 0))
     x2 = np.power(x_pad,2)
     window = np.ones(N)/float(N)
     emg_rms = np.sqrt(np.convolve(x2, window, 'valid'))
