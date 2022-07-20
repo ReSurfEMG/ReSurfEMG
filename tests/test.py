@@ -6,6 +6,7 @@ import os
 import glob
 import sys
 import numpy as np
+import scipy
 from tempfile import TemporaryDirectory
 from TMSiSDK.file_readers import Poly5Reader
 
@@ -32,6 +33,7 @@ from resurfemg.helper_functions import entropical
 from resurfemg.helper_functions import smooth_for_baseline
 from resurfemg.helper_functions import smooth_for_baseline_with_overlay
 from resurfemg.helper_functions import relative_levenshtein
+from resurfemg.helper_functions import gating
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -118,7 +120,56 @@ class TestVentCompareMethods(unittest.TestCase):
         our_result13 = (relative_levenshtein(array1,array3))
         self.assertEqual(our_result12, our_result13)
     
+class TestGating(unittest.TestCase):
+    sample_read= Poly5Reader(sample_emg)
+    sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
+    sample_emg_filtered = sample_emg_filtered[:30*2048]
+    ecg_peaks, _  = scipy.signal.find_peaks(sample_emg_filtered[0, :])
 
+    def test_gating_method_0(self):
+        # sample_read= Poly5Reader(sample_emg)
+        # sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
+        # ecg_peaks, _  = scipy.signal.find_peaks(sample_emg_filtered[0, :])
+        ecg_gated_0 = gating(self.sample_emg_filtered[0, :], self.ecg_peaks, gate_width=205, method=0)
+
+        self.assertEqual(
+            (len(self.sample_emg_filtered[0])),
+            len(ecg_gated_0) ,
+        )
+
+    def test_gating_method_1(self):
+        # sample_read = Poly5Reader(sample_emg)
+        # sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
+        # ecg_peaks, _  = scipy.signal.find_peaks(sample_emg_filtered[0, :])
+        ecg_gated_1 = gating(self.sample_emg_filtered[0, :], self.ecg_peaks, gate_width=205, method=1)
+
+        self.assertEqual(
+            (len(self.sample_emg_filtered[0])),
+            len(ecg_gated_1) ,
+        )
+    
+    def test_gating_method_2(self):
+        # sample_read= Poly5Reader(sample_emg)
+        # sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
+        # ecg_peaks, _  = scipy.signal.find_peaks(sample_emg_filtered[0, :])
+        ecg_gated_2 = gating(self.sample_emg_filtered[0, :], self.ecg_peaks, gate_width=205, method=2)
+
+        self.assertEqual(
+            (len(self.sample_emg_filtered[0])),
+            len(ecg_gated_2) ,
+        )
+    
+    def test_gating_method_3(self):
+        # sample_read= Poly5Reader(sample_emg)
+        # sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
+        ecg_peaks, _  = scipy.signal.find_peaks(self.sample_emg_filtered[0, :10*2048-1])
+        
+        ecg_gated_3 = gating(self.sample_emg_filtered[0, :10*2048], ecg_peaks, gate_width=205, method=3)
+
+        self.assertEqual(
+            (len(self.sample_emg_filtered[0, :10*2048])),
+            len(ecg_gated_3) ,
+        )
 
 if __name__ == '__main__':
     unittest.main()
