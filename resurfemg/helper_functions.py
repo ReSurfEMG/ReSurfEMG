@@ -881,12 +881,12 @@ def gating(
     :type method: int
     """
     src_signal_gated = copy.deepcopy(src_signal)
-
+    max_sample = src_signal_gated.shape[0]
     if method <= 1:
         # Method 0: Fill with zeros
         gate_samples = []
         for i, peak in enumerate(gate_peaks):
-            for k in range(int(peak-gate_width/2),int(peak+gate_width/2)):
+            for k in range(max([0, int(peak-gate_width/2)]),min([max_sample, int(peak+gate_width/2)])):
                 gate_samples.append(k)
 
         src_signal_gated[gate_samples] = 0
@@ -922,15 +922,15 @@ def gating(
         gate_samples = []
         for i, peak in enumerate(gate_peaks):
             for k in range(
-                int(peak-gate_width/2),
-                int(peak+gate_width/2)
+                max([0, int(peak-gate_width/2)]),
+                min([max_sample, int(peak+gate_width/2)])
                 ):
                 gate_samples.append(k)
 
         src_signal_gated_base = copy.deepcopy(src_signal_gated)
         src_signal_gated_base[gate_samples] = np.NaN
         src_signal_gated_rms = full_rolling_rms(src_signal_gated_base,gate_width)
-        max_sample = src_signal_gated.shape[0]
+        
         for i, peak in enumerate(gate_peaks):
             k_start = max([0, int(peak-gate_width/2)])
             k_end = min([int(peak+gate_width/2), max_sample])
