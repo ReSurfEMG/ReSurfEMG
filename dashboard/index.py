@@ -45,28 +45,44 @@ header = dbc.Row([
     ),
     dbc.Col(html.Img(
         src=f'data:image/png;base64,{encoded_image.decode()}',
-        height='70 px',
+        height='100 px',
         width='auto'),
         width=4)
-])
+],
+    align='center',
+    style={'height': '150px',
+           'background-color': colors['superdark-green'],
+           'color': colors['white']}
 
-nav = dbc.Nav(
-    [
-        dbc.NavItem(dbc.NavLink("Load data", href="/")),
-        dbc.NavItem(dbc.NavLink("View raw data", href="/view-raw")),
-        dbc.NavItem(dbc.NavLink("Preprocessing", href="/preprocessing")),
-        dbc.NavItem(dbc.NavLink("Features", href="/features")),
-        dbc.NavItem(dbc.NavLink("Interpretation", href="/interpretation"))
-    ]
 )
 
+nav = dbc.Row(
+        [
+            dbc.Col(dbc.NavLink("Load data", href="/",
+                                style={'font-size': '25px'})),
+            dbc.Col(dbc.NavLink("View raw data", href="/view-raw",
+                                style={'font-size': '25px'})),
+            dbc.Col(dbc.NavLink("Preprocessing", href="/preprocessing",
+                                style={'font-size': '25px'})),
+            dbc.Col(dbc.NavLink("Features", href="/features",
+                                style={'font-size': '25px'})),
+            dbc.Col(dbc.NavLink("Interpretation", href="/interpretation",
+                                style={'font-size': '25px'}))
+        ],
+        align='center',
+        style={'height': '75px',
+               'background-color': colors['dark-green'],
+               'color': colors['white']
+}
+    )
 
-app.layout = html.Div([
+app.layout = dbc.Container([
     header,
     nav,
     dash.page_container
-])
-
+],
+    fluid=True
+)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
