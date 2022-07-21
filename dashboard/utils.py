@@ -57,7 +57,7 @@ def add_emg_graphs(emg_data, frequency):
     if emg_data is None:
         return []
 
-    graphs = [html.H1(children='EMG data')]
+    graphs = []
 
     for i in range(emg_data.shape[0]):
         time_array=get_time_array(emg_data.shape[1], frequency)
@@ -81,7 +81,7 @@ def add_ventilator_graphs(vent_data, frequency):
     if vent_data is None:
         return []
 
-    graphs = [html.H1(children='Ventilator data')]
+    graphs = []
 
     for i in range(vent_data.shape[0]):
         time_array=get_time_array(vent_data.shape[1], frequency)
