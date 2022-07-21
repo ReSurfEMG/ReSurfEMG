@@ -824,11 +824,10 @@ def gating(
     Eliminate peaks (e.g. QRS) from src_signal using gates
     of width gate_width. The gate either filled by zeros or interpolation.
     The filling method for the gate is encoded as follows:
-        0: Filled with zeros
-        1: Interpolation samples before and after
-        2: Filled with average of prior segment
-        3: Fill with running average of RMS (default)
-
+    0: Filled with zeros
+    1: Interpolation samples before and after
+    2: Filled with average of prior segment
+    3: Fill with running average of RMS (default)
 
     :param src_signal: Signal to process
     :type src_signalsignal: ~numpy.ndarray
