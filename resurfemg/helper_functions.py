@@ -792,6 +792,7 @@ def relative_levenshtein(signal1, signal2):
     normalized_distance = distance / longer_signal_len
     return normalized_distance
 
+
 def full_rolling_rms(x, N):
     """This function computes a root mean squared envelope over an
     array :code:`x`.  To do this it uses number of sample values
@@ -807,7 +808,7 @@ def full_rolling_rms(x, N):
     :rtype: ~numpy.ndarray
     """
     x_pad = np.pad(x, (0, N-1), 'constant', constant_values=(0, 0))
-    x2 = np.power(x_pad,2)
+    x2 = np.power(x_pad, 2)
     window = np.ones(N)/float(N)
     emg_rms = np.sqrt(np.convolve(x2, window, 'valid'))
     return emg_rms
@@ -817,21 +818,24 @@ def gating(
     src_signal,
     gate_peaks,
     gate_width=205,
-    method=1
+    method=1,
 ):
     """
     Eliminate peaks (e.g. QRS) from src_signal using gates
     of width gate_width. The gate either filled by zeros or interpolation.
+    The filling method for the gate is encoded as follows:
+        0: Filled with zeros
+        1: Interpolation samples before and after
+        2: Filled with average of prior segment
+        3: Fill with running average of RMS (default)
+
+
     :param src_signal: Signal to process
     :type src_signalsignal: ~numpy.ndarray
     :param gate_peaks: Peaks to be gated
     :type gate_peaks: ~list
     :param gate_width: width of the gate
     :param method: filling method of gate
-        0: Filled with zeros
-        1: Interpolation samples before and after
-        2: Filled with average of prior segment
-        3: Fill with running average of RMS (default)
     :type method: int
     """
     src_signal_gated = copy.deepcopy(src_signal)
@@ -840,7 +844,10 @@ def gating(
         # Method 0: Fill with zeros
         gate_samples = []
         for i, peak in enumerate(gate_peaks):
-            for k in range(max([0, int(peak-gate_width/2)]),min([max_sample, int(peak+gate_width/2)])):
+            for k in range(
+                max([0, int(peak-gate_width/2)]),
+                min([max_sample, int(peak+gate_width/2)]),
+            ):
                 gate_samples.append(k)
 
         src_signal_gated[gate_samples] = 0
@@ -855,17 +862,18 @@ def gating(
                 post_ave_emg = 0
 
             k_start = max([0, int(peak-gate_width/2)])
-            k_end = min([int(peak+gate_width/2), src_signal_gated.shape[0]])
+            k_end = min(
+                [int(peak+gate_width/2), src_signal_gated.shape[0]]
+                )
             for k in range(k_start, k_end):
                 frac = (k - peak + gate_width/2)/gate_width
-                src_signal_gated[k] = (1 - frac) * pre_ave_emg + frac * post_ave_emg
+                loup = (1 - frac) * pre_ave_emg + frac * post_ave_emg
+                src_signal_gated[k] = loup
     elif method == 2:
         # Method 2: Fill with window length mean over prior section
         for i, peak in enumerate(gate_peaks):
             pre_ave_emg = np.mean(
-                src_signal[int(peak-1.5*gate_width):
-                int(peak-gate_width/2-1)]
-            )
+                src_signal[int(peak-1.5*gate_width): int(peak-gate_width/2-1)])
 
             k_start = max([0, int(peak-gate_width/2)])
             k_end = min([int(peak+gate_width/2), src_signal_gated.shape[0]])
@@ -891,9 +899,13 @@ def gating(
             k_start = max([0, int(peak-gate_width/2)])
             k_end = min([int(peak+gate_width/2), max_sample])
 
-            for k in range(k_start, k_end):
-                src_signal_gated[k] = np.nanmean(
-                    src_signal_gated_rms[max([0, int(k-1.5*gate_width)]):
-                    min([int(k+1.5*gate_width), max_sample])])
+        for k in range(k_start, k_end):
+            leftf = max([0, int(k-1.5*gate_width)])
+            rightf = min([int(k+1.5*gate_width), max_sample])
+            src_signal_gated[k] = np.nanmean(
+                src_signal_gated_rms[leftf:rightf]
+            )
+    # else:
+    #     print("You did not choose a valid gating method")
 
     return src_signal_gated
