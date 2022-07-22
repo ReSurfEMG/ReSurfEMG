@@ -333,7 +333,7 @@ def show_my_power_spectrum(sample, sample_rate, upper_window):
     :type sample: ~numpy.ndarray
     :param sample_rate: Number of samples per second
     :type sample_rate: int
-    :param upper_window: The end ofwindow over which values will be plotted
+    :param upper_window: The end of window over which values will be plotted
     :type upper_window: int
 
     :return: :code:`yf, xf` tuple of fourier transformed array and
@@ -341,7 +341,7 @@ def show_my_power_spectrum(sample, sample_rate, upper_window):
     :rtype: Tuple[float, float]
     """
     N = len(sample)
-    # for our emgs samplerate is usually 2048
+    # for our emgs sample rate is usually 2048
     yf = np.abs(fft(sample))**2
     xf = fftfreq(N, 1 / sample_rate)
 
