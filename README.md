@@ -3,6 +3,14 @@
     <img style="width: 10%; height: 10%" src="https://github.com/resurfemg/resurfemg/blob/main/resurfemg.png">
 </p>
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6811554.svg)](https://doi.org/10.5281/zenodo.6811554)
+[![PyPI](https://img.shields.io/pypi/v/resurfemg.svg)](https://pypi.python.org/pypi/resurfemg/)
+[![Anaconda-Server Badge](https://anaconda.org/resurfemg/resurfemg/badges/version.svg)](https://anaconda.org/resurfemg/resurfemg)
+[![Sanity](https://github.com/resurfemg/resurfemg/actions/workflows/on-commit.yml/badge.svg)](https://github.com/resurfemg/resurfemg/actions/workflows/on-commit.yml)
+[![Sanity](https://github.com/resurfemg/resurfemg/actions/workflows/on-tag.yml/badge.svg)](https://github.com/resurfemg/resurfemg/actions/workflows/on-tag.yml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+
 ReSurfEMG is an open source collaborative python library for analysis
 of respiratory electromyography (EMG).  The library was initially
 built for surface EMG, however many functions will also work for
