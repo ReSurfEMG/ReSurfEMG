@@ -342,13 +342,14 @@ def show_my_power_spectrum(sample, sample_rate, upper_window):
     """
     N = len(sample)
     # for our emgs samplerate is usually 2048
-    yf = fft((sample))
+    yf = np.abs(fft(sample))**2
     xf = fftfreq(N, 1 / sample_rate)
 
-    plt.plot(xf, np.abs(yf))
-    plt.xlim(0, upper_window)
+    idx = [i for i, v in enumerate(xf) if (0 <= v <= upper_window)]
+
+    plt.plot(xf[idx], yf[idx])
     plt.show()
-    return (yf, xf)
+    return yf, xf
 
 
 def emg_highpass_butter(data_emg, cut_above, sample_rate):
