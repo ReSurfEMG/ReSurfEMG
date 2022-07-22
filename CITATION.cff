@@ -16,6 +16,11 @@ authors:
     family-names: Mos-Oppersma
     given-names: Eline
     orcid: "https://orcid.org/0000-0002-0150-306X"
+  -
+    affiliation: "University of Twente"
+    family-names: Warnaar
+    given-names: Robertus (Rob) Simon Petrus Warnaar
+    orcid: "https://orcid.org/ 0000-0001-9443-4069"
 
 keywords:
   - EMG
