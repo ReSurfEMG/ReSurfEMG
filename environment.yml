@@ -6,8 +6,6 @@ channels:
 dependencies:
   - python=3.8.6
 
-  - dash-bootstrap-components=1.2.0
-  - dash=2.5.1
   - ipympl
   - ipywidgets=7.7.0
   - jupyter=1.0.0
@@ -33,5 +31,4 @@ dependencies:
     # - jupyter-core==4.9.2
     # - jupyter-console==6.4.3
     - mcfly==3.1.0
-    - dash-uploader==0.6.0
     # - jupyter-client==7.2.2
