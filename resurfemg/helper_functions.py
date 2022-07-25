@@ -493,6 +493,50 @@ def pick_more_peaks_array(components_tuple):
     return emg_component
 
 
+def pick_lowest_correlation_array(components_tuple: [np.ndarray, np.ndarray], ecg_lead: np.ndarray):
+    """Here we have a function that takes a tuple with the two parts
+    of ICA and the array containing the ECG recording, and finds the
+    ICA component with the lowest similarity to the ECG.
+
+    .. note::
+        Data should not have been finally filtered to envelope level
+
+    :param components_tuple: tuple of two arrays representing different signals
+    :type components_tuple: Tuple[~numpy.ndarray, ~numpy.ndarray]
+
+    :param ecg_lead: array containing the ECG recording
+    :type components_tuple: numpy.ndarray
+
+    :return: Array with the lowest correlation coefficient
+     to the ECG lead (should usually be the EMG as opposed to ECG)
+    :rtype: ~numpy.ndarray
+    """
+    c0 = components_tuple[0]
+    c1 = components_tuple[1]
+
+    # create a tuple containing the data, each row is a variable,
+    # each column is an observation
+
+    corr_tuple = np.row_stack((ecg_lead, c0, c1))
+
+    # compute the correlation matrix
+    # the absolute value is used, because the ICA decomposition might
+    # produce a component with negative peaks. In this case
+    # the signals will be maximally negatively correlated
+
+    corr_matrix = abs(np.corrcoef(corr_tuple))
+
+    # get the component with the lowest correlation to ECG
+    # the matriz is symmetric, so we can check just the first row
+    # the first coefficient is the autocorrelation of the ECG lead,
+    # so we can check row 1 and 2
+
+    lowest_index = np.argmin(corr_matrix[0][1:])
+    emg_component = components_tuple[lowest_index]
+
+    return emg_component
+
+
 def working_pipeline_exp(our_chosen_file):
     """This function produces a filtered respiratory EMG signal from a
     3 lead sEMG file.  The inputs is :code:`our_chosen_file` which we
