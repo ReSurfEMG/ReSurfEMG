@@ -493,7 +493,8 @@ def pick_more_peaks_array(components_tuple):
     return emg_component
 
 
-def pick_lowest_correlation_array(components_tuple: [np.ndarray, np.ndarray], ecg_lead: np.ndarray):
+def pick_lowest_correlation_array(components_tuple: [np.ndarray, np.ndarray],
+                                  ecg_lead: np.ndarray):
     """Here we have a function that takes a tuple with the two parts
     of ICA and the array containing the ECG recording, and finds the
     ICA component with the lowest similarity to the ECG.
