@@ -134,12 +134,11 @@ packages, the project will be installed into base environment
 regardless of the currently active one.  We are planning to integrate
 with Anaconda in near future.
 
-The project has a sub-project that is as of yet not properly
-integrated with the rest of the source code.  Dashboard is a GUI that
-exposes some of the project's fucntionality.  We are planning to make
-it installable and configurable from `setup.py` too.  As the project
-was developoed using Anaconda Python, the integration with the later
-needs to happen first.
+The project has a sub-project of a related dashboard.  Dashboard is a GUI that
+exposes some of the project's fucntionality. There is a legacy dashboard
+in the same repository with ReSurfEMG code but we have moved the
+current version of the dashboard into it's own repository:
+https://github.com/ReSurfEMG/ReSurfEMG-dashboard
 
 As of today, we use out own version of the package TMSiSDK together with our
 project.  Hopefully, this is a temporary measure, and, eventually,
