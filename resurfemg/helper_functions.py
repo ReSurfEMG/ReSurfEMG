@@ -951,3 +951,27 @@ def gating(
     #     print("You did not choose a valid gating method")
 
     return src_signal_gated
+
+
+
+def minimal_pipeline(our_chosen_file, heart_lead_number):
+    """
+    Here we have a minimal basic pre-processing pipeline. Note 
+    heart leads should be counted in Python numbering
+    i.e. lead number one is zero. 
+    """
+    # step 1 cut off any wierd end
+    cut_file_data = bad_end_cutter_for_samples(
+        our_chosen_file, percent_to_cut=3, tolerance_percent=5)
+    # step 2 minimal filtering    
+    bd_filtered_file_data = emg_bandpass_butter_sample(
+        cut_file_data, 5, 450, 2048, output='sos')
+    # step 3 end-cutting again to get rid of filtering artifacts
+    re_cut_file_data = bad_end_cutter_for_samples(
+        bd_filtered_file_data, percent_to_cut=3, tolerance_percent=5)
+    # skip step4 and do step 5 ICA
+    components = compute_ICA_two_comp(re_cut_file_data)
+    #     the secret hidden step!
+    ecg_lead = re_cut_file_data[heart_lead_number]
+    emg = pick_lowest_correlation_array(components, ecg_lead)
+    return emg
