@@ -85,7 +85,7 @@ class TestComponentPickingMethods(unittest.TestCase):
     def test_pick_lowest_correlation_array(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
-        sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
+        sample_emg_filtered[1] = sample_emg_filtered[0]
         sample_emg_filtered[2] = sample_emg_filtered[0]*0.7
         sample_emg_filtered[2,20] = 0
         sample_emg_filtered[2,40] = 0
@@ -93,11 +93,11 @@ class TestComponentPickingMethods(unittest.TestCase):
         sample_emg_filtered[2,21] = 100
         sample_emg_filtered[2,42] = 100
         sample_emg_filtered[2,81] = 100
-        components = compute_ICA_two_comp(sample_emg_filtered)
+        components = sample_emg_filtered[1], sample_emg_filtered[2]
         emg = pick_lowest_correlation_array(components, sample_emg_filtered[0])
         self.assertEqual(
-            len(emg),
-            len(sample_emg_filtered[0]) ,
+            sum(emg),
+            sum(sample_emg_filtered[2]) ,
         )
 
 
