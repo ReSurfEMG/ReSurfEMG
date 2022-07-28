@@ -953,19 +953,28 @@ def gating(
     return src_signal_gated
 
 
-
-def minimal_pipeline(our_chosen_file, heart_lead_number):
+def minimal_pipeline(our_chosen_file, heart_lead_number, sample_freq):
     """
-    Here we have a minimal basic pre-processing pipeline. Note 
+    Here we have a minimal basic pre-processing pipeline. Note
     heart leads should be counted in Python numbering
-    i.e. lead number one is zero. 
+    i.e. lead number one is zero.
+
+    :param our_chosen_file: EMG array data w.g. Poly5Reader's samples data
+    :type our_chosen_file: ~numpy.ndarray
+    :param heart_lead_number: number of lead over heart counting from zero
+    :type rsignal2: int
+    :param sample_freq: sampling frequency of EMG, often 2048
+    :type sample_freq: int
+
+    :returns: A minimally processed EMG signal
+    :rtype: ~numpy.ndarray
     """
     # step 1 cut off any wierd end
     cut_file_data = bad_end_cutter_for_samples(
         our_chosen_file, percent_to_cut=3, tolerance_percent=5)
-    # step 2 minimal filtering    
+    # step 2 minimal filtering
     bd_filtered_file_data = emg_bandpass_butter_sample(
-        cut_file_data, 5, 450, 2048, output='sos')
+        cut_file_data, 5, 450, sample_freq, output='sos')
     # step 3 end-cutting again to get rid of filtering artifacts
     re_cut_file_data = bad_end_cutter_for_samples(
         bd_filtered_file_data, percent_to_cut=3, tolerance_percent=5)
