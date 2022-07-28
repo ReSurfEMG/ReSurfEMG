@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>resurfemg.helper_functions module &#8212; resurfemg 0.0.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -447,6 +447,30 @@ filtering.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.pick_lowest_correlation_array">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">pick_lowest_correlation_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_lead</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.pick_lowest_correlation_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Here we have a function that takes a tuple with the two parts
+of ICA and the array containing the ECG recording, and finds the
+ICA component with the lowest similarity to the ECG.
+Data should not have been finally filtered to envelope level</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>components_tuple</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a><em>, </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a><em>]</em>) – tuple of two arrays representing different signals</p></li>
+<li><p><strong>ecg_lead</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>numpy.ndarray</em></a>) – array containing the ECG recording</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array with the lowest correlation coefficient
+to the ECG lead (should usually be the EMG as opposed to ECG)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.pick_more_peaks_array">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">pick_more_peaks_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.pick_more_peaks_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Here we have a function that takes a tuple with the two parts
@@ -518,7 +542,7 @@ return.  Sample should be one single row (1-dimensional array.)</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – The sample array</p></li>
 <li><p><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Number of samples per second</p></li>
-<li><p><strong>upper_window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The end ofwindow over which values will be plotted</p></li>
+<li><p><strong>upper_window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The end of window over which values will be plotted</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -703,7 +727,7 @@ on a cut-off value.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, c.moore@esciencecenter.nl.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     </div>
   </body>
 </html>
