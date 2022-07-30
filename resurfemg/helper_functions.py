@@ -999,10 +999,63 @@ def breath_curve_catch(curve):
     :rtype: float
     """
     max_ind = (curve.argmax())
-    max_val = curve[max_ind]
+    # max_val = curve[max_ind]
     absolute_val_array = np.abs(curve[max_ind:] - curve.max() * 0.7)
     smallest_difference_index = absolute_val_array.argmin()
-    closest_element = curve[max_ind:][smallest_difference_index]
+    # closest_element = curve[max_ind:][smallest_difference_index]
     smallest_difference_index = smallest_difference_index + max_ind
     area_under_curve_cut = curve[:smallest_difference_index].sum()
     return area_under_curve_cut
+
+
+def find_maxima_in_high_entropy_area(our_array, rms_rolled, decision_cutoff):
+    """
+    Finds maxima in high entropy areas. You need to have made an rms_rolled
+    variable on the entropy areas. decision cut_off was before set to 'mean'
+    The function is not yet optimized, but works in the notebook.
+    """
+    # rms_rolled =
+    decision_array = zero_one_for_jumps_base(rms_rolled, decision_cutoff)
+    if decision_array[0] == 1:
+        ups_and_downs = np.logical_xor(
+            decision_array[1:],
+            decision_array[:-1],
+            )
+        indeces_of_boundaries = np.where(ups_and_downs)[0]
+        maxima = []
+        boundaries = np.append(
+            np.append(np.zeros(1), indeces_of_boundaries),
+            np.zeros(1) + len(our_array),
+        )
+        # print(boundaries)
+        boundaries = boundaries.astype(np.int32)
+        for slice_start, slice_end in zip(boundaries[::2], boundaries[1::2]):
+            # print(slice_start, slice_end)
+            beat = our_array[slice_start:slice_end]
+            maxima.append(slice_start + np.where(beat == beat.max())[0][0])
+        maxima_values = our_array[maxima]
+        # print(maxima_values)
+        rep_array = np.zeros(len(our_array))
+        rep_array[maxima] = np.mean(maxima_values)
+        plt.plot(our_array, alpha=0.7)
+        plt.plot(rep_array, alpha=0.4)
+    else:
+        ups_and_downs = np.logical_xor(decision_array[1:], decision_array[:-1])
+        indeces_of_boundaries = np.where(ups_and_downs)[0]
+        maxima = []
+        boundaries = np.append(
+            indeces_of_boundaries,
+            np.zeros(1) + len(our_array),
+        )
+        boundaries = boundaries.astype(np.int32)
+        for slice_start, slice_end in zip(boundaries[::2], boundaries[1::2]):
+            # print(slice_start, slice_end)
+            beat = our_array[slice_start:slice_end]
+            maxima.append(slice_start + np.where(beat == beat.max())[0][0])
+        maxima_values = our_array[maxima]
+        # print(maxima_values)
+        rep_array = np.zeros(len(our_array))
+        rep_array[maxima] = np.mean(maxima_values)
+        plt.plot(our_array, alpha=0.7)
+        plt.plot(rep_array, alpha=0.4)
+        return maxima, maxima_values
