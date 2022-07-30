@@ -984,3 +984,25 @@ def minimal_pipeline(our_chosen_file, heart_lead_number, sample_freq):
     ecg_lead = re_cut_file_data[heart_lead_number]
     emg = pick_lowest_correlation_array(components, ecg_lead)
     return emg
+
+
+def breath_curve_catch(curve):
+    """
+    The function is intended for smoothed arrays!
+    The function takes a smoothed breath array then calculates part of the
+    area under the curve including up to the peak and then to 70% of the peak
+
+    :param curve: smoothed curve made from breath segement of an EMG
+    :type curve: ~numpy.ndarray
+
+    :returns: area under part of the curve
+    :rtype: float
+    """
+    max_ind = (curve.argmax())
+    max_val = curve[max_ind]
+    absolute_val_array = np.abs(curve[max_ind:] - curve.max() * 0.7)
+    smallest_difference_index = absolute_val_array.argmin()
+    closest_element = curve[max_ind:][smallest_difference_index]
+    smallest_difference_index = smallest_difference_index + max_ind
+    area_under_curve_cut = curve[:smallest_difference_index].sum()
+    return area_under_curve_cut
