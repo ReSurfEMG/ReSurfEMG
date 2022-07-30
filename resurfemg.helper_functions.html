@@ -350,6 +350,14 @@ entropy measurements.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.find_maxima_in_high_entropy_area">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">find_maxima_in_high_entropy_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rms_rolled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decision_cutoff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.find_maxima_in_high_entropy_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds maxima in high entropy areas. You need to have made an rms_rolled
+variable on the entropy areas. decision cut_off was before set to ‘mean’
+The function is not yet optimized, but works in the notebook.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.full_rolling_rms">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">full_rolling_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.full_rolling_rms" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function computes a root mean squared envelope over an
