@@ -898,12 +898,12 @@ def gating(
             k_start = max([0, int(peak-gate_width/2)])
             k_end = min([int(peak+gate_width/2), max_sample])
 
-        for k in range(k_start, k_end):
-            leftf = max([0, int(k-1.5*gate_width)])
-            rightf = min([int(k+1.5*gate_width), max_sample])
-            src_signal_gated[k] = np.nanmean(
-                src_signal_gated_rms[leftf:rightf]
-            )
+            for k in range(k_start, k_end):
+                leftf = max([0, int(k-1.5*gate_width)])
+                rightf = min([int(k+1.5*gate_width), max_sample])
+                src_signal_gated[k] = np.nanmean(
+                    src_signal_gated_rms[leftf:rightf]
+                )
     # else:
     #     print("You did not choose a valid gating method")
 
