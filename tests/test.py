@@ -25,7 +25,8 @@ from resurfemg.helper_functions import notch_filter
 from resurfemg.helper_functions import show_my_power_spectrum
 from resurfemg.helper_functions import naive_rolling_rms
 from resurfemg.helper_functions import vect_naive_rolling_rms
-
+from resurfemg.helper_functions import pick_more_peaks_array
+from resurfemg.helper_functions import pick_lowest_correlation_array
 from resurfemg.helper_functions import zero_one_for_jumps_base
 from resurfemg.helper_functions import compute_ICA_two_comp
 from resurfemg.helper_functions import working_pipeline_exp
@@ -66,6 +67,38 @@ class TestHashMethods(unittest.TestCase):
             with open(os.path.join(td, tempfile2), 'w') as tf:
                 tf.write('string')
             self.assertTrue(hash_it_up_right_all(td, '.Poly5').equals(hash_it_up_right_all(td, '.Poly5')))
+
+
+class TestComponentPickingMethods(unittest.TestCase):
+
+    def test_pick_more_peaks_array(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
+        sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
+        components = compute_ICA_two_comp(sample_emg_filtered)
+        emg = pick_more_peaks_array(components)
+        self.assertEqual(
+            (len(emg)),
+            len(components[0]) ,
+        )
+    def test_pick_lowest_correlation_array(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered[1] = sample_emg_filtered[0]
+        sample_emg_filtered[2] = sample_emg_filtered[0]*0.7
+        sample_emg_filtered[2,20] = 0
+        sample_emg_filtered[2,40] = 0
+        sample_emg_filtered[2,80] = 0
+        sample_emg_filtered[2,21] = 100
+        sample_emg_filtered[2,42] = 100
+        sample_emg_filtered[2,81] = 100
+        components = sample_emg_filtered[1], sample_emg_filtered[2]
+        emg = pick_lowest_correlation_array(components, sample_emg_filtered[0])
+        self.assertEqual(
+            sum(emg),
+            sum(sample_emg_filtered[2]) ,
+        )
 
 
 class TestFilteringMethods(unittest.TestCase):

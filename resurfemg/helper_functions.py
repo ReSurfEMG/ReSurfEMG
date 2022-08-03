@@ -333,7 +333,7 @@ def show_my_power_spectrum(sample, sample_rate, upper_window):
     :type sample: ~numpy.ndarray
     :param sample_rate: Number of samples per second
     :type sample_rate: int
-    :param upper_window: The end ofwindow over which values will be plotted
+    :param upper_window: The end of window over which values will be plotted
     :type upper_window: int
 
     :return: :code:`yf, xf` tuple of fourier transformed array and
@@ -341,14 +341,15 @@ def show_my_power_spectrum(sample, sample_rate, upper_window):
     :rtype: Tuple[float, float]
     """
     N = len(sample)
-    # for our emgs samplerate is usually 2048
-    yf = fft((sample))
+    # for our emgs sample rate is usually 2048
+    yf = np.abs(fft(sample))**2
     xf = fftfreq(N, 1 / sample_rate)
 
-    plt.plot(xf, np.abs(yf))
-    plt.xlim(0, upper_window)
+    idx = [i for i, v in enumerate(xf) if (0 <= v <= upper_window)]
+
+    plt.plot(xf[idx], yf[idx])
     plt.show()
-    return (yf, xf)
+    return yf, xf
 
 
 def emg_highpass_butter(data_emg, cut_above, sample_rate):
@@ -489,6 +490,48 @@ def pick_more_peaks_array(components_tuple):
         emg_component = components_tuple[1]
     else:
         print("this is very strange data, please examine by hand")
+    return emg_component
+
+
+def pick_lowest_correlation_array(components_tuple, ecg_lead):
+    """Here we have a function that takes a tuple with the two parts
+    of ICA and the array containing the ECG recording, and finds the
+    ICA component with the lowest similarity to the ECG.
+    Data should not have been finally filtered to envelope level
+
+    :param components_tuple: tuple of two arrays representing different signals
+    :type components_tuple: Tuple[~numpy.ndarray, ~numpy.ndarray]
+
+    :param ecg_lead: array containing the ECG recording
+    :type ecg_lead: numpy.ndarray
+
+    :returns: Array with the lowest correlation coefficient
+     to the ECG lead (should usually be the EMG as opposed to ECG)
+    :rtype: ~numpy.ndarray
+    """
+    c0 = components_tuple[0]
+    c1 = components_tuple[1]
+
+    # create a tuple containing the data, each row is a variable,
+    # each column is an observation
+
+    corr_tuple = np.row_stack((ecg_lead, c0, c1))
+
+    # compute the correlation matrix
+    # the absolute value is used, because the ICA decomposition might
+    # produce a component with negative peaks. In this case
+    # the signals will be maximally negatively correlated
+
+    corr_matrix = abs(np.corrcoef(corr_tuple))
+
+    # get the component with the lowest correlation to ECG
+    # the matriz is symmetric, so we can check just the first row
+    # the first coefficient is the autocorrelation of the ECG lead,
+    # so we can check row 1 and 2
+
+    lowest_index = np.argmin(corr_matrix[0][1:])
+    emg_component = components_tuple[lowest_index]
+
     return emg_component
 
 
@@ -908,3 +951,111 @@ def gating(
     #     print("You did not choose a valid gating method")
 
     return src_signal_gated
+
+
+def minimal_pipeline(our_chosen_file, heart_lead_number, sample_freq):
+    """
+    Here we have a minimal basic pre-processing pipeline. Note
+    heart leads should be counted in Python numbering
+    i.e. lead number one is zero.
+
+    :param our_chosen_file: EMG array data w.g. Poly5Reader's samples data
+    :type our_chosen_file: ~numpy.ndarray
+    :param heart_lead_number: number of lead over heart counting from zero
+    :type rsignal2: int
+    :param sample_freq: sampling frequency of EMG, often 2048
+    :type sample_freq: int
+
+    :returns: A minimally processed EMG signal
+    :rtype: ~numpy.ndarray
+    """
+    # step 1 cut off any wierd end
+    cut_file_data = bad_end_cutter_for_samples(
+        our_chosen_file, percent_to_cut=3, tolerance_percent=5)
+    # step 2 minimal filtering
+    bd_filtered_file_data = emg_bandpass_butter_sample(
+        cut_file_data, 5, 450, sample_freq, output='sos')
+    # step 3 end-cutting again to get rid of filtering artifacts
+    re_cut_file_data = bad_end_cutter_for_samples(
+        bd_filtered_file_data, percent_to_cut=3, tolerance_percent=5)
+    # skip step4 and do step 5 ICA
+    components = compute_ICA_two_comp(re_cut_file_data)
+    #     the secret hidden step!
+    ecg_lead = re_cut_file_data[heart_lead_number]
+    emg = pick_lowest_correlation_array(components, ecg_lead)
+    return emg
+
+
+def breath_curve_catch(curve):
+    """
+    The function is intended for smoothed arrays!
+    The function takes a smoothed breath array then calculates part of the
+    area under the curve including up to the peak and then to 70% of the peak
+
+    :param curve: smoothed curve made from breath segement of an EMG
+    :type curve: ~numpy.ndarray
+
+    :returns: area under part of the curve
+    :rtype: float
+    """
+    max_ind = (curve.argmax())
+    # max_val = curve[max_ind]
+    absolute_val_array = np.abs(curve[max_ind:] - curve.max() * 0.7)
+    smallest_difference_index = absolute_val_array.argmin()
+    # closest_element = curve[max_ind:][smallest_difference_index]
+    smallest_difference_index = smallest_difference_index + max_ind
+    area_under_curve_cut = curve[:smallest_difference_index].sum()
+    return area_under_curve_cut
+
+
+def find_maxima_in_high_entropy_area(our_array, rms_rolled, decision_cutoff):
+    """
+    Finds maxima in high entropy areas. You need to have made an rms_rolled
+    variable on the entropy areas. decision cut_off was before set to 'mean'
+    The function is not yet optimized, but works in the notebook.
+    """
+    # rms_rolled =
+    decision_array = zero_one_for_jumps_base(rms_rolled, decision_cutoff)
+    if decision_array[0] == 1:
+        ups_and_downs = np.logical_xor(
+            decision_array[1:],
+            decision_array[:-1],
+            )
+        indeces_of_boundaries = np.where(ups_and_downs)[0]
+        maxima = []
+        boundaries = np.append(
+            np.append(np.zeros(1), indeces_of_boundaries),
+            np.zeros(1) + len(our_array),
+        )
+        # print(boundaries)
+        boundaries = boundaries.astype(np.int32)
+        for slice_start, slice_end in zip(boundaries[::2], boundaries[1::2]):
+            # print(slice_start, slice_end)
+            beat = our_array[slice_start:slice_end]
+            maxima.append(slice_start + np.where(beat == beat.max())[0][0])
+        maxima_values = our_array[maxima]
+        # print(maxima_values)
+        rep_array = np.zeros(len(our_array))
+        rep_array[maxima] = np.mean(maxima_values)
+        plt.plot(our_array, alpha=0.7)
+        plt.plot(rep_array, alpha=0.4)
+    else:
+        ups_and_downs = np.logical_xor(decision_array[1:], decision_array[:-1])
+        indeces_of_boundaries = np.where(ups_and_downs)[0]
+        maxima = []
+        boundaries = np.append(
+            indeces_of_boundaries,
+            np.zeros(1) + len(our_array),
+        )
+        boundaries = boundaries.astype(np.int32)
+        for slice_start, slice_end in zip(boundaries[::2], boundaries[1::2]):
+            # print(slice_start, slice_end)
+            beat = our_array[slice_start:slice_end]
+            maxima.append(slice_start + np.where(beat == beat.max())[0][0])
+        maxima_values = our_array[maxima]
+        # print(maxima_values)
+        rep_array = np.zeros(len(our_array))
+        rep_array[maxima] = np.mean(maxima_values)
+        plt.plot(our_array, alpha=0.7)
+        plt.plot(rep_array, alpha=0.4)
+        return maxima, maxima_values
