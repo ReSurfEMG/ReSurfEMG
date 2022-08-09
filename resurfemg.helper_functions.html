@@ -188,25 +188,6 @@ values but returns only the array.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.helper_functions.breath_curve_catch">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">breath_curve_catch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">curve</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.breath_curve_catch" title="Permalink to this definition">¶</a></dt>
-<dd><p>The function is intended for smoothed arrays!
-The function takes a smoothed breath array then calculates part of the
-area under the curve including up to the peak and then to 70% of the peak</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>curve</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – smoothed curve made from breath segement of an EMG</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>area under part of the curve</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.compute_ICA_two_comp">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">compute_ICA_two_comp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_samples</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.compute_ICA_two_comp" title="Permalink to this definition">¶</a></dt>
 <dd><p>A function that performs an independant component analysis
@@ -350,14 +331,6 @@ entropy measurements.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.helper_functions.find_maxima_in_high_entropy_area">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">find_maxima_in_high_entropy_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rms_rolled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decision_cutoff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.find_maxima_in_high_entropy_area" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds maxima in high entropy areas. You need to have made an rms_rolled
-variable on the entropy areas. decision cut_off was before set to ‘mean’
-The function is not yet optimized, but works in the notebook.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.full_rolling_rms">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">full_rolling_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.full_rolling_rms" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function computes a root mean squared envelope over an
@@ -421,29 +394,6 @@ the <code class="code docutils literal notranslate"><span class="pre">right</spa
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[<a class="reference internal" href="#resurfemg.helper_functions.Range" title="resurfemg.helper_functions.Range">Range</a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.helper_functions.minimal_pipeline">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">minimal_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heart_lead_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_freq</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.minimal_pipeline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Here we have a minimal basic pre-processing pipeline. Note
-heart leads should be counted in Python numbering
-i.e. lead number one is zero.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>our_chosen_file</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – EMG array data w.g. Poly5Reader’s samples data</p></li>
-<li><p><strong>heart_lead_number</strong> – number of lead over heart counting from zero</p></li>
-<li><p><strong>sample_freq</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – sampling frequency of EMG, often 2048</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A minimally processed EMG signal</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
