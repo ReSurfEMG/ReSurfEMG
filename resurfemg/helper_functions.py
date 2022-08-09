@@ -20,9 +20,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import FastICA
 import textdistance
-#from math import log, e
-#from collections import namedtuple
-#import copy
 
 
 class Range(namedtuple('RangeBase', 'start,end')):
@@ -859,6 +856,7 @@ def full_rolling_rms(x, N):
     emg_rms = np.sqrt(np.convolve(x2, window, 'valid'))
     return emg_rms
 
+
 def gating(
     src_signal,
     gate_peaks,
@@ -904,14 +902,14 @@ def gating(
             k_end = min([int(peak+gate_width/2), src_signal_gated.shape[0]])
             for k in range(k_start, k_end):
                 frac = (k - peak + gate_width/2)/gate_width
-                src_signal_gated[k] = (1 - frac)*pre_ave_emg + frac*post_ave_emg
+                src_signal_gated[k] = (1 - frac) * pre_ave_emg + frac * post_ave_emg
     elif method == 2:
         # Method 2: Fill with window length mean over prior section
         for i, peak in enumerate(gate_peaks):
             pre_ave_emg = np.mean(
                 src_signal[int(peak-1.5*gate_width):
                 int(peak-gate_width/2-1)]
-                )
+            )
 
             k_start = max([0, int(peak-gate_width/2)])
             k_end = min([int(peak+gate_width/2), src_signal_gated.shape[0]])
@@ -924,13 +922,15 @@ def gating(
             for k in range(
                 max([0, int(peak-gate_width/2)]),
                 min([max_sample, int(peak+gate_width/2)])
-                ):
+            ):
                 gate_samples.append(k)
 
         src_signal_gated_base = copy.deepcopy(src_signal_gated)
         src_signal_gated_base[gate_samples] = np.NaN
-        src_signal_gated_rms = full_rolling_rms(src_signal_gated_base,gate_width)
-        
+        src_signal_gated_rms = full_rolling_rms(
+            src_signal_gated_base,
+            gate_width,)
+
         for i, peak in enumerate(gate_peaks):
             k_start = max([0, int(peak-gate_width/2)])
             k_end = min([int(peak+gate_width/2), max_sample])
