@@ -872,59 +872,58 @@ def gating(
     :type src_signalsignal: ~numpy.ndarray
     :param gate_peaks: Peaks to be gated
     :type gate_peaks: ~list
-    :param gate_width: width of the gate  
+    :param gate_width: width of the gate
     :param method: filling method of gate
         0: Filled with zeros
         1: Interpolation samples before and after
         2: Filled with average of prior segment
         3: Fill with running average of RMS (default)
     :type method: int
-    """   
+    """
     src_signal_gated = copy.deepcopy(src_signal)
 
     if method <= 1:
         # Method 0: Fill with zeros
-        gate_samples = list()
-        for i in enumerate(gate_peaks):
-            for k in range(int(gate_peaks[i]-gate_width/2),int(gate_peaks[i]+gate_width/2)):
+        gate_samples = []
+        for i, peak in enumerate(gate_peaks):
+            for k in range(int(peak-gate_width/2),int(peak+gate_width/2)):
                 gate_samples.append(k)
 
         src_signal_gated[gate_samples] = 0
     if method == 1:
         # Method 1: Fill with interpolation pre- and post gate sample
-        for i in enumerate(gate_peaks):
-            pre_ave_emg = src_signal[int(gate_peaks[i]-gate_width/2-1)]
-        
-            if int(gate_peaks[i]+gate_width/2+1) < src_signal_gated.shape[0]:
-                post_ave_emg = src_signal[int(gate_peaks[i]+gate_width/2+1)]
+        for i, peak in enumerate(gate_peaks):
+            pre_ave_emg = src_signal[int(peak-gate_width/2-1)]
+
+            if int(peak+gate_width/2+1) < src_signal_gated.shape[0]:
+                post_ave_emg = src_signal[int(peak+gate_width/2+1)]
             else:
                 post_ave_emg = 0
 
-            k_start = max([0, int(gate_peaks[i]-gate_width/2)])
-            k_end = min([int(gate_peaks[i]+gate_width/2), src_signal_gated.shape[0]])
+            k_start = max([0, int(peak-gate_width/2)])
+            k_end = min([int(peak+gate_width/2), src_signal_gated.shape[0]])
             for k in range(k_start, k_end):
-                f = (k - gate_peaks[i] + gate_width/2)/gate_width
-                src_signal_gated[k] = (1 - f)*pre_ave_emg + f*post_ave_emg
+                frac = (k - peak + gate_width/2)/gate_width
+                src_signal_gated[k] = (1 - frac)*pre_ave_emg + frac*post_ave_emg
     elif method == 2:
         # Method 2: Fill with window length mean over prior section
-        for i in enumerate(gate_peaks):
+        for i, peak in enumerate(gate_peaks):
             pre_ave_emg = np.mean(
-                src_signal[int(gate_peaks[i]-1.5*gate_width):
-                int(gate_peaks[i]-gate_width/2-1)]
+                src_signal[int(peak-1.5*gate_width):
+                int(peak-gate_width/2-1)]
                 )
 
-            k_start = max([0, int(gate_peaks[i]-gate_width/2)])
-            k_end = min([int(gate_peaks[i]+gate_width/2), src_signal_gated.shape[0]])
+            k_start = max([0, int(peak-gate_width/2)])
+            k_end = min([int(peak+gate_width/2), src_signal_gated.shape[0]])
             for k in range(k_start, k_end):
-                f = (k - gate_peaks[i] + gate_width/2)/gate_width
                 src_signal_gated[k] = pre_ave_emg
     elif method == 3:
         # Method 3: Fill with moving average over RMS
-        gate_samples = list()
-        for i in enumerate(gate_peaks):
+        gate_samples = []
+        for i, peak in enumerate(gate_peaks):
             for k in range(
-                int(gate_peaks[i]-gate_width/2),
-                int(gate_peaks[i]+gate_width/2)
+                int(peak-gate_width/2),
+                int(peak+gate_width/2)
                 ):
                 gate_samples.append(k)
 
@@ -932,14 +931,13 @@ def gating(
         src_signal_gated_base[gate_samples] = np.NaN
         src_signal_gated_rms = full_rolling_rms(src_signal_gated_base,gate_width)
         max_sample = src_signal_gated.shape[0]
-        for i in enumerate(gate_peaks):
-            k_start = max([0, int(gate_peaks[i]-gate_width/2)])
-            k_end = min([int(gate_peaks[i]+gate_width/2), max_sample])
-            
+        for i, peak in enumerate(gate_peaks):
+            k_start = max([0, int(peak-gate_width/2)])
+            k_end = min([int(peak+gate_width/2), max_sample])
+
             for k in range(k_start, k_end):
                 src_signal_gated[k] = np.nanmean(
                     src_signal_gated_rms[max([0, int(k-1.5*gate_width)]):
                     min([int(k+1.5*gate_width), max_sample])])
-    
-    return src_signal_gated
 
+    return src_signal_gated
