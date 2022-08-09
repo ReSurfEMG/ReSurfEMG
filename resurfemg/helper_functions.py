@@ -11,6 +11,7 @@ from collections import namedtuple
 import math
 from math import log, e
 import copy
+# import builtins
 import builtins
 from scipy import signal
 from scipy.fft import fft, fftfreq
@@ -19,6 +20,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import FastICA
 import textdistance
+#from math import log, e
+#from collections import namedtuple
+#import copy
 
 
 class Range(namedtuple('RangeBase', 'start,end')):
@@ -835,6 +839,52 @@ def relative_levenshtein(signal1, signal2):
     normalized_distance = distance / longer_signal_len
     return normalized_distance
 
+def gating(
+    src_signal, 
+    gate_peaks, 
+    gate_width=205, 
+    method='interpolate'
+):
+    """
+    Eliminate peaks (e.g. QRS) from src_signal using gates
+    of width gate_width. The gate either filled by zeros or interpolation.
+    :param src_signal: Signal to process
+    :type src_signalsignal: ~numpy.ndarray
+    :param gate_peaks: Peaks to be gated
+    :type gate_peaks: ~list
+    :param gate_width: width of the gate
+    :type gate_peaks: int
+    :param method: filling method of gate. 
+        "interpolate": Interpolation samples before and after (default)
+        "zero": filled with zeros
+
+    """
+    
+    src_signal_gated = copy.deepcopy(src_signal)
+
+    gate_samples = list()
+    for i in range(len(gate_peaks)):
+        for k in range(int(gate_peaks[i]-gate_width/2),int(gate_peaks[i]+gate_width/2)):
+            gate_samples.append(k)
+
+    
+    src_signal_gated[gate_samples] = 0
+    if method == 'interpolate':
+        for i in range(len(gate_peaks)):
+            pre_ave_EMG = src_signal[int(gate_peaks[i]-gate_width/2-1)]
+                
+            if int(gate_peaks[i]+gate_width/2+1) < src_signal_gated.shape[0]:
+                post_ave_EMG = src_signal[int(gate_peaks[i]+gate_width/2+1)]
+            else:
+                post_ave_EMG = 0
+
+            k_start = max([0, int(gate_peaks[i]-gate_width/2)])
+            k_end = min([int(gate_peaks[i]+gate_width/2), src_signal_gated.shape[0]])
+            for k in range(k_start, k_end):
+                f = (k - gate_peaks[i] + gate_width/2)/gate_width
+                src_signal_gated[k] = (1 - f)*pre_ave_EMG + f*post_ave_EMG
+    
+    return src_signal_gated
 
 def full_rolling_rms(x, N):
     """This function computes a root mean squared envelope over an
@@ -844,218 +894,63 @@ def full_rolling_rms(x, N):
 
     :param x: Samples from the EMG
     :type x: ~numpy.ndarray
-    :param N: Length of the sample use as window for function
+    :param N: Legnth of the sample use as window for function
     :type N: int
 
     :returns: The root-mean-squared EMG sample data
-    :rtype: ~numpy.ndarray
+    :rtype: ~numpy.ndarray 
     """
-    x_pad = np.pad(x, (0, N-1), 'constant', constant_values=(0, 0))
-    x2 = np.power(x_pad, 2)
+    x2 = np.power(x,2)
     window = np.ones(N)/float(N)
     emg_rms = np.sqrt(np.convolve(x2, window, 'valid'))
     return emg_rms
 
-
-def gating(
-    src_signal,
-    gate_peaks,
-    gate_width=205,
-    method=1,
+def RMS_gating(
+    src_signal, 
+    gate_peaks, 
+    gate_width=205, 
+    RMS_N = 200,
+    method='interpolate'
 ):
     """
     Eliminate peaks (e.g. QRS) from src_signal using gates
     of width gate_width. The gate either filled by zeros or interpolation.
-    The filling method for the gate is encoded as follows:
-    0: Filled with zeros
-    1: Interpolation samples before and after
-    2: Filled with average of prior segment
-    3: Fill with running average of RMS (default)
-
     :param src_signal: Signal to process
     :type src_signalsignal: ~numpy.ndarray
     :param gate_peaks: Peaks to be gated
     :type gate_peaks: ~list
     :param gate_width: width of the gate
-    :param method: filling method of gate
-    :type method: int
+    :type gate_peaks: int
+    :param method: filling method of gate. 
+        "interpolate": Interpolation samples before and after (default)
+        "zero": filled with zeros
+
     """
+    
+    gate_samples = list()
+    for i in range(len(gate_peaks)):
+        for k in range(int(gate_peaks[i]-gate_width/2),int(gate_peaks[i]+gate_width/2)):
+            gate_samples.append(k)
+
+    
     src_signal_gated = copy.deepcopy(src_signal)
-    max_sample = src_signal_gated.shape[0]
-    if method <= 1:
-        # Method 0: Fill with zeros
-        gate_samples = []
-        for i, peak in enumerate(gate_peaks):
-            for k in range(
-                max([0, int(peak-gate_width/2)]),
-                min([max_sample, int(peak+gate_width/2)]),
-            ):
-                gate_samples.append(k)
+    src_signal_gated[gate_samples] = 0
 
-        src_signal_gated[gate_samples] = 0
-    if method == 1:
-        # Method 1: Fill with interpolation pre- and post gate sample
-        for i, peak in enumerate(gate_peaks):
-            pre_ave_emg = src_signal[int(peak-gate_width/2-1)]
-
-            if int(peak+gate_width/2+1) < src_signal_gated.shape[0]:
-                post_ave_emg = src_signal[int(peak+gate_width/2+1)]
+    src_signal_RMS_gated = full_rolling_rms(src_signal_gated, RMS_N)
+    if method == 'interpolate':
+        for i in range(len(gate_peaks)):
+            pre_ave_EMG = src_signal_RMS_gated[int(gate_peaks[i]-gate_width/2)-1]
+                
+            if int(gate_peaks[i]+gate_width/2+1) < src_signal_RMS_gated.shape[0]:
+                post_ave_EMG = src_signal_RMS_gated[int(gate_peaks[i]+gate_width/2)+1]
             else:
-                post_ave_emg = 0
+                post_ave_EMG = 0
 
-            k_start = max([0, int(peak-gate_width/2)])
-            k_end = min(
-                [int(peak+gate_width/2), src_signal_gated.shape[0]]
-                )
+            k_start = max([0, int(gate_peaks[i]-gate_width/2)])
+            k_end = min([int(gate_peaks[i]+gate_width/2), src_signal_RMS_gated.shape[0]])
             for k in range(k_start, k_end):
-                frac = (k - peak + gate_width/2)/gate_width
-                loup = (1 - frac) * pre_ave_emg + frac * post_ave_emg
-                src_signal_gated[k] = loup
-    elif method == 2:
-        # Method 2: Fill with window length mean over prior section
-        for i, peak in enumerate(gate_peaks):
-            pre_ave_emg = np.mean(
-                src_signal[int(peak-1.5*gate_width): int(peak-gate_width/2-1)])
+                f = (k - gate_peaks[i] + gate_width/2)/gate_width
+                src_signal_RMS_gated[k] = (1 - f)*pre_ave_EMG + f*post_ave_EMG
+    
+    return src_signal_RMS_gated
 
-            k_start = max([0, int(peak-gate_width/2)])
-            k_end = min([int(peak+gate_width/2), src_signal_gated.shape[0]])
-            for k in range(k_start, k_end):
-                src_signal_gated[k] = pre_ave_emg
-    elif method == 3:
-        # Method 3: Fill with moving average over RMS
-        gate_samples = []
-        for i, peak in enumerate(gate_peaks):
-            for k in range(
-                max([0, int(peak-gate_width/2)]),
-                min([max_sample, int(peak+gate_width/2)])
-            ):
-                gate_samples.append(k)
-
-        src_signal_gated_base = copy.deepcopy(src_signal_gated)
-        src_signal_gated_base[gate_samples] = np.NaN
-        src_signal_gated_rms = full_rolling_rms(
-            src_signal_gated_base,
-            gate_width,)
-
-        for i, peak in enumerate(gate_peaks):
-            k_start = max([0, int(peak-gate_width/2)])
-            k_end = min([int(peak+gate_width/2), max_sample])
-
-        for k in range(k_start, k_end):
-            leftf = max([0, int(k-1.5*gate_width)])
-            rightf = min([int(k+1.5*gate_width), max_sample])
-            src_signal_gated[k] = np.nanmean(
-                src_signal_gated_rms[leftf:rightf]
-            )
-    # else:
-    #     print("You did not choose a valid gating method")
-
-    return src_signal_gated
-
-
-def minimal_pipeline(our_chosen_file, heart_lead_number, sample_freq):
-    """
-    Here we have a minimal basic pre-processing pipeline. Note
-    heart leads should be counted in Python numbering
-    i.e. lead number one is zero.
-
-    :param our_chosen_file: EMG array data w.g. Poly5Reader's samples data
-    :type our_chosen_file: ~numpy.ndarray
-    :param heart_lead_number: number of lead over heart counting from zero
-    :type rsignal2: int
-    :param sample_freq: sampling frequency of EMG, often 2048
-    :type sample_freq: int
-
-    :returns: A minimally processed EMG signal
-    :rtype: ~numpy.ndarray
-    """
-    # step 1 cut off any wierd end
-    cut_file_data = bad_end_cutter_for_samples(
-        our_chosen_file, percent_to_cut=3, tolerance_percent=5)
-    # step 2 minimal filtering
-    bd_filtered_file_data = emg_bandpass_butter_sample(
-        cut_file_data, 5, 450, sample_freq, output='sos')
-    # step 3 end-cutting again to get rid of filtering artifacts
-    re_cut_file_data = bad_end_cutter_for_samples(
-        bd_filtered_file_data, percent_to_cut=3, tolerance_percent=5)
-    # skip step4 and do step 5 ICA
-    components = compute_ICA_two_comp(re_cut_file_data)
-    #     the secret hidden step!
-    ecg_lead = re_cut_file_data[heart_lead_number]
-    emg = pick_lowest_correlation_array(components, ecg_lead)
-    return emg
-
-
-def breath_curve_catch(curve):
-    """
-    The function is intended for smoothed arrays!
-    The function takes a smoothed breath array then calculates part of the
-    area under the curve including up to the peak and then to 70% of the peak
-
-    :param curve: smoothed curve made from breath segement of an EMG
-    :type curve: ~numpy.ndarray
-
-    :returns: area under part of the curve
-    :rtype: float
-    """
-    max_ind = (curve.argmax())
-    # max_val = curve[max_ind]
-    absolute_val_array = np.abs(curve[max_ind:] - curve.max() * 0.7)
-    smallest_difference_index = absolute_val_array.argmin()
-    # closest_element = curve[max_ind:][smallest_difference_index]
-    smallest_difference_index = smallest_difference_index + max_ind
-    area_under_curve_cut = curve[:smallest_difference_index].sum()
-    return area_under_curve_cut
-
-
-def find_maxima_in_high_entropy_area(our_array, rms_rolled, decision_cutoff):
-    """
-    Finds maxima in high entropy areas. You need to have made an rms_rolled
-    variable on the entropy areas. decision cut_off was before set to 'mean'
-    The function is not yet optimized, but works in the notebook.
-    """
-    # rms_rolled =
-    decision_array = zero_one_for_jumps_base(rms_rolled, decision_cutoff)
-    if decision_array[0] == 1:
-        ups_and_downs = np.logical_xor(
-            decision_array[1:],
-            decision_array[:-1],
-            )
-        indeces_of_boundaries = np.where(ups_and_downs)[0]
-        maxima = []
-        boundaries = np.append(
-            np.append(np.zeros(1), indeces_of_boundaries),
-            np.zeros(1) + len(our_array),
-        )
-        # print(boundaries)
-        boundaries = boundaries.astype(np.int32)
-        for slice_start, slice_end in zip(boundaries[::2], boundaries[1::2]):
-            # print(slice_start, slice_end)
-            beat = our_array[slice_start:slice_end]
-            maxima.append(slice_start + np.where(beat == beat.max())[0][0])
-        maxima_values = our_array[maxima]
-        # print(maxima_values)
-        rep_array = np.zeros(len(our_array))
-        rep_array[maxima] = np.mean(maxima_values)
-        plt.plot(our_array, alpha=0.7)
-        plt.plot(rep_array, alpha=0.4)
-    else:
-        ups_and_downs = np.logical_xor(decision_array[1:], decision_array[:-1])
-        indeces_of_boundaries = np.where(ups_and_downs)[0]
-        maxima = []
-        boundaries = np.append(
-            indeces_of_boundaries,
-            np.zeros(1) + len(our_array),
-        )
-        boundaries = boundaries.astype(np.int32)
-        for slice_start, slice_end in zip(boundaries[::2], boundaries[1::2]):
-            # print(slice_start, slice_end)
-            beat = our_array[slice_start:slice_end]
-            maxima.append(slice_start + np.where(beat == beat.max())[0][0])
-        maxima_values = our_array[maxima]
-        # print(maxima_values)
-        rep_array = np.zeros(len(our_array))
-        rep_array[maxima] = np.mean(maxima_values)
-        plt.plot(our_array, alpha=0.7)
-        plt.plot(rep_array, alpha=0.4)
-        return maxima, maxima_values
