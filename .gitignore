@@ -78,6 +78,7 @@ venv.bak/
 /researcher_interface/output_emg_processed
 /researcher_interface/output_emg_processed_upsampled
 /researcher_interface/output_emg_processed_upsampled/*
+/researcher_interface/ML_files/*
 /ML_files/*
 /not_pushed/
 /notebooks/my_saved_experiments.csv
