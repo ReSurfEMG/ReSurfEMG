@@ -586,7 +586,15 @@ def slices_slider(array_sample, slice_len):
 def entropical(sig):
     """This function computes a certain type of entropy of a series
     signal array.  Input is sig, the signal, and output is an array of
-    entropy measurements.
+    entropy measurements. The function can be used inside a generator
+    to read over slices. 
+
+    :param sig: array containin the signal
+    :type sig: ~numpy.ndarray
+
+    :returns: A number expressing the entropy using math.log w/base 2
+    :rtype: float
+
     """
     probabilit = [n_x/len(sig) for x, n_x in collections.Counter(sig).items()]
     e_x = [-p_x*math.log(p_x, 2) for p_x in probabilit]
