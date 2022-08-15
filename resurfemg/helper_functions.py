@@ -757,10 +757,10 @@ def smooth_for_baseline_with_overlay(
 def ranges_of(array):
     """This function is made to work with :class:`Range` class objects, such
     that is selects ranges and returns tuples of boundaries.
-    
+
     :param my_own_array: array
     :type  my_own_array: ~numpy.ndarray
-    
+
     :return: range_return
     :rtype: tuple
     """
