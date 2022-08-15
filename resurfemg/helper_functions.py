@@ -587,7 +587,7 @@ def entropical(sig):
     """This function computes a certain type of entropy of a series
     signal array.  Input is sig, the signal, and output is an array of
     entropy measurements. The function can be used inside a generator
-    to read over slices. 
+    to read over slices.
 
     :param sig: array containin the signal
     :type sig: ~numpy.ndarray
@@ -757,6 +757,12 @@ def smooth_for_baseline_with_overlay(
 def ranges_of(array):
     """This function is made to work with :class:`Range` class objects, such
     that is selects ranges and returns tuples of boundaries.
+    
+    :param my_own_array: array
+    :type  my_own_array: ~numpy.ndarray
+    
+    :return: range_return
+    :rtype: tuple
     """
     marks = np.logical_xor(array[1:], array[:-1])
     boundaries = np.hstack(
