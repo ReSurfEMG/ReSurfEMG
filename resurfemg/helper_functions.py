@@ -582,20 +582,22 @@ def slices_slider(array_sample, slice_len):
     for i in range(len(array_sample) - slice_len + 1):
         yield array_sample[i:i + slice_len]
 
+
 def slices_jump_slider(array_sample, slice_len, jump):
     """
     This function produces continous sequential slices over an
     array of a certain legnth spaced out by a 'jump'.
-       The function yields, does
+    The function yields, does
     not return these slices.
     The inputs are the following -
     :code:`array_sample`, the signal and :code:`slice_len` - the
-    window which you wish to slide with. 
+    window which you wish to slide with.
     param jump:
     """
-    for i in range(len(array_sample) - (slice_len )):
-            yield array_sample[(jump*i): (( jump*i) + slice_len)]
-            
+    for i in range(len(array_sample) - (slice_len)):
+        yield array_sample[(jump*i):((jump*i) + slice_len)]
+
+
 def entropical(sig):
     """This function computes a certain type of entropy of a series
     signal array.  Input is sig, the signal, and output is an array of
