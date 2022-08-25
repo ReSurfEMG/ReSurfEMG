@@ -16,6 +16,7 @@ import builtins
 from scipy import signal
 from scipy.fft import fft, fftfreq
 from scipy.signal import find_peaks
+from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import FastICA
@@ -1049,3 +1050,55 @@ def gating(
     #     print("You did not choose a valid gating method")
 
     return src_signal_gated
+
+
+def merge(left, right):
+    """
+    Mergey function
+    """
+    # Initialize an empty list output that will be populated
+    # with sorted elements.
+    # Initialize two variables i and j which are used pointers when
+    # iterating through the lists.
+    output = []
+    i = j = 0
+
+    # Executes the while loop if both pointers i and j are less than
+    # the length of the left and right lists
+    while i < len(left) and j < len(right):
+        # Compare the elements at every position of both
+        # lists during each iteration
+        if left[i] < right[j]:
+            # output is populated with the lesser value
+            output.append(left[i])
+            # 10. Move pointer to the right
+            i += 1
+        else:
+            output.append(right[j])
+            j += 1
+    # The remnant elements are picked from the current
+    # pointer value to the end of the respective list
+    output.extend(left[i:])
+    output.extend(right[j:])
+
+    return output
+
+
+def hi_envelope(our_signal, dmax=24):
+    """
+    Takes a 1d signal array, and extracts 'high'envelope,
+    then makes high envelope, based on connecting peaks
+    dmax: int, size of chunks,
+
+    """
+    # locals max
+    lmax = (np.diff(np.sign(np.diff(our_signal))) < 0).nonzero()[0] + 1
+    lmax = lmax[
+        [i+np.argmax(
+            our_signal[lmax[i:i+dmax]]
+        ) for i in range(0, len(lmax), dmax)]
+    ]
+    smoothed = savgol_filter(our_signal[lmax], int(0.8 * (len(lmax))), 3)
+    smoothed_interped = signal.resample(smoothed, len(our_signal))
+
+    return smoothed_interped
