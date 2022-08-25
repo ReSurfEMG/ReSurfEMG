@@ -538,9 +538,17 @@ def pick_lowest_correlation_array(components_tuple, ecg_lead):
 
 def working_pipeline_exp(our_chosen_file):
     """This function produces a filtered respiratory EMG signal from a
-    3 lead sEMG file.  The inputs is :code:`our_chosen_file` which we
+    3 lead sEMG file.  The inputs are :code:`our_chosen_file` which we
     give the function as a string of filename.  The output is the
     processed EMG signal filtered and seperated from ecg components.
+    The algorithm to pick out the EMG here is by having
+    more peaks.
+
+    :param our_chosen_file: Poly5 file
+    :type our_chosen_file: ~TMSiSDK.file_readers.Poly5Reader
+
+    :returns: final_envelope_a
+    :rtype: ~numpy.ndarray
     """
     cut_file_data = bad_end_cutter(
         our_chosen_file,
@@ -572,12 +580,65 @@ def working_pipeline_exp(our_chosen_file):
     return final_envelope_a
 
 
+def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
+    """
+    :param our_chosen_samples: the read EMG file arrays
+    :type our_chosen_samples: ~numpy.ndarray
+    :param picker: the picking strategy for independant components
+    :type picker: str
+
+    :returns: final_envelope_a
+    :rtype: ~numpy.ndarray
+    """
+    cut_file_data = bad_end_cutter_for_samples(
+        our_chosen_samples,
+        percent_to_cut=3,
+        tolerance_percent=5
+    )
+    bd_filtered_file_data = emg_bandpass_butter_sample(
+        cut_file_data,
+        5,
+        450,
+        2048,
+        output='sos'
+    )
+    # step 3 end-cutting again to get rid of filtering artifacts
+    re_cut_file_data = bad_end_cutter_for_samples(
+        bd_filtered_file_data,
+        percent_to_cut=3,
+        tolerance_percent=5
+    )
+    #  and do step for ICA
+    components = compute_ICA_two_comp(re_cut_file_data)
+    #     the picking step!
+    if picker == 'peaks':
+        emg = pick_more_peaks_array(components)
+    elif picker == 'heart':
+        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
+    else:
+        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
+        print("Please choose an exising picker i.e. peaks or hearts ")
+    # now process it in final steps
+    abs_values = abs(emg)
+    final_envelope_d = emg_highpass_butter(abs_values, 150, 2048)
+
+    return final_envelope_d
+
+
 def slices_slider(array_sample, slice_len):
     """This function produces continous sequential slices over an
     array of a certain legnth.  The inputs are the following -
     :code:`array_sample`, the signal and :code:`slice_len` - the
     window which you wish to slide with.  The function yields, does
     not return these slices.
+
+    :param array_sample: array containing the signal
+    :type array_sample: ~numpy.ndarray
+    :param slice_len: the legnth of window on the array
+    :type slice_len: int
+
+    :returns: Actually yields, no return
+    :rtype: ~numpy.ndarray
     """
     for i in range(len(array_sample) - slice_len + 1):
         yield array_sample[i:i + slice_len]
@@ -589,10 +650,17 @@ def slices_jump_slider(array_sample, slice_len, jump):
     array of a certain legnth spaced out by a 'jump'.
     The function yields, does
     not return these slices.
-    The inputs are the following -
-    :code:`array_sample`, the signal and :code:`slice_len` - the
-    window which you wish to slide with.
-    param jump:
+
+    :param array_sample: array containing the signal
+    :type array_sample: ~numpy.ndarray
+    :param slice_len: the legnth of window on the array
+    :type slice_len: int
+    :param jump: the amount by which the winow is moved at iteration
+    :type jump: int
+
+    :returns: Actually yields, no return
+    :rtype: ~numpy.ndarray
+
     """
     for i in range(len(array_sample) - (slice_len)):
         yield array_sample[(jump*i):((jump*i) + slice_len)]
