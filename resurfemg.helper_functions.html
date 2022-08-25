@@ -584,11 +584,22 @@ frequencies (the values for plotting the power spectrum)</p>
 <dd><p>This function produces continous sequential slices over an
 array of a certain legnth spaced out by a ‘jump’.
 The function yields, does
-not return these slices.
-The inputs are the following -
-<code class="code docutils literal notranslate"><span class="pre">array_sample</span></code>, the signal and <code class="code docutils literal notranslate"><span class="pre">slice_len</span></code> - the
-window which you wish to slide with.
-param jump:</p>
+not return these slices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array_sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – array containing the signal</p></li>
+<li><p><strong>slice_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the legnth of window on the array</p></li>
+<li><p><strong>jump</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the amount by which the winow is moved at iteration</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Actually yields, no return</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -599,6 +610,20 @@ array of a certain legnth.  The inputs are the following -
 <code class="code docutils literal notranslate"><span class="pre">array_sample</span></code>, the signal and <code class="code docutils literal notranslate"><span class="pre">slice_len</span></code> - the
 window which you wish to slide with.  The function yields, does
 not return these slices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array_sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – array containing the signal</p></li>
+<li><p><strong>slice_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the legnth of window on the array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Actually yields, no return</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -674,9 +699,41 @@ the signal is put in.</p>
 <dt class="sig sig-object py" id="resurfemg.helper_functions.working_pipeline_exp">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">working_pipeline_exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.working_pipeline_exp" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function produces a filtered respiratory EMG signal from a
-3 lead sEMG file.  The inputs is <code class="code docutils literal notranslate"><span class="pre">our_chosen_file</span></code> which we
+3 lead sEMG file.  The inputs are <code class="code docutils literal notranslate"><span class="pre">our_chosen_file</span></code> which we
 give the function as a string of filename.  The output is the
-processed EMG signal filtered and seperated from ecg components.</p>
+processed EMG signal filtered and seperated from ecg components.
+The algorithm to pick out the EMG here is by having
+more peaks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>our_chosen_file</strong> (<em>Poly5Reader</em>) – Poly5 file</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>final_envelope_a</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.working_pipeline_pre_ml">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">working_pipeline_pre_ml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'heart'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.working_pipeline_pre_ml" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
+<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the picking strategy for independant components</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>final_envelope_a</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
