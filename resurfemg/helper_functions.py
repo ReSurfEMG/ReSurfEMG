@@ -563,15 +563,15 @@ def working_pipeline_exp(our_chosen_file):
         2048,
         output='sos',
     )
-    # step 3 end-cutting again to get rid of filtering artifacts
+    # end-cutting again to get rid of filtering artifacts
     re_cut_file_data = bad_end_cutter_for_samples(
         bd_filtered_file_data,
         percent_to_cut=3,
         tolerance_percent=5,
     )
-    # skip step4 and do step 5 ICA
+    # do ICA
     components = compute_ICA_two_comp(re_cut_file_data)
-    #     the secret hidden step!
+    #  pick components with more peaj
     emg = pick_more_peaks_array(components)
     # now process it in final steps
     abs_values = abs(emg)
@@ -603,7 +603,7 @@ def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
         2048,
         output='sos'
     )
-    # step 3 end-cutting again to get rid of filtering artifacts
+    # step for end-cutting again to get rid of filtering artifacts
     re_cut_file_data = bad_end_cutter_for_samples(
         bd_filtered_file_data,
         percent_to_cut=3,
@@ -772,7 +772,6 @@ def smooth_for_baseline(
     """
     array = single_filtered_array[start:end]
     dists = np.zeros(len(array))
-    # print(len(array), array.max(), array.min())
     wmax, wmin = 0, 0
     nwmax, nwmin = 0, 0
     tail = (smooth - 1) / smooth
