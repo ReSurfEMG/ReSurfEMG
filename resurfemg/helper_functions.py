@@ -1102,6 +1102,7 @@ def hi_envelope(our_signal, dmax=24):
 
     return smoothed_interped
 
+
 def compute_ICA_two_comp_multi(emg_samples):
     """A function that performs an independant component analysis
     (ICA) meant for EMG data that includes stacked arrays,
@@ -1113,7 +1114,6 @@ def compute_ICA_two_comp_multi(emg_samples):
     :returns: Two arrays of independent components (ECG-like and EMG)
     :rtype: ~numpy.ndarray
     """
-    
     all_component_numbers = list(range(emg_samples.shape[0]))
     list_to_c = []
     for i in all_component_numbers:
