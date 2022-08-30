@@ -19,7 +19,7 @@ import numpy as np
 import hashlib
 import h5py
 import re
-# sys.path.insert(0,'C:/Projects/tmsi-python-interface')
+import scipy.io as sio
 from TMSiSDK.file_readers import Poly5Reader
 
 
@@ -75,3 +75,21 @@ def hash_it_up_right_all(origin_folder1, file_extension):
     df = df.rename(columns={'index': 'file_name'})
 
     return df
+
+
+def matlab5_jkmn_to_array(file_name):
+    """
+    This file reads matlab5 files as produced in the Jonkmann
+    laboratory, and returns arrays in the format and shape
+    our functions,those in helper_functions work on.
+
+
+    :param file_name: Filename of matlab5 files
+    :type file_name: str
+
+    :returns: arrayed
+    :rtype: ~numpy.ndarray
+    """
+    file = sio.loadmat(file_name, mdict=None, appendmat=False)
+    arrayed = np.rot90(file['data_emg'])
+    return arrayed
