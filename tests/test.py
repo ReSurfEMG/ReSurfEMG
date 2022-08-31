@@ -29,6 +29,7 @@ from resurfemg.helper_functions import pick_more_peaks_array
 from resurfemg.helper_functions import pick_lowest_correlation_array
 from resurfemg.helper_functions import zero_one_for_jumps_base
 from resurfemg.helper_functions import compute_ICA_two_comp
+from resurfemg.helper_functions import compute_ICA_two_comp_multi
 from resurfemg.helper_functions import working_pipeline_exp
 from resurfemg.helper_functions import entropical
 from resurfemg.helper_functions import smooth_for_baseline
@@ -119,6 +120,30 @@ class TestFilteringMethods(unittest.TestCase):
         )
 
 
+class TestPickingingMethods(unittest.TestCase):
+
+    def test_compute_ICA_two_comp(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
+        sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
+        components = compute_ICA_two_comp(sample_emg_filtered)
+        self.assertEqual(
+            (len(components[1])),
+            len(components[0]) ,
+        )
+    def test_compute_ICA_two_comp_multi(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
+        sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
+        components = compute_ICA_two_comp_multi(sample_emg_filtered)
+        self.assertEqual(
+            (len(components)),
+            2 ,
+        )
+
+
 class TestCuttingingMethods(unittest.TestCase):
 
     def test_emg_bad_end_cutter(self):
@@ -160,9 +185,6 @@ class TestGating(unittest.TestCase):
     ecg_peaks, _  = scipy.signal.find_peaks(sample_emg_filtered[0, :])
 
     def test_gating_method_0(self):
-        # sample_read= Poly5Reader(sample_emg)
-        # sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
-        # ecg_peaks, _  = scipy.signal.find_peaks(sample_emg_filtered[0, :])
         ecg_gated_0 = gating(self.sample_emg_filtered[0, :], self.ecg_peaks, gate_width=205, method=0)
 
         self.assertEqual(
@@ -171,9 +193,6 @@ class TestGating(unittest.TestCase):
         )
 
     def test_gating_method_1(self):
-        # sample_read = Poly5Reader(sample_emg)
-        # sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
-        # ecg_peaks, _  = scipy.signal.find_peaks(sample_emg_filtered[0, :])
         ecg_gated_1 = gating(self.sample_emg_filtered[0, :], self.ecg_peaks, gate_width=205, method=1)
 
         self.assertEqual(
@@ -182,9 +201,6 @@ class TestGating(unittest.TestCase):
         )
     
     def test_gating_method_2(self):
-        # sample_read= Poly5Reader(sample_emg)
-        # sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
-        # ecg_peaks, _  = scipy.signal.find_peaks(sample_emg_filtered[0, :])
         ecg_gated_2 = gating(self.sample_emg_filtered[0, :], self.ecg_peaks, gate_width=205, method=2)
 
         self.assertEqual(
@@ -193,10 +209,7 @@ class TestGating(unittest.TestCase):
         )
     
     def test_gating_method_3(self):
-        # sample_read= Poly5Reader(sample_emg)
-        # sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
         ecg_peaks, _  = scipy.signal.find_peaks(self.sample_emg_filtered[0, :10*2048-1])
-        
         ecg_gated_3 = gating(self.sample_emg_filtered[0, :10*2048], ecg_peaks, gate_width=205, method=3)
 
         self.assertEqual(
