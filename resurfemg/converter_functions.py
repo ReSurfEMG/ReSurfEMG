@@ -2,7 +2,6 @@
 Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
-
 This file contains functions to work with various EMG file types
 from various hardware/software combinations, and convert them down to
 an array that can be further processed with helper_functions or other modules.
@@ -79,8 +78,9 @@ def hash_it_up_right_all(origin_folder1, file_extension):
 
 def matlab5_jkmn_to_array(file_name):
     """
-    This file reads matlab5 files as produced in the Jonkmann
-    laboratory, and returns arrays in the format and shape
+    This file reads matlab5 files as produced in the Jonkman
+    laboratory, on the Biopac system
+    and returns arrays in the format and shape
     our functions,those in helper_functions work on.
 
 
@@ -92,4 +92,9 @@ def matlab5_jkmn_to_array(file_name):
     """
     file = sio.loadmat(file_name, mdict=None, appendmat=False)
     arrayed = np.rot90(file['data_emg'])
+    output_copy = arrayed.copy()
+    arrayed[4] = output_copy[0]
+    arrayed[3] = output_copy[1]
+    arrayed[1] = output_copy[3]
+    arrayed[0] = output_copy[4]
     return arrayed
