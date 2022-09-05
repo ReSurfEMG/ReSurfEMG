@@ -587,7 +587,8 @@ def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
     an array of specific fixed dimenstions
     i.e. a three lead array into an EMG singal,
     the function is legacy code, and most
-    processsing should be done with :code:``working_pipeline_multi`
+    processsing should be done with
+    :code:`working_pipeline_multi`
 
     :param our_chosen_samples: the read EMG file arrays
     :type our_chosen_samples: ~numpy.ndarray
@@ -1099,8 +1100,6 @@ def gating(
                 src_signal_gated[k] = np.nanmean(
                     src_signal_gated_rms[leftf:rightf]
                 )
-    # else:
-    #     print("You did not choose a valid gating method")
 
     return src_signal_gated
 

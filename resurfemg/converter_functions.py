@@ -98,3 +98,17 @@ def matlab5_jkmn_to_array(file_name):
     arrayed[1] = output_copy[3]
     arrayed[0] = output_copy[4]
     return arrayed
+
+def csv_from_jkmn_to_array(file_name):
+    file = pd.read_csv(file_name)
+    new_df = (file.T.reset_index().T.reset_index(drop=True)
+            .set_axis([f'lead.{i+1}' for i in range(file.shape[1])], axis=1))
+
+    arrayed = np.rot90(new_df)
+    output_copy = arrayed.copy()
+    arrayed[4] = output_copy[0]
+    arrayed[3] = output_copy[1]
+    arrayed[1] = output_copy[3]
+    arrayed[0] = output_copy[4]
+    return arrayed
+    
