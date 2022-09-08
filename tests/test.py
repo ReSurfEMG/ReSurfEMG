@@ -14,6 +14,8 @@ from TMSiSDK.file_readers import Poly5Reader
 # converter_functions
 from resurfemg.converter_functions import poly5unpad
 from resurfemg.converter_functions import hash_it_up_right_all
+# multi_lead_type
+from resurfemg.multi_lead_type import compute_ICA_two_comp_selective
 # helper_functions
 from resurfemg.helper_functions import bad_end_cutter
 from resurfemg.helper_functions import bad_end_cutter_better
@@ -120,7 +122,7 @@ class TestFilteringMethods(unittest.TestCase):
         )
 
 
-class TestPickingingMethods(unittest.TestCase):
+class TestPickingMethods(unittest.TestCase):
 
     def test_compute_ICA_two_comp(self):
         sample_read= Poly5Reader(sample_emg)
@@ -138,6 +140,21 @@ class TestPickingingMethods(unittest.TestCase):
         sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
         sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
         components = compute_ICA_two_comp_multi(sample_emg_filtered)
+        self.assertEqual(
+            (len(components)),
+            2 ,
+        )
+
+    def test_compute_ICA_two_comp_selective(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
+        sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
+        components =  compute_ICA_two_comp_selective(
+        sample_emg_filtered,
+        use_all_leads=False,
+        desired_leads=[0, 1],
+        )
         self.assertEqual(
             (len(components)),
             2 ,

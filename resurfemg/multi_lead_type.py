@@ -46,6 +46,9 @@ def compute_ICA_two_comp_selective(
         all_component_numbers = list(range(emg_samples.shape[0]))
     else:
         all_component_numbers = desired_leads
+        for i in all_component_numbers:
+            if i not in list(range(emg_samples.shape[0])):
+                print('You picked nonexistant leads, please see documentation')
     list_to_c = []
     for i in all_component_numbers:
         list_to_c.append(emg_samples[i])
