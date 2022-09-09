@@ -14,6 +14,11 @@ import textwrap
 
 class Config:
 
+    """
+    This class allows configuration of the user's storage folders
+    to be read, and used from the user's computer
+    """
+
     default_locations = (
         './config.json',
         os.path.expanduser('~/.resurfemg/config.json'),
@@ -36,6 +41,10 @@ class Config:
         self.validate()
 
     def usage(self):
+        """
+        Here a message is given if things are not laid out
+        correctly.
+        """
         return textwrap.dedent(
             '''
             Cannot load config.
