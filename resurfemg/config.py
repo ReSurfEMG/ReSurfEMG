@@ -48,7 +48,7 @@ class Config:
             directory as follows:
 
             {{
-                "root": "/path/to/storage"
+                "root_emg_directory": "/path/to/storage"
             }}
 
             The default directory layout is expected to be based on the above
