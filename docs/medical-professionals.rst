@@ -15,8 +15,10 @@ Surface EMG interpretation is a rapidly evolving field without many standards.
 We build interfaces for ongoing research in the form of Jupyter notebooks, 
 as well as tools for clinical research. The main tool for clinical researchers is 
 the dashboard. 
-The dashboard is in a seperate repository [here](https://github.com/ReSurfEMG/ReSurfEMG-dashboard).
+The dashboard is in a seperate repository (https://github.com/ReSurfEMG/ReSurfEMG-dashboard).
 At present to create a dashboard for the first time you need to use some kind of terminal.
+After you have created/installed the dashboard once, you will be able to run it like the
+executable programs you are used to. If you want to get a new release you will need to repeat the process. 
 
 If you have no idea what a terminal even is, grab a scientist or programmer, and
 ask for 10 minutes of thier time.
@@ -28,4 +30,4 @@ back a merge request on it if you feel the whole community
 of researchers will benefit.
 
 If you would like to see more specific questions answered in this 
-documentation, please write us at c.moore@esciencecenter.nl
+documentation, please write us at  e.mos-oppersma@utwente.nl
