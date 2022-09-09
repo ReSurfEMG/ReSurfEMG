@@ -13,6 +13,13 @@ import textwrap
 
 
 class Config:
+    """
+    This class allows configuration on the home computer
+    or remote workspace, of a file setup for data,
+    which is then processed into a variable. Essentially
+    by setting up and modifying a .json file in the appropriate directory
+    users can avoid the need for any hardcoded paths to data.
+    """
 
     default_locations = (
         './config.json',
@@ -36,6 +43,11 @@ class Config:
         self.validate()
 
     def usage(self):
+        """
+        This is essentally a corrective error message if the computer
+        does not have paths configured or files made so that
+        the data paths of config.json can be used
+        """
         return textwrap.dedent(
             '''
             Cannot load config.
