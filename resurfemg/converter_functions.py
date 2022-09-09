@@ -144,7 +144,8 @@ def dvrmn_csv_to_array(file_name):
 def dvrmn_csv_freq_find(file_name):
     """
     This is means to extract the frequency of a Duiverman
-    type csv of emg
+    type csv of emg. Note this data may be resampled down by a
+    factor of 10.
 
     :param file_name: Filename of csv file
     :type file_name: str

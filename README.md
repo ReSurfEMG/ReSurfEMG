@@ -50,6 +50,43 @@ The notebooks are configured to run on various datasets.  Contact
 Candace Makeda Moore ( 📫 c.moore@esciencecenter.nl) to discuss any
 questions on data configuration for your datasets.
 
+
+### Configuring (to work with your data)
+
+In order to preprocess and/or to train  models the code needs to be
+able to locate the raw data you want it to find.
+
+There are several ways to specify the location of the following
+directories:
+
+-   **root_emg_directory:** Special directory.  The rest of the directory layout can
+    be derived from its location.
+-   **preprocessed:** The directory that will be used by preprocessing
+    code to output to.
+-   **models:** The directory to output trained models to.
+
+You can store this information persistently in several locations.
+
+1.  In the same directory where you run the script (or the notebook).
+    Eg. `./config.json`.
+2.  In home directory, eg. `~/.resurfemg/config.json`.
+3.  In global directory, eg `/etc/resurfemg/config.json`.
+
+This file can have this or similar contents:
+
+    {
+ 
+        'root_emg_directory': '/mnt/data',
+        'preprocessed': '/mnt/data/preprocessed',
+        'models': '/mnt/data/models',
+        'output': '/mnt/data/output',
+    }
+
+The file is read as follows: if the files specifies `root_emg_directory`
+directory, then the missing entires are assumed to be relative to
+the root.  You don't need to specify the root entry, if you specify
+all other entires.
+
 ### Test data
 
 You can get test data by extracting it from the Docker image like
