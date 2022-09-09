@@ -42,7 +42,7 @@ class Config:
 
             Please create a file in either one of the locations
             listed below:
-            {},{},{}
+            {}
 
             With the contents that specifies at least the root
             directory as follows:
