@@ -83,7 +83,6 @@ def matlab5_jkmn_to_array(file_name):
     and returns arrays in the format and shape
     our functions,those in helper_functions work on.
 
-
     :param file_name: Filename of matlab5 files
     :type file_name: str
 
@@ -101,16 +100,64 @@ def matlab5_jkmn_to_array(file_name):
 
 
 def csv_from_jkmn_to_array(file_name):
+    """
+    This function takes a file from the Jonkman
+    lab in csv format and changes it
+    into the shape the library functions work on.
+
+    :param file_name: Filename of csv files
+    :type file_name: str
+
+    :returns: arrayed
+    :rtype: ~numpy.ndarray
+    """
     file = pd.read_csv(file_name)
     new_df = (
         file.T.reset_index().T.reset_index(drop=True)
         .set_axis([f'lead.{i+1}' for i in range(file.shape[1])], axis=1)
     )
-
     arrayed = np.rot90(new_df)
-    output_copy = arrayed.copy()
-    arrayed[4] = output_copy[0]
-    arrayed[3] = output_copy[1]
-    arrayed[1] = output_copy[3]
-    arrayed[0] = output_copy[4]
+    arrayed = np.flipud(arrayed)
     return arrayed
+
+
+def dvrmn_csv_to_array(file_name):
+    """
+    This transformed an already preprocessed csv from the Duiverman lab
+    into an EMG in the format our other functions can work on it. Note that
+    some preprocessing steps are already applied so pipelines may
+    need adjusting.
+
+    :param file_name: Filename of csv file
+    :type file_name: str
+
+    :returns: arrayed
+    :rtype: ~numpy.ndarray
+    """
+    file = pd.read_csv(file_name)
+    new_df = file.drop(['Events', 'Time'], axis=1)
+    arrayed = np.rot90(new_df)
+    arrayed = np.flipud(arrayed)
+    return arrayed
+
+
+def dvrmn_csv_freq_find(file_name):
+    """
+    This is means to extract the frequency of a Duiverman
+    type csv of emg
+
+    :param file_name: Filename of csv file
+    :type file_name: str
+
+    :returns: freq
+    :rtype: int
+    """
+    file = pd.read_csv(file_name)
+    sample_points = len(file)
+    time_string = file['Time'][sample_points - 1]
+    seconds = float(time_string[5:10])
+    minutes = float(time_string[2:4])
+    hours = int(time_string[0:1])
+    sum_time = (hours*3600) + (minutes*60) + seconds
+    freq = round(sample_points/sum_time)
+    return freq
