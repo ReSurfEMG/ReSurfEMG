@@ -57,7 +57,59 @@ Additionally this file contains hash functions to track data.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.converter_functions.csv_from_jkmn_to_array">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">csv_from_jkmn_to_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.csv_from_jkmn_to_array" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This function takes a file from the Jonkman
+lab in csv format and changes it
+into the shape the library functions work on.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Filename of csv files</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>arrayed</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.converter_functions.dvrmn_csv_freq_find">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">dvrmn_csv_freq_find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.dvrmn_csv_freq_find" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is means to extract the frequency of a Duiverman
+type csv of emg</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Filename of csv file</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>freq</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.converter_functions.dvrmn_csv_to_array">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">dvrmn_csv_to_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.dvrmn_csv_to_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>This transformed an already preprocessed csv from the Duiverman lab
+into an EMG in the format our other functions can work on it. Note that
+some preprocessing steps are already applied so pipelines may
+need adjusting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Filename of csv file</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>arrayed</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.converter_functions.hash_it_up_right_all">
