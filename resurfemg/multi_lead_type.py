@@ -4,8 +4,8 @@ Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 This file contains functions to work with various EMG arrays
 and other types of data arrays e.g. ventilator signals
-when leads represent something other than inspiratory muscles
-and/or diaphragm in some cases
+when EMG leads represent something other than inspiratory muscles
+and/or diaphragm in some cases.
 """
 
 import collections
@@ -53,7 +53,6 @@ def compute_ICA_two_comp_selective(
     for i in all_component_numbers:
         list_to_c.append(emg_samples[i])
     X = np.column_stack(list_to_c)
-
     ica = FastICA(n_components=2)
     S = ica.fit_transform(X)
     component_0 = S.T[0]

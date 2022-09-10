@@ -3,7 +3,7 @@ Copyright 2022 Netherlands eScience Center and U. Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 This file contains functions to work with various EMG arrays
-and other types of data arrays e.g. ventilator signals
+and other types of data arrays e.g. ventilator signals. 
 """
 
 import collections
@@ -665,7 +665,7 @@ def working_pipeline_multi(our_chosen_samples, picker='heart'):
         tolerance_percent=5
     )
     #  and do step for ICA
-    components = compute_ICA_two_comp(re_cut_file_data)
+    components = compute_ICA_two_comp_multi(re_cut_file_data)
     #     the picking step!
     if picker == 'peaks':
         emg = pick_more_peaks_array(components)
