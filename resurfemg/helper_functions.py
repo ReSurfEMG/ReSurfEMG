@@ -3,7 +3,7 @@ Copyright 2022 Netherlands eScience Center and U. Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 This file contains functions to work with various EMG arrays
-and other types of data arrays e.g. ventilator signals. 
+and other types of data arrays e.g. ventilator signals.
 """
 
 import collections
