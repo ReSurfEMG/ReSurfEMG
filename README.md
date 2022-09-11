@@ -68,10 +68,11 @@ directories:
 You can store this information persistently in several locations.
 
 1.  In the same directory where you run the script (or the notebook).
-    Eg. `./config.json`.
-2.  In home directory, eg. `~/.resurfemg/config.json`.
-3.  In global directory, eg `/etc/resurfemg/config.json`.
+    e.g. `./config.json`.
+2.  In home directory, e.g. `~/.resurfemg/config.json`.
+3.  In global directory, e.g. `/etc/resurfemg/config.json`.
 
+However, we highly reccomend you use the home directory.
 This file can have this or similar contents:
 
     {
@@ -84,8 +85,7 @@ This file can have this or similar contents:
 
 The file is read as follows: if the files specifies `root_emg_directory`
 directory, then the missing entires are assumed to be relative to
-the root.  You don't need to specify the root entry, if you specify
-all other entires.
+the root.  You don't need to specify all entries.
 
 ### Test data
 
