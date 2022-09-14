@@ -134,9 +134,8 @@ def poly_dvrman(file_name):
     # 7 Pes: esophageal pressure (not always recorded)
     # 8 Pga: gastric pressure (not always recorded)
     # 9 RR: respiratory rate I guess (very unreliable)
-    # 10 HR: heart rate 
+    # 10 HR: heart rate
     # 11 Tach: number of breath (not reliable)
- 
 
     :param file_name: Filename of Poly5 Duiverman type file
     :type file_name: str
