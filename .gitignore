@@ -71,7 +71,7 @@ venv.bak/
 
 
 /site
-/historical_notebooks
+# /historical_notebooks
 /researcher_interface/output
 /researcher_interface/output2
 /researcher_interface/output2/*
