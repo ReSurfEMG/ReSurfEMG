@@ -121,7 +121,7 @@ def csv_from_jkmn_to_array(file_name):
     return arrayed
 
 
-def poly_duiverman(file_name):
+def poly_dvrman(file_name):
     """
     This is a function to read in Duiverman type Poly5 files,
     which has 18 layers
