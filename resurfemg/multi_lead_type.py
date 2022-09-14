@@ -42,13 +42,16 @@ def compute_ICA_two_comp_selective(
     :returns: Two arrays of independent components (ECG-like and EMG)
     :rtype: ~numpy.ndarray
     """
-    if use_all_leads is True:
+    if use_all_leads:
         all_component_numbers = list(range(emg_samples.shape[0]))
     else:
         all_component_numbers = desired_leads
-        for i in all_component_numbers:
-            if i not in list(range(emg_samples.shape[0])):
-                print('You picked nonexistant leads, please see documentation')
+        diff = set(all_component_numbers) - set(range(emg_samples.shape[0]))
+        if diff:
+            raise IndexError(
+                "You picked nonexistant leads {}, "
+                "please see documentation".format(diff)
+            )
     list_to_c = []
     for i in all_component_numbers:
         list_to_c.append(emg_samples[i])
