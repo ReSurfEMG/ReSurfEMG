@@ -26,7 +26,7 @@ from sklearn.decomposition import FastICA
 def compute_ICA_two_comp_selective(
     emg_samples,
     use_all_leads=True,
-    desired_leads=[0, 2],
+    desired_leads=(0, 2),
 ):
     """A function that performs an independant component analysis
     (ICA) meant for EMG data that includes stacked arrays,
