@@ -36,8 +36,8 @@ def compute_ICA_two_comp_selective(
     :type emg_samples: ~numpy.ndarray
     :param use_all_leads: True if all leads used, otherwise specify leads
     :type use_all_leads: bool
-    :param desired_leads: list of leads to use starting from 0
-    :type desired_leads: list
+    :param desired_leads: tuple of leads to use starting from 0
+    :type desired_leads: tuple
 
     :returns: Two arrays of independent components (ECG-like and EMG)
     :rtype: ~numpy.ndarray
@@ -53,6 +53,7 @@ def compute_ICA_two_comp_selective(
                 "please see documentation".format(diff)
             )
     list_to_c = []
+    # TODO (makeda): change to list comprehension on refactoring
     for i in all_component_numbers:
         list_to_c.append(emg_samples[i])
     X = np.column_stack(list_to_c)
