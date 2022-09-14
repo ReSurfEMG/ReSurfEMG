@@ -176,9 +176,18 @@ pads with zeros on the end.</p>
 <dt class="sig sig-object py" id="resurfemg.converter_functions.poly_dvrman">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">poly_dvrman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.poly_dvrman" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is a function to read in Duiverman type Poly5 files,
-which has 18 layers
-and return an array of the 12  unprocessed leads
-for further pre-processing</p>
+which has 18 layers/pseudo-leads,
+and return an array of the twelve  unprocessed leads
+for further pre-processing. The leads eliminated
+were RMS calculated on other leads (leads 6-12).
+The expected organization returned is from leads 0-5
+EMG data, then the following leads
+# 6 Paw: airway pressure (not always recorded)
+# 7 Pes: esophageal pressure (not always recorded)
+# 8 Pga: gastric pressure (not always recorded)
+# 9 RR: respiratory rate I guess (very unreliable)
+# 10 HR: heart rate 
+# 11 Tach: number of breath (not reliable)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Filename of Poly5 Duiverman type file</p>
