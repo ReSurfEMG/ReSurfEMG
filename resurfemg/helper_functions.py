@@ -1159,7 +1159,7 @@ def hi_envelope(our_signal, dmax=24):
 def compute_ICA_two_comp_multi(emg_samples):
     """A function that performs an independant component analysis
     (ICA) meant for EMG data that includes stacked arrays,
-    there should be at least 3 arrays but there can be more.
+    there should be at least two arrays but there can be more.
 
     :param emg_samples: Original signal array with three or more layers
     :type emg_samples: ~numpy.ndarray
