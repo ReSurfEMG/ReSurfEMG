@@ -121,6 +121,24 @@ def csv_from_jkmn_to_array(file_name):
     return arrayed
 
 
+def poly_duiverman(file_name):
+    """
+    This is a function to read in Duiverman type Poly5 files,
+    which has 18 layers
+    and return an array of the 12  unprocessed leads
+    for further pre-processing
+
+    :param file_name: Filename of Poly5 Duiverman type file
+    :type file_name: str
+
+    :returns: samps
+    :rtype: ~numpy.ndarray
+    """
+    data_samples = Poly5Reader(file_name)
+    samps = np.vstack([data_samples[:6], data_samples[12:]])
+    return samps
+
+
 def dvrmn_csv_to_array(file_name):
     """
     This transformed an already preprocessed csv from the Duiverman lab
