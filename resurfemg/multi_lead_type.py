@@ -21,10 +21,11 @@ from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import FastICA
-import sys
-
-sys.path.insert(0, '../resurfemg')
-import helper_functions as hf
+from helper_functions import bad_end_cutter_for_samples
+from helper_functions import emg_bandpass_butter_sample
+from helper_functions import pick_lowest_correlation_array
+from helper_functions import pick_more_peaks_array
+from helper_functions import emg_highpass_butter
 
 
 def compute_ICA_two_comp_selective(
@@ -83,12 +84,12 @@ def working_pipe_multi(our_chosen_samples, picker='heart', selected=(0, 2)):
     :returns: final_envelope_a
     :rtype: ~numpy.ndarray
     """
-    cut_file_data = hf.bad_end_cutter_for_samples(
+    cut_file_data = bad_end_cutter_for_samples(
         our_chosen_samples,
         percent_to_cut=3,
         tolerance_percent=5
     )
-    bd_filtered_file_data = hf.emg_bandpass_butter_sample(
+    bd_filtered_file_data = emg_bandpass_butter_sample(
         cut_file_data,
         5,
         450,
@@ -96,7 +97,7 @@ def working_pipe_multi(our_chosen_samples, picker='heart', selected=(0, 2)):
         output='sos'
     )
     # step for end-cutting again to get rid of filtering artifacts
-    re_cut_file_data = hf.bad_end_cutter_for_samples(
+    re_cut_file_data = bad_end_cutter_for_samples(
         bd_filtered_file_data,
         percent_to_cut=3,
         tolerance_percent=5
@@ -109,14 +110,14 @@ def working_pipe_multi(our_chosen_samples, picker='heart', selected=(0, 2)):
     )
     #     the picking step!
     if picker == 'peaks':
-        emg = hf.pick_more_peaks_array(components)
+        emg = pick_more_peaks_array(components)
     elif picker == 'heart':
-        emg = hf.pick_lowest_correlation_array(components, re_cut_file_data[0])
+        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
     else:
-        emg = hf.pick_lowest_correlation_array(components, re_cut_file_data[0])
+        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
         print("Please choose an exising picker i.e. peaks or hearts ")
     # now process it in final steps
     abs_values = abs(emg)
-    final_envelope_d = hf.emg_highpass_butter(abs_values, 150, 2048)
+    final_envelope_d = emg_highpass_butter(abs_values, 150, 2048)
 
     return final_envelope_d
