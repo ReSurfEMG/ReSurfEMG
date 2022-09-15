@@ -9,29 +9,25 @@ You will see various notebooks you can use and adapt alongside our package. If y
 
 Now a *comprehensive list*: 
 
-#### Lag lead mismatch (#### align)
+#### Lag lead mismatch / ##### align
 
 You can either upsample the less sampled lead or downsample the more frequently sampled lead. For us only upsampling works as shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lead_lag_match_upsample.ipynb) but you can also try it the other way [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lag_lead_match.ipynb)
 
-### Gating exploration
-#### gating
+#### Gating exploration / ##### gating
 
 Our explortion of gating is shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/gating_example.ipynb) 
 
 
-### Machine learning snippets
-#### snippets
+#### Machine learning snippets / ##### snippets
 
 Our snippets of arrays fed into machine learning are checked by hand, however, if you want to cut your arrays in an automated manner first, you can examine work we did on this  [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/ml_snipper_maker.ipynb) 
 
-### Machine learning in action
-#### mlaction
+#### Machine learning in action / ##### mlaction
 
 Our use of ML is currently around differentiating inhale and exhale segments based on extracted features, as shown  [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ML_EMG_1.ipynb) 
 
 
-### Historical notebooks
-#### history
+#### Historical notebooks / ##### history
 
 Our [historical notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/historical_notebooks) are basically notebooks we keep around just in case we want to look back on them. If you feel one is relevant to the entire community, let us know and we will add it to the researcher interface in a more polished form.
 Included in these notebooks are:
