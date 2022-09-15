@@ -1,6 +1,6 @@
-# Notebooks guide
+# Notebooks guide :rainbow:
 
-You will see various notebooks you can use and adapt alongside our package. If you read the whole document we will describe each notebook (work in progress). For the impatient, here are some quick links:
+You will see various notebooks you can use and adapt alongside our package. If you read the whole document we will describe each notebook (work in progress). For the impatient, here are some quick links :fast_forward: :
 
 > * [You want to properly align your ventilator and EMG signal](#align)
 > * [You want to understand gating](#gating)
@@ -34,7 +34,7 @@ Our use of ML is currently around differentiating inhale and exhale segments bas
 #### Historical notebooks :ghost:
  ##### history
 
-Our [historical notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/historical_notebooks) :ghost: are basically notebooks we keep around just in case we want to look back on them. If you feel one is relevant to the entire community, let us know and we will add it to the researcher interface in a more polished form.
+Our [historical notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/historical_notebooks) are basically notebooks we keep around just in case we want to look back on them. If you feel one is relevant to the entire community, let us know and we will add it to the researcher interface in a more polished form.
 Included in these notebooks are:
 
 
