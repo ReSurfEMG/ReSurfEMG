@@ -77,6 +77,28 @@ there should be at least two arrays but there can be more.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.multi_lead_type.working_pipe_multi">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.multi_lead_type.</span></span><span class="sig-name descname"><span class="pre">working_pipe_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'heart'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">2)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.multi_lead_type.working_pipe_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a pipeline to pre-process
+an array of any dimenstions (number of leads)
+into an EMG singal
+:param our_chosen_samples: the read EMG file arrays
+:type our_chosen_samples: ~numpy.ndarray
+:param picker: the picking strategy for independant components
+:type picker: str
+:param selected: the leads selected for the pipeline to run over
+:type selected: tuple</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>final_envelope_a</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
