@@ -982,6 +982,7 @@ def gating(
     :param gate_peaks: Peaks to be gated
     :type gate_peaks: ~list
     :param gate_width: width of the gate
+    :type gate_width: int
     :param method: filling method of gate
     :type method: int
 
@@ -1097,8 +1098,15 @@ def hi_envelope(our_signal, dmax=24):
     then makes high envelope, based on connecting peaks
     dmax: int, size of chunks,
 
+    :param our_signal: 1d signal array usually of emg
+    :type our_signal: ~numpy.ndarray
+    :param dmax: legnth of chunk to look for local max in
+    :type dmax: int
+
+    :returns: src_signal_gated, the gated result
+    :rtype: ~numpy.ndarray
     """
-    # locals max
+    # locals max is lmax
     lmax = (np.diff(np.sign(np.diff(our_signal))) < 0).nonzero()[0] + 1
     lmax = lmax[
         [i+np.argmax(
