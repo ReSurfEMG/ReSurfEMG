@@ -1,6 +1,6 @@
 # Notebooks guide
 
-You will see various notebooks you can use and adapt alongside our package. If you read the whole document we will describee each notebook. For the impatient, ere are some quick links:
+You will see various notebooks you can use and adapt alongside our package. If you read the whole document we will describe each notebook (work in progress). For the impatient, here are some quick links:
 
 [You want to properly align your ventilator and EMG signal](#align)
 
@@ -28,6 +28,11 @@ Our explortion of gating is shown [here](https://github.com/ReSurfEMG/ReSurfEMG/
 #### snippets
 
 Our snippets of arrays fed into machine learning are checked by hand, however, if you want to cut your arrays in an automated manner first, you can examine work we did on this  [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/ml_snipper_maker.ipynb) 
+
+### Machine learning in action
+#### mlaction
+
+Our use of ML is currently around differentiating inhale and exhale segments based on extracted features, as shown  [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ML_EMG_1.ipynb) 
 
 Work in progress, needs to be finished for every single notebook.
 
