@@ -7,8 +7,9 @@ You will see various notebooks you can use and adapt alongside our package. If y
 > * [You want to make array-snippets for ML](#snippets)
 > * [You want to see some ML in action](#mlaction)
 
-### Lag lead mismatch
-#### align
+Now a *comprehensive list*: 
+
+#### Lag lead mismatch (#### align)
 
 You can either upsample the less sampled lead or downsample the more frequently sampled lead. For us only upsampling works as shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lead_lag_match_upsample.ipynb) but you can also try it the other way [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lag_lead_match.ipynb)
 
