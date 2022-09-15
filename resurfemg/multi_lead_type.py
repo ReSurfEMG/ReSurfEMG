@@ -21,11 +21,13 @@ from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import FastICA
-from helper_functions import bad_end_cutter_for_samples
-from helper_functions import emg_bandpass_butter_sample
-from helper_functions import pick_lowest_correlation_array
-from helper_functions import pick_more_peaks_array
-from helper_functions import emg_highpass_butter
+import sys
+sys.path.insert(0, '../resurfemg')
+from resurfemg.helper_functions import bad_end_cutter_for_samples
+from resurfemg.helper_functions import emg_bandpass_butter_sample
+from resurfemg.helper_functions import pick_lowest_correlation_array
+from resurfemg.helper_functions import pick_more_peaks_array
+from resurfemg.helper_functions import emg_highpass_butter
 
 
 def compute_ICA_two_comp_selective(
