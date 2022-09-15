@@ -2,16 +2,10 @@
 
 You will see various notebooks you can use and adapt alongside our package. If you read the whole document we will describe each notebook (work in progress). For the impatient, here are some quick links:
 
-[You want to properly align your ventilator and EMG signal](#align)
-
-
-[You want to understand gating](#gating)
-
-
-[You want to make array-snippets for ML](#snippets)
-
-
-[You want to see some ML in action](#mlaction)
+> * [You want to properly align your ventilator and EMG signal](#align)
+> * [You want to understand gating](#gating)
+> * [You want to make array-snippets for ML](#snippets)
+> * [You want to see some ML in action](#mlaction)
 
 ### Lag lead mismatch
 #### align
