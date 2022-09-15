@@ -24,6 +24,8 @@ EMG.
 
 ### Folders and Notebooks
 
+Our [guide to notebooks](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks_guide.md) is under construction. To look around keep in mind the following distinction on folders:
+
 researcher_interface:
 - These are a growing series of interactive notebooks that allow
   researchers to investigate questions about their own EMG data
@@ -35,6 +37,8 @@ researcher_interface:
 open_work:
 - This folder contains experimental work by core members of the ReSurfEMG
   team (Dr. Eline Mos-Oppersma, Rob Warnaar, Dr. Walter Baccinelli and Dr. Candace Makeda Moore)
+
+
 
 
 ### Program files
