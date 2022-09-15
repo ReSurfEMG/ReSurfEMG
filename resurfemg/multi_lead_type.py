@@ -73,7 +73,8 @@ def working_pipe_multi(our_chosen_samples, picker='heart', selected=(0, 2)):
     """
     This is a pipeline to pre-process
     an array of any dimenstions (number of leads)
-    into an EMG singal
+    into an EMG singal, you need to pick the leads
+
     :param our_chosen_samples: the read EMG file arrays
     :type our_chosen_samples: ~numpy.ndarray
     :param picker: the picking strategy for independant components
