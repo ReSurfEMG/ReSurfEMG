@@ -28,13 +28,13 @@ Our snippets of arrays fed into machine learning are checked by hand, however, i
 #### Machine learning in action 
  ##### mlaction
 
-Our use of ML is currently around differentiating inhale and exhale segments based on extracted features, as shown  [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ML_EMG_1.ipynb) 
+Our use of ML is currently around differentiating inhale and exhale segments based on extracted features, as shown  [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ML_EMG_1.ipynb) :key:
 
 
-#### Historical notebooks 
+#### Historical notebooks :ghost:
  ##### history
 
-Our [historical notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/historical_notebooks) are basically notebooks we keep around just in case we want to look back on them. If you feel one is relevant to the entire community, let us know and we will add it to the researcher interface in a more polished form.
+Our [historical notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/historical_notebooks) :ghost: are basically notebooks we keep around just in case we want to look back on them. If you feel one is relevant to the entire community, let us know and we will add it to the researcher interface in a more polished form.
 Included in these notebooks are:
 
 
