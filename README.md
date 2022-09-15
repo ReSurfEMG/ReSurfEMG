@@ -23,6 +23,11 @@ supports the ongoing research at University of Twente on respiratory
 EMG.
 
 
+### Program files
+
+The main program in this repository (made of the modules in the resurfemg folder) contains functions for analysis of EMG and other electrophysiological signals. This analysis often includes
+analysis of signals from machines i.e. ventilators as well.
+
 ### Folders and Notebooks
 
 Our [guide to notebooks](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks_guide.md) is under construction. To look around keep in mind the following distinction on folders:
@@ -40,19 +45,10 @@ open_work:
   team (Dr. Eline Mos-Oppersma, Rob Warnaar, Dr. Walter Baccinelli and Dr. Candace Makeda Moore)
 
 
-
-
-### Program files
-
-The main program in this repository contains functions for analysis of
-EMG and other electrophysiological signals. This analysis often includes
-analysis of signals from machiens i.e. ventilators as well.
-
-
-## Data sets
+### Data sets
 
 The notebooks are configured to run on various datasets.  Contact
-Candace Makeda Moore ( 📫 c.moore@esciencecenter.nl) to discuss any
+Dr. Eline Mos-Oppersma( 📫 e.mos-oppersma@utwente.nl) to discuss any
 questions on data configuration for your datasets.
 
 
@@ -137,6 +133,9 @@ metadata is available.
 
 ## Generating documentation
 
+Online documentation can be found at
+https://resurfemg.github.io/ReSurfEMG/
+or on https://readthedocs.org/ by searching for ReSurfEMG.
 Up to date documentation can be generated in command-line as follows
 (in bash terminal):
 
@@ -161,10 +160,6 @@ python setup.py install
 python setup.py apidoc
 python setup.py build_sphinx
 ```
-
-Online documentation can be found at
-https://resurfemg.github.io/ReSurfEMG/
-or on https://readthedocs.org/ by searching for ReSurfEMG
 
 
 ## Automation
