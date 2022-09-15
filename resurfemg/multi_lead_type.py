@@ -21,6 +21,9 @@ from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import FastICA
+import sys
+
+sys.path.insert(0, '../resurfemg')
 import helper_functions as hf
 
 
