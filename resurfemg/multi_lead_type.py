@@ -12,7 +12,6 @@ import collections
 from collections import namedtuple
 import math
 from math import log, e
-import copy
 import builtins
 from scipy import signal
 from scipy.fft import fft, fftfreq

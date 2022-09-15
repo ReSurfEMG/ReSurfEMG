@@ -8,7 +8,7 @@ an array that can be further processed with helper_functions or other modules.
 Additionally this file contains hash functions to track data.
 """
 
-import sys
+# import sys
 import glob
 import os
 
@@ -16,8 +16,8 @@ import pandas as pd
 import numpy as np
 
 import hashlib
-import h5py
-import re
+# import h5py
+# import re
 import scipy.io as sio
 from TMSiSDK.file_readers import Poly5Reader
 
