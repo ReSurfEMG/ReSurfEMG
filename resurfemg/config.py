@@ -3,14 +3,18 @@ Copyright 2022 Netherlands eScience Center and Twente University.
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 This file contains one method to let the user configure
-all paths instead of hard-coding them.
+all paths for data instead of hard-coding them, as well
+as a method to check data integrity. The
+data integrity can be checked because this file contains hash functions 
+to track data.
 """
 
 import json
 import logging
 import os
 import textwrap
-
+import hashlib
+import pandas as pd
 
 class Config:
     """
@@ -118,3 +122,40 @@ class Config:
         if value is None:
             return self._loaded[directory]
         return value
+
+
+def hash_it_up_right_all(origin_folder1, file_extension):
+    """Hashing function to check files are not corrupted or to assure
+    files are changed.
+
+    :param origin_folder1: The string of the folder with files to hash
+    :type origin_folder1: str
+    :param file_extension: File extension
+    :type file_extension: str
+
+    :returns: Dataframe with hashes for what is in folder
+    :rtype: ~pandas.DataFrame
+    """
+    hash_list = []
+    file_names = []
+    files = '*' + file_extension
+    non_suspects1 = glob.glob(os.path.join(origin_folder1, files))
+    BUF_SIZE = 65536
+    for file in non_suspects1:
+        sha256 = hashlib.sha256()
+        with open(file, 'rb') as f:
+            while True:
+                data = f.read(BUF_SIZE)
+                if not data:
+                    break
+                sha256.update(data)
+        result = sha256.hexdigest()
+        hash_list.append(result)
+        file_names.append(file)
+
+    df = pd.DataFrame(hash_list, file_names)
+    df.columns = ["hash"]
+    df = df.reset_index()
+    df = df.rename(columns={'index': 'file_name'})
+
+    return df
