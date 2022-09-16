@@ -38,8 +38,6 @@ def poly5unpad(to_be_read):
     return unpadded
 
 
-
-
 def matlab5_jkmn_to_array(file_name):
     """
     This file reads matlab5 files as produced in the Jonkman

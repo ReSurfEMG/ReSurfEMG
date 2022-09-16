@@ -5,7 +5,7 @@ Licensed under the Apache License, version 2.0. See LICENSE for details.
 This file contains one method to let the user configure
 all paths for data instead of hard-coding them, as well
 as a method to check data integrity. The
-data integrity can be checked because this file contains hash functions 
+data integrity can be checked because this file contains hash functions
 to track data.
 """
 
@@ -14,7 +14,9 @@ import logging
 import os
 import textwrap
 import hashlib
+import glob
 import pandas as pd
+
 
 class Config:
     """

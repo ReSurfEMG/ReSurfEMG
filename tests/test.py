@@ -13,7 +13,7 @@ from TMSiSDK.file_readers import Poly5Reader
 
 # converter_functions
 from resurfemg.converter_functions import poly5unpad
-from resurfemg.converter_functions import hash_it_up_right_all
+from resurfemg.config import hash_it_up_right_all
 # multi_lead_type
 from resurfemg.multi_lead_type import compute_ICA_two_comp_selective
 # helper_functions
