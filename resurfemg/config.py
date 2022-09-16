@@ -6,7 +6,7 @@ This file contains one method to let the user configure
 all paths for data instead of hard-coding them, as well
 as a methods to check data integrity, and create synthetic data.
 The data integrity can be checked because this file contains
-hash functions to track data. Synthetic data can be made 
+hash functions to track data. Synthetic data can be made
 with several methods.
 """
 
@@ -165,6 +165,7 @@ def hash_it_up_right_all(origin_folder1, file_extension):
 
     return df
 
+
 def make_synth_emg(long, max_abs_volt, humps):
     """
     Function to create a synthetic EMG,
@@ -183,8 +184,8 @@ def make_synth_emg(long, max_abs_volt, humps):
     """
     x = np.linspace(0, (long/500), long)
     raised_sin = np.sin(x*humps/60*2*math.pi)**2
-    synth_emg1 = raised_sin * np.random.randn((len(x)))+ 0.1 * np.random.randn(len(x))
+    synth_emg1 = raised_sin * np.random.randn(
+        (len(x))) + 0.1 * np.random.randn(len(x))
     volt_multiplier = max_abs_volt / abs(synth_emg1).max()
     signal = synth_emg1*volt_multiplier
     return signal
-    
