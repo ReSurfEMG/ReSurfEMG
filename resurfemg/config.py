@@ -4,9 +4,10 @@ Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 This file contains one method to let the user configure
 all paths for data instead of hard-coding them, as well
-as a method to check data integrity. The
-data integrity can be checked because this file contains hash functions
-to track data.
+as a methods to check data integrity, and create synthetic data.
+The data integrity can be checked because this file contains
+hash functions to track data. Synthetic data can be made 
+with several methods.
 """
 
 import json
@@ -15,7 +16,9 @@ import os
 import textwrap
 import hashlib
 import glob
+import math
 import pandas as pd
+import numpy as np
 
 
 class Config:
@@ -161,3 +164,27 @@ def hash_it_up_right_all(origin_folder1, file_extension):
     df = df.rename(columns={'index': 'file_name'})
 
     return df
+
+def make_synth_emg(long, max_abs_volt, humps):
+    """
+    Function to create a synthetic EMG,
+    not to add longer expirations (relatively flat)
+    the results can be fed to another function.
+
+    :param long: The legnth in samples of synth EMG created
+    :type long: int
+    :param max_abs_volt: desired abs voltage maximum
+    :type max_abs_volt: float
+    :param humps: desired number of inspiratory waves
+    :type humps: int
+
+    :returns: signal
+    :rtype: ~np.array
+    """
+    x = np.linspace(0, (long/500), long)
+    raised_sin = np.sin(x*humps/60*2*math.pi)**2
+    synth_emg1 = raised_sin * np.random.randn((len(x)))+ 0.1 * np.random.randn(len(x))
+    volt_multiplier = max_abs_volt / abs(synth_emg1).max()
+    signal = synth_emg1*volt_multiplier
+    return signal
+    
