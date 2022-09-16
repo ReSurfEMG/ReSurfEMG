@@ -52,9 +52,10 @@
 Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
 <p>This file contains one method to let the user configure
 all paths for data instead of hard-coding them, as well
-as a method to check data integrity. The
-data integrity can be checked because this file contains hash functions
-to track data.</p>
+as a methods to check data integrity, and create synthetic data.
+The data integrity can be checked because this file contains
+hash functions to track data. Synthetic data can be made 
+with several methods.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="resurfemg.config.Config">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.config.</span></span><span class="sig-name descname"><span class="pre">Config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.config.Config" title="Permalink to this definition">¶</a></dt>
@@ -121,6 +122,29 @@ files are changed.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.4)"><em>DataFrame</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.config.make_synth_emg">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.config.</span></span><span class="sig-name descname"><span class="pre">make_synth_emg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">long</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_abs_volt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">humps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.config.make_synth_emg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to create a synthetic EMG,
+not to add longer expirations (relatively flat)
+the results can be fed to another function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>long</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The legnth in samples of synth EMG created</p></li>
+<li><p><strong>max_abs_volt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – desired abs voltage maximum</p></li>
+<li><p><strong>humps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – desired number of inspiratory waves</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>signal</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>array</em></p>
 </dd>
 </dl>
 </dd></dl>
