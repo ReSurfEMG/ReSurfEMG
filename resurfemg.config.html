@@ -51,7 +51,10 @@
 <p>Copyright 2022 Netherlands eScience Center and Twente University.
 Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
 <p>This file contains one method to let the user configure
-all paths instead of hard-coding them.</p>
+all paths for data instead of hard-coding them, as well
+as a method to check data integrity. The
+data integrity can be checked because this file contains hash functions 
+to track data.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="resurfemg.config.Config">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.config.</span></span><span class="sig-name descname"><span class="pre">Config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.config.Config" title="Permalink to this definition">¶</a></dt>
@@ -99,6 +102,27 @@ the data paths of config.json can be used</p>
 <span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.config.Config.validate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.config.hash_it_up_right_all">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.config.</span></span><span class="sig-name descname"><span class="pre">hash_it_up_right_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin_folder1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.config.hash_it_up_right_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hashing function to check files are not corrupted or to assure
+files are changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>origin_folder1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The string of the folder with files to hash</p></li>
+<li><p><strong>file_extension</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – File extension</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dataframe with hashes for what is in folder</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.4)"><em>DataFrame</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
