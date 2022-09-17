@@ -7,12 +7,25 @@ You will see various notebooks you can use and adapt alongside our package. If y
 > * [You want to make array-snippets for ML](#snippets)
 > * [You want to see some ML in action](#mlaction)
 
-Now a *comprehensive list*: 
+Now a *comprehensive list* (under development, missing many notebooks as of 17/09/2022): 
+
+
+
+#### Configuration
+ ##### configuration
+
+We include a [notebook which explains how to configure your data paths](http://localhost:8888/notebooks/open_work/config_demo.ipynb).
 
 #### Lag lead mismatch 
  ##### align
 
 You can either upsample the less sampled lead or downsample the more frequently sampled lead. For us only upsampling works as shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lead_lag_match_upsample.ipynb) but you can also try it the other way [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lag_lead_match.ipynb)
+
+
+#### Preprocessing exploration 
+ ##### preprocessing
+
+Our explortion of basic preprocessing is shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/basic_preprocessing.ipynb) 
 
 #### Gating exploration 
  ##### gating
