@@ -8,7 +8,7 @@ an array that can be further processed with helper_functions or other modules.
 """
 
 # import sys
-import glob
+# import glob
 import os
 
 import pandas as pd
