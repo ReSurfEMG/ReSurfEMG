@@ -32,7 +32,7 @@ Now a *comprehensive list* (under development, missing many notebooks as of 17/0
 
 > #### Gating 
 
->> Our explortion of gating, one way to reduce the heart signal, is shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/gating_example.ipynb). 
+>> Our initial explortion of gating, one way to reduce the heart signal, is shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/gating_example.ipynb). 
 
 
 > #### Entropy
