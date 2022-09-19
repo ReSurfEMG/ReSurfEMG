@@ -25,19 +25,19 @@ Lag lead mismatch: You can either upsample the less sampled lead or downsample t
 
 Our explortion of basic preprocessing is shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/basic_preprocessing.ipynb). 
 
-#### Gating exploration 
+#### Gating 
 
 Our explortion of gating, one way to reduce the heart signal, is shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/gating_example.ipynb). 
 
 
-#### Machine learning snippets 
+#### Snippets 
 
 Our snippets of arrays fed into machine learning are checked by hand, however, if you want to cut your arrays in an automated manner first, you can examine work we did on [snipppet making](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/ml_snipper_maker.ipynb). 
 
 
-#### Machine learning in action 
+#### Mlaction 
 
-Our use of ML is currently around differentiating inhale and exhale segments based on extracted features, as shown  [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ML_EMG_1.ipynb). :key:
+Our use of machine learning is currently around differentiating inhale and exhale segments based on extracted features, as shown  [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ML_EMG_1.ipynb). :key:
 
 
 #### EMG and vent analysis (emgandvent)
