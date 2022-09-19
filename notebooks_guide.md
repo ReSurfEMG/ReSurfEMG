@@ -35,6 +35,11 @@ Now a *comprehensive list* (under development, missing many notebooks as of 17/0
 >> Our explortion of gating, one way to reduce the heart signal, is shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/gating_example.ipynb). 
 
 
+> #### Entropy
+
+>> Our explortion of entropy are multiple. We can use it in various ways to automatically identify inhalation  [using multiple cut-offs](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/widgeted_entropy_updated_june.ipynb) or [a single cutt off](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/widgeted_entropy1.ipynb). Entropy is also used as part of some workflows to determine stegnth of respiratory efforts (listed in a seperate section).
+
+
 > #### Snippets 
 
 >> Our snippets of arrays fed into machine learning are checked by hand, however, if you want to cut your arrays in an automated manner first, you can examine work we did on [snipppet making](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/ml_snipper_maker.ipynb). 
