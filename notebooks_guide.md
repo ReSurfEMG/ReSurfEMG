@@ -55,6 +55,20 @@ Now a *comprehensive list* (under development, missing many notebooks as of 17/0
 >> Our final analyses can examine both ventilator and EMG signals from the same patient to examine issues like synchrony, one approach is [looking at the overlap of simplified EMG and ventilator signals](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/diagnose_emg_vent_relationship.ipynb) , another uses [edit distance](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/edit_distance_emg_vent.ipynb).
 
 
+> #### Neuromuscular efficiency
+
+>> Our first analyses on [neuromuscular efficiency](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/neuromuscular_efficiency_3lead_for_pub.ipynb) are part of research for an upcoming paper.
+
+
+> #### Automated breath analyses
+
+>> Our first analyses sought to quantify how many breaths occured based on simple parameters. We do not recconed this approach, but the interfaces for them exists [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/widgeted_breath_experiments.ipynb).
+
+> #### Information loss
+
+>> Reading EMG requires a pre-processing pipeline, but how much information is lost in each step? We explored this in a notebook on [informaiton loss](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/widgeted_info_loss_experiments_seconds.ipynb)
+
+
 
 > #### Historical notebooks :ghost:
 > ##### history
