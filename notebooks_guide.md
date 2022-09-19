@@ -16,9 +16,9 @@ Now a *comprehensive list* (under development, missing many notebooks as of 17/0
 We include a [notebook which explains how to configure your data paths](http://localhost:8888/notebooks/open_work/config_demo.ipynb).
 
 
-#### Lag lead mismatch (align)
+#### Align
 
-You can either upsample the less sampled lead or downsample the more frequently sampled lead. For us only upsampling works as shown [in this lag-lead notebook](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lead_lag_match_upsample.ipynb) but you can also try it the other way i.e. downsampling the fast signal [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lag_lead_match.ipynb).
+Lag lead mismatch: You can either upsample the less sampled lead or downsample the more frequently sampled lead. For us only upsampling works as shown [in this lag-lead notebook](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lead_lag_match_upsample.ipynb) but you can also try it the other way i.e. downsampling the fast signal [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lag_lead_match.ipynb).
 
 
 #### Preprocessing exploration 
