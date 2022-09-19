@@ -2,10 +2,10 @@
 
 You will see various notebooks you can use and adapt alongside our package. If you read the whole document we will describe each notebook (work in progress). For the impatient, here are some quick links :fast_forward: :
 
-> * [You want to properly align your ventilator and EMG signal](#align)
-> * [You want to understand gating](#gating)
-> * [You want to make array-snippets for ML](#snippets)
-> * [You want to see some ML in action](#mlaction)
+> * [You want to properly align your ventilator and EMG signal](#https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lead_lag_match_upsample.ipynb)
+> * [You want to understand gating](#https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/gating_example.ipynb)
+> * [You want to make array-snippets for ML](#https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/ml_snipper_maker.ipynb)
+> * [You want to see some ML in action](#https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ML_EMG_1.ipynb)
 
 Now a *comprehensive list* (under development, missing many notebooks as of 17/09/2022 :construction:): 
 
@@ -16,7 +16,7 @@ Now a *comprehensive list* (under development, missing many notebooks as of 17/0
 We include a [notebook which explains how to configure your data paths](http://localhost:8888/notebooks/open_work/config_demo.ipynb).
 
 
-#### Lag lead mismatch (align)
+#### Align : Lag lead mismatch 
 
 You can either upsample the less sampled lead or downsample the more frequently sampled lead. For us only upsampling works as shown [in this lag-lead notebook](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lead_lag_match_upsample.ipynb) but you can also try it the other way i.e. downsampling the fast signal [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lag_lead_match.ipynb).
 
