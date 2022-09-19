@@ -12,40 +12,35 @@ Now a *comprehensive list* (under development, missing many notebooks as of 17/0
 
 
 #### Configuration
- ##### configuration
 
 We include a [notebook which explains how to configure your data paths](http://localhost:8888/notebooks/open_work/config_demo.ipynb).
 
-#### Lag lead mismatch 
- ##### align
+
+#### Lag lead mismatch (align)
 
 You can either upsample the less sampled lead or downsample the more frequently sampled lead. For us only upsampling works as shown [in this lag-lead notebook](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lead_lag_match_upsample.ipynb) but you can also try it the other way i.e. downsampling the fast signal [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/lag_lead_match.ipynb).
 
 
 #### Preprocessing exploration 
- ##### preprocessing
 
 Our explortion of basic preprocessing is shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/basic_preprocessing.ipynb). 
 
 #### Gating exploration 
- ##### gating
 
 Our explortion of gating, one way to reduce the heart signal, is shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/gating_example.ipynb). 
 
 
 #### Machine learning snippets 
- ##### snippets
 
-Our snippets of arrays fed into machine learning are checked by hand, however, if you want to cut your arrays in an automated manner first, you can examine work we did on [snipppet making](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/ml_snipper_maker.ipynb). .
+Our snippets of arrays fed into machine learning are checked by hand, however, if you want to cut your arrays in an automated manner first, you can examine work we did on [snipppet making](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/ml_snipper_maker.ipynb). 
+
 
 #### Machine learning in action 
- ##### mlaction
 
 Our use of ML is currently around differentiating inhale and exhale segments based on extracted features, as shown  [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ML_EMG_1.ipynb). :key:
 
 
-#### EMG and vent analysis
- ##### emgandvent
+#### EMG and vent analysis (emgandvent)
 
 Our final analyses can examine both ventilator and EMG signals from the same patient to examine issues like synchrony, one approach is [looking at the overlap of simplified EMG and ventilator signals](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/diagnose_emg_vent_relationship.ipynb) , another uses [edit distance](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/edit_distance_emg_vent.ipynb).
 
