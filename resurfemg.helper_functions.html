@@ -14,6 +14,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="resurfemg.multi_lead_type module" href="resurfemg.multi_lead_type.html" />
@@ -826,6 +827,53 @@ on a cut-off value.</p>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">resurfemg.helper_functions module</a><ul>
+<li><a class="reference internal" href="#resurfemg.helper_functions.Range"><code class="docutils literal notranslate"><span class="pre">Range</span></code></a><ul>
+<li><a class="reference internal" href="#resurfemg.helper_functions.Range.intersects"><code class="docutils literal notranslate"><span class="pre">Range.intersects()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.Range.precedes"><code class="docutils literal notranslate"><span class="pre">Range.precedes()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.Range.to_slice"><code class="docutils literal notranslate"><span class="pre">Range.to_slice()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.bad_end_cutter"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.bad_end_cutter_better"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter_better()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.bad_end_cutter_for_samples"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter_for_samples()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.compute_ICA_two_comp"><code class="docutils literal notranslate"><span class="pre">compute_ICA_two_comp()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.compute_ICA_two_comp_multi"><code class="docutils literal notranslate"><span class="pre">compute_ICA_two_comp_multi()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.compute_power_loss"><code class="docutils literal notranslate"><span class="pre">compute_power_loss()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.count_decision_array"><code class="docutils literal notranslate"><span class="pre">count_decision_array()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.emg_bandpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_bandpass_butter()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.emg_bandpass_butter_sample"><code class="docutils literal notranslate"><span class="pre">emg_bandpass_butter_sample()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.emg_highpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_highpass_butter()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.entropical"><code class="docutils literal notranslate"><span class="pre">entropical()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.full_rolling_rms"><code class="docutils literal notranslate"><span class="pre">full_rolling_rms()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.gating"><code class="docutils literal notranslate"><span class="pre">gating()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.hi_envelope"><code class="docutils literal notranslate"><span class="pre">hi_envelope()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.intersections"><code class="docutils literal notranslate"><span class="pre">intersections()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.merge"><code class="docutils literal notranslate"><span class="pre">merge()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.naive_rolling_rms"><code class="docutils literal notranslate"><span class="pre">naive_rolling_rms()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.notch_filter"><code class="docutils literal notranslate"><span class="pre">notch_filter()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.pick_lowest_correlation_array"><code class="docutils literal notranslate"><span class="pre">pick_lowest_correlation_array()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.pick_more_peaks_array"><code class="docutils literal notranslate"><span class="pre">pick_more_peaks_array()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.ranges_of"><code class="docutils literal notranslate"><span class="pre">ranges_of()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.raw_overlap_percent"><code class="docutils literal notranslate"><span class="pre">raw_overlap_percent()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.relative_levenshtein"><code class="docutils literal notranslate"><span class="pre">relative_levenshtein()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.show_my_power_spectrum"><code class="docutils literal notranslate"><span class="pre">show_my_power_spectrum()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.slices_jump_slider"><code class="docutils literal notranslate"><span class="pre">slices_jump_slider()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.slices_slider"><code class="docutils literal notranslate"><span class="pre">slices_slider()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.smooth_for_baseline"><code class="docutils literal notranslate"><span class="pre">smooth_for_baseline()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.smooth_for_baseline_with_overlay"><code class="docutils literal notranslate"><span class="pre">smooth_for_baseline_with_overlay()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.vect_naive_rolling_rms"><code class="docutils literal notranslate"><span class="pre">vect_naive_rolling_rms()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.working_pipeline_exp"><code class="docutils literal notranslate"><span class="pre">working_pipeline_exp()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.working_pipeline_pre_ml"><code class="docutils literal notranslate"><span class="pre">working_pipeline_pre_ml()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.zero_one_for_jumps_base"><code class="docutils literal notranslate"><span class="pre">zero_one_for_jumps_base()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
     <h4>Previous topic</h4>
     <p class="topless"><a href="resurfemg.converter_functions.html"
                           title="previous chapter">resurfemg.converter_functions module</a></p>
@@ -879,7 +927,7 @@ on a cut-off value.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, c.moore@esciencecenter.nl.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.2.2.
     </div>
   </body>
 </html>
