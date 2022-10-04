@@ -106,7 +106,7 @@ def poly_dvrman(file_name):
     :rtype: ~numpy.ndarray
     """
     data_samples = Poly5Reader(file_name)
-    samps = np.vstack([data_samples[:6], data_samples[12:]])
+    samps = np.vstack([data_samples.samples[:6], data_samples.samples[12:]])
     return samps
 
 
