@@ -20,7 +20,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import FastICA
 import textdistance
-#from .multi_lead_type import compute_ICA_two_comp_selective
 
 
 class Range(namedtuple('RangeBase', 'start,end')):
@@ -554,8 +553,8 @@ def working_pipeline_exp(our_chosen_file):
     :returns: final_envelope_a
     :rtype: ~numpy.ndarray
     """
-    cut_file_data = bad_end_cutter_for_samples(
-        our_chosen_file.samples,
+    cut_file_data = bad_end_cutter(
+        our_chosen_file,
         percent_to_cut=3,
         tolerance_percent=5,
     )

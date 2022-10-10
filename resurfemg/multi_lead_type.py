@@ -123,7 +123,6 @@ def working_pipe_multi(our_chosen_samples, picker='heart', selected=(0, 2)):
     return final_envelope_d
 
 
-
 def working_pipeline_pre_ml_multi(
     our_chosen_samples,
     our_chosen_leads,
@@ -183,4 +182,3 @@ def working_pipeline_pre_ml_multi(
     final_envelope_d = emg_highpass_butter(abs_values, 150, 2048)
 
     return final_envelope_d
-
