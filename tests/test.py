@@ -15,7 +15,10 @@ from TMSiSDK.file_readers import Poly5Reader
 from resurfemg.converter_functions import poly5unpad
 from resurfemg.config import hash_it_up_right_all
 # multi_lead_type
+# from resurfemg.multi_lead_type import compute_ICA_two_comp_selective
 from resurfemg.multi_lead_type import compute_ICA_two_comp_selective
+from resurfemg.multi_lead_type import working_pipe_multi
+from resurfemg.multi_lead_type import working_pipeline_pre_ml_multi
 # helper_functions
 from resurfemg.helper_functions import bad_end_cutter
 from resurfemg.helper_functions import bad_end_cutter_better
@@ -33,7 +36,6 @@ from resurfemg.helper_functions import zero_one_for_jumps_base
 from resurfemg.helper_functions import compute_ICA_two_comp
 from resurfemg.helper_functions import compute_ICA_two_comp_multi
 from resurfemg.helper_functions import working_pipeline_exp
-from resurfemg.helper_functions import working_pipeline_pre_ml_multi
 from resurfemg.helper_functions import entropical
 from resurfemg.helper_functions import smooth_for_baseline
 from resurfemg.helper_functions import smooth_for_baseline_with_overlay
@@ -164,20 +166,27 @@ class TestPickingMethods(unittest.TestCase):
 
 class TestPipelineMethods(unittest.TestCase):
 
-    def test_working_pipeline_exp(self):
+    # def test_working_pipeline_exp(self):
+    #     sample_read= Poly5Reader(sample_emg_tampered)
+    #     pipelined = working_pipeline_exp(sample_read)
+    #     self.assertEqual(
+    #         pipelined.shape[0],
+    #         1 ,
+    #     )
+    def test_working_pipeline_pre_ml_multi(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
         sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
         sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
-        pipelined = working_pipeline_exp(sample_emg_filtered)
+        pipelined_0_1 = working_pipeline_pre_ml_multi(sample_emg_filtered, (0,1))
+        pipelined_0_2 = working_pipeline_pre_ml_multi(sample_emg_filtered, (0,2))
         self.assertEqual(
-            pipelined.shape[0],
-            3 ,
+            pipelined_0_1.shape,
+            pipelined_0_2.shape,
         )
-    # def test_working_pipeline_pre_ml_multi(self):
 
         
-    #     sample_read= Poly5Reader(sample_emg)
+    #\     sample_read= Poly5Reader(sample_emg)
     #     sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
     #     sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
     #     sample_emg_filtered[2]= sample_emg_filtered[0]*1.7

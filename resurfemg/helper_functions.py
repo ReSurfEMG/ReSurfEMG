@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import FastICA
 import textdistance
-from multi_lead_type import compute_ICA_two_comp_selective
+#from .multi_lead_type import compute_ICA_two_comp_selective
 
 
 class Range(namedtuple('RangeBase', 'start,end')):
@@ -538,8 +538,11 @@ def pick_lowest_correlation_array(components_tuple, ecg_lead):
 
 
 def working_pipeline_exp(our_chosen_file):
-    """This function produces a filtered respiratory EMG signal from a
-    3 lead sEMG file.  The inputs are :code:`our_chosen_file` which we
+    """This function is legacy.
+    It produces a filtered respiratory EMG signal from a
+    3 lead sEMG file. A better
+    option is a corresponding function in multi_lead_type
+    The inputs are :code:`our_chosen_file` which we
     give the function as a string of filename.  The output is the
     processed EMG signal filtered and seperated from ecg components.
     The algorithm to pick out the EMG here is by having
@@ -551,8 +554,8 @@ def working_pipeline_exp(our_chosen_file):
     :returns: final_envelope_a
     :rtype: ~numpy.ndarray
     """
-    cut_file_data = bad_end_cutter(
-        our_chosen_file,
+    cut_file_data = bad_end_cutter_for_samples(
+        our_chosen_file.samples,
         percent_to_cut=3,
         tolerance_percent=5,
     )
@@ -588,7 +591,8 @@ def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
     i.e. a three lead array into an EMG singal,
     the function is legacy code, and most
     processsing should be done with
-    :code:`working_pipeline_pre_ml_multi`
+    :code:`multi_lead_type.working_pipeline_pre_ml_multi`
+    or :code:`multi_lead_type.working_pipeline_pre_ml_multi`
 
     :param our_chosen_samples: the read EMG file arrays
     :type our_chosen_samples: ~numpy.ndarray
@@ -650,68 +654,6 @@ def slices_slider(array_sample, slice_len):
     """
     for i in range(len(array_sample) - slice_len + 1):
         yield array_sample[i:i + slice_len]
-
-
-
-def working_pipeline_pre_ml_multi(our_chosen_samples, our_chosen_leads, picker='heart'):
-    """
-    This is a pipeline to pre-process
-    an array of non-specific dimensions
-    e.g. a five lead array into an EMG singal,
-    of which we want leads 0 to 2 included
-
-    :param our_chosen_samples: the read EMG file arrays
-    :type our_chosen_samples: ~numpy.ndarray
-    :param our_chosen_leads: the read EMG file arrays that should be included
-    :type our_chosen_leads: tuple
-    :param picker: the picking strategy for independant components
-    :type picker: str
-
-    :returns: final_envelope_a
-    :rtype: ~numpy.ndarray
-    """
-
-
-    cut_file_data = bad_end_cutter_for_samples(
-        our_chosen_samples,
-        percent_to_cut=3,
-        tolerance_percent=5
-    )
-    bd_filtered_file_data = emg_bandpass_butter_sample(
-        cut_file_data,
-        5,
-        450,
-        2048,
-        output='sos'
-    )
-    # step for end-cutting again to get rid of filtering artifacts
-    re_cut_file_data = bad_end_cutter_for_samples(
-        bd_filtered_file_data,
-        percent_to_cut=3,
-        tolerance_percent=5
-    )
-    #  and do step for ICA
-    # TO BE REMOVED: components = compute_ICA_two_comp(re_cut_file_data)
-    components = compute_ICA_two_comp_selective(
-        re_cut_file_data,
-        use_all_leads=False,
-        desired_leads=our_chosen_leads,
-        )
-
-
-    #     the picking step!
-    if picker == 'peaks':
-        emg = pick_more_peaks_array(components)
-    elif picker == 'heart':
-        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
-    else:
-        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
-        print("Please choose an exising picker i.e. peaks or hearts ")
-    # now process it in final steps
-    abs_values = abs(emg)
-    final_envelope_d = emg_highpass_butter(abs_values, 150, 2048)
-
-    return final_envelope_d
 
 
 def slices_jump_slider(array_sample, slice_len, jump):
