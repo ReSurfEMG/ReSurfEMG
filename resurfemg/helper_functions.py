@@ -11,7 +11,6 @@ from collections import namedtuple
 import math
 from math import log, e
 import copy
-# import builtins
 import builtins
 from scipy import signal
 from scipy.fft import fft, fftfreq
@@ -538,8 +537,11 @@ def pick_lowest_correlation_array(components_tuple, ecg_lead):
 
 
 def working_pipeline_exp(our_chosen_file):
-    """This function produces a filtered respiratory EMG signal from a
-    3 lead sEMG file.  The inputs are :code:`our_chosen_file` which we
+    """This function is legacy.
+    It produces a filtered respiratory EMG signal from a
+    3 lead sEMG file. A better
+    option is a corresponding function in multi_lead_type
+    The inputs are :code:`our_chosen_file` which we
     give the function as a string of filename.  The output is the
     processed EMG signal filtered and seperated from ecg components.
     The algorithm to pick out the EMG here is by having
@@ -588,7 +590,8 @@ def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
     i.e. a three lead array into an EMG singal,
     the function is legacy code, and most
     processsing should be done with
-    :code:`working_pipeline_multi`
+    :code:`multi_lead_type.working_pipeline_pre_ml_multi`
+    or :code:`multi_lead_type.working_pipeline_pre_ml_multi`
 
     :param our_chosen_samples: the read EMG file arrays
     :type our_chosen_samples: ~numpy.ndarray
