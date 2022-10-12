@@ -101,6 +101,30 @@ into an EMG singal, you need to pick the leads</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.multi_lead_type.working_pipeline_pre_ml_multi">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.multi_lead_type.</span></span><span class="sig-name descname"><span class="pre">working_pipeline_pre_ml_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">our_chosen_leads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'heart'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.multi_lead_type.working_pipeline_pre_ml_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a pipeline to pre-process
+an array of non-specific dimensions
+e.g. a five lead array into an EMG singal,
+of which we want leads 0 to 2 included</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
+<li><p><strong>our_chosen_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a>) – the read EMG file arrays that should be included</p></li>
+<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the picking strategy for independant components</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>final_envelope_a</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -116,6 +140,7 @@ into an EMG singal, you need to pick the leads</p>
 <li><a class="reference internal" href="#">resurfemg.multi_lead_type module</a><ul>
 <li><a class="reference internal" href="#resurfemg.multi_lead_type.compute_ICA_two_comp_selective"><code class="docutils literal notranslate"><span class="pre">compute_ICA_two_comp_selective()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.multi_lead_type.working_pipe_multi"><code class="docutils literal notranslate"><span class="pre">working_pipe_multi()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.multi_lead_type.working_pipeline_pre_ml_multi"><code class="docutils literal notranslate"><span class="pre">working_pipeline_pre_ml_multi()</span></code></a></li>
 </ul>
 </li>
 </ul>

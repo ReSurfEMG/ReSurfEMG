@@ -752,8 +752,11 @@ the signal is put in.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.working_pipeline_exp">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">working_pipeline_exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.working_pipeline_exp" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function produces a filtered respiratory EMG signal from a
-3 lead sEMG file.  The inputs are <code class="code docutils literal notranslate"><span class="pre">our_chosen_file</span></code> which we
+<dd><p>This function is legacy.
+It produces a filtered respiratory EMG signal from a
+3 lead sEMG file. A better
+option is a corresponding function in multi_lead_type
+The inputs are <code class="code docutils literal notranslate"><span class="pre">our_chosen_file</span></code> which we
 give the function as a string of filename.  The output is the
 processed EMG signal filtered and seperated from ecg components.
 The algorithm to pick out the EMG here is by having
@@ -779,7 +782,8 @@ an array of specific fixed dimenstions
 i.e. a three lead array into an EMG singal,
 the function is legacy code, and most
 processsing should be done with
-<code class="code docutils literal notranslate"><span class="pre">working_pipeline_multi</span></code></p>
+<code class="code docutils literal notranslate"><span class="pre">multi_lead_type.working_pipeline_pre_ml_multi</span></code>
+or <code class="code docutils literal notranslate"><span class="pre">multi_lead_type.working_pipeline_pre_ml_multi</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
