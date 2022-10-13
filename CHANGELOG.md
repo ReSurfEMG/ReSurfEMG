@@ -51,5 +51,5 @@
 
 	- Converter functions added to converter_functions module to take other lab formats into an array in the format our library uses
 	- Preprocessing pipelines for any number of leads, which any subset can be chosen added to multi_lead_type module
-	- config module added so outside users can easily point towards thier own datasets
+	- config module added so outside users can easily point towards thier own datasets, includes a new function to make synthetic EMG data, and hash file validation function (moved from converter_functions)
 	- In repository (technically not part of version): legacy dashboard files removed, notebooks guide added
