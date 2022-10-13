@@ -42,3 +42,14 @@
 	- Working pipeline improved (working_pipeline_pre_ml) in helper_functions,
 	- Slices_jump_slider function produces continous sequential slices over an
     array of a certain legnth spaced out by a 'jump' in helper_functions.
+
+## Release 0.0.5
+
+### Added
+
+* Fifth version of this Python project, containing (added to this version):
+
+	- Converter functions added to converter_functions module to take other lab formats into an array in the format our library uses
+	- Preprocessing pipelines for any number of leads, which any subset can be chosen added to multi_lead_type module
+	- config module added so outside users can easily point towards thier own datasets
+	- In repository (technically not part of version): legacy dashboard files removed, notebooks guide added
