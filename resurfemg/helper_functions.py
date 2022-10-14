@@ -1171,5 +1171,9 @@ def scale_arrays(array, maximumn, minimumn):
     #     listed.append(new_array)
     #     print(np.max(new_array))
     # reformed = np.vstack(listed)
-    reformed = np.interp(array,(array.min(),array.max()), (maximumn, minimumn))
+    reformed = np.interp(
+        array,
+        (array.min(), array.max()),
+        (maximumn, minimumn)
+    )
     return reformed
