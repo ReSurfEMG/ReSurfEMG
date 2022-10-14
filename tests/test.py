@@ -41,6 +41,7 @@ from resurfemg.helper_functions import smooth_for_baseline
 from resurfemg.helper_functions import smooth_for_baseline_with_overlay
 from resurfemg.helper_functions import relative_levenshtein
 from resurfemg.helper_functions import gating
+from resurfemg.helper_functions import scale_arrays
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -167,7 +168,7 @@ class TestPickingMethods(unittest.TestCase):
 class TestPipelineMethods(unittest.TestCase):
 
     # def test_working_pipeline_exp(self):
-    #     sample_read= Poly5Reader(sample_emg_tampered)
+    #     sample_read= Poly5Reader(sample_emg_tampered) [# we need to augment a real one here]
     #     pipelined = working_pipeline_exp(sample_read)
     #     self.assertEqual(
     #         pipelined.shape[0],
@@ -230,7 +231,7 @@ class TestVentCompareMethods(unittest.TestCase):
         our_result12 = (relative_levenshtein(array1,array2))
         our_result13 = (relative_levenshtein(array1,array3))
         self.assertEqual(our_result12, our_result13)
-    
+
 class TestGating(unittest.TestCase):
     sample_read= Poly5Reader(sample_emg)
     sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
@@ -268,6 +269,19 @@ class TestGating(unittest.TestCase):
         self.assertEqual(
             (len(self.sample_emg_filtered[0, :10*2048])),
             len(ecg_gated_3) ,
+        )
+
+
+class TestArrayMath(unittest.TestCase):
+    
+    
+    def test_scale_arrays(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
+        new_emg = scale_arrays(sample_emg_filtered , 3)
+        self.assertEqual(
+            (new_emg.shape),
+            (sample_emg_filtered.shape) ,
         )
 
 if __name__ == '__main__':
