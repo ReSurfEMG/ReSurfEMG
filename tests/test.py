@@ -278,7 +278,8 @@ class TestArrayMath(unittest.TestCase):
     def test_scale_arrays(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
-        new_emg = scale_arrays(sample_emg_filtered , 3)
+        new_emg = scale_arrays(sample_emg_filtered , 3,0)
+        print(new_emg)
         self.assertEqual(
             (new_emg.shape),
             (sample_emg_filtered.shape) ,

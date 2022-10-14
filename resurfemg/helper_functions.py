@@ -1145,7 +1145,7 @@ def compute_ICA_two_comp_multi(emg_samples):
     return component_0, component_1
 
 
-def scale_arrays(array, maximum):
+def scale_arrays(array, maximumn, minimumn):
     """
     This function will scale all arrays along
     the horizontal axis to have an absolute maximum
@@ -1153,20 +1153,23 @@ def scale_arrays(array, maximum):
 
     :param array: Original signal array with any number iflayers
     :type array: ~numpy.ndarray
-    :param maximum: the absolute maximum between which the new array exists
-    :type maximum: float
+    :param maximumn: the absolute maximum below which the new array exists
+    :type maximumn: float
+    :param minimumn: the absolute maximum below which the new array exists
+    :type minimumn: float
 
     :returns: reformed, a new array with absolute max of maximum
     :rtype: ~numpy.ndarray
     """
-    num_horizontal = array.shape[0]
-    array_indeces = []
-    for i in range(num_horizontal):
-        array_indeces.append(i)
-    listed = []
-    for i in array_indeces:
-        new_array = (array[i] / np.max(array[i])) * maximum
-        listed.append(new_array)
-        print(np.max(new_array))
-    reformed = np.vstack(listed)
+    # num_horizontal = array.shape[0]
+    # array_indeces = []
+    # for i in range(num_horizontal):
+    #     array_indeces.append(i)
+    # listed = []
+    # for i in array_indeces:
+    #     new_array = (array[i] / np.max(array[i])) * maximum
+    #     listed.append(new_array)
+    #     print(np.max(new_array))
+    # reformed = np.vstack(listed)
+    reformed = np.interp(array,(array.min(),array.max()), (maximumn, minimumn))
     return reformed
