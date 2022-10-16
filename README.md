@@ -175,8 +175,8 @@ regardless of the currently active one.  We are planning to integrate
 with Anaconda in near future.
 
 The project has a sub-project of a related dashboard.  Dashboard is a GUI that
-exposes some of the project's fucntionality. There is a legacy dashboard
-in the same repository with ReSurfEMG code but we have moved the
+exposes some of the project's fucntionality. In the past we kept a a legacy dashboard
+in the same repository with ReSurfEMG code but we have deleted it. The
 current version of the dashboard into it's own repository:
 https://github.com/ReSurfEMG/ReSurfEMG-dashboard
 
