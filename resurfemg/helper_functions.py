@@ -1161,7 +1161,6 @@ def scale_arrays(array, maximumn, minimumn):
     :returns: reformed, a new array with absolute max of maximum
     :rtype: ~numpy.ndarray
     """
-    
     reformed = np.interp(
         array,
         (array.min(), array.max()),
