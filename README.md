@@ -1,6 +1,5 @@
-## ReSurfEMG
 <p align="center">
-    <img style="width: 10%; height: 10%" src="https://github.com/resurfemg/resurfemg/blob/main/resurfemg_long.svg">
+    <img style="width: 20%; height: 20%" src="https://github.com/resurfemg/resurfemg/blob/main/resurfemg_long.svg">
 </p>
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6811554.svg)](https://doi.org/10.5281/zenodo.6811554)
