@@ -45,7 +45,7 @@ class Poly5Reader:
     created on TMSi devices and/or in Poly5 format.
     """
     def __init__(self, filename=None, readAll=True):
-        if filename == None:
+        if filename is None:
             root = tk.Tk()
 
             filename = filedialog.askopenfilename()
@@ -194,7 +194,7 @@ class Poly5Reader:
 
     def readSamples(self, n_blocks=None):
         "Function to read a subset of sample blocks from a file"
-        if n_blocks == None:
+        if n_blocks is None:
             n_blocks = self.num_data_blocks
 
         sample_buffer = np.zeros(
