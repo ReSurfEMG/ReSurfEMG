@@ -11,7 +11,7 @@
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/6487/badge)](https://bestpractices.coreinfrastructure.org/projects/6487)
 [![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F-green)](https://fair-software.eu)
 
-ReSurfEMG is an open source collaborative python library for analysis
+**ReSurfEMG** is an open source collaborative python library for analysis
 of respiratory electromyography (EMG).  On the same site as 
 the repository for this library we keep [related resources](https://github.com/ReSurfEMG?tab=repositories). 
 
