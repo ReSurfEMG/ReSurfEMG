@@ -109,8 +109,8 @@ class Poly5Reader:
         return raw
 
     def _readFile(self, filename):
-        number_per_block = self.num_samples_per_block
-        suko = (self.num_samples % number_per_block) * self.num_channels
+        # number_per_block = self.num_samples_per_block
+        # suko = (self.num_samples % number_per_block) * self.num_channels
         try:
             self.file_obj = open(filename, "rb")
             file_obj = self.file_obj
@@ -138,6 +138,10 @@ class Poly5Reader:
                             _final_block_size = d_smp_bk
                             number_per_block = self.num_samples_per_block
                             if _final_block_size % number_per_block != 0:
+                                numb_blk = self.num_samples_per_block
+                                n_samps = self.num_samples
+                                n_chan = self.num_channels
+                                suko = (n_samps % numb_blk) * n_chan
                                 data_block = self._readSignalBlock(
                                     file_obj,
                                     buffer_size=suko,
