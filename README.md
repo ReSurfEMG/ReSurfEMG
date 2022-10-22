@@ -1,6 +1,7 @@
 <p align="center">
     <img style="width: 35%; height: 35%" src="https://github.com/resurfemg/resurfemg/blob/main/resurfemg_long.svg">
 </p>
+
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6811554.svg)](https://doi.org/10.5281/zenodo.6811554)
 [![PyPI](https://img.shields.io/pypi/v/resurfemg.svg)](https://pypi.python.org/pypi/resurfemg/)
 [![Anaconda-Server Badge](https://anaconda.org/resurfemg/resurfemg/badges/version.svg)](https://anaconda.org/resurfemg/resurfemg)
