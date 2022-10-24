@@ -11,6 +11,7 @@ Submodules
    resurfemg.helper_functions
    resurfemg.multi_lead_type
    resurfemg.config
+   resurfemg.tmsisdk_lite
 
 Module contents
 ---------------
