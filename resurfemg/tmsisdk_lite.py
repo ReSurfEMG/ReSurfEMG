@@ -1,5 +1,6 @@
 """
-The following module is copied from a larger code base
+The following module is a modification of a
+few classes  from a larger code base
 created by Twente Medical Systems International B.V., Oldenzaal
 The Netherlands. Some docstrings and formatting
 and variable names have been changed.
@@ -20,14 +21,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
-#######  #     #   #####   #
-   #     ##   ##  #
-   #     # # # #  #        #
-   #     #  #  #   #####   #
-   #     #     #        #  #
-   #     #     #        #  #
-   #     #     #  #####    #
 
 """
 
