@@ -78,7 +78,7 @@ and other types of data arrays e.g. ventilator signals.</p>
 <dd class="field-even"><p><code class="code docutils literal notranslate"><span class="pre">True</span></code> if this range intersects another range</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -96,7 +96,7 @@ and other types of data arrays e.g. ventilator signals.</p>
 range</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -104,14 +104,14 @@ range</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.Range.to_slice">
 <span class="sig-name descname"><span class="pre">to_slice</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.Range.to_slice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts this range to a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a>.</p>
+<dd><p>Converts this range to a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A slice with its start set to this range’s start and
 end set to this range’s end</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.10)">slice</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.11)">slice</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -128,8 +128,8 @@ values but returns only the array, not an altered Poly5.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_emg</strong> (<em>Poly5Reader</em>) – A poly5</p></li>
-<li><p><strong>percent_to_cut</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Percentage to look at on the end</p></li>
-<li><p><strong>tolerance_percent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Percent variation tolerance to allow without
+<li><p><strong>percent_to_cut</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Percentage to look at on the end</p></li>
+<li><p><strong>tolerance_percent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Percent variation tolerance to allow without
 cutting</p></li>
 </ul>
 </dd>
@@ -152,8 +152,8 @@ values but returns only the array not an altered Poly5.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_emg</strong> (<em>Poly5Reader</em>) – A poly5</p></li>
-<li><p><strong>percent_to_cut</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Percentage to look at on the end</p></li>
-<li><p><strong>tolerance_percent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Percentage variation to allow without cut</p></li>
+<li><p><strong>percent_to_cut</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Percentage to look at on the end</p></li>
+<li><p><strong>tolerance_percent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Percentage variation to allow without cut</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -175,8 +175,8 @@ values but returns only the array.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_emg</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – Array of samples</p></li>
-<li><p><strong>percent_to_cut</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Percentage to look at on the end</p></li>
-<li><p><strong>tolerance_percent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Percent variation to allow without cutting</p></li>
+<li><p><strong>percent_to_cut</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Percentage to look at on the end</p></li>
+<li><p><strong>tolerance_percent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Percent variation to allow without cutting</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -240,9 +240,9 @@ the signal after processing).</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>original_signal</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – Array.</p></li>
-<li><p><strong>original_signal_sampling_frequency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Sampling freq. original signal</p></li>
+<li><p><strong>original_signal_sampling_frequency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Sampling freq. original signal</p></li>
 <li><p><strong>processed_signal</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – Array.</p></li>
-<li><p><strong>processed_signal_sampling_frequency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Sampling frequency processed
+<li><p><strong>processed_signal_sampling_frequency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Sampling frequency processed
 signal</p></li>
 </ul>
 </dd>
@@ -250,7 +250,7 @@ signal</p></li>
 <dd class="field-even"><p>Power loss</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -269,7 +269,7 @@ on a time series array that has been reduced down to a binary
 <dd class="field-even"><p>Number of events</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -283,8 +283,8 @@ the emg after a bandpass as made here.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_emg</strong> (<em>Poly5Reader</em>) – Poly5 file with the samples to work over</p></li>
-<li><p><strong>low_pass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number to cut off <code class="code docutils literal notranslate"><span class="pre">frequenciesabove</span></code></p></li>
-<li><p><strong>high_pass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number to cut off <code class="code docutils literal notranslate"><span class="pre">frequenceisbelow</span></code></p></li>
+<li><p><strong>low_pass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number to cut off <code class="code docutils literal notranslate"><span class="pre">frequenciesabove</span></code></p></li>
+<li><p><strong>high_pass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number to cut off <code class="code docutils literal notranslate"><span class="pre">frequenceisbelow</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -305,9 +305,9 @@ EMG after a bandpass as made here.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_emg_samp</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – The array in the poly5 or other sample</p></li>
-<li><p><strong>low_pass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number to cut off <code class="code docutils literal notranslate"><span class="pre">frequenciesabove</span></code></p></li>
-<li><p><strong>high_pass</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The number to cut off <code class="code docutils literal notranslate"><span class="pre">frequenceisbelow</span></code></p></li>
-<li><p><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number of samples per second i.e. Hertz</p></li>
+<li><p><strong>low_pass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number to cut off <code class="code docutils literal notranslate"><span class="pre">frequenciesabove</span></code></p></li>
+<li><p><strong>high_pass</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The number to cut off <code class="code docutils literal notranslate"><span class="pre">frequenceisbelow</span></code></p></li>
+<li><p><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of samples per second i.e. Hertz</p></li>
 <li><p><strong>output</strong> – The type of sampling stabilizor</p></li>
 </ul>
 </dd>
@@ -329,8 +329,8 @@ another array.  Output is the EMG after a bandpass as made here.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_emg</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – Samples from the EMG</p></li>
-<li><p><strong>cut_above</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number to cut off <code class="code docutils literal notranslate"><span class="pre">frequenceisbelow</span></code></p></li>
-<li><p><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number of samples per second i.e. Hertz</p></li>
+<li><p><strong>cut_above</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number to cut off <code class="code docutils literal notranslate"><span class="pre">frequenceisbelow</span></code></p></li>
+<li><p><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of samples per second i.e. Hertz</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -357,7 +357,7 @@ to read over slices.</p>
 <dd class="field-even"><p>A number expressing the entropy using math.log w/base 2</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -373,7 +373,7 @@ output is the same length as the input vector.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – Samples from the EMG</p></li>
-<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Length of the sample use as window for function</p></li>
+<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Length of the sample use as window for function</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -400,8 +400,8 @@ The filling method for the gate is encoded as follows:
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>src_signal</strong> – Signal to process</p></li>
 <li><p><strong>gate_peaks</strong> (<em>~list</em>) – Peaks to be gated</p></li>
-<li><p><strong>gate_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – width of the gate</p></li>
-<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – filling method of gate</p></li>
+<li><p><strong>gate_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – width of the gate</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – filling method of gate</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -423,7 +423,7 @@ dmax: int, size of chunks,</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>our_signal</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – 1d signal array usually of emg</p></li>
-<li><p><strong>dmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – legnth of chunk to look for local max in</p></li>
+<li><p><strong>dmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – legnth of chunk to look for local max in</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -474,7 +474,7 @@ array <code class="code docutils literal notranslate"><span class="pre">x</span>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – Samples from the EMG</p></li>
-<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Legnth of the sample use as window for function</p></li>
+<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Legnth of the sample use as window for function</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -497,10 +497,10 @@ filtering.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sample</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Percentage variation tolerance to allow without cutting</p></li>
-<li><p><strong>sample_frequ</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The frequency at which the sample was captured</p></li>
-<li><p><strong>freq_to_pull</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The frequency you desire to remove from teh signal</p></li>
-<li><p><strong>quality_factor_q</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – How high the quality of the removal is</p></li>
+<li><p><strong>sample</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Percentage variation tolerance to allow without cutting</p></li>
+<li><p><strong>sample_frequ</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The frequency at which the sample was captured</p></li>
+<li><p><strong>freq_to_pull</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The frequency you desire to remove from teh signal</p></li>
+<li><p><strong>quality_factor_q</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – How high the quality of the removal is</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -573,7 +573,7 @@ that is selects ranges and returns tuples of boundaries.</p>
 <dd class="field-even"><p>range_return</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)">tuple</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -594,7 +594,7 @@ the percentage of overlap.</p>
 <dd class="field-even"><p>Raw overlap percent</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -617,8 +617,8 @@ value of the maximum parameter</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – Original signal array with any number iflayers</p></li>
-<li><p><strong>maximumn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – the absolute maximum below which the new array exists</p></li>
-<li><p><strong>minimumn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – the absolute maximum below which the new array exists</p></li>
+<li><p><strong>maximumn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the absolute maximum below which the new array exists</p></li>
+<li><p><strong>minimumn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the absolute maximum below which the new array exists</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -641,8 +641,8 @@ return.  Sample should be one single row (1-dimensional array.)</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – The sample array</p></li>
-<li><p><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Number of samples per second</p></li>
-<li><p><strong>upper_window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The end of window over which values will be plotted</p></li>
+<li><p><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of samples per second</p></li>
+<li><p><strong>upper_window</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The end of window over which values will be plotted</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -650,7 +650,7 @@ return.  Sample should be one single row (1-dimensional array.)</p>
 frequencies (the values for plotting the power spectrum)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a>]</p>
+<dd class="field-odd"><p>Tuple[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -666,8 +666,8 @@ not return these slices.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>array_sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – array containing the signal</p></li>
-<li><p><strong>slice_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the legnth of window on the array</p></li>
-<li><p><strong>jump</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the amount by which the winow is moved at iteration</p></li>
+<li><p><strong>slice_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the legnth of window on the array</p></li>
+<li><p><strong>jump</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the amount by which the winow is moved at iteration</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -691,7 +691,7 @@ not return these slices.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>array_sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – array containing the signal</p></li>
-<li><p><strong>slice_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the legnth of window on the array</p></li>
+<li><p><strong>slice_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the legnth of window on the array</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -711,9 +711,9 @@ not return these slices.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>single_filtered_array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – Array.</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number on samples to work from</p></li>
-<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number on samples to work until</p></li>
-<li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number of samples to work over</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number on samples to work from</p></li>
+<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number on samples to work until</p></li>
+<li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of samples to work over</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -734,10 +734,10 @@ overlay 0 or 1 mask tagging the baseline.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>my_own_array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – Array</p></li>
-<li><p><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Number where to cut the mask for overlay</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number on samples to work from</p></li>
-<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number on samples to work until</p></li>
-<li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number of samples to work over</p></li>
+<li><p><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number where to cut the mask for overlay</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number on samples to work from</p></li>
+<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number on samples to work until</p></li>
+<li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of samples to work over</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -760,7 +760,7 @@ the signal is put in.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>xc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – Samples from the EMG</p></li>
-<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Legnth of the sample use as window for function</p></li>
+<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Legnth of the sample use as window for function</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -811,7 +811,7 @@ or <code class="code docutils literal notranslate"><span class="pre">multi_lead_
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
-<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the picking strategy for independant components</p></li>
+<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the picking strategy for independant components</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -832,7 +832,7 @@ on a cut-off value.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – An array</p></li>
-<li><p><strong>cut_off</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The number defining a cut-off line for binarization</p></li>
+<li><p><strong>cut_off</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – The number defining a cut-off line for binarization</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

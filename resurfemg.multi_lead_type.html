@@ -65,8 +65,8 @@ there should be at least two arrays but there can be more.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>emg_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – Original signal array with three or more layers</p></li>
-<li><p><strong>use_all_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – True if all leads used, otherwise specify leads</p></li>
-<li><p><strong>desired_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a>) – tuple of leads to use starting from 0</p></li>
+<li><p><strong>use_all_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – True if all leads used, otherwise specify leads</p></li>
+<li><p><strong>desired_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – tuple of leads to use starting from 0</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -88,8 +88,8 @@ into an EMG singal, you need to pick the leads</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
-<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the picking strategy for independant components</p></li>
-<li><p><strong>selected</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a>) – the leads selected for the pipeline to run over</p></li>
+<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the picking strategy for independant components</p></li>
+<li><p><strong>selected</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – the leads selected for the pipeline to run over</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -112,8 +112,8 @@ of which we want leads 0 to 2 included</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
-<li><p><strong>our_chosen_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a>) – the read EMG file arrays that should be included</p></li>
-<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the picking strategy for independant components</p></li>
+<li><p><strong>our_chosen_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – the read EMG file arrays that should be included</p></li>
+<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the picking strategy for independant components</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
