@@ -14,6 +14,7 @@
 **ReSurfEMG** is an open source collaborative python library for analysis
 of respiratory electromyography (EMG).  On the same site as 
 the repository for this library we keep [related resources](https://github.com/ReSurfEMG?tab=repositories). 
+Most important to know before using the software is that we have a [Researcher interface](https://github.com/ReSurfEMG/ReSurfEMG) where the user can access the the code to change various filter and analysis settings, and a [Dashboard interface](https://github.com/ReSurfEMG/ReSurfEMG-dashboard) which contains custom settings and also options to change settings in a more graphical way. 
 
 The library was initially
 built for surface EMG, however many functions will also work for
