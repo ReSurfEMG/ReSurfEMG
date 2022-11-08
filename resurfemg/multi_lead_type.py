@@ -61,7 +61,7 @@ def compute_ICA_two_comp_selective(
     for i in all_component_numbers:
         list_to_c.append(emg_samples[i])
     X = np.column_stack(list_to_c)
-    ica = FastICA(n_components=2, whiten='unit-variance')
+    ica = FastICA(n_components=2, whiten='unit-variance', random_state=92)
     S = ica.fit_transform(X)
     component_0 = S.T[0]
     component_1 = S.T[1]
