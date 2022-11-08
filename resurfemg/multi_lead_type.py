@@ -19,6 +19,7 @@ from scipy.signal import find_peaks
 from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 import numpy as np
+import sklearn
 from sklearn.decomposition import FastICA
 from resurfemg.helper_functions import bad_end_cutter_for_samples
 from resurfemg.helper_functions import emg_bandpass_butter_sample
