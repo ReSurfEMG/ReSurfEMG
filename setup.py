@@ -594,7 +594,7 @@ if __name__ == '__main__':
             'h5py',
             'scikit-learn',
         ],
-        tests_require=['pytest', 'pycodestyle', 'isort', 'wheel',],
+        tests_require=['pytest', 'pycodestyle', 'isort', 'wheel', ],
         command_options={
             'build_sphinx': {
                 'project': ('setup.py', name),
