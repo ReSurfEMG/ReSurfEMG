@@ -1,8 +1,9 @@
 #  environment document
 
-name: emgandash
+name: emgandashY
 channels:
   - conda-forge
+  - resurfemg
 dependencies:
   - python=3.8.6
 
@@ -19,12 +20,11 @@ dependencies:
   - pyxdf
   - resurfemg
   - scipy=1.7.1
+  - scikit-learn=1.1.1
   - sphinx=4.5.0
   - textdistance =4.2.1
 
 
 
-  - pip:
 
-    - mcfly==3.1.0
 
