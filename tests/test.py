@@ -32,6 +32,7 @@ from resurfemg.helper_functions import naive_rolling_rms
 from resurfemg.helper_functions import vect_naive_rolling_rms
 from resurfemg.helper_functions import pick_more_peaks_array
 from resurfemg.helper_functions import pick_lowest_correlation_array
+from resurfemg.helper_functions import pick_highest_correlation_array
 from resurfemg.helper_functions import zero_one_for_jumps_base
 from resurfemg.helper_functions import compute_ICA_two_comp
 from resurfemg.helper_functions import compute_ICA_two_comp_multi
@@ -105,6 +106,23 @@ class TestComponentPickingMethods(unittest.TestCase):
         self.assertEqual(
             sum(emg),
             sum(sample_emg_filtered[2]) ,
+        )
+    def test_pick_highest_correlation_array(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered[1] = sample_emg_filtered[0]
+        sample_emg_filtered[2] = sample_emg_filtered[0]*0.7
+        sample_emg_filtered[2,20] = 0
+        sample_emg_filtered[2,40] = 0
+        sample_emg_filtered[2,80] = 0
+        sample_emg_filtered[2,21] = 100
+        sample_emg_filtered[2,42] = 100
+        sample_emg_filtered[2,81] = 100
+        #components = sample_emg_filtered
+        emg = pick_highest_correlation_array(sample_emg_filtered, sample_emg_filtered[0])
+        self.assertEqual(
+            sum(emg),
+            sum(sample_emg_filtered[0]) ,
         )
 
 
