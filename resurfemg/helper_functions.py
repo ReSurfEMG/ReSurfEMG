@@ -537,9 +537,9 @@ def pick_lowest_correlation_array(components_tuple, ecg_lead):
 
 
 def pick_highest_correlation_array(components_data, hi_lead):
-    """Here we have a function that takes a tuple multiple
+    """Here we have a function that takes a stack of multiple
     leads and the array containing the ECG recording
-    (or whichever one you want ot maask), and finds the
+    (or whichever one you want to pick), and finds the
     ICA component with the highest similarity to the ECG.
     Data should not have been finally filtered to envelope level.
 
@@ -549,10 +549,10 @@ def pick_highest_correlation_array(components_data, hi_lead):
     :param ecg_lead: array containing the ECG recording, or any lead you pick
     :type ecg_lead: numpy.ndarray
 
-    :returns: Array with the highest correlation coefficient
+    :returns: A tuple with the array with the highest correlation coefficient
      to the ECG lead (should usually be the EMG as opposed to ECG)
-     of whatever lead you pick
-    :rtype: ~numpy.ndarray
+     of whatever lead you pick, and the array number in stack
+    :rtype: tuple (~numpy.ndarray, number)
     """
     component_list = []
     num_list = list(range(components_data.shape[0]))
@@ -570,7 +570,7 @@ def pick_highest_correlation_array(components_data, hi_lead):
     highest_index = np.argmax(corr_matrix[0][1:])
     desired_component = component_list[highest_index]
 
-    return desired_component
+    return desired_component, highest_index
 
 
 def working_pipeline_exp(our_chosen_file):

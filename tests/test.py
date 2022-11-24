@@ -118,10 +118,9 @@ class TestComponentPickingMethods(unittest.TestCase):
         sample_emg_filtered[2,21] = 100
         sample_emg_filtered[2,42] = 100
         sample_emg_filtered[2,81] = 100
-        #components = sample_emg_filtered
         emg = pick_highest_correlation_array(sample_emg_filtered, sample_emg_filtered[0])
         self.assertEqual(
-            sum(emg),
+            sum(emg[0]),
             sum(sample_emg_filtered[0]) ,
         )
 
