@@ -1,3 +1,0 @@
-[submodule "tmsisdk"]
-	path = .vendor/tmsisdk
-	url = https://github.com/ReSurfEMG/TMSiSDK.git
