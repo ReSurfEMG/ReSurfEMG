@@ -181,13 +181,6 @@ in the same repository with ReSurfEMG code but we have deleted it. The
 current version of the dashboard into it's own repository:
 https://github.com/ReSurfEMG/ReSurfEMG-dashboard
 
-As of today, we use out own version of the package TMSiSDK together with our
-project.  Hopefully, this is a temporary measure, and, eventually,
-TMSiSDK will become just another independent project we may depend on.
-The TMSiSDK project (which has an Apache 2 license) can be added as a submodule
-containing our patched fork of the original code.
-You will need to pull Git submodules in order to be able to properly
-install and run the project.
 
 ### New commands
 
