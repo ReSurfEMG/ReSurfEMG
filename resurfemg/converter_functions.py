@@ -18,7 +18,7 @@ import numpy as np
 # import h5py
 # import re
 import scipy.io as sio
-from TMSiSDK.file_readers import Poly5Reader
+from resurfemg.tmsisdk_lite import Poly5Reader
 
 
 def poly5unpad(to_be_read):
