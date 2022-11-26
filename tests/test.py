@@ -8,7 +8,7 @@ import sys
 import numpy as np
 import scipy
 from tempfile import TemporaryDirectory
-from TMSiSDK.file_readers import Poly5Reader
+from resurfemg.tmsisdk_lite import Poly5Reader
 
 
 # converter_functions
