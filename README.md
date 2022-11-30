@@ -128,8 +128,8 @@ metadata is available.
      `conda env create -f environment.yml`.
    * Linux users can create their own environment by hand.
 
-2. Open a notebook in researcher_interface and interactively run the
-   cells. Note, if you run with an installed library import appropriately
+2. Open a notebook (we use [Jupyter notebooks](https://jupyter.org/try-jupyter/retro/notebooks/?path=notebooks/Intro.ipynb)) in researcher_interface folder and interactively run the
+   cells. You can use the command `jupyter notebook` to open a browser window on the folders of notebooks. Note, if you run with an installed library import appropriately
 
 
 ## Generating documentation
