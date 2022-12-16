@@ -53,7 +53,7 @@
 Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
 <p>This file contains one method to let the user configure
 all paths for data instead of hard-coding them, as well
-as a methods to check data integrity, and create synthetic data.
+as methods to check data integrity, and create synthetic data.
 The data integrity can be checked because this file contains
 hash functions to track data. Synthetic data can be made
 with several methods.</p>
@@ -150,6 +150,14 @@ the results can be fed to another function.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.config.simulate_emg_with_occlusions">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.config.</span></span><span class="sig-name descname"><span class="pre">simulate_emg_with_occlusions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">420</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emg_sample_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2048</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">22</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ie_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_mus_up</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_mus_down</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">occs_times_vals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[365,</span> <span class="pre">381,</span> <span class="pre">395]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.config.simulate_emg_with_occlusions" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function simulates an surface respiraotry emg with no ecg
+component but with occlusion manuevers.
+An ECG component can be added and mixed in later.</p>
+</dd></dl>
+
 </section>
 
 
@@ -175,6 +183,7 @@ the results can be fed to another function.</p>
 </li>
 <li><a class="reference internal" href="#resurfemg.config.hash_it_up_right_all"><code class="docutils literal notranslate"><span class="pre">hash_it_up_right_all()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.config.make_synth_emg"><code class="docutils literal notranslate"><span class="pre">make_synth_emg()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.config.simulate_emg_with_occlusions"><code class="docutils literal notranslate"><span class="pre">simulate_emg_with_occlusions()</span></code></a></li>
 </ul>
 </li>
 </ul>
