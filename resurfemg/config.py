@@ -4,7 +4,7 @@ Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 This file contains one method to let the user configure
 all paths for data instead of hard-coding them, as well
-as a methods to check data integrity, and create synthetic data.
+as methods to check data integrity, and create synthetic data.
 The data integrity can be checked because this file contains
 hash functions to track data. Synthetic data can be made
 with several methods.
@@ -19,6 +19,8 @@ import glob
 import math
 import pandas as pd
 import numpy as np
+import scipy
+from scipy import signal
 
 
 class Config:
@@ -189,3 +191,66 @@ def make_synth_emg(long, max_abs_volt, humps):
     volt_multiplier = max_abs_volt / abs(synth_emg1).max()
     signal = synth_emg1*volt_multiplier
     return signal
+
+
+def simulate_emg_with_occlusions(t_start=0,
+                                 t_end=7*60,
+                                 emg_sample_rate=2048,   # hertz
+                                 rr=22,         # respiratory rate /min
+                                 ie_ratio=1/2,  # ratio btw insp + expir phase
+                                 tau_mus_up=0.3,
+                                 tau_mus_down=0.3,
+                                 occs_times_vals=[6*60+5, 6*60+21, 6*60+35]):
+    """
+    This function simulates an surface respiraotry emg with no ecg
+    component but with occlusion manuevers.
+    An ECG component can be added and mixed in later.
+    """
+    ie_fraction = ie_ratio/(ie_ratio + 1)
+    occs_times = np.array(occs_times_vals)
+    t_occs = np.floor(occs_times*rr/60)*60/rr
+    for i, t_occ in enumerate(t_occs):
+        if t_end < (t_occ + 60/rr):
+            printable1 = 't=' + str(t_occ) + ':t_occ'
+            printable2 = 'should be at least a full resp. cycle from t_end'
+            print(printable1 + printable2)
+    # time axis
+    esr = emg_sample_rate
+    y_emg = np.array(
+        [i/esr for i in range(int(t_start*esr), int(t_end*esr))]
+    )
+
+    # reference signal pattern generator
+    emg_block = (signal.square(y_emg*rr/60*2*np.pi + 0.5, ie_fraction)+1)/2
+    for i, t_occ in enumerate(t_occs):
+        esr = emg_sample_rate
+        n_occ = int(t_occ*emg_sample_rate)
+        blocker = np.arange(int(esr*60/rr)+1)/esr*rr/60*2*np.pi
+        squared_wave = (signal.square(blocker, ie_fraction)+1)/2
+        emg_block[n_occ:n_occ+int(esr*60/rr)+1] = squared_wave
+
+    # simulate up- and downslope dynamics of EMG
+    pattern_gen_emg = np.zeros((len(y_emg),))
+
+    for i in range(1, len(y_emg)):
+        pat = pattern_gen_emg[i-1]
+        esr = emg_sample_rate
+        if (emg_block[i-1]-pat) > 0:
+            pattern_gen_emg[i] = pat + (emg_block[i-1]-pat)/(tau_mus_up*esr)
+        else:
+            pattern_gen_emg[i] = pat + (emg_block[i-1]-pat)/(tau_mus_down*esr)
+
+    # make respiratory EMG component
+    part_emg = pattern_gen_emg * np.random.normal(0, 0.5, size=(len(y_emg), ))
+
+    # make noise and drift components
+    part_noise = np.random.normal(0, 0.5, size=(len(y_emg), ))
+    part_drift = np.zeros((len(y_emg),))
+
+    # mix channels, could be remixed with an ecg
+    x_emg = np.zeros((3, len(y_emg)))
+    x_emg[0, :] = 0.05 * part_emg + 1 * part_noise + 20 * part_drift
+    x_emg[1, :] = 4 * part_emg + 1 * part_noise + 20 * part_drift
+    x_emg[2, :] = 8 * part_emg + 1 * part_noise + 20 * part_drift
+    data_emg_samples = x_emg
+    return data_emg_samples
