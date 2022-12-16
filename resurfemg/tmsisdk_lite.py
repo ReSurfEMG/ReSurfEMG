@@ -1,9 +1,9 @@
 """
 The following module is a modification of a
-few classes  from a larger code base
+few classes from a larger code base
 created by Twente Medical Systems International B.V., Oldenzaal
-The Netherlands. Some docstrings and formatting
-and variable names have been changed.
+The Netherlands. Some docstrings,formatting,
+variables and variable names have been changed.
 The Twente Medical Systems International B.V.
 lisencing information is as below:
 
@@ -52,9 +52,9 @@ class Poly5Reader:
     def read_data_MNE(self,) -> mne.io.RawArray:
         """
         Return MNE RawArray given internal channel names and types
-        Returns
-        -------
-        mne.io.RawArray
+
+        :returns: mne.io.RawArray
+        :rtype: object from an numpy.ndarray
         """
 
         streams = self.channels
@@ -267,9 +267,13 @@ class Poly5Reader:
 class Channel:
     """
     'Channel' represents a device channel. It has the next properties:
-    name : 'string' The name of the channel.
-    unit_name : 'string' The name of the unit (e.g. 'μVolt)  of the
-    sample-data of the channel.
+
+    :param name: the name of the channel
+    :type name: str
+    :param unit_name: the name of the unit (e.g. 'μVolt)  of the
+    sample-data of the channel
+    :type unit_name: str
+
     """
 
     def __init__(self, name, unit_name):
