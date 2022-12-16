@@ -75,10 +75,10 @@ class Config:
             The default directory layout is expected to be based on the above
             and adding subdirectories.
 
-            You can override any individual directory by specifying it
-            in config.json.
+            You can override any individual directory (or subdirectory)
+            by specifying it in the config.json file.
 
-            "root_emg_data" and directories are expected to exist.
+            "root_emg_data" is expected to exist.
             The "models" and "preprocessed" directories need not
             exist.  They will be created if missing.
             '''
