@@ -13,7 +13,7 @@ import logging
 
 from argparse import ArgumentParser
 
-# from .cnt import preprocess
+from .multi_lead_type import preprocess
 # from .ml import Regressions
 # from .loaders import RegressionsLoader
 from .config import Config
@@ -59,7 +59,7 @@ def make_parser():
         default=None,
         help='''
         Location of config.json, a file that specified directory layout.
-        This file is necessary to locate the data directory, metadata,
+        This file is necessary to locate the data directory,
         models and preprocessed data.
         '''
     )
@@ -83,14 +83,14 @@ def make_parser():
         This is where newly created files will go.
         ''',
     )
-    acquire.add_argument(
-        '-m',
-        '--metadata',
-        default=None,
-        help='''
-        Metadata directory.  This is the directory for metadata.
-        ''',
-    )
+    # acquire.add_argument(
+    #     '-m',
+    #     '--metadata',
+    #     default=None,
+    #     help='''
+    #     Metadata directory.  This is the directory for metadata.
+    #     ''',
+    # )
     acquire.add_argument(
         '-f',
         '--force',
@@ -147,7 +147,7 @@ def make_parser():
         'algo',
         choices=('dummy', 'rf', 'lsv', 'sgd', 'emrvr'),
         help='''
-        Regression algorithm to use.
+        ML algorithm to use.
         '''
     )
     ml.add_argument(
@@ -211,7 +211,7 @@ def main(argv):
         try:
             preprocess(
                 config.get_directory('data', parsed.input),
-                config.get_directory('metadata', parsed.metadata),
+                # config.get_directory('metadata', parsed.metadata),
                 config.get_directory('preprocessed', parsed.output),
                 parsed.limit,
                 parsed.force,
