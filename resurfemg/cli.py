@@ -15,7 +15,6 @@ from argparse import ArgumentParser
 
 # from .cnt import preprocess
 # from .ml import Regressions
-# from .nn import NnOptimizer
 # from .loaders import RegressionsLoader
 from .config import Config
 
@@ -26,7 +25,7 @@ def common(parser):
         '--input',
         default=None,
         help='''
-        Directory containing h5 and CSV files generated in preprocessing step
+        Directory containing files generated in preprocessing step
         ''',
     )
     parser.add_argument(
@@ -53,7 +52,7 @@ def common(parser):
 
 
 def make_parser():
-    parser = ArgumentParser('Epodium CLI')
+    parser = ArgumentParser('ResurfEMG CLI')
     parser.add_argument(
         '-c',
         '--config',
@@ -67,21 +66,21 @@ def make_parser():
     subparsers = parser.add_subparsers()
     acquire = subparsers.add_parser('acquire')
     acquire.set_defaults(action='acquire')
-    acquire.add_argument(
-        '-i',
-        '--input',
-        default=None,
-        help='''
-        Input directory
-        (the one containing `11mnd mmn' etc. directories)''',
-    )
+    # acquire.add_argument(
+    #     '-i',
+    #     '--input',
+    #     default=None,
+    #     help='''
+    #     Input directory
+    #     (the one containing `11mnd mmn' etc. directories)''',
+    # )
     acquire.add_argument(
         '-o',
         '--output',
         default=None,
         help='''
         Output directory.  Will be created if doesn't exist.
-        This is where h5 and CSV files go to.
+        This is where newly created files will go.
         ''',
     )
     acquire.add_argument(
@@ -89,8 +88,7 @@ def make_parser():
         '--metadata',
         default=None,
         help='''
-        Metadata directory.  This is the directory containing `ages'
-        directory containing `ages_11mnths.txt' etc.
+        Metadata directory.  This is the directory for metadata.
         ''',
     )
     acquire.add_argument(
@@ -236,18 +234,5 @@ def main(argv):
         except Exception as e:
             logging.exception(e)
             return 1
-
-    if parsed.action == 'nn':
-        try:
-            rloader = prepare_loader(parsed, config)
-
-            nno = NnOptimizer(rloader, epochs=parsed.epochs)
-            op = getattr(nno, parsed.operation)
-            op(parsed.nth_model)
-        except Exception as e:
-            logging.exception(e)
-            return 1
-
-        return 1
 
     return 0
