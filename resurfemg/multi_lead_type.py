@@ -25,7 +25,7 @@ from resurfemg.helper_functions import emg_bandpass_butter_sample
 from resurfemg.helper_functions import pick_lowest_correlation_array
 from resurfemg.helper_functions import pick_more_peaks_array
 from resurfemg.helper_functions import emg_highpass_butter
-
+from resurfemg.tmsisdk_lite import Poly5Reader
 
 def compute_ICA_two_comp_selective(
     emg_samples,
@@ -121,6 +121,18 @@ def working_pipe_multi(our_chosen_samples, picker='heart', selected=(0, 2)):
     final_envelope_d = emg_highpass_butter(abs_values, 150, 2048)
 
     return final_envelope_d
+
+
+def preprocess(files, processed, our_chosen_leads,limit=None, force=False):
+    """
+    This function is currently written to accomodate Poly5 files types.
+    It can be refactored later.
+    """
+    #raw_array = Poly5Reader(files)
+    #acquired = RawData(raw_array)
+    reader = Poly5Reader(files)
+    reader = working_pipeline_pre_ml_multi(reader,our_chosen_leads,picker='heart',)
+    reader.save_preprocessed(processed, limit=limit, force=force)
 
 
 def working_pipeline_pre_ml_multi(

@@ -277,11 +277,10 @@ You will be able to preprocess, train and use models using command-line interfac
 Below are some examples of how to do that:
 
 This will pre-process the first ten Poly5 files in the
-`/mnt/data/original-cnts` directory.
+`/mnt/data/originals` directory.
 
     python -m resurfemg acquire \
-           --input /mnt/data/original-cnts \
-           --metadata /mnt/data/metadata \
+           --input /mnt/data/originals \
            --output /mnt/data/preprocessed \
            --limit 10
 
