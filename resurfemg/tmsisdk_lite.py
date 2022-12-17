@@ -192,7 +192,7 @@ class Poly5Reader:
             print('Could not open file. ')
 
     def readSamples(self, n_blocks=None):
-        "Function to read a subset of sample blocks from a file"
+        """Function to read a subset of sample blocks from a file"""
         if n_blocks is None:
             n_blocks = self.num_data_blocks
 
@@ -272,8 +272,7 @@ class Channel:
 
     :param name: the name of the channel
     :type name: str
-    :param unit_name: the name of the unit (e.g. 'μVolt)  of the
-    sample-data of the channel
+    :param unit_name: the name of unit (e.g. 'μVolt') of channel sample-data
     :type unit_name: str
 
     """
