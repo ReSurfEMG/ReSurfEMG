@@ -19,6 +19,8 @@ from scipy.signal import find_peaks
 from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+import glob
 from sklearn.decomposition import FastICA
 from resurfemg.helper_functions import bad_end_cutter_for_samples
 from resurfemg.helper_functions import emg_bandpass_butter_sample
@@ -26,6 +28,7 @@ from resurfemg.helper_functions import pick_lowest_correlation_array
 from resurfemg.helper_functions import pick_more_peaks_array
 from resurfemg.helper_functions import emg_highpass_butter
 from resurfemg.tmsisdk_lite import Poly5Reader
+
 
 def compute_ICA_two_comp_selective(
     emg_samples,
@@ -123,16 +126,50 @@ def working_pipe_multi(our_chosen_samples, picker='heart', selected=(0, 2)):
     return final_envelope_d
 
 
-def preprocess(files, processed, our_chosen_leads,limit=None, force=False):
+def save_preprocessed(array, out_fname, force):
     """
+    This function is written to be called by the cli module.
+    It stores arrays in a directory.
+    """
+    if not force:
+        if os.path.isfile(out_fname):
+            return
+    try:
+        os.makedirs(os.path.dirname(out_fname))
+    except FileExistsError:
+        pass
+    np.save(out_fname, array, allow_pickle=False)
+
+
+def preprocess(file_directory, our_chosen_leads,  processed, force=False):
+    """
+    This function is written to be called by the cli module.
+    The cli module supports command line pre-processing.
     This function is currently written to accomodate Poly5 files types.
     It can be refactored later.
+
+    :param file_directory: the directory with EMG files
+    :type file_directory: str
+    :param processed: the output directory
+    :type processed: str
+    :param our_chosen_leads: the leads selected for the pipeline to run over
+    :type our_chosen_leads: list
+
     """
-    #raw_array = Poly5Reader(files)
-    #acquired = RawData(raw_array)
-    reader = Poly5Reader(files)
-    reader = working_pipeline_pre_ml_multi(reader,our_chosen_leads,picker='heart',)
-    reader.save_preprocessed(processed, limit=limit, force=force)
+    file_directory_list = glob.glob(
+        os.path.join(file_directory, '**/*.Poly5'),
+        recursive=True,
+    )
+    for file in file_directory_list:
+        reader = Poly5Reader(file)
+        array = working_pipeline_pre_ml_multi(
+            reader.samples,
+            our_chosen_leads,
+            picker='heart',
+        )
+        rel_fname = os.path.relpath(file, file_directory)
+        out_fname = os.path.join(processed, rel_fname)
+        save_preprocessed(array, out_fname, force)
 
 
 def working_pipeline_pre_ml_multi(
@@ -176,6 +213,7 @@ def working_pipeline_pre_ml_multi(
     )
     #  and do step for ICA
     # TO BE REMOVED: components = compute_ICA_two_comp(re_cut_file_data)
+
     components = compute_ICA_two_comp_selective(
         re_cut_file_data,
         use_all_leads=False,

@@ -23,30 +23,30 @@ def common(parser):
         '--input',
         default=None,
         help='''
-        Directory containing files generated in preprocessing step
+        Directory containing files generated in step
         ''',
     )
-    parser.add_argument(
-        '-o',
-        '--output',
-        default=None,
-        help='''
-        Directory containing trained models (will be created if doesn't exist).
-        ''',
-    )
-    parser.add_argument(
-        '-s',
-        '--size',
-        default=None,
-        type=int,
-        help='''
-        Number of samples to use instead of the entire dataset.  Note that
-        grid search may be particularly slow with large datasets.  If you
-        only want to try this method, it's best to limit it to a small
-        number of samples.  This will set both the training and the testing
-        sets to the same number.
-        ''',
-    )
+    # parser.add_argument(
+    #     '-o',
+    #     '--output',
+    #     default=None,
+    #     help='''
+    #     Directory containing trained models (created if doesn't exist).
+    #     ''',
+    # )
+    # parser.add_argument(
+    #     '-s',
+    #     '--size',
+    #     default=None,
+    #     type=int,
+    #     help='''
+    #     Number of samples to use instead of the entire dataset.  Note that
+    #     grid search may be particularly slow with large datasets.  If you
+    #     only want to try this method, it's best to limit it to a small
+    #     number of samples.  This will set both the training and the testing
+    #     sets to the same number.
+    #     ''',
+    # )
 
 
 def make_parser():
@@ -64,14 +64,7 @@ def make_parser():
     subparsers = parser.add_subparsers()
     acquire = subparsers.add_parser('acquire')
     acquire.set_defaults(action='acquire')
-    # acquire.add_argument(
-    #     '-i',
-    #     '--input',
-    #     default=None,
-    #     help='''
-    #     Input directory
-    #     (the one containing `11mnd mmn' etc. directories)''',
-    # )
+
     acquire.add_argument(
         '-o',
         '--output',
@@ -95,21 +88,14 @@ def make_parser():
         '-l',
         '--lead',
         action='append',
-        default=[0,2],
+        default=[],
         type=int,
         help='''
-        Accumulate leads for chosen leads desired in preprocessing. 
+        Accumulate leads for chosen leads desired in preprocessing.
         ''',
     )
-    acquire.add_argument(
-        '-l',
-        '--limit',
-        type=int,
-        default=None,
-        help='''
-        Limit the preprocessed data to N first records.
-        ''',
-    )
+
+    common(acquire)
 
     ml = subparsers.add_parser('ml')
     ml.set_defaults(action='ml')
@@ -163,6 +149,7 @@ def make_parser():
         random search).
         '''
     )
+    return parser
 
 
 def prepare_loader(parsed, config):
@@ -183,9 +170,10 @@ def main(argv):
 
     if parsed.action == 'acquire':
         try:
+
             preprocess(
                 config.get_directory('data', parsed.input),
-                parsed.lead, # list of chosen leads
+                parsed.lead or [0, 2],  # list of chosen leads
                 config.get_directory('preprocessed', parsed.output),
                 parsed.force,
             )
