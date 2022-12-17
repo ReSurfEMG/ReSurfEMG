@@ -14,8 +14,6 @@ import logging
 from argparse import ArgumentParser
 
 from .multi_lead_type import preprocess
-# from .ml import Regressions
-# from .loaders import RegressionsLoader
 from .config import Config
 
 
@@ -52,7 +50,7 @@ def common(parser):
 
 
 def make_parser():
-    parser = ArgumentParser('ResurfEMG CLI')
+    parser = ArgumentParser('ReSurfEMG CLI')
     parser.add_argument(
         '-c',
         '--config',
@@ -83,14 +81,7 @@ def make_parser():
         This is where newly created files will go.
         ''',
     )
-    # acquire.add_argument(
-    #     '-m',
-    #     '--metadata',
-    #     default=None,
-    #     help='''
-    #     Metadata directory.  This is the directory for metadata.
-    #     ''',
-    # )
+
     acquire.add_argument(
         '-f',
         '--force',
@@ -98,6 +89,16 @@ def make_parser():
         default=False,
         help='''
         Write over previously preprpocessed data.
+        ''',
+    )
+    acquire.add_argument(
+        '-l',
+        '--lead',
+        action='append',
+        default=[0,2],
+        type=int,
+        help='''
+        Accumulate leads for chosen leads desired in preprocessing. 
         ''',
     )
     acquire.add_argument(
@@ -163,33 +164,6 @@ def make_parser():
         '''
     )
 
-    nn = subparsers.add_parser('nn')
-    nn.set_defaults(action='nn')
-    common(nn)
-    nn.add_argument(
-        '-e',
-        '--epochs',
-        type=int,
-        default=1500,
-        help='''
-        Number of training epochs to run.
-        '''
-    )
-    nn.add_argument(
-        'operation',
-        choices=('fit_model', 'predict'),
-    )
-    nn.add_argument(
-        'nth_model',
-        choices=tuple(range(len(NnOptimizer.optimization_params))),
-        type=int,
-        help='''
-        Nth model to use.
-        '''
-    )
-
-    return parser
-
 
 def prepare_loader(parsed, config):
     rloader = RegressionsLoader(
@@ -211,9 +185,8 @@ def main(argv):
         try:
             preprocess(
                 config.get_directory('data', parsed.input),
-                # config.get_directory('metadata', parsed.metadata),
+                parsed.lead, # list of chosen leads
                 config.get_directory('preprocessed', parsed.output),
-                parsed.limit,
                 parsed.force,
             )
         except Exception as e:
