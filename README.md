@@ -272,7 +272,7 @@ docker run --rm -v $(pwd):/ci \
 
 # Command-Line Interface
 
-You will be able to preprocess and tain the models using command-line interface.
+You will be able to preprocess, train and use models using command-line interface.
 (Pending module development scheduled for December 22nd 2022)
 Below are some examples of how to do that:
 
