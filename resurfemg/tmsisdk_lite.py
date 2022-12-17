@@ -106,90 +106,82 @@ class Poly5Reader:
     def _readFile(self, filename):
         # number_per_block = self.num_samples_per_block
         # suko = (self.num_samples % number_per_block) * self.num_channels
-        try:
-            self.file_obj = open(filename, "rb")
-            file_obj = self.file_obj
-            try:
-                self._readHeader(file_obj)
-                self.channels = self._readSignalDescription(file_obj)
-                number_per_block = self.num_samples_per_block
-                self._myfmt = 'f' * self.num_channels*number_per_block
-                self._buffer_size = self.num_channels*number_per_block
+        self.file_obj = open(filename, "rb")
+        file_obj = self.file_obj
+        self._readHeader(file_obj)
+        self.channels = self._readSignalDescription(file_obj)
+        number_per_block = self.num_samples_per_block
+        self._myfmt = 'f' * self.num_channels*number_per_block
+        self._buffer_size = self.num_channels*number_per_block
 
-                if self.readAll:
-                    sample_buffer = np.zeros(
-                        self.num_channels * self.num_samples
-                    )
+        if self.readAll:
+            sample_buffer = np.zeros(
+                self.num_channels * self.num_samples
+            )
 
-                    for i in range(self.num_data_blocks):
-                        # numb_per_block = self.num_data_blocks
-                        # print('\rProgress: % 0.1f %%'
-                        #  %(100*i/numb_per_block), end="\r")
+            for i in range(self.num_data_blocks):
+                # numb_per_block = self.num_data_blocks
+                # print('\rProgress: % 0.1f %%'
+                #  %(100*i/numb_per_block), end="\r")
 
-                        # Check whether final data block is
-                        # filled completely or not
-                        if i == self.num_data_blocks-1:
-                            d_smp_bk = self.num_samples / self.num_data_blocks
-                            _final_block_size = d_smp_bk
-                            number_per_block = self.num_samples_per_block
-                            if _final_block_size % number_per_block != 0:
-                                numb_blk = self.num_samples_per_block
-                                n_samps = self.num_samples
-                                n_chan = self.num_channels
-                                suko = (n_samps % numb_blk) * n_chan
-                                data_block = self._readSignalBlock(
-                                    file_obj,
-                                    buffer_size=suko,
-                                    myfmt='f' * suko,
-                                )
-                            else:
-                                data_block = self._readSignalBlock(
-                                    file_obj,
-                                    self._buffer_size,
-                                    self._myfmt,
-                                )
-                        else:
-                            data_block = self._readSignalBlock(
-                                file_obj,
-                                self._buffer_size,
-                                self._myfmt,
-                            )
-
-                        # Get indices that need to be
-                        # filled in the samples array
-                        number_per_block = self.num_samples_per_block
-                        i1 = i * number_per_block * self.num_channels
-                        i2 = (i+1) * number_per_block * self.num_channels
-
-                        # Correct for final data block if
-                        # this is not fully filled
-                        if i2 >= self.num_samples * self.num_channels:
-                            i2 = self.num_samples * self.num_channels
-
-                        # Insert the read data_block into
-                        # the sample_buffer array
-                        sample_buffer[i1:i2] = data_block
-
-                    samples = np.transpose(
-                        np.reshape(
-                            sample_buffer,
-                            [self.num_samples, self.num_channels],
+                # Check whether final data block is
+                # filled completely or not
+                if i == self.num_data_blocks-1:
+                    d_smp_bk = self.num_samples / self.num_data_blocks
+                    _final_block_size = d_smp_bk
+                    number_per_block = self.num_samples_per_block
+                    if _final_block_size % number_per_block != 0:
+                        numb_blk = self.num_samples_per_block
+                        n_samps = self.num_samples
+                        n_chan = self.num_channels
+                        suko = (n_samps % numb_blk) * n_chan
+                        data_block = self._readSignalBlock(
+                            file_obj,
+                            buffer_size=suko,
+                            myfmt='f' * suko,
                         )
+                    else:
+                        data_block = self._readSignalBlock(
+                            file_obj,
+                            self._buffer_size,
+                            self._myfmt,
+                        )
+                else:
+                    data_block = self._readSignalBlock(
+                        file_obj,
+                        self._buffer_size,
+                        self._myfmt,
                     )
 
-                    self.ch_names = [s._Channel__name for s in self.channels]
-                    self.ch_unit_names = [
-                        s._Channel__unit_name for s in self.channels
-                    ]
-                    self.samples = samples
-                    print('Done reading data.')
-                    self.file_obj.close()
+                # Get indices that need to be
+                # filled in the samples array
+                number_per_block = self.num_samples_per_block
+                i1 = i * number_per_block * self.num_channels
+                i2 = (i+1) * number_per_block * self.num_channels
 
-            except Exception as e:
-                print('Reading data failed, because of the following error:\n')
-                raise
-        except OSError:
-            print('Could not open file. ')
+                # Correct for final data block if
+                # this is not fully filled
+                if i2 >= self.num_samples * self.num_channels:
+                    i2 = self.num_samples * self.num_channels
+
+                # Insert the read data_block into
+                # the sample_buffer array
+                sample_buffer[i1:i2] = data_block
+
+            samples = np.transpose(
+                np.reshape(
+                    sample_buffer,
+                    [self.num_samples, self.num_channels],
+                )
+            )
+
+            self.ch_names = [s._Channel__name for s in self.channels]
+            self.ch_unit_names = [
+                s._Channel__unit_name for s in self.channels
+            ]
+            self.samples = samples
+            print('Done reading data.')
+            self.file_obj.close()
 
     def readSamples(self, n_blocks=None):
         """Function to read a subset of sample blocks from a file"""
