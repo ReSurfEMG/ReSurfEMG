@@ -263,6 +263,7 @@ class Poly5Reader:
         return SignalBlock
 
     def close(self):
+        """Function to close off file object after reading"""
         self.file_obj.close()
 
 
