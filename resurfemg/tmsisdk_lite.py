@@ -2,7 +2,7 @@
 The following module is a modification of a
 few classes from a larger code base
 created by Twente Medical Systems International B.V., Oldenzaal
-The Netherlands. Some docstrings,formatting,
+The Netherlands. Some docstrings, formatting,
 variables and variable names have been changed.
 The Twente Medical Systems International B.V.
 lisencing information is as below:
@@ -36,6 +36,7 @@ class Poly5Reader:
     """
     This class allows reading in various file types
     created on TMSi devices and/or in Poly5 format.
+
     """
     def __init__(self, filename=None, readAll=True):
         if filename is None:
@@ -55,6 +56,7 @@ class Poly5Reader:
 
         :returns: mne.io.RawArray
         :rtype: object from an numpy.ndarray
+
         """
 
         streams = self.channels
