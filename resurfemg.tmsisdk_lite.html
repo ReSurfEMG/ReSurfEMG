@@ -50,10 +50,10 @@
   <section id="module-resurfemg.tmsisdk_lite">
 <span id="resurfemg-tmsisdk-lite-module"></span><h1>resurfemg.tmsisdk_lite module<a class="headerlink" href="#module-resurfemg.tmsisdk_lite" title="Permalink to this heading">¶</a></h1>
 <p>The following module is a modification of a
-few classes  from a larger code base
+few classes from a larger code base
 created by Twente Medical Systems International B.V., Oldenzaal
-The Netherlands. Some docstrings and formatting
-and variable names have been changed.
+The Netherlands. Some docstrings, formatting,
+variables and variable names have been changed.
 The Twente Medical Systems International B.V.
 lisencing information is as below:</p>
 <p>(c) 2022 Twente Medical Systems International B.V.,
@@ -73,10 +73,15 @@ limitations under the License.</p>
 <dt class="sig sig-object py" id="resurfemg.tmsisdk_lite.Channel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.tmsisdk_lite.</span></span><span class="sig-name descname"><span class="pre">Channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.tmsisdk_lite.Channel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>‘Channel’ represents a device channel. It has the next properties:
-name : ‘string’ The name of the channel.
-unit_name : ‘string’ The name of the unit (e.g. ‘μVolt)  of the
-sample-data of the channel.</p>
+<p>‘Channel’ represents a device channel. It has the next properties:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the name of the channel</p></li>
+<li><p><strong>unit_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the name of unit (e.g. ‘μVolt’) of channel sample-data</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py class">
@@ -99,10 +104,15 @@ created on TMSi devices and/or in Poly5 format.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="resurfemg.tmsisdk_lite.Poly5Reader.read_data_MNE">
 <span class="sig-name descname"><span class="pre">read_data_MNE</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RawArray</span></span></span><a class="headerlink" href="#resurfemg.tmsisdk_lite.Poly5Reader.read_data_MNE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return MNE RawArray given internal channel names and types
-Returns
-——-
-mne.io.RawArray</p>
+<dd><p>Return MNE RawArray given internal channel names and types</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>mne.io.RawArray</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>object from an numpy.ndarray</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
