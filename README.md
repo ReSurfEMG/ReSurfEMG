@@ -270,6 +270,27 @@ docker run --rm -v $(pwd):/ci \
         python setup.py test'
 ```
 
+# Command-Line Interface
+
+You will be able to preprocess and tain the models using command-line interface.
+(Pending module development scheduled for December 22nd 2022)
+Below are some examples of how to do that:
+
+This will pre-process the first ten Poly5 files in the
+`/mnt/data/original-cnts` directory.
+
+    python -m resurfemg acquire \
+           --input /mnt/data/original-cnts \
+           --metadata /mnt/data/metadata \
+           --output /mnt/data/preprocessed \
+           --limit 10
+
+The following will run an ML model over all files:
+
+(add exampole)
+
+All long options have short aliases.
+
 
 ✨Copyright 2022 Netherlands eScience Center and U. Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.✨
