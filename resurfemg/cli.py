@@ -94,7 +94,19 @@ def make_parser():
         Accumulate leads for chosen leads desired in preprocessing.
         ''',
     )
-
+    acquire.add_argument(
+        '-p',
+        '--preprocessing',
+        default='working_pipeline_pre_ml_multi',
+        choices=(
+            'alternative_a_pipeline_multi',
+            'alternative_b_pipeline_multi',
+            'working_pipeline_pre_ml_multi'),
+        type=str,
+        help='''
+        Pick the desired algorithm for preprocessing.
+        ''',
+    )
     common(acquire)
 
     ml = subparsers.add_parser('ml')
@@ -174,6 +186,7 @@ def main(argv):
             preprocess(
                 config.get_directory('data', parsed.input),
                 parsed.lead or [0, 2],  # list of chosen leads
+                parsed.preprocessing,
                 config.get_directory('preprocessed', parsed.output),
                 parsed.force,
             )

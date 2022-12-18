@@ -141,7 +141,13 @@ def save_preprocessed(array, out_fname, force):
     np.save(out_fname, array, allow_pickle=False)
 
 
-def preprocess(file_directory, our_chosen_leads,  processed, force=False):
+def preprocess(
+    file_directory,
+    our_chosen_leads,
+    algorithm,
+    processed,
+    force=False
+):
     """
     This function is written to be called by the cli module.
     The cli module supports command line pre-processing.
@@ -162,11 +168,25 @@ def preprocess(file_directory, our_chosen_leads,  processed, force=False):
     )
     for file in file_directory_list:
         reader = Poly5Reader(file)
-        array = working_pipeline_pre_ml_multi(
-            reader.samples,
-            our_chosen_leads,
-            picker='heart',
-        )
+        if algorithm == 'alternative_a_pipeline_multi':
+            array = alternative_a_pipeline_multi(
+                reader.samples,
+                our_chosen_leads,
+                picker='heart',
+            )
+        elif algorithm == 'alternative_b_pipeline_multi':
+            array = alternative_b_pipeline_multi(
+                reader.samples,
+                our_chosen_leads,
+                picker='heart',
+            )
+
+        else:
+            array = working_pipeline_pre_ml_multi(
+                reader.samples,
+                our_chosen_leads,
+                picker='heart',
+            )
         rel_fname = os.path.relpath(file, file_directory)
         out_fname = os.path.join(processed, rel_fname)
         save_preprocessed(array, out_fname, force)
@@ -202,6 +222,135 @@ def working_pipeline_pre_ml_multi(
         cut_file_data,
         5,
         450,
+        2048,
+        output='sos'
+    )
+    # step for end-cutting again to get rid of filtering artifacts
+    re_cut_file_data = bad_end_cutter_for_samples(
+        bd_filtered_file_data,
+        percent_to_cut=3,
+        tolerance_percent=5
+    )
+    #  and do step for ICA
+    # TO BE REMOVED: components = compute_ICA_two_comp(re_cut_file_data)
+
+    components = compute_ICA_two_comp_selective(
+        re_cut_file_data,
+        use_all_leads=False,
+        desired_leads=our_chosen_leads,
+        )
+    #     the picking step!
+    if picker == 'peaks':
+        emg = pick_more_peaks_array(components)
+    elif picker == 'heart':
+        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
+    else:
+        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
+        print("Please choose an exising picker i.e. peaks or hearts ")
+    # now process it in final steps
+    abs_values = abs(emg)
+    final_envelope_d = emg_highpass_butter(abs_values, 150, 2048)
+
+    return final_envelope_d
+
+
+def alternative_a_pipeline_multi(
+    our_chosen_samples,
+    our_chosen_leads,
+    picker='heart',
+):
+    """
+    This is a pipeline to pre-process
+    an array of non-specific dimensions
+    e.g. a five lead array into an EMG singal,
+    of which we want leads 0 to 2 included.
+    Note it only differs in the bandpass values
+    from working_pipeline_pre_ml_multi
+
+    :param our_chosen_samples: the read EMG file arrays
+    :type our_chosen_samples: ~numpy.ndarray
+    :param our_chosen_leads: the read EMG file arrays that should be included
+    :type our_chosen_leads: tuple
+    :param picker: the picking strategy for independant components
+    :type picker: str
+
+    :returns: final_envelope_a
+    :rtype: ~numpy.ndarray
+    """
+    cut_file_data = bad_end_cutter_for_samples(
+        our_chosen_samples,
+        percent_to_cut=3,
+        tolerance_percent=5
+    )
+    bd_filtered_file_data = emg_bandpass_butter_sample(
+        cut_file_data,
+        6,
+        400,
+        2048,
+        output='sos'
+    )
+    # step for end-cutting again to get rid of filtering artifacts
+    re_cut_file_data = bad_end_cutter_for_samples(
+        bd_filtered_file_data,
+        percent_to_cut=3,
+        tolerance_percent=5
+    )
+    #  and do step for ICA
+    # TO BE REMOVED: components = compute_ICA_two_comp(re_cut_file_data)
+
+    components = compute_ICA_two_comp_selective(
+        re_cut_file_data,
+        use_all_leads=False,
+        desired_leads=our_chosen_leads,
+        )
+    #     the picking step!
+    if picker == 'peaks':
+        emg = pick_more_peaks_array(components)
+    elif picker == 'heart':
+        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
+    else:
+        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
+        print("Please choose an exising picker i.e. peaks or hearts ")
+    # now process it in final steps
+    abs_values = abs(emg)
+    final_envelope_d = emg_highpass_butter(abs_values, 150, 2048)
+
+    return final_envelope_d
+
+
+def alternative_b_pipeline_multi(
+    our_chosen_samples,
+    our_chosen_leads,
+    picker='heart',
+):
+    """
+    This is a pipeline to pre-process
+    an array of non-specific dimensions
+    e.g. a five lead array into an EMG singal,
+    of which we want leads 0 to 2 included.
+    Note it only differs in the bandpass values
+    from working_pipeline_pre_ml_multi or
+    alternative_a_pipeline_multi
+
+    :param our_chosen_samples: the read EMG file arrays
+    :type our_chosen_samples: ~numpy.ndarray
+    :param our_chosen_leads: the read EMG file arrays that should be included
+    :type our_chosen_leads: tuple
+    :param picker: the picking strategy for independant components
+    :type picker: str
+
+    :returns: final_envelope_a
+    :rtype: ~numpy.ndarray
+    """
+    cut_file_data = bad_end_cutter_for_samples(
+        our_chosen_samples,
+        percent_to_cut=3,
+        tolerance_percent=5
+    )
+    bd_filtered_file_data = emg_bandpass_butter_sample(
+        cut_file_data,
+        4,
+        300,
         2048,
         output='sos'
     )
