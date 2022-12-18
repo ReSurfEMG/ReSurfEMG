@@ -273,20 +273,22 @@ docker run --rm -v $(pwd):/ci \
 # Command-Line Interface
 
 You will be able to preprocess, train and use models using command-line interface.
-(Pending module development scheduled for December 22nd 2022)
-Below are some examples of how to do that:
+(Some functionality still pending module development completion)
+Below is an example of how to do that:
 
-This will pre-process the first ten Poly5 files in the
-`/mnt/data/originals` directory.
+This will pre-process the  Poly5 files in the
+`/mnt/data/originals` directory, and output leads 1 and 2 preprocessed.
+Note the \ symbol is simply a line-break and not meant to be included.
 
     python -m resurfemg acquire \
            --input /mnt/data/originals \
+           --lead 1 --lead 2 \
            --output /mnt/data/preprocessed \
-           --limit 10
+           
 
 The following will run an ML model over all files:
 
-(add exampole)
+(example to be added after module development complete)
 
 All long options have short aliases.
 
