@@ -276,14 +276,16 @@ You will be able to preprocess, train and use models using command-line interfac
 (Some functionality still pending module development completion)
 Below is an example of how to do that:
 
-This will pre-process the  Poly5 files in the
+This will pre-process (with the alternative_a_pipeline_multi algorithm) the
+ Poly5 files in the
 `/mnt/data/originals` directory, and output leads 1 and 2 preprocessed.
-Note the \ symbol is simply a line-break and not meant to be included.
+(Note the \ symbol is simply a line-break and not meant to be included.)
 
     python -m resurfemg acquire \
            --input /mnt/data/originals \
            --lead 1 --lead 2 \
            --output /mnt/data/preprocessed \
+           --preprocessing alternative_a_pipeline_multi \
            
 
 The following will run an ML model over all files:
