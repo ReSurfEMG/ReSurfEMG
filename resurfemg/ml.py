@@ -2,17 +2,17 @@
 Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
-This file contains functions to work with arrays, and run machine learning algorithms
+This file contains functions run machine learning algorithms on arrays
 over them.
 """
 
 
-#basic ds
+# basic ds
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-#basic system
+# basic system
 import sys
 import os
 import glob
@@ -24,7 +24,7 @@ from scipy.signal import savgol_filter
 from scipy.signal import find_peaks
 # # demo stuff
 # import ipywidgets as widgets
-# import seaborn 
+# import seaborn
 
 # ml stuff
 from sklearn.model_selection import train_test_split
@@ -56,6 +56,7 @@ def save_ml_output(arrays, out_fname, force):
         pass
     np.save(out_fname, array, allow_pickle=False)
 
+
 def applu_model(arrays_folder, model_file, output_folder):
     """
     This function applies an ML model over a bunch of arrays.
@@ -70,11 +71,7 @@ def applu_model(arrays_folder, model_file, output_folder):
         y_pred = model.predict(array)
         arrays_and_pred.append(array, y_pred)
 
-    # OK- then turn it into a 2 lead array, then save as below    
+    # OK- then turn it into a 2 lead array, then save as below
     # rel_fname = os.path.relpath(file, file_directory)
     # out_fname = os.path.join(processed, rel_fname)
     # save_preprocessed(array, out_fname, force)
-
-# def batch_model():
-
-
