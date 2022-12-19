@@ -23,7 +23,7 @@ def common(parser):
         '--input',
         default=None,
         help='''
-        Directory containing files generated in step
+        Directory containing files to be worked on
         ''',
     )
     # parser.add_argument(
@@ -142,12 +142,31 @@ def make_parser():
     #     Whether to use joblib when fitting or using searches.
     #     '''
     # )
+    # ml.add_argument(
+    #     'algo',
+    #     choices=('svm', 'dt', 'lr'),
+    #     help='''
+    #     ML algorithm to use.
+    #     '''
+    # )
+    
     ml.add_argument(
-        'algo',
-        choices=('svm', 'dt', 'lr'),
+        '-m',
+        '--model',
+        #choices=('svm', 'dt', 'lr'),
         help='''
-        ML algorithm to use.
+        ML model/algorithm to use.
         '''
+    )
+
+    ml.add_argument(
+        '-o',
+        '--output',
+        default=None,
+        help='''
+        Output directory.  Will be created if doesn't exist.
+        This is where newly created files will go.
+        ''',
     )
     # ml.add_argument(
     #     'fit',
