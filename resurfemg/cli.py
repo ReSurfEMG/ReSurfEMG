@@ -14,7 +14,7 @@ import logging
 from argparse import ArgumentParser
 
 from .multi_lead_type import preprocess
-from .ml import apply_model
+from .ml import applu_model
 from .config import Config
 
 
@@ -120,9 +120,10 @@ def make_parser():
     #     default=-1,
     #     type=int,
     #     help='''
-    #     Training is run using `joblib' package.  This parameter translates into
-    #     `jobs' parameter when creating the pipeline (it controls concurrency of
-    #     the training task).
+    #     Training is run using `joblib' package.
+    #       This parameter translates into
+    #     `jobs' parameter when creating the pipeline
+    #       (it controls concurrency of the training task).
     #     ''',
     # )
     ml.add_argument(
@@ -150,11 +151,11 @@ def make_parser():
     #     ML algorithm to use.
     #     '''
     # )
-    
+
     ml.add_argument(
         '-m',
         '--model',
-        #choices=('svm', 'dt', 'lr'),
+        # choices=('svm', 'dt', 'lr'),
         help='''
         ML model/algorithm to use.
         '''
@@ -216,8 +217,8 @@ def main(argv):
 
     if parsed.action == 'ml':
         try:
-            apply_model(
-                config.get_directory('data', parsed.input), 
+            applu_model(
+                config.get_directory('data', parsed.input),
                 parsed.model,
                 config.get_directory('preprocessed', parsed.output),
             )
