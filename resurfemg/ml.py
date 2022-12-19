@@ -56,7 +56,7 @@ def save_ml_output(arrays, out_fname, force):
         pass
     np.save(out_fname, array, allow_pickle=False)
 
-def applu_model(arrays_folder, model_file):
+def applu_model(arrays_folder, model_file, output_folder):
     """
     This function applies an ML model over a bunch of arrays.
     """

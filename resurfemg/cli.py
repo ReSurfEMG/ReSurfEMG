@@ -14,6 +14,7 @@ import logging
 from argparse import ArgumentParser
 
 from .multi_lead_type import preprocess
+from .ml import apply_model
 from .config import Config
 
 
@@ -215,15 +216,11 @@ def main(argv):
 
     if parsed.action == 'ml':
         try:
-            rloader = prepare_loader(parsed, config)
-
-            regressions = Regressions(
-                rloader,
-                parsed.verbose,
-                parsed.no_use_joblib,
+            apply_model(
+                config.get_directory('data', parsed.input), 
+                parsed.model,
+                config.get_directory('preprocessed', parsed.output),
             )
-            algo = regressions.algorithms[parsed.algo]
-            getattr(algo, parsed.fit)()
         except Exception as e:
             logging.exception(e)
             return 1
