@@ -40,8 +40,18 @@ from sklearn.metrics import confusion_matrix
 import joblib
 
 # here we will import our models ,
-# apply them over the array
+# apply them over the arrays
 # then output both the array and the decision array
+# into a list
 
+
+
+def applu_model(arrays, model_file):
+    model = joblib.load(model_file)
+    arrays_and_pred = []
+    for array in arrays:
+        y_pred = model.predict(array)
+        arrays_and_pred.append(array, y_pred)
+    return arrays_and_pred 
 
 
