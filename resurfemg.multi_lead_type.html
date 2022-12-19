@@ -56,6 +56,59 @@ and other types of data arrays e.g. ventilator signals
 when EMG leads represent something other than inspiratory muscles
 and/or diaphragm in some cases.</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.multi_lead_type.alternative_a_pipeline_multi">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.multi_lead_type.</span></span><span class="sig-name descname"><span class="pre">alternative_a_pipeline_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">our_chosen_leads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'heart'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.multi_lead_type.alternative_a_pipeline_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a pipeline to pre-process
+an array of non-specific dimensions
+e.g. a five lead array into an EMG singal,
+of which we want leads 0 to 2 included.
+Note it only differs in the bandpass values
+from working_pipeline_pre_ml_multi</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
+<li><p><strong>our_chosen_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – the read EMG file arrays that should be included</p></li>
+<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the picking strategy for independant components</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>final_envelope_a</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.multi_lead_type.alternative_b_pipeline_multi">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.multi_lead_type.</span></span><span class="sig-name descname"><span class="pre">alternative_b_pipeline_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">our_chosen_leads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'heart'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.multi_lead_type.alternative_b_pipeline_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a pipeline to pre-process
+an array of non-specific dimensions
+e.g. a five lead array into an EMG singal,
+of which we want leads 0 to 2 included.
+Note it only differs in the bandpass values
+from working_pipeline_pre_ml_multi or
+alternative_a_pipeline_multi</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
+<li><p><strong>our_chosen_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – the read EMG file arrays that should be included</p></li>
+<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the picking strategy for independant components</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>final_envelope_a</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.multi_lead_type.compute_ICA_two_comp_selective">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.multi_lead_type.</span></span><span class="sig-name descname"><span class="pre">compute_ICA_two_comp_selective</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_all_leads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired_leads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">2)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.multi_lead_type.compute_ICA_two_comp_selective" title="Permalink to this definition">¶</a></dt>
 <dd><p>A function that performs an independant component analysis
@@ -64,7 +117,7 @@ there should be at least two arrays but there can be more.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>emg_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – Original signal array with three or more layers</p></li>
+<li><p><strong>emg_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – Original signal array with three or more layers</p></li>
 <li><p><strong>use_all_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – True if all leads used, otherwise specify leads</p></li>
 <li><p><strong>desired_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – tuple of leads to use starting from 0</p></li>
 </ul>
@@ -73,9 +126,34 @@ there should be at least two arrays but there can be more.</p>
 <dd class="field-even"><p>Two arrays of independent components (ECG-like and EMG)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.multi_lead_type.preprocess">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.multi_lead_type.</span></span><span class="sig-name descname"><span class="pre">preprocess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">our_chosen_leads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">processed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.multi_lead_type.preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is written to be called by the cli module.
+The cli module supports command line pre-processing.
+This function is currently written to accomodate Poly5 files types.
+It can be refactored later.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the directory with EMG files</p></li>
+<li><p><strong>processed</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the output directory</p></li>
+<li><p><strong>our_chosen_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – the leads selected for the pipeline to run over</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.multi_lead_type.save_preprocessed">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.multi_lead_type.</span></span><span class="sig-name descname"><span class="pre">save_preprocessed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.multi_lead_type.save_preprocessed" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is written to be called by the cli module.
+It stores arrays in a directory.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -87,7 +165,7 @@ into an EMG singal, you need to pick the leads</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
+<li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
 <li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the picking strategy for independant components</p></li>
 <li><p><strong>selected</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – the leads selected for the pipeline to run over</p></li>
 </ul>
@@ -96,7 +174,7 @@ into an EMG singal, you need to pick the leads</p>
 <dd class="field-even"><p>final_envelope_a</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -111,7 +189,7 @@ of which we want leads 0 to 2 included</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
+<li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
 <li><p><strong>our_chosen_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – the read EMG file arrays that should be included</p></li>
 <li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the picking strategy for independant components</p></li>
 </ul>
@@ -120,7 +198,7 @@ of which we want leads 0 to 2 included</p>
 <dd class="field-even"><p>final_envelope_a</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>ndarray</em></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -138,7 +216,11 @@ of which we want leads 0 to 2 included</p>
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">resurfemg.multi_lead_type module</a><ul>
+<li><a class="reference internal" href="#resurfemg.multi_lead_type.alternative_a_pipeline_multi"><code class="docutils literal notranslate"><span class="pre">alternative_a_pipeline_multi()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.multi_lead_type.alternative_b_pipeline_multi"><code class="docutils literal notranslate"><span class="pre">alternative_b_pipeline_multi()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.multi_lead_type.compute_ICA_two_comp_selective"><code class="docutils literal notranslate"><span class="pre">compute_ICA_two_comp_selective()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.multi_lead_type.preprocess"><code class="docutils literal notranslate"><span class="pre">preprocess()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.multi_lead_type.save_preprocessed"><code class="docutils literal notranslate"><span class="pre">save_preprocessed()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.multi_lead_type.working_pipe_multi"><code class="docutils literal notranslate"><span class="pre">working_pipe_multi()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.multi_lead_type.working_pipeline_pre_ml_multi"><code class="docutils literal notranslate"><span class="pre">working_pipeline_pre_ml_multi()</span></code></a></li>
 </ul>

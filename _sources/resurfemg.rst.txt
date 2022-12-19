@@ -7,6 +7,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   resurfemg.cli
    resurfemg.config
    resurfemg.converter_functions
    resurfemg.helper_functions
