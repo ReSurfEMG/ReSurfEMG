@@ -113,17 +113,17 @@ def make_parser():
     ml.set_defaults(action='ml')
     common(ml)
 
-    ml.add_argument(
-        '-j',
-        '--jobs',
-        default=-1,
-        type=int,
-        help='''
-        Training is run using `joblib' package.  This parameter translates into
-        `jobs' parameter when creating the pipeline (it controls concurrency of
-        the training task).
-        ''',
-    )
+    # ml.add_argument(
+    #     '-j',
+    #     '--jobs',
+    #     default=-1,
+    #     type=int,
+    #     help='''
+    #     Training is run using `joblib' package.  This parameter translates into
+    #     `jobs' parameter when creating the pipeline (it controls concurrency of
+    #     the training task).
+    #     ''',
+    # )
     ml.add_argument(
         '-V',
         '--verbose',
@@ -133,46 +133,46 @@ def make_parser():
         Verbosity of mne, scikit etc. libraries.
         '''
     )
-    ml.add_argument(
-        '-u',
-        '--no-use-joblib',
-        action='store_false',
-        default=True,
-        help='''
-        Whether to use joblib when fitting or using searches.
-        '''
-    )
+    # ml.add_argument(
+    #     '-u',
+    #     '--no-use-joblib',
+    #     action='store_false',
+    #     default=True,
+    #     help='''
+    #     Whether to use joblib when fitting or using searches.
+    #     '''
+    # )
     ml.add_argument(
         'algo',
-        choices=('dummy', 'rf', 'lsv', 'sgd', 'emrvr'),
+        choices=('svm', 'dt', 'lr'),
         help='''
         ML algorithm to use.
         '''
     )
-    ml.add_argument(
-        'fit',
-        choices=('fit', 'grid_search', 'best_fit'),
-        help='''
-        Action performed by the selected algorithm.  If `best_fit' is
-        selected, the algorithm will train the model using previously
-        established best parameters.  If `grid_search' is selected,
-        will re-run the grid search.  If `fit' is selected will run
-        the algorithm with the default optimization strategy (using
-        random search).
-        '''
-    )
+    # ml.add_argument(
+    #     'fit',
+    #     choices=('fit', 'grid_search', 'best_fit'),
+    #     help='''
+    #     Action performed by the selected algorithm.  If `best_fit' is
+    #     selected, the algorithm will train the model using previously
+    #     established best parameters.  If `grid_search' is selected,
+    #     will re-run the grid search.  If `fit' is selected will run
+    #     the algorithm with the default optimization strategy (using
+    #     random search).
+    #     '''
+    # )
     return parser
 
 
-def prepare_loader(parsed, config):
-    rloader = RegressionsLoader(
-        config.get_directory('preprocessed', parsed.input),
-        config.get_directory('models', parsed.output),
-        parsed.size,
-    )
-    rloader.load()
-    rloader.split()
-    return rloader
+# def prepare_loader(parsed, config):
+#     rloader = RegressionsLoader(
+#         config.get_directory('preprocessed', parsed.input),
+#         config.get_directory('models', parsed.output),
+#         parsed.size,
+#     )
+#     rloader.load()
+#     rloader.split()
+#     return rloader
 
 
 def main(argv):
