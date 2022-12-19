@@ -54,7 +54,7 @@ def save_ml_output(arrays, out_fname, force):
         os.makedirs(os.path.dirname(out_fname))
     except FileExistsError:
         pass
-    np.save(out_fname, array, allow_pickle=False)
+    np.save(out_fname, arrays, allow_pickle=False)
 
 
 def applu_model(arrays_folder, model_file, output_folder):
@@ -66,12 +66,12 @@ def applu_model(arrays_folder, model_file, output_folder):
         recursive=True,
     )
     model = joblib.load(model_file)
-    arrays_and_pred = []
+    # arrays_and_pred = []
     for array in file_directory_list:
         y_pred = model.predict(array)
-        arrays_and_pred.append(array, y_pred)
+        array_and_pred = np.vstack(array, y_pred)
 
     # OK- then turn it into a 2 lead array, then save as below
-    # rel_fname = os.path.relpath(file, file_directory)
-    # out_fname = os.path.join(processed, rel_fname)
-    # save_preprocessed(array, out_fname, force)
+    rel_fname = os.path.relpath(array, arrays_folder)
+    out_fname = os.path.join(output_folder, rel_fname)
+    save_ml_output(array_and_pred, out_fname)
