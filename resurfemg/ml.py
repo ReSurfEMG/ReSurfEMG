@@ -89,15 +89,13 @@ def applu_model(
 
                 index_ml_hold.append(ml_index_test)
             X_test_live = index_ml_hold
-            sc.fit(np.load('../ml_extras/x_trainer_for_scale.npy'))
+            sc.fit(np.load('ml_extras/x_trainer_for_scale.npy'))
             X_test_live = sc.transform(X_test_live)
             y_pred = model.predict(X_test_live)
-            shifter = np.zeros(500) +3
+            shifter = np.zeros(500) + 3
             shifted_pred = np.hstack((shifter, y_pred))
-            
             shifted_ended_pred = np.hstack((shifted_pred, shifter))
             array_and_pred = np.vstack((array_np, shifted_ended_pred))
-            #array_and_pred = np.vstack((array, shifted_ended_pred))
         # TODO- then turn it into a 2 lead array, then save as below
             rel_fname = os.path.relpath(array, arrays_folder)
             out_fname = os.path.join(output_folder, rel_fname)
