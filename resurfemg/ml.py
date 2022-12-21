@@ -61,7 +61,7 @@ def applu_model(arrays_folder, model_file, output_folder):
     This function applies an ML model over a bunch of arrays.
     """
     file_directory_list = glob.glob(
-        os.path.join(arrays_folder, '**/*'),
+        os.path.join(arrays_folder, '**/*.npy'),
         recursive=True,
     )
     model = joblib.load(model_file)
