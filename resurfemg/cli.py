@@ -230,6 +230,7 @@ def main(argv):
                 config.get_directory('data', parsed.input),
                 parsed.model,
                 config.get_directory('preprocessed', parsed.output),
+                parsed.features,
             )
         except Exception as e:
             logging.exception(e)
