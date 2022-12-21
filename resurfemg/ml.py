@@ -25,6 +25,7 @@ import glob
 
 
 # ml stuff
+# import sklearn #?
 # from sklearn.model_selection import train_test_split
 # from sklearn.preprocessing import StandardScaler
 # from sklearn.svm import SVC
@@ -66,6 +67,7 @@ def applu_model(arrays_folder, model_file, output_folder):
     model = joblib.load(model_file)
     # arrays_and_pred = []
     for array in file_directory_list:
+        array = np.load(array)
         y_pred = model.predict(array)
         array_and_pred = np.vstack(array, y_pred)
 
