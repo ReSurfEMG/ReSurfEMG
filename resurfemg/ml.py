@@ -68,7 +68,20 @@ def applu_model(arrays_folder, model_file, output_folder):
     # arrays_and_pred = []
     for array in file_directory_list:
         array = np.load(array)
-        y_pred = model.predict(array)
+#         index_ml_hold = []
+# predictions_made = []
+# holder = []
+# for slice in hf.slices_jump_slider(toy_array, 1000,1):
+#     ml_index_feature1 = slice.mean() #close to mean
+#     ml_index_feature2 = entropy(slice)
+#     holder.append(slice)
+#     ml_index_test= [ml_index_feature1, ml_index_feature2]
+
+#     index_ml_hold.append(ml_index_test)
+# #     # need to reshape array
+# X_test_live = index_ml_hold
+# X_test_live = sc.transform(X_test_live)
+        y_pred = model.predict(array_features)
         array_and_pred = np.vstack(array, y_pred)
 
     # OK- then turn it into a 2 lead array, then save as below
