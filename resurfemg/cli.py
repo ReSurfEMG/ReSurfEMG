@@ -135,6 +135,15 @@ def make_parser():
         Verbosity of mne, scikit etc. libraries.
         '''
     )
+    ml.add_argument(
+        '-e',
+        '--features',
+        action='append',
+        default= ['mean', 'entropy'],
+        help='''
+        Features used in ML. Note mean and entropy are base, add others.
+        '''
+    )
     # ml.add_argument(
     #     '-u',
     #     '--no-use-joblib',
