@@ -74,27 +74,31 @@ def applu_model(
     model = joblib.load(model_file)
     for array in file_directory_list:
         array_np = np.load(array)
-    our_emg_processed = abs(array_np)
-    index_ml_hold = []
-    predictions_made = []
-    holder = []
-    sc = StandardScaler()
-    if features == ['mean', 'entropy']:
+        our_emg_processed = abs(array_np)
+        index_ml_hold = []
+        predictions_made = []
+        holder = []
+        sc = StandardScaler()
+        if features == ['mean', 'entropy']:
 
-        for slice in hf.slices_jump_slider(our_emg_processed, 1000, 1):
-            mean_feature = slice.mean()  # close to mean
-            entropy_feature = entropy(slice)
-            holder.append(slice)
-            ml_index_test = [mean_feature, entropy_feature]
+            for slice in hf.slices_jump_slider(our_emg_processed, 1000, 1):
+                mean_feature = slice.mean()  # close to mean
+                entropy_feature = entropy(slice)
+                holder.append(slice)
+                ml_index_test = [mean_feature, entropy_feature]
 
-            index_ml_hold.append(ml_index_test)
-        X_test_live = index_ml_hold
-        sc.fit(np.load('../ml_extras/x_trainer_for_scale.npy'))
-        X_test_live = sc.transform(X_test_live)
-        y_pred = model.predict(X_test_live)
-        # array_and_pred = np.vstack((array, y_pred))
-        # predictions_made.append(y_pred)
-    # TODO- then turn it into a 2 lead array, then save as below
-    rel_fname = os.path.relpath(array, arrays_folder)
-    out_fname = os.path.join(output_folder, rel_fname)
-    save_ml_output(y_pred, out_fname, force=False)
+                index_ml_hold.append(ml_index_test)
+            X_test_live = index_ml_hold
+            sc.fit(np.load('../ml_extras/x_trainer_for_scale.npy'))
+            X_test_live = sc.transform(X_test_live)
+            y_pred = model.predict(X_test_live)
+            shifter = np.zeros(500) +3
+            shifted_pred = np.hstack((shifter, y_pred))
+            
+            shifted_ended_pred = np.hstack((shifted_pred, shifter))
+            array_and_pred = np.vstack((array_np, shifted_ended_pred))
+            #array_and_pred = np.vstack((array, shifted_ended_pred))
+        # TODO- then turn it into a 2 lead array, then save as below
+            rel_fname = os.path.relpath(array, arrays_folder)
+            out_fname = os.path.join(output_folder, rel_fname)
+            save_ml_output(array_and_pred, out_fname, force=False)
