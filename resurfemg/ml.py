@@ -19,7 +19,7 @@ import glob
 
 # math and signals
 # import math
-# from scipy.stats import entropy
+from scipy.stats import entropy
 # from scipy.signal import savgol_filter
 # from scipy.signal import find_peaks
 
@@ -33,7 +33,9 @@ import glob
 # from sklearn.linear_model import LogisticRegression
 # from sklearn import tree
 # from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import StandardScaler
 import joblib
+from resurfemg import helper_functions as hf
 
 # here we will import our models ,
 # apply them over the arrays
@@ -56,7 +58,7 @@ def save_ml_output(arrays, out_fname, force):
     np.save(out_fname, arrays, allow_pickle=False)
 
 
-def applu_model(arrays_folder, model_file, output_folder):
+def applu_model(arrays_folder, model_file, output_folder, features=['mean', 'entropy'] ):
     """
     This function applies an ML model over a bunch of arrays.
     """
@@ -68,20 +70,22 @@ def applu_model(arrays_folder, model_file, output_folder):
     # arrays_and_pred = []
     for array in file_directory_list:
         array = np.load(array)
-#         index_ml_hold = []
-# predictions_made = []
-# holder = []
-# for slice in hf.slices_jump_slider(toy_array, 1000,1):
-#     ml_index_feature1 = slice.mean() #close to mean
-#     ml_index_feature2 = entropy(slice)
-#     holder.append(slice)
-#     ml_index_test= [ml_index_feature1, ml_index_feature2]
+    index_ml_hold = []
+    predictions_made = []
+    holder = []
+    sc = StandardScaler()
+    if features == ['mean', 'entropy']
+    
+    for slice in hf.slices_jump_slider(array, 1000,1):
+        mean_feature = slice.mean() #close to mean
+        entropy_feature = entropy(slice)
+        holder.append(slice)
+        ml_index_test= [mean_feature, entropy_feature]
 
-#     index_ml_hold.append(ml_index_test)
-# #     # need to reshape array
-# X_test_live = index_ml_hold
-# X_test_live = sc.transform(X_test_live)
-        y_pred = model.predict(array_features)
+        index_ml_hold.append(ml_index_test)
+        X_test_live = index_ml_hold
+        X_test_live = sc.transform(X_test_live)
+        y_pred = model.predict(X_test_live)
         array_and_pred = np.vstack(array, y_pred)
 
     # OK- then turn it into a 2 lead array, then save as below
