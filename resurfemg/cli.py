@@ -27,14 +27,14 @@ def common(parser):
         Directory containing files to be worked on
         ''',
     )
-    # parser.add_argument(
-    #     '-o',
-    #     '--output',
-    #     default=None,
-    #     help='''
-    #     Directory containing trained models (created if doesn't exist).
-    #     ''',
-    # )
+    parser.add_argument(
+        '-o',
+        '--output',
+        default=None,
+        help='''
+        Directory containing trained models (created if doesn't exist).
+        ''',
+    )
     # parser.add_argument(
     #     '-s',
     #     '--size',
@@ -66,15 +66,15 @@ def make_parser():
     acquire = subparsers.add_parser('acquire')
     acquire.set_defaults(action='acquire')
 
-    acquire.add_argument(
-        '-o',
-        '--output',
-        default=None,
-        help='''
-        Output directory.  Will be created if doesn't exist.
-        This is where newly created files will go.
-        ''',
-    )
+    # acquire.add_argument(
+    #     '-o',
+    #     '--output',
+    #     default=None,
+    #     help='''
+    #     Output directory.  Will be created if doesn't exist.
+    #     This is where newly created files will go.
+    #     ''',
+    # )
 
     acquire.add_argument(
         '-f',
@@ -161,15 +161,15 @@ def make_parser():
         '''
     )
 
-    ml.add_argument(
-        '-o',
-        '--output',
-        default=None,
-        help='''
-        Output directory.  Will be created if doesn't exist.
-        This is where newly created files will go.
-        ''',
-    )
+    # ml.add_argument(
+    #     '-o',
+    #     '--output',
+    #     default=None,
+    #     help='''
+    #     Output directory.  Will be created if doesn't exist.
+    #     This is where newly created files will go.
+    #     ''',
+    # )
     # ml.add_argument(
     #     'fit',
     #     choices=('fit', 'grid_search', 'best_fit'),
