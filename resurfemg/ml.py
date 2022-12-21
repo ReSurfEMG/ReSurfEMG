@@ -58,7 +58,12 @@ def save_ml_output(arrays, out_fname, force):
     np.save(out_fname, arrays, allow_pickle=False)
 
 
-def applu_model(arrays_folder, model_file, output_folder, features=['mean', 'entropy'] ):
+def applu_model(
+    arrays_folder,
+    model_file,
+    output_folder,
+    features=['mean', 'entropy'],
+):
     """
     This function applies an ML model over a bunch of arrays.
     """
@@ -75,20 +80,20 @@ def applu_model(arrays_folder, model_file, output_folder, features=['mean', 'ent
     holder = []
     sc = StandardScaler()
     if features == ['mean', 'entropy']:
-    
-        for slice in hf.slices_jump_slider(our_emg_processed, 1000,1):
-            mean_feature = slice.mean() #close to mean
+
+        for slice in hf.slices_jump_slider(our_emg_processed, 1000, 1):
+            mean_feature = slice.mean()  # close to mean
             entropy_feature = entropy(slice)
             holder.append(slice)
-            ml_index_test= [mean_feature, entropy_feature]
+            ml_index_test = [mean_feature, entropy_feature]
 
             index_ml_hold.append(ml_index_test)
         X_test_live = index_ml_hold
         sc.fit(np.load('../ml_extras/x_trainer_for_scale.npy'))
         X_test_live = sc.transform(X_test_live)
         y_pred = model.predict(X_test_live)
-            # array_and_pred = np.vstack((array, y_pred))
-            ## predictions_made.append(y_pred)
+        # array_and_pred = np.vstack((array, y_pred))
+        # predictions_made.append(y_pred)
     # TODO- then turn it into a 2 lead array, then save as below
     rel_fname = os.path.relpath(array, arrays_folder)
     out_fname = os.path.join(output_folder, rel_fname)

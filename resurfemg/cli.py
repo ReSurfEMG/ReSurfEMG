@@ -139,27 +139,11 @@ def make_parser():
         '-e',
         '--features',
         action='append',
-        default= ['mean', 'entropy'],
+        default=['mean', 'entropy'],
         help='''
         Features used in ML. Note mean and entropy are base, add others.
         '''
     )
-    # ml.add_argument(
-    #     '-u',
-    #     '--no-use-joblib',
-    #     action='store_false',
-    #     default=True,
-    #     help='''
-    #     Whether to use joblib when fitting or using searches.
-    #     '''
-    # )
-    # ml.add_argument(
-    #     'algo',
-    #     choices=('svm', 'dt', 'lr'),
-    #     help='''
-    #     ML algorithm to use.
-    #     '''
-    # )
 
     ml.add_argument(
         '-m',
