@@ -60,7 +60,7 @@ def applu_model(
         if features == ['mean', 'entropy']:
 
             for slice in hf.slices_jump_slider(our_emg_processed, 1000, 1):
-                mean_feature = slice.mean()  # close to mean
+                mean_feature = slice.mean()
                 entropy_feature = entropy(slice)
                 holder.append(slice)
                 ml_index_test = [mean_feature, entropy_feature]
@@ -74,7 +74,6 @@ def applu_model(
             shifted_pred = np.hstack((shifter, y_pred))
             shifted_ended_pred = np.hstack((shifted_pred, shifter))
             array_and_pred = np.vstack((array_np, shifted_ended_pred))
-        # TODO- then turn it into a 2 lead array, then save as below
             rel_fname = os.path.relpath(array, arrays_folder)
             out_fname = os.path.join(output_folder, rel_fname)
             save_ml_output(array_and_pred, out_fname, force=False)
