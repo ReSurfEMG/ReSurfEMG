@@ -35,19 +35,6 @@ def common(parser):
         Directory containing trained models (created if doesn't exist).
         ''',
     )
-    # parser.add_argument(
-    #     '-s',
-    #     '--size',
-    #     default=None,
-    #     type=int,
-    #     help='''
-    #     Number of samples to use instead of the entire dataset.  Note that
-    #     grid search may be particularly slow with large datasets.  If you
-    #     only want to try this method, it's best to limit it to a small
-    #     number of samples.  This will set both the training and the testing
-    #     sets to the same number.
-    #     ''',
-    # )
 
 
 def make_parser():
@@ -65,16 +52,6 @@ def make_parser():
     subparsers = parser.add_subparsers()
     acquire = subparsers.add_parser('acquire')
     acquire.set_defaults(action='acquire')
-
-    # acquire.add_argument(
-    #     '-o',
-    #     '--output',
-    #     default=None,
-    #     help='''
-    #     Output directory.  Will be created if doesn't exist.
-    #     This is where newly created files will go.
-    #     ''',
-    # )
 
     acquire.add_argument(
         '-f',
@@ -114,18 +91,6 @@ def make_parser():
     ml.set_defaults(action='ml')
     common(ml)
 
-    # ml.add_argument(
-    #     '-j',
-    #     '--jobs',
-    #     default=-1,
-    #     type=int,
-    #     help='''
-    #     Training is run using `joblib' package.
-    #       This parameter translates into
-    #     `jobs' parameter when creating the pipeline
-    #       (it controls concurrency of the training task).
-    #     ''',
-    # )
     ml.add_argument(
         '-V',
         '--verbose',
@@ -155,15 +120,6 @@ def make_parser():
     )
 
     # ml.add_argument(
-    #     '-o',
-    #     '--output',
-    #     default=None,
-    #     help='''
-    #     Output directory.  Will be created if doesn't exist.
-    #     This is where newly created files will go.
-    #     ''',
-    # )
-    # ml.add_argument(
     #     'fit',
     #     choices=('fit', 'grid_search', 'best_fit'),
     #     help='''
@@ -176,17 +132,6 @@ def make_parser():
     #     '''
     # )
     return parser
-
-
-# def prepare_loader(parsed, config):
-#     rloader = RegressionsLoader(
-#         config.get_directory('preprocessed', parsed.input),
-#         config.get_directory('models', parsed.output),
-#         parsed.size,
-#     )
-#     rloader.load()
-#     rloader.split()
-#     return rloader
 
 
 def main(argv):

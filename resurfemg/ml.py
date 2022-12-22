@@ -9,38 +9,15 @@ over them.
 
 # basic ds
 import numpy as np
-# import pandas as pd
-# import matplotlib.pyplot as plt
-
 # basic system
-# import sys
 import os
 import glob
-
 # math and signals
-# import math
 from scipy.stats import entropy
-# from scipy.signal import savgol_filter
-# from scipy.signal import find_peaks
-
-
 # ml stuff
-# import sklearn #?
-# from sklearn.model_selection import train_test_split
-# from sklearn.preprocessing import StandardScaler
-# from sklearn.svm import SVC
-# # from sklearn.metrics import accuracy_score
-# from sklearn.linear_model import LogisticRegression
-# from sklearn import tree
-# from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import StandardScaler
 import joblib
 from resurfemg import helper_functions as hf
-
-# here we will import our models ,
-# apply them over the arrays
-# then output both the array and the decision array
-# into a list
 
 
 def save_ml_output(arrays, out_fname, force):
@@ -66,6 +43,7 @@ def applu_model(
 ):
     """
     This function applies an ML model over a bunch of arrays.
+    It is meant to be used by the command line interface.
     """
     file_directory_list = glob.glob(
         os.path.join(arrays_folder, '**/*.npy'),

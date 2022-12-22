@@ -289,6 +289,10 @@ This will pre-process (with the alternative_a_pipeline_multi algorithm) the
            
 
 The following will run an ML model over all files:
+    python -m resurfemg ml \
+            --input /mnt/data/preprocessed \
+            --output /mnt/data/ml_output \
+            --model  ml_models/finalized_lr_model_in_111.sav \
 
 (example to be added after module development complete)
 
