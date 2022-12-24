@@ -15,7 +15,7 @@
 of respiratory electromyography (EMG).  On the same site as 
 the repository for this library we keep [related resources](https://github.com/ReSurfEMG?tab=repositories). 
 
-Most important to know before using ReSurfEMG is that we have a [main code library](https://github.com/ReSurfEMG/ReSurfEMG) where the user can access the the code to change various filter and analysis settings directly and/or in our our [researcher interface notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/researcher_interface), and a [Dashboard interface](https://github.com/ReSurfEMG/ReSurfEMG-dashboard) which contains default settings for preprocesssing and analysis which can be changed through a graphical (no code) interface. 
+Most important to know before using ReSurfEMG is that we have a [main code library](https://github.com/ReSurfEMG/ReSurfEMG) where the user can access the the code to change various filter and analysis settings directly and/or in our our [researcher interface notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/researcher_interface), and a [dashboard interface](https://github.com/ReSurfEMG/ReSurfEMG-dashboard) which contains default settings for preprocesssing and analysis which can be changed through a graphical (no code) interface. 
 
 The library was initially
 built for surface EMG, however many functions will also work for
@@ -289,7 +289,8 @@ This will pre-process (with the alternative_a_pipeline_multi algorithm) the
            
 
 The following will run an ML model over all files:
-    python -m resurfemg ml \
+
+    python -m resurfemg ml |
             --input /mnt/data/preprocessed \
             --output /mnt/data/ml_output \
             --model  ml_models/finalized_lr_model_in_111.sav \
