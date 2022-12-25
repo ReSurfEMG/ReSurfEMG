@@ -12,6 +12,10 @@ authors:
     given-names: Walter
     orcid: "https://orcid.org/0000-0001-8888-4792"
   -
+    affiliation: "Bright Computing/NVIDIA"
+    family-names: Sivokon
+    given-names: Oleg 
+  -
     affiliation: "University of Twente"
     family-names: Warnaar
     given-names: Robertus (Rob) Simon Petrus Warnaar
