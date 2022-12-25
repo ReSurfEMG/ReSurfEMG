@@ -8,10 +8,13 @@ import sys
 import numpy as np
 import scipy
 from tempfile import TemporaryDirectory
+from contextlib import contextmanager
+import json
+from unittest import TestCase, main
+
+#resurfemg.tmsisdk_lite
 from resurfemg.tmsisdk_lite import Poly5Reader
-
-
-# converter_functions
+# converter_functions 
 from resurfemg.converter_functions import poly5unpad
 from resurfemg.config import hash_it_up_right_all
 # multi_lead_type
@@ -42,6 +45,8 @@ from resurfemg.helper_functions import smooth_for_baseline_with_overlay
 from resurfemg.helper_functions import relative_levenshtein
 from resurfemg.helper_functions import gating
 from resurfemg.helper_functions import scale_arrays
+# config
+from resurfemg.config import Config
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -54,13 +59,17 @@ sample_emg = os.path.join(
 
 
 
-class TestDisplayConverterMethods(unittest.TestCase):
+class TestConverterMethods(unittest.TestCase):
 
     def test_poly5unpad(self):
         reading =Poly5Reader(sample_emg)
         unpadded= poly5unpad(sample_emg)
         unpadded_line = unpadded[0]
         self.assertEqual(len(unpadded_line), reading.num_samples)
+
+    def Poly5Reader(self):
+        reading =Poly5Reader(sample_emg)
+        self.assertEqual(reading.num_channels, 3)
 
 
 class TestHashMethods(unittest.TestCase):
@@ -167,13 +176,7 @@ class TestPickingMethods(unittest.TestCase):
 
 class TestPipelineMethods(unittest.TestCase):
 
-    # def test_working_pipeline_exp(self):
-    #     sample_read= Poly5Reader(sample_emg_tampered) [# we need to augment a real one here]
-    #     pipelined = working_pipeline_exp(sample_read)
-    #     self.assertEqual(
-    #         pipelined.shape[0],
-    #         1 ,
-    #     )
+    
     def test_working_pipeline_pre_ml_multi(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
@@ -185,17 +188,18 @@ class TestPipelineMethods(unittest.TestCase):
             pipelined_0_1.shape,
             pipelined_0_2.shape,
         )
+    def test_working_pipe_multi(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
+        sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
+        pipelined_0_1 = working_pipe_multi(sample_emg_filtered, (0,1))
+        pipelined_0_2 = working_pipe_multi(sample_emg_filtered, (0,2))
+        self.assertEqual(
+            pipelined_0_1.shape,
+            pipelined_0_2.shape,
+        )
 
-        
-    #\     sample_read= Poly5Reader(sample_emg)
-    #     sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
-    #     sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
-    #     sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
-    #     components = compute_ICA_two_comp_multi(sample_emg_filtered)
-    #     self.assertEqual(
-        #     (len(components)),
-        #     2 ,
-        # )
 
 
 class TestCuttingingMethods(unittest.TestCase):
@@ -284,6 +288,145 @@ class TestArrayMath(unittest.TestCase):
             (new_emg.shape),
             (sample_emg_filtered.shape) ,
         )
+
+    def test_count_decision_array(self):
+        sample_array= np.array([0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,1,0,1,1,1,0,0,0])
+        counted = count_decision_array(sample_array)
+        self.assertEqual(
+            counted,
+             3,
+        )
+
+
+# class TestConfig(TestCase):
+
+#     required_directories = {
+#         'root_emg_directory',
+#     }
+#     #required_directories = ['root_emg_directory']
+
+#     @contextmanager
+#     def cd(self, directory=None):
+#         if not directory:
+#             with TemporaryDirectory() as td:
+#                 old = os.getcwd()
+#                 os.chdir(td)
+#                 yield td
+#                 os.chdir(old)
+#         else:
+#             old = os.getcwd()
+#             os.chdir(td)
+#             yield td
+#             os.chdir(old)
+
+#     def test_roots_only(self):
+#         with TemporaryDirectory() as td:
+#             os.mkdir(os.path.join(td, 'root_emg_directory'))
+#             raw_config = {
+#                 'root_emg_directory': os.path.join(td, 'root'),
+#             }
+#             config_file = os.path.join(td, 'config.json')
+#             with open(config_file, 'w') as f:
+#                 json.dump(raw_config, f)
+
+#             for root, dirs in self.required_directories.items():
+#                 for d in dirs:
+#                     os.mkdir(os.path.join(td, root, d))
+
+#             config = Config(config_file)
+#             assert config.get_directory('root_emg_directoy')
+
+#     def test_data_only(self):
+#         with TemporaryDirectory() as td:
+#             raw_config = {
+#                 'data': 'data/',
+#                 'preprocessed': 'preprocessed/',
+#                 'metadata': 'metadata/',
+#                 'models': 'models/',
+#                 'data_2022': 'data-2022/',
+#                 'preprocessed_2022': 'preprocessed-2022/',
+#                 'metadata_2022': 'metadata-2022/',
+#                 'models_2022': 'models-2022/',
+#             }
+#             raw_config = {
+#                 k: os.path.join(td, v) for k, v in raw_config.items()
+#             }
+#             for v in raw_config.values():
+#                 os.mkdir(os.path.join(td, v))
+#             config_file = os.path.join(td, 'config.json')
+#             with open(config_file, 'w') as f:
+#                 json.dump(raw_config, f)
+#             config = Config(config_file)
+#             assert config.get_directory('data_2022')
+
+#     # def test_override_some(self):
+#     #     with TemporaryDirectory() as td:
+#     #         raw_config = {
+#     #             'root': 'root',
+#     #             'data': 'data/',
+#     #             'root_2022': 'root_2022',
+#     #             'data_2022': 'data-2022/',
+#     #         }
+#     #         raw_config = {
+#     #             k: os.path.join(td, v) for k, v in raw_config.items()
+#     #         }
+#     #         for v in raw_config.values():
+#     #             os.mkdir(os.path.join(td, v))
+#     #         os.mkdir(os.path.join(td, 'root', 'metadata'))
+#     #         os.mkdir(os.path.join(td, 'root_2022', 'metadata'))
+#     #         config_file = os.path.join(td, 'config.json')
+#     #         with open(config_file, 'w') as f:
+#     #             json.dump(raw_config, f)
+#     #         config = Config(config_file)
+#     #         assert config.get_directory('metadata_2022')
+
+#     def test_missing_config_path(self):
+#         try:
+#             Config('non existent')
+#         except Exception as e:
+#             assert 'Cannot find config files' in e.args[0]
+#         else:
+#             assert False, 'Didn\'t notify on missing config file'
+
+#     # def test_default_config_path(self):
+#     #     with self.cd() as td:
+#     #         with open(os.path.join(td, 'config.json'), 'w') as f:
+#     #             f.write('x')
+#     #         try:
+#     #             Config()
+#     #         except Exception as e:
+#     #             assert 'Found invalid JSON in ./config.json' == e.args[0]
+#     #         else:
+#     #             assert False, 'Didn\'t notify on missing config file'
+
+#     # def test_incorrect_data_path(self):
+#     #     with TemporaryDirectory() as td:
+#     #         os.mkdir(os.path.join(td, 'root'))
+#     #         os.mkdir(os.path.join(td, 'root_2022'))
+#     #         raw_config = {
+#     #             'root': 'root',
+#     #             'root_2022': 'root_2022',
+#     #         }
+#     #         raw_config = {
+#     #             k: os.path.join(td, v) for k, v in raw_config.items()
+#     #         }
+#     #         config_file = os.path.join(td, 'config.json')
+#     #         with open(config_file, 'w') as f:
+#     #             json.dump(raw_config, f)
+#     #         try:
+#     #             config = Config(config_file)
+#     #         except ValueError as e:
+#     #             expected_missing = []
+#     #             for root, dirs in self.required_directories.items():
+#     #                 for d in dirs:
+#     #                     full_path = os.path.join(raw_config[root], d)
+#     #                     if full_path not in e.args[0]:
+#     #                         expected_missing.append(d)
+#     #             assert not expected_missing, (
+#     #                 'Excpected to miss: {}'.format(missing)
+#     #             )
+#     #         else:
+#     #             assert False, 'Failed to identify missing data directory'
 
 if __name__ == '__main__':
     unittest.main()
