@@ -53,3 +53,14 @@
 	- Preprocessing pipelines for any number of leads, which any subset can be chosen added to multi_lead_type module
 	- config module added so outside users can easily point towards thier own datasets, includes a new function to make synthetic EMG data, and hash file validation function (moved from converter_functions)
 	- In repository (technically not part of version): legacy dashboard files removed, notebooks guide added
+
+## Release 0.0.6
+
+### To be Added in January 2023
+
+* Sixth version of this Python project, containing (added to this version):
+
+	- Reading function Poly5Reader in new tmsisdk_lite module which reads Pol5files and can produce an array in the format our library uses
+	- Command line pre-processing and machine learning (new module cli)
+	- New synthetic data function in config module 
+	
