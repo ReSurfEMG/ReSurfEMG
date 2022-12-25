@@ -270,7 +270,7 @@ docker run --rm -v $(pwd):/ci \
         python setup.py test'
 ```
 
-# Command-Line Interface
+## Command-Line Interface
 
 You will be able to preprocess, train and use models using command-line interface.
 (Some functionality still pending module development completion)
