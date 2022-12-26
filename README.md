@@ -15,7 +15,7 @@
 of respiratory electromyography (EMG).  On the same site as 
 the repository for this library we keep [related resources](https://github.com/ReSurfEMG?tab=repositories). 
 
-Most important to know before using ReSurfEMG is that we have a [main code library](https://github.com/ReSurfEMG/ReSurfEMG) where the user can access the the code to change various filter and analysis settings directly and/or in our our [researcher interface notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/researcher_interface), and a [dashboard interface](https://github.com/ReSurfEMG/ReSurfEMG-dashboard) which contains default settings for preprocesssing and analysis which can be changed through a graphical (no code) interface. 
+Most important to know before using ReSurfEMG is that we have a [main code library](https://github.com/ReSurfEMG/ReSurfEMG) where the user can access the code to change various filter and analysis settings directly and/or in our [researcher interface notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/researcher_interface), and a [dashboard interface](https://github.com/ReSurfEMG/ReSurfEMG-dashboard) which contains default settings for preprocessing and analysis which can be changed through a graphical (no code) interface. 
 
 The library was initially
 built for surface EMG, however many functions will also work for
@@ -74,7 +74,7 @@ You can store this information persistently in several locations.
 2.  In home directory, e.g. `~/.resurfemg/config.json`.
 3.  In global directory, e.g. `/etc/resurfemg/config.json`.
 
-However, we highly reccomend you use the home directory.
+However, we highly recommend you use the home directory.
 This file can have this or similar contents:
 
     {
@@ -86,7 +86,7 @@ This file can have this or similar contents:
     }
 
 The file is read as follows: if the files specifies `root_emg_directory`
-directory, then the missing entires are assumed to be relative to
+directory, then the missing entries are assumed to be relative to
 the root.  You don't need to specify all entries.
 
 ### Test data
@@ -176,7 +176,7 @@ regardless of the currently active one.  We are planning to integrate
 with Anaconda in near future.
 
 The project has a sub-project of a related dashboard.  Dashboard is a GUI that
-exposes some of the project's fucntionality. In the past we kept a a legacy dashboard
+exposes some of the project's functionality. In the past we kept a a legacy dashboard
 in the same repository with ReSurfEMG code but we have deleted it. The
 current version of the dashboard into it's own repository:
 https://github.com/ReSurfEMG/ReSurfEMG-dashboard
@@ -194,11 +194,11 @@ controlled environment.
 Please note that documentation is built using `sphinx` command
 for `setuptools`: `setup.py build_sphinx`, but `sphinx` is not
 installed as part of development dependencies, rather it is declared
-as a dependancy of `setup.py` itself.  There are cases when `setup.py`
+as a dependency of `setup.py` itself.  There are cases when `setup.py`
 will not install its own dependencies.  You are advised to install
 them manually.
 
-* `setup.py lint` checks that the source code is formatted accoring to
+* `setup.py lint` checks that the source code is formatted according to
   PEP-8 recommendations.
 * `setup.py isort` checks that the imports are properly formatted and
   sorted.
@@ -238,7 +238,7 @@ however, and should work in the same way it would work with a typical
 `setuptools` project.  
 
 Note that `pip install -e .` and `pip install -e '.[dev]'` are
-discouranged by association (since that is just a wrapper around
+discouraged by association (since that is just a wrapper around
 `setup.py develop`.)  Similarly to `setup.py develop` they might work,
 but you have to be careful with interpreting the results.  If those
 don't work, it's on you.
