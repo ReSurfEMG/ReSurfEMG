@@ -63,4 +63,5 @@
 	- Reading function Poly5Reader in new tmsisdk_lite module which reads Pol5files and can produce an array in the format our library uses
 	- Command line pre-processing and machine learning (new module cli)
 	- New synthetic data function in config module 
+	- New independent component analysis (ICA) functions which allow processing of any number of leads
 	
