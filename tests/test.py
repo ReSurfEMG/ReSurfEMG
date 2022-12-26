@@ -21,6 +21,7 @@ from resurfemg.config import hash_it_up_right_all
 from resurfemg.multi_lead_type import compute_ICA_two_comp_selective
 from resurfemg.multi_lead_type import working_pipe_multi
 from resurfemg.multi_lead_type import working_pipeline_pre_ml_multi
+from resurfemg.multi_lead_type import compute_ICA_n_comp_selective_zeroing
 # helper_functions
 from resurfemg.helper_functions import bad_end_cutter
 from resurfemg.helper_functions import bad_end_cutter_better
@@ -149,6 +150,20 @@ class TestPickingMethods(unittest.TestCase):
             (len(components[1])),
             len(components[0]) ,
         )
+
+    def test_compute_ICA_n_comp_selective_zeroing(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
+        sample_emg_filtered[2] = sample_emg_filtered[0]*1.7
+        doubled = np.vstack((sample_emg_filtered,sample_emg_filtered))
+        with_zeros = compute_ICA_n_comp_selective_zeroing(doubled, 1)
+        self.assertEqual(
+            (with_zeros.shape[1]),
+            6,
+        )
+
+
     def test_compute_ICA_two_comp_multi(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)

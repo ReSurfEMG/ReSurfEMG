@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import glob
+from copy import copy
 from sklearn.decomposition import FastICA
 from resurfemg.helper_functions import bad_end_cutter_for_samples
 from resurfemg.helper_functions import emg_bandpass_butter_sample
