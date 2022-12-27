@@ -1167,3 +1167,60 @@ def scale_arrays(array, maximumn, minimumn):
         (maximumn, minimumn)
     )
     return reformed
+
+
+def area_under_curve(
+    array,
+    start_index,
+    end_index,
+    end_curve=0,
+    smooth_algorithm='none',
+):
+    """
+    This algorithm should be applied to breaths longer than 60 values
+    on an index. The mid_savgol assumes a parabolic fit. It is
+    reccomended to test a smoothing algorithm first, apply,
+    then run the area_under the curve with none for smooth_algortihm.
+
+    :param array: an array e.g. single lead EMG recording
+    :type array: np.array
+    :param start_index: which index number the breath starts on
+    :type start_index: int
+    :param end_index: which index number the breath ends on
+    :type end_index: int
+    :param end_curve: percentage of peak value to stop summing at
+    :type end_curve: int
+    :param smooth_algorithm: algorithm for smoothing
+    :type smooth_algorithm: None or str
+
+    :returns: area; area under the curve
+    :rtype: float
+    """
+
+    new_array = array[start_index: (end_index+1)]
+    max_ind = (new_array.argmax())
+    end_curve = end_curve/100
+    if smooth_algorithm == 'none':
+        absolute_val_array = np.abs(
+            new_array[max_ind:] - new_array.max() * end_curve)
+        smallest_difference_index = absolute_val_array.argmin()
+        smallest_difference_index = smallest_difference_index + max_ind
+        area = np.sum(new_array[:smallest_difference_index])
+    if smooth_algorithm == 'mid_savgol':
+        new_array = savgol_filter(
+            new_array,
+            int(len(new_array)),
+            2,
+            deriv=0,
+            delta=1.0,
+            axis=- 1,
+            mode='interp',
+            cval=0.0,
+        )
+        absolute_val_array = np.abs(
+            new_array[max_ind:] - new_array.max() * end_curve)
+        smallest_difference_index = absolute_val_array.argmin()
+        smallest_difference_index = smallest_difference_index + max_ind
+        area = np.sum(new_array[:smallest_difference_index])
+
+    return area
