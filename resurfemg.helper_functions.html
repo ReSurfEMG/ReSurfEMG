@@ -124,7 +124,11 @@ end set to this range’s end</p>
 <dd><p>This algorithm should be applied to breaths longer than 60 values
 on an index. The mid_savgol assumes a parabolic fit. It is
 reccomended to test a smoothing algorithm first, apply,
-then run the area_under the curve with none for smooth_algortihm.</p>
+then run the area_under the curve with none for smooth_algortihm.
+If a cutoff of the curve before it hits bottom is desired then a value
+other than zero must be in end_curve variable. This variable
+should be written from 0 to 100 for the perfentage of the max value
+at which to cut off after the peak.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -132,7 +136,7 @@ then run the area_under the curve with none for smooth_algortihm.</p>
 <li><p><strong>start_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which index number the breath starts on</p></li>
 <li><p><strong>end_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which index number the breath ends on</p></li>
 <li><p><strong>end_curve</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – percentage of peak value to stop summing at</p></li>
-<li><p><strong>smooth_algorithm</strong> (<em>None</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – algorithm for smoothing</p></li>
+<li><p><strong>smooth_algorithm</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – algorithm for smoothing</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -384,6 +388,32 @@ to read over slices.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.find_peak_in_breath">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">find_peak_in_breath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.find_peak_in_breath" title="Permalink to this definition">¶</a></dt>
+<dd><p>This algorithm locates peaks on a breath. It is assumed
+an array of absolute values for electrophysiological signal
+will be used as the array. Te mid_savgol assumes a parabolic fit.
+It is reccomended to test a smoothing
+algorithm first, apply, then run the find peak algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>np.array</em>) – an array e.g. single lead EMG recording</p></li>
+<li><p><strong>start_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which index number the breath starts on</p></li>
+<li><p><strong>end_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which index number the breath ends on</p></li>
+<li><p><strong>smooth_algorithm</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – algorithm for smoothing (none or ‘mid-savgol’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>index of max point, value at max point</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)">tuple</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -901,6 +931,7 @@ on a cut-off value.</p>
 <li><a class="reference internal" href="#resurfemg.helper_functions.emg_bandpass_butter_sample"><code class="docutils literal notranslate"><span class="pre">emg_bandpass_butter_sample()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.emg_highpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_highpass_butter()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.entropical"><code class="docutils literal notranslate"><span class="pre">entropical()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.find_peak_in_breath"><code class="docutils literal notranslate"><span class="pre">find_peak_in_breath()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.full_rolling_rms"><code class="docutils literal notranslate"><span class="pre">full_rolling_rms()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.gating"><code class="docutils literal notranslate"><span class="pre">gating()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.hi_envelope"><code class="docutils literal notranslate"><span class="pre">hi_envelope()</span></code></a></li>
