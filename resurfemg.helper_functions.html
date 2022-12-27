@@ -119,6 +119,32 @@ end set to this range’s end</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.area_under_curve">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">area_under_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_curve</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.area_under_curve" title="Permalink to this definition">¶</a></dt>
+<dd><p>This algorithm should be applied to breaths longer than 60 values
+on an index. The mid_savgol assumes a parabolic fit. It is
+reccomended to test a smoothing algorithm first, apply,
+then run the area_under the curve with none for smooth_algortihm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>np.array</em>) – an array e.g. single lead EMG recording</p></li>
+<li><p><strong>start_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which index number the breath starts on</p></li>
+<li><p><strong>end_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which index number the breath ends on</p></li>
+<li><p><strong>end_curve</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – percentage of peak value to stop summing at</p></li>
+<li><p><strong>smooth_algorithm</strong> (<em>None</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – algorithm for smoothing</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>area; area under the curve</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.bad_end_cutter">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">bad_end_cutter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_emg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent_to_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance_percent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.bad_end_cutter" title="Permalink to this definition">¶</a></dt>
 <dd><p>This algorithm takes the end off of EMGs where the end is
@@ -863,6 +889,7 @@ on a cut-off value.</p>
 <li><a class="reference internal" href="#resurfemg.helper_functions.Range.to_slice"><code class="docutils literal notranslate"><span class="pre">Range.to_slice()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.area_under_curve"><code class="docutils literal notranslate"><span class="pre">area_under_curve()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.bad_end_cutter"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.bad_end_cutter_better"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter_better()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.bad_end_cutter_for_samples"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter_for_samples()</span></code></a></li>
