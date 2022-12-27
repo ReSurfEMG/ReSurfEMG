@@ -109,6 +109,32 @@ alternative_a_pipeline_multi</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.multi_lead_type.compute_ICA_n_comp_selective_zeroing">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.multi_lead_type.</span></span><span class="sig-name descname"><span class="pre">compute_ICA_n_comp_selective_zeroing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lead_to_remove</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_all_leads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired_leads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">2)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.multi_lead_type.compute_ICA_n_comp_selective_zeroing" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function that performs an independant component analysis
+(ICA) meant for EMG data that includes stacked arrays,
+there should be at least two arrays but there can be more.
+In this ICA one lead is put to zero before reconstruction.
+This should probably be the ECG lead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emg_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – Original signal array with three or more layers</p></li>
+<li><p><strong>lead_to_remove</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Lead number counting from zero to get rid of</p></li>
+<li><p><strong>use_all_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – True if all leads used, otherwise specify leads</p></li>
+<li><p><strong>desired_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – tuple of leads to use starting from 0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Arrays of independent components (ECG-like and EMG)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.multi_lead_type.compute_ICA_two_comp_selective">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.multi_lead_type.</span></span><span class="sig-name descname"><span class="pre">compute_ICA_two_comp_selective</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_all_leads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired_leads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">2)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.multi_lead_type.compute_ICA_two_comp_selective" title="Permalink to this definition">¶</a></dt>
 <dd><p>A function that performs an independant component analysis
@@ -218,6 +244,7 @@ of which we want leads 0 to 2 included</p>
 <li><a class="reference internal" href="#">resurfemg.multi_lead_type module</a><ul>
 <li><a class="reference internal" href="#resurfemg.multi_lead_type.alternative_a_pipeline_multi"><code class="docutils literal notranslate"><span class="pre">alternative_a_pipeline_multi()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.multi_lead_type.alternative_b_pipeline_multi"><code class="docutils literal notranslate"><span class="pre">alternative_b_pipeline_multi()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.multi_lead_type.compute_ICA_n_comp_selective_zeroing"><code class="docutils literal notranslate"><span class="pre">compute_ICA_n_comp_selective_zeroing()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.multi_lead_type.compute_ICA_two_comp_selective"><code class="docutils literal notranslate"><span class="pre">compute_ICA_two_comp_selective()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.multi_lead_type.preprocess"><code class="docutils literal notranslate"><span class="pre">preprocess()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.multi_lead_type.save_preprocessed"><code class="docutils literal notranslate"><span class="pre">save_preprocessed()</span></code></a></li>
