@@ -44,6 +44,9 @@ from resurfemg.helper_functions import smooth_for_baseline_with_overlay
 from resurfemg.helper_functions import relative_levenshtein
 from resurfemg.helper_functions import gating
 from resurfemg.helper_functions import scale_arrays
+from resurfemg.helper_functions import area_under_curve
+
+
 # config
 from resurfemg.config import Config
 
@@ -296,6 +299,13 @@ class TestArrayMath(unittest.TestCase):
              3,
         )
 
+    def test_area_under_curve(self):
+        sample_array= np.array([0,0,0,0,1,1,1,5,10,10,5,0,1,1,1,1,0,1,1,1,0,0,0])
+        counted = area_under_curve(sample_array,0,20,70)
+        self.assertEqual(
+            counted,
+            28,
+        )
 
 class TestConfig(TestCase):
 
