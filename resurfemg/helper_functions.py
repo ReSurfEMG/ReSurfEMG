@@ -296,34 +296,6 @@ def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
     return output_signal
 
 
-# def cnotch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
-#     """
-#     This is a filter designed to take out a specific frequency.
-#     In the EU in some data electrical cords can interfere at
-#     around 50 hertzs.
-#     In some other locations the interference is at 60 Hertz.
-#     The specificities
-#     of a local power grid may neccesitate notch filtering. It computes some
-#     additional info on the results, and we may change it to return all the
-#     information. Pending.
-
-
-#     """
-#     # create notch filter
-#     samp_freq = sample_frequ # Sample frequency (Hz)
-#     notch_freq = freq_to_pull # Frequency to be removed from signal (Hz)
-#     quality_factor = quality_factor_q # Quality factor
-
-#     # design a notch filter using signal.iirnotch
-#     b_notch, a_notch = signal.iirnotch(notch_freq, quality_factor, samp_freq)
-
-#     # compute magnitude response of the designed filter
-#     freq, h = signal.freqz(b_notch, a_notch, fs=samp_freq)
-#     # make the output signal
-#     output_signal = signal.filtfilt(b_notch, a_notch, sample)
-#     return output_signal
-
-
 def show_my_power_spectrum(sample, sample_rate, upper_window):
     """This function plots a power spectrum of the frequencies
     comtained in an emg based on a fourier transform.  It does not
@@ -1181,6 +1153,10 @@ def area_under_curve(
     on an index. The mid_savgol assumes a parabolic fit. It is
     reccomended to test a smoothing algorithm first, apply,
     then run the area_under the curve with none for smooth_algortihm.
+    If a cutoff of the curve before it hits bottom is desired then a value
+    other than zero must be in end_curve variable. This variable
+    should be written from 0 to 100 for the perfentage of the max value
+    at which to cut off after the peak.
 
     :param array: an array e.g. single lead EMG recording
     :type array: np.array
@@ -1191,7 +1167,7 @@ def area_under_curve(
     :param end_curve: percentage of peak value to stop summing at
     :type end_curve: int
     :param smooth_algorithm: algorithm for smoothing
-    :type smooth_algorithm: None or str
+    :type smooth_algorithm: str
 
     :returns: area; area under the curve
     :rtype: float
@@ -1224,3 +1200,47 @@ def area_under_curve(
         area = np.sum(new_array[:smallest_difference_index])
 
     return area
+
+
+def find_peak_in_breath(
+    array,
+    start_index,
+    end_index,
+    smooth_algorithm='none'
+):
+    """
+    This algorithm locates peaks on a breath. It is assumed
+    an array of absolute values for electrophysiological signal
+    will be used as the array. Te mid_savgol assumes a parabolic fit.
+    It is reccomended to test a smoothing
+    algorithm first, apply, then run the find peak algorithm.
+
+    :param array: an array e.g. single lead EMG recording
+    :type array: np.array
+    :param start_index: which index number the breath starts on
+    :type start_index: int
+    :param end_index: which index number the breath ends on
+    :type end_index: int
+    :param smooth_algorithm: algorithm for smoothing (none or 'mid-savgol')
+    :type smooth_algorithm: str
+
+    :returns: index of max point, value at max point
+    :rtype: tuple
+    """
+    new_array = array[start_index: (end_index+1)]
+    if smooth_algorithm == 'mid_savgol':
+        new_array = savgol_filter(
+            new_array, int(len(new_array)),
+            2,
+            deriv=0,
+            delta=1.0,
+            axis=- 1,
+            mode='interp',
+            cval=0.0,
+        )
+        max_ind = (new_array.argmax())
+        max_val = new_array[max_ind]
+    else:
+        max_ind = (new_array.argmax())
+        max_val = new_array[max_ind]
+    return (max_ind, max_val)

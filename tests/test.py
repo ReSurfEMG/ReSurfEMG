@@ -46,6 +46,7 @@ from resurfemg.helper_functions import relative_levenshtein
 from resurfemg.helper_functions import gating
 from resurfemg.helper_functions import scale_arrays
 from resurfemg.helper_functions import area_under_curve
+from resurfemg.helper_functions import find_peak_in_breath
 
 
 # config
@@ -321,6 +322,16 @@ class TestArrayMath(unittest.TestCase):
             counted,
             28,
         )
+    
+    def test_find_peak_in_breath(self):
+        sample_array= np.array([0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0])
+        peak =find_peak_in_breath(sample_array,0,20)
+        self.assertEqual(
+            peak,
+            (9,13)
+        )
+    
+
 
 class TestConfig(TestCase):
 
