@@ -81,19 +81,18 @@ class Config:
             You can override any individual directory (or subdirectory)
             by specifying it in the config.json file.
 
-            "root_emg_data" is expected to exist.
+            "root_emg_directory" is expected to exist.
             The "models" and "preprocessed" directories need not
             exist.  They will be created if missing.
             '''
         ).format('\n'.join(self.default_locations))
 
     def load(self, location):
-        if location is not None:
-            with open(location) as f:
-                self._raw = json.load(f)
-                return
+        locations = (
+            [location] if location is not None else self.default_locations
+        )
 
-        for p in self.default_locations:
+        for p in locations:
             try:
                 with open(p) as f:
                     self._raw = json.load(f)
@@ -128,6 +127,8 @@ class Config:
 
     def get_directory(self, directory, value=None):
         if value is None:
+            # import pdb
+            # pdb.set_trace()
             return self._loaded[directory]
         return value
 
