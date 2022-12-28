@@ -259,6 +259,7 @@ def simulate_emg_with_occlusions(t_start=0,
 
 def make_realistic_syn_emg(loaded_ecg, number):
     list_ecg = []
+    number = int(number)  # added for cli
     for i in list(range(number)):
         emg = simulate_emg_with_occlusions(
             t_start=0,
@@ -278,9 +279,10 @@ def make_realistic_syn_emg(loaded_ecg, number):
         heart_line = random.randint(0, 9)
         one_line_ecg = loaded_ecg[heart_line]
         x_emg = np.zeros((3, emg_stack.shape[1]))
-        x_emg[0] = np.array(200*one_line_ecg, dtype='float64') + np.array(0.05 * emg_stack[0], dtype='float64')
-        x_emg[1] = np.array(200*one_line_ecg, dtype='float64') + np.array(4 * emg_stack[1], dtype='float64')
-        x_emg[2] = np.array(200*one_line_ecg, dtype='float64') + np.array(8 * emg_stack[2], dtype='float64')
+        ecg_out = np.array(200*one_line_ecg, dtype='float64')
+        x_emg[0] = ecg_out + np.array(0.05 * emg_stack[0], dtype='float64')
+        x_emg[1] = ecg_out + np.array(4 * emg_stack[1], dtype='float64')
+        x_emg[2] = ecg_out + np.array(8 * emg_stack[2], dtype='float64')
         list_ecg.append(x_emg)
     return list_ecg
 
@@ -295,7 +297,8 @@ def make_realistic_syn_emg_cli(file_directory, number, made):
     synthetics = make_realistic_syn_emg(loaded, number)
     number_end = 0
     for single_synth in synthetics:
-        #rel_fname = os.path.relpath(file, file_directory)
         out_fname = os.path.join(made, str(number_end))
-        np.save( out_fname,single_synth)
+        if not (os.path.exists(made)):
+            os.mkdir(made)
+        np.save(out_fname, single_synth)
         number_end += 1

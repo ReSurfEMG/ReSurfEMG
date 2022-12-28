@@ -295,7 +295,9 @@ The following will run an ML model over all files:
             --output /mnt/data/ml_output \
             --model  ml_models/finalized_lr_model_in_111.sav \
 
-
+You can also make synthetic data. To explore this start with
+    `python -m resurfemg synth --help`
+The help commandis also available for ml and acquire.
 
 All long options have short aliases.
 
