@@ -258,7 +258,15 @@ def simulate_emg_with_occlusions(t_start=0,
 
 
 def make_realistic_syn_emg(loaded_ecg, number):
-    list_ecg = []
+    """
+    This function makes realistic synthetic respiratory EMG data.
+    :param loaded_ecg: synthetic emg/s as numpy array
+    :type loaded_ecg: np.array
+
+    :returns: list_emg
+    :rtype: list
+    """
+    list_emg = []
     number = int(number)  # added for cli
     for i in list(range(number)):
         emg = simulate_emg_with_occlusions(
@@ -283,11 +291,23 @@ def make_realistic_syn_emg(loaded_ecg, number):
         x_emg[0] = ecg_out + np.array(0.05 * emg_stack[0], dtype='float64')
         x_emg[1] = ecg_out + np.array(4 * emg_stack[1], dtype='float64')
         x_emg[2] = ecg_out + np.array(8 * emg_stack[2], dtype='float64')
-        list_ecg.append(x_emg)
-    return list_ecg
+        list_emg.append(x_emg)
+    return list_emg
 
 
 def make_realistic_syn_emg_cli(file_directory, number, made):
+    """
+    This function works with the cli
+    module to makes realistic synthetic respiratory EMG data
+    through command line.
+
+    :param file_directory: file directory where synthetic ecg are
+    :type file_directory: str
+    :param number: file directory where synthetic ecg are
+    :type number: int
+    :param made: file directory where synthetic emg will be put
+    :type made: str
+    """
     file_directory_list = glob.glob(
         os.path.join(file_directory, '*.npy'),
         recursive=True,
