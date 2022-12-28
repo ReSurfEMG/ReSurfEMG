@@ -51,6 +51,7 @@ from resurfemg.helper_functions import find_peak_in_breath
 
 # config
 from resurfemg.config import Config
+from resurfemg.config import make_realistic_syn_emg
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -363,6 +364,12 @@ class TestConfig(TestCase):
             pass
         else:
             assert False, 'Didn\'t notify on missing config file'
+    
+    def test_make_realistic_syn_emg(self):
+        x_ecg = np.zeros((10,307200))
+        made = make_realistic_syn_emg(x_ecg,2)
+        self.assertEqual(len(made),2)
+        
 
 
 if __name__ == '__main__':

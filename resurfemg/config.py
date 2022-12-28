@@ -21,6 +21,7 @@ import pandas as pd
 import numpy as np
 import scipy
 from scipy import signal
+import random
 
 
 class Config:
@@ -254,3 +255,31 @@ def simulate_emg_with_occlusions(t_start=0,
     x_emg[2, :] = 8 * part_emg + 1 * part_noise + 20 * part_drift
     data_emg_samples = x_emg
     return data_emg_samples
+
+
+def make_realistic_syn_emg(loaded_ecg, number):
+    list_ecg = []
+    for i in list(range(number)):
+        emg = simulate_emg_with_occlusions(
+            t_start=0,
+            t_end=7*60,
+            emg_sample_rate=2048,   # hertz
+            rr=22,         # respiratory rate /min
+            ie_ratio=1/2,  # ratio btw insp + expir phase
+            tau_mus_up=0.3,
+            tau_mus_down=0.3,
+            occs_times_vals=[360+5, 360+21, 360+35]
+        )
+        emg1 = emg[0][:307200]
+        emg2 = emg[1][:307200]
+        emg3 = emg[2][:307200]
+        emg_stack = np.vstack((emg1, emg2))
+        emg_stack = np.vstack((emg_stack, emg3))
+        heart_line = random.randint(0, 9)
+        one_line_ecg = loaded_ecg[heart_line]
+        x_emg = np.zeros((3, emg_stack.shape[1]))
+        x_emg[0] = 200*one_line_ecg + 0.05 * emg_stack[0]
+        x_emg[1] = 200*one_line_ecg + 4 * emg_stack[1]
+        x_emg[2] = 200*one_line_ecg + 8 * emg_stack[2]
+        list_ecg.append(x_emg)
+    return list_ecg
