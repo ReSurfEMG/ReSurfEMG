@@ -1165,7 +1165,7 @@ def area_under_curve(
     :param end_index: which index number the breath ends on
     :type end_index: int
     :param end_curve: percentage of peak value to stop summing at
-    :type end_curve: int
+    :type end_curve: float
     :param smooth_algorithm: algorithm for smoothing
     :type smooth_algorithm: str
 
@@ -1175,29 +1175,36 @@ def area_under_curve(
 
     new_array = array[start_index: (end_index+1)]
     max_ind = (new_array.argmax())
-    end_curve = end_curve/100
-    if smooth_algorithm == 'none':
-        absolute_val_array = np.abs(
-            new_array[max_ind:] - new_array.max() * end_curve)
-        smallest_difference_index = absolute_val_array.argmin()
-        smallest_difference_index = smallest_difference_index + max_ind
-        area = np.sum(new_array[:smallest_difference_index])
-    if smooth_algorithm == 'mid_savgol':
-        new_array = savgol_filter(
-            new_array,
-            int(len(new_array)),
-            2,
-            deriv=0,
-            delta=1.0,
-            axis=- 1,
-            mode='interp',
-            cval=0.0,
-        )
-        absolute_val_array = np.abs(
-            new_array[max_ind:] - new_array.max() * end_curve)
-        smallest_difference_index = absolute_val_array.argmin()
-        smallest_difference_index = smallest_difference_index + max_ind
-        area = np.sum(new_array[:smallest_difference_index])
+    if end_curve > 100 or end_curve < 0:
+        print('You picked an impossible number for end_curve')
+        area = 'mistake'
+    else:
+        end_curve = end_curve/100
+        if array[start_index] < array[end_index]:
+            print('You picked an end point above baseline,')
+            print('caution with end_curve variable!')
+        if smooth_algorithm == 'none':
+            absolute_val_array = np.abs(
+                new_array[max_ind:] - new_array.max() * end_curve)
+            smallest_difference_index = absolute_val_array.argmin()
+            smallest_difference_index = smallest_difference_index + max_ind
+            area = np.sum(new_array[:smallest_difference_index])
+        if smooth_algorithm == 'mid_savgol':
+            new_array = savgol_filter(
+                new_array,
+                int(len(new_array)),
+                2,
+                deriv=0,
+                delta=1.0,
+                axis=- 1,
+                mode='interp',
+                cval=0.0,
+            )
+            absolute_val_array = np.abs(
+                new_array[max_ind:] - new_array.max() * end_curve)
+            smallest_difference_index = absolute_val_array.argmin()
+            smallest_difference_index = smallest_difference_index + max_ind
+            area = np.sum(new_array[:smallest_difference_index])
 
     return area
 
