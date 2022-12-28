@@ -16,6 +16,7 @@ from argparse import ArgumentParser
 from .multi_lead_type import preprocess
 from .ml import applu_model
 from .config import Config
+from .config import make_realistic_syn_emg_cli
 
 
 def common(parser):
@@ -32,7 +33,7 @@ def common(parser):
         '--output',
         default=None,
         help='''
-        Directory containing trained models (created if doesn't exist).
+        Directory containing algorithm output (created if doesn't exist).
         ''',
     )
 
@@ -86,6 +87,18 @@ def make_parser():
         ''',
     )
     common(acquire)
+
+    synth = subparsers.add_parser('synth')
+    synth.set_defaults(action='synth')
+    common(synth)
+    synth.add_argument(
+        '-N',
+        '--number',
+        default=1,
+        help='''
+        Number of synthetic EMG to be made.
+        '''
+    )
 
     ml = subparsers.add_parser('ml')
     ml.set_defaults(action='ml')
@@ -148,6 +161,17 @@ def main(argv):
                 parsed.preprocessing,
                 config.get_directory('preprocessed', parsed.output),
                 parsed.force,
+            )
+        except Exception as e:
+            logging.exception(e)
+            return 1
+
+    if parsed.action == 'synth':
+        try:
+
+            make_realistic_syn_emg_cli(
+                config.get_directory('data', parsed.input),
+                parsed.number,
             )
         except Exception as e:
             logging.exception(e)

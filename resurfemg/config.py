@@ -283,3 +283,12 @@ def make_realistic_syn_emg(loaded_ecg, number):
         x_emg[2] = 200*one_line_ecg + 8 * emg_stack[2]
         list_ecg.append(x_emg)
     return list_ecg
+
+
+def make_realistic_syn_emg_cli(file_directory, number):
+    file_directory_list = glob.glob(
+        os.path.join(file_directory, '*.npy'),
+        recursive=True,
+    )
+    file = file_directory_list[0]
+    make_realistic_syn_emg(file, number)
