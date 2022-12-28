@@ -96,7 +96,7 @@ i.e.
 Style Guide for Python Code
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We have have linting!
+We have linting!
 
 .. code-block:: bash
 
