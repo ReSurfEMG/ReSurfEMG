@@ -172,6 +172,7 @@ def main(argv):
             make_realistic_syn_emg_cli(
                 config.get_directory('data', parsed.input),
                 parsed.number,
+                config.get_directory('made', parsed.output),
             )
         except Exception as e:
             logging.exception(e)
