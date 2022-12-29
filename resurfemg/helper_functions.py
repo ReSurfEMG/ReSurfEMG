@@ -508,6 +508,38 @@ def pick_lowest_correlation_array(components_tuple, ecg_lead):
     return emg_component
 
 
+def pick_highest_correlation_array(components_tuple, ecg_lead):
+    """Here we have a function that takes a tuple with the two parts
+    of ICA and the array containing the ECG recording, and finds the
+    ICA component with the highest similarity to the ECG.
+    Data should not have been finally filtered to envelope level
+
+    :param components_tuple: tuple of two arrays representing different signals
+    :type components_tuple: Tuple[~numpy.ndarray, ~numpy.ndarray]
+
+    :param ecg_lead: array containing the ECG recording
+    :type ecg_lead: numpy.ndarray
+
+    :returns: Array with the highest correlation coefficient
+     to the ECG lead (should usually be the  ECG)
+    :rtype: ~numpy.ndarray
+    """
+    c0 = components_tuple[0]
+    c1 = components_tuple[1]
+    corr_tuple = np.row_stack((ecg_lead, c0, c1))
+    corr_matrix = abs(np.corrcoef(corr_tuple))
+
+    # get the component with the highest correlation to ECG
+    # the matriz is symmetric, so we can check just the first row
+    # the first coefficient is the autocorrelation of the ECG lead,
+    # so we can check row 1 and 2
+
+    hi_index = np.argmax(corr_matrix[0][1:])
+    ecg_component = components_tuple[hi_index]
+
+    return ecg_component
+
+
 def working_pipeline_exp(our_chosen_file):
     """This function is legacy.
     It produces a filtered respiratory EMG signal from a
