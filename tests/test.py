@@ -47,7 +47,7 @@ from resurfemg.helper_functions import gating
 from resurfemg.helper_functions import scale_arrays
 from resurfemg.helper_functions import area_under_curve
 from resurfemg.helper_functions import find_peak_in_breath
-
+from resurfemg.helper_functions import distance_matrix
 
 # config
 from resurfemg.config import Config
@@ -61,7 +61,6 @@ sample_emg = os.path.join(
     '002',
     'EMG_recording.Poly5',
 )
-
 
 
 class TestConverterMethods(unittest.TestCase):
@@ -324,6 +323,14 @@ class TestArrayMath(unittest.TestCase):
             28,
         )
     
+    def test_distance_matrix(self):
+        sample_array_a= np.array([0,0,0,0,1,1,1,5,10,10,5,0,1,1,1,1,0,1,1,1,0,0,0])
+        sample_array_b= np.array([0,0,0,0,1,1,1,5,1,1,5,0,1,1,1,1,0,1,1,1,0,0,0])
+        matrix = distance_matrix(sample_array_a,sample_array_b)
+        self.assertEqual(
+            matrix.shape,
+            (1,3),
+        )
     def test_find_peak_in_breath(self):
         sample_array= np.array([0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0])
         peak =find_peak_in_breath(sample_array,0,20)
@@ -332,7 +339,6 @@ class TestArrayMath(unittest.TestCase):
             (9,13)
         )
     
-
 
 class TestConfig(TestCase):
 
