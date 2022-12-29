@@ -569,6 +569,30 @@ filtering.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.pick_highest_correlation_array">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">pick_highest_correlation_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_lead</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.pick_highest_correlation_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Here we have a function that takes a tuple with the two parts
+of ICA and the array containing the ECG recording, and finds the
+ICA component with the highest similarity to the ECG.
+Data should not have been finally filtered to envelope level</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>components_tuple</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a><em>, </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a><em>]</em>) – tuple of two arrays representing different signals</p></li>
+<li><p><strong>ecg_lead</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>numpy.ndarray</em></a>) – array containing the ECG recording</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array with the highest correlation coefficient
+to the ECG lead (should usually be the  ECG)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.pick_lowest_correlation_array">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">pick_lowest_correlation_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_lead</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.pick_lowest_correlation_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Here we have a function that takes a tuple with the two parts
@@ -939,6 +963,7 @@ on a cut-off value.</p>
 <li><a class="reference internal" href="#resurfemg.helper_functions.merge"><code class="docutils literal notranslate"><span class="pre">merge()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.naive_rolling_rms"><code class="docutils literal notranslate"><span class="pre">naive_rolling_rms()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.notch_filter"><code class="docutils literal notranslate"><span class="pre">notch_filter()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.pick_highest_correlation_array"><code class="docutils literal notranslate"><span class="pre">pick_highest_correlation_array()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.pick_lowest_correlation_array"><code class="docutils literal notranslate"><span class="pre">pick_lowest_correlation_array()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.pick_more_peaks_array"><code class="docutils literal notranslate"><span class="pre">pick_more_peaks_array()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.ranges_of"><code class="docutils literal notranslate"><span class="pre">ranges_of()</span></code></a></li>
