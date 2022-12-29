@@ -77,10 +77,10 @@ jobs:
           MY_REPO_URL: "https://github.com/${{ github.repository }}"
 
   
-  Markdown: 
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@main
-    - uses: gaurav-nelson/github-action-markdown-link-check@v1
-      with:
-        config-file: '.github/workflows/mlc-config.json'
+  # Markdown: 
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@main
+  #   - uses: gaurav-nelson/github-action-markdown-link-check@v1
+  #     with:
+  #       config-file: '.github/workflows/mlc-config.json'
