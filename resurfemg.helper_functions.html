@@ -305,6 +305,44 @@ on a time series array that has been reduced down to a binary
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.distance_matrix_long">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">distance_matrix_long</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array_b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.distance_matrix_long" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array_a</strong> (<em>array</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – an array of same size as other parameter array</p></li>
+<li><p><strong>array_b</strong> (<em>array</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – an array of same size as other parameter array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>distances</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.distance_matrix_short">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">distance_matrix_short</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array_b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.distance_matrix_short" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array_a</strong> (<em>array</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – an array of same size as other parameter array</p></li>
+<li><p><strong>array_b</strong> (<em>array</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – an array of same size as other parameter array</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>distances</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.emg_bandpass_butter">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">emg_bandpass_butter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_emg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_pass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high_pass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.emg_bandpass_butter" title="Permalink to this definition">¶</a></dt>
 <dd><p>The parameter taken in here is the Poly5 file. Output is
@@ -951,6 +989,8 @@ on a cut-off value.</p>
 <li><a class="reference internal" href="#resurfemg.helper_functions.compute_ICA_two_comp_multi"><code class="docutils literal notranslate"><span class="pre">compute_ICA_two_comp_multi()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.compute_power_loss"><code class="docutils literal notranslate"><span class="pre">compute_power_loss()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.count_decision_array"><code class="docutils literal notranslate"><span class="pre">count_decision_array()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.distance_matrix_long"><code class="docutils literal notranslate"><span class="pre">distance_matrix_long()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.distance_matrix_short"><code class="docutils literal notranslate"><span class="pre">distance_matrix_short()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.emg_bandpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_bandpass_butter()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.emg_bandpass_butter_sample"><code class="docutils literal notranslate"><span class="pre">emg_bandpass_butter_sample()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.emg_highpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_highpass_butter()</span></code></a></li>
