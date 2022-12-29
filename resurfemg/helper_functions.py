@@ -1323,10 +1323,12 @@ def distance_matrix_long(array_a, array_b):
     """
     if len(array_a) != len(array_b):
         print('Your arrays do not match in legnth, caution!')
+    array_a_list = array_a.tolist()
+    array_b_list = array_b.tolist()
     distance_earthmover = scipy.stats.wasserstein_distance(array_a, array_b)
     distance_edit_distance = textdistance.levenshtein.similarity(
-        array_a,
-        array_b
+        array_a_list,
+        array_b_list,
     )
     distance_euclidian = scipy.spatial.distance.euclidean(array_a, array_b)
     distance_hamming = scipy.spatial.distance.hamming(array_a, array_b)
