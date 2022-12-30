@@ -1287,31 +1287,7 @@ def find_peak_in_breath(
     return (max_ind, max_val)
 
 
-def distance_matrix_short(array_a, array_b):
-    """
-    :param array_a: an array of same size as other parameter array
-    :type array_a: array or list
-    :param array_b: an array of same size as other parameter array
-    :type array_b: array or list
-
-    :returns: distances
-    :rtype: pd.DataFrame
-    """
-    if len(array_a) != len(array_b):
-        print('Your arrays do not match in legnth, caution!')
-    distance_earthmover = scipy.stats.wasserstein_distance(array_a, array_b)
-    distance_euclidian = scipy.spatial.distance.euclidean(array_a, array_b)
-    distance_hamming = scipy.spatial.distance.hamming(array_a, array_b)
-    data_made = {
-        'earthmover': distance_earthmover,
-        'euclidean': distance_euclidian,
-        'hamming': distance_hamming,
-    }
-    distances = pd.DataFrame(data=data_made, index=[0])
-    return distances
-
-
-def distance_matrix_long(array_a, array_b):
+def distance_matrix(array_a, array_b):
     """
     :param array_a: an array of same size as other parameter array
     :type array_a: array or list

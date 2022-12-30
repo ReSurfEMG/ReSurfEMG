@@ -47,7 +47,7 @@ from resurfemg.helper_functions import gating
 from resurfemg.helper_functions import scale_arrays
 from resurfemg.helper_functions import area_under_curve
 from resurfemg.helper_functions import find_peak_in_breath
-from resurfemg.helper_functions import distance_matrix_long
+from resurfemg.helper_functions import distance_matrix
 # config
 from resurfemg.config import Config
 from resurfemg.config import make_realistic_syn_emg
@@ -330,14 +330,14 @@ class TestArrayMath(unittest.TestCase):
         )
     
     
-    def test_distance_matrix_long(self):
+    def test_distance_matrix(self):
         sample_array_a= np.array(
             [0,0,0,0,1,1,1,5,10,10,5,0,1,1,1,1,0,1,1,1,0,0,0]
         )
         sample_array_b= np.array(
             [0,0,0,0,1,1,1,5,1,1,5,0,1,1,1,1,0,1,1,1,0,0,0]
         )
-        matrix = distance_matrix_long(sample_array_a,sample_array_b)
+        matrix = distance_matrix(sample_array_a,sample_array_b)
         self.assertEqual(
             matrix.shape,
             (1,6),

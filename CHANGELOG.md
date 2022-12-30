@@ -58,10 +58,11 @@
 
 ### To be Added in January 2023
 
-* Sixth version of this Python project, containing (added to this version):
+* Sixth version of this project, containing (added to this version):
 
 	- Reading function Poly5Reader in new tmsisdk_lite module which reads Pol5files and can produce an array in the format our library uses
 	- Command line pre-processing and machine learning (new module cli)
 	- New synthetic data function in config module 
 	- New independent component analysis (ICA) functions which allow processing of any number of leads
+	- More functions for signal analysis including clinically relevant variations of area under curve and a function (distance_matrix) that produces various mathemtical distances which can be used to compare EMG and other signals e.g. ventilator or ECG
 	
