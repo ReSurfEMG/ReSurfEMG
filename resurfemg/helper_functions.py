@@ -4,6 +4,7 @@ Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 This file contains functions to work with various EMG arrays
 and other types of data arrays e.g. ventilator signals.
+
 """
 
 import collections
@@ -1366,6 +1367,7 @@ def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
 
     :returns: set_ecg_peaks a set of peak location
     :rtype: ~numpy.ndarray
+
     """
     ecg_signal = abs(ecg_signal)
     max_peak = ecg_signal.max() - ecg_signal.min()
