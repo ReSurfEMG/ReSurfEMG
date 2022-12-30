@@ -384,6 +384,50 @@ def alternative_b_pipeline_multi(
     return final_envelope_d
 
 
+def compute_ICA_n_comp(
+    emg_samples,
+    use_all_leads=True,
+    desired_leads=(0, 2),
+):
+    """A function that performs an independant component analysis
+    (ICA) meant for EMG data that includes stacked arrays,
+    there should be at least two arrays but there can be more.
+    This differs from helper_functions.compute_ICA_two_comp_multi
+    because you can get n leads back instead of only two.
+
+    :param emg_samples: Original signal array with three or more layers
+    :type emg_samples: ~numpy.ndarray
+    :param use_all_leads: True if all leads used, otherwise specify leads
+    :type use_all_leads: bool
+    :param desired_leads: tuple of leads to use starting from 0
+    :type desired_leads: tuple
+
+    :returns: Arrays of independent components (ECG-like and EMG)
+    :rtype: ~numpy.ndarray
+    """
+    if use_all_leads:
+        all_component_numbers = list(range(emg_samples.shape[0]))
+        n_components = len(all_component_numbers)
+    else:
+        all_component_numbers = desired_leads
+        n_components = len(all_component_numbers)
+        diff = set(all_component_numbers) - set(range(emg_samples.shape[0]))
+        if diff:
+            raise IndexError(
+                "You picked nonexistant leads {}, "
+                "please see documentation".format(diff)
+            )
+    list_to_c = []
+    # TODO (makeda): change to list comprehension on refactoring
+    for i in all_component_numbers:
+        list_to_c.append(emg_samples[i])
+    X = np.column_stack(list_to_c)
+    ica = FastICA(n_components, random_state=1)
+    S = ica.fit_transform(X)
+    answer = S.T
+    return answer
+
+
 def compute_ICA_n_comp_selective_zeroing(
     emg_samples,
     lead_to_remove,
@@ -430,4 +474,5 @@ def compute_ICA_n_comp_selective_zeroing(
     S_copy = copy(S)
     S_copy.T[lead_to_remove] = np.zeros(len(S_copy.T[lead_to_remove]))
     reconstructed = ica.inverse_transform(S_copy)
+    reconstructed = reconstructed.T
     return reconstructed
