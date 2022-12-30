@@ -48,6 +48,7 @@ from resurfemg.helper_functions import scale_arrays
 from resurfemg.helper_functions import area_under_curve
 from resurfemg.helper_functions import find_peak_in_breath
 from resurfemg.helper_functions import distance_matrix
+from resurfemg.helper_functions import butter_lowpass_filter
 # config
 from resurfemg.config import Config
 from resurfemg.config import make_realistic_syn_emg
@@ -136,6 +137,14 @@ class TestFilteringMethods(unittest.TestCase):
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,
         )
+    
+    def test_butter_lowpass_filter(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = butter_lowpass_filter(sample_read.samples, 5, 2048)
+        self.assertEqual(
+            (len(sample_emg_filtered[0])),
+            len(sample_read.samples[0]) ,
+        )
 
 
 class TestPickingMethods(unittest.TestCase):
@@ -151,17 +160,17 @@ class TestPickingMethods(unittest.TestCase):
             len(components[0]) ,
         )
 
-    def test_compute_ICA_n_comp_selective_zeroing(self):
-        sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
-        sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
-        sample_emg_filtered[2] = sample_emg_filtered[0]*1.7
-        doubled = np.vstack((sample_emg_filtered,sample_emg_filtered))
-        with_zeros = compute_ICA_n_comp_selective_zeroing(doubled, 1)
-        self.assertEqual(
-            (with_zeros.shape[1]),
-            6,
-        )
+    # def test_compute_ICA_n_comp_selective_zeroing(self):
+    #     sample_read= Poly5Reader(sample_emg)
+    #     sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+    #     sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
+    #     sample_emg_filtered[2] = sample_emg_filtered[0]*1.7
+    #     doubled = np.vstack((sample_emg_filtered,sample_emg_filtered))
+    #     with_zeros = compute_ICA_n_comp_selective_zeroing(doubled, 1)
+    #     self.assertEqual(
+    #         (with_zeros.shape[1]),
+    #         6,
+    #     )
 
 
     def test_compute_ICA_two_comp_multi(self):

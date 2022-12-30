@@ -17,6 +17,7 @@ from scipy import signal
 from scipy.fft import fft, fftfreq
 from scipy.signal import find_peaks
 from scipy.signal import savgol_filter
+from scipy.signal import butter, lfilter
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import FastICA
@@ -1320,3 +1321,31 @@ def distance_matrix(array_a, array_b):
     }
     distances = pd.DataFrame(data=data_made, index=[0])
     return distances
+
+
+def helper_lowpass(cutoff, fs, order=5):
+    """
+    This is a helper function inside the butter_lowpass_filter function.
+    """
+    return butter(order, cutoff, fs=fs, btype='low', analog=False)
+
+
+def butter_lowpass_filter(array, cutoff, fs, order=5):
+    """
+    This is a lowpass filter of butterworth design.
+
+    :param array: 1d signal array usually of emg
+    :type array: ~numpy.ndarray
+    :param cutoff: frequency above which to filter out
+    :type cutoff: int
+    :param fs: frequency array sampled at in Hertz
+    :type fs: int
+    :param order: order of the filter
+    :type order: int
+
+    :returns: signal_filtered
+    :rtype: ~numpy.ndarray
+    """
+    b, a = helper_lowpass(cutoff, fs, order=order)
+    signal_filtered = lfilter(b, a, array)
+    return signal_filtered
