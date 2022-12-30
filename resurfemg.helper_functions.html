@@ -457,6 +457,29 @@ algorithm first, apply, then run the find peak algorithm.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.find_peaks_in_ecg_signal">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">find_peaks_in_ecg_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ecg_signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_border_percent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.find_peaks_in_ecg_signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function assumes you have isolated an ecg-like signal with
+QRS peaks “higher” (or lower) than ST waves.
+In this case it can be applied to return an array of
+ecg peak locations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ecg_signal</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – frequency array sampled at in Hertz</p></li>
+<li><p><strong>low_border_percent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – percentage max below which no peaks expected</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>set_ecg_peaks a set of peak location</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.full_rolling_rms">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">full_rolling_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.full_rolling_rms" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function computes a root mean squared envelope over an
@@ -1002,6 +1025,7 @@ on a cut-off value.</p>
 <li><a class="reference internal" href="#resurfemg.helper_functions.emg_highpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_highpass_butter()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.entropical"><code class="docutils literal notranslate"><span class="pre">entropical()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.find_peak_in_breath"><code class="docutils literal notranslate"><span class="pre">find_peak_in_breath()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.find_peaks_in_ecg_signal"><code class="docutils literal notranslate"><span class="pre">find_peaks_in_ecg_signal()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.full_rolling_rms"><code class="docutils literal notranslate"><span class="pre">full_rolling_rms()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.gating"><code class="docutils literal notranslate"><span class="pre">gating()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.helper_lowpass"><code class="docutils literal notranslate"><span class="pre">helper_lowpass()</span></code></a></li>
