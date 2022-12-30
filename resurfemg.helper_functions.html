@@ -216,6 +216,28 @@ values but returns only the array.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.butter_lowpass_filter">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">butter_lowpass_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.butter_lowpass_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a lowpass filter of butterworth design.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – 1d signal array usually of emg</p></li>
+<li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – frequency above which to filter out</p></li>
+<li><p><strong>fs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – frequency array sampled at in Hertz</p></li>
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – order of the filter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>signal_filtered</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.compute_ICA_two_comp">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">compute_ICA_two_comp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_samples</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.compute_ICA_two_comp" title="Permalink to this definition">¶</a></dt>
 <dd><p>A function that performs an independant component analysis
@@ -483,6 +505,12 @@ The filling method for the gate is encoded as follows:
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.helper_lowpass">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">helper_lowpass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.helper_lowpass" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a helper function inside the butter_lowpass_filter function.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -963,6 +991,7 @@ on a cut-off value.</p>
 <li><a class="reference internal" href="#resurfemg.helper_functions.bad_end_cutter"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.bad_end_cutter_better"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter_better()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.bad_end_cutter_for_samples"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter_for_samples()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.butter_lowpass_filter"><code class="docutils literal notranslate"><span class="pre">butter_lowpass_filter()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.compute_ICA_two_comp"><code class="docutils literal notranslate"><span class="pre">compute_ICA_two_comp()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.compute_ICA_two_comp_multi"><code class="docutils literal notranslate"><span class="pre">compute_ICA_two_comp_multi()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.compute_power_loss"><code class="docutils literal notranslate"><span class="pre">compute_power_loss()</span></code></a></li>
@@ -975,6 +1004,7 @@ on a cut-off value.</p>
 <li><a class="reference internal" href="#resurfemg.helper_functions.find_peak_in_breath"><code class="docutils literal notranslate"><span class="pre">find_peak_in_breath()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.full_rolling_rms"><code class="docutils literal notranslate"><span class="pre">full_rolling_rms()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.gating"><code class="docutils literal notranslate"><span class="pre">gating()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.helper_lowpass"><code class="docutils literal notranslate"><span class="pre">helper_lowpass()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.hi_envelope"><code class="docutils literal notranslate"><span class="pre">hi_envelope()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.intersections"><code class="docutils literal notranslate"><span class="pre">intersections()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.merge"><code class="docutils literal notranslate"><span class="pre">merge()</span></code></a></li>
