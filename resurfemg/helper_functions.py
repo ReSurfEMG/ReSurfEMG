@@ -1349,3 +1349,28 @@ def butter_lowpass_filter(array, cutoff, fs, order=5):
     b, a = helper_lowpass(cutoff, fs, order=order)
     signal_filtered = lfilter(b, a, array)
     return signal_filtered
+
+
+def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
+    """
+    This function assumes you have isolated an ecg-like signal with
+    QRS peaks "higher" (or lower) than ST waves.
+    In this case it can be applied to return an array of
+    ecg peak locations.
+
+    :param ecg_signal: frequency array sampled at in Hertz
+    :type ecg_signal: ~numpy.ndarray
+    :param low_border_percent: percentage of max below which you
+    do not expect ecg peaks
+    :type low_border_percent: int
+
+    :returns: set_ecg_peaks a set of peak location
+    :rtype: ~numpy.ndarray
+    """
+    ecg_signal = abs(ecg_signal)
+    max_peak = ecg_signal.max() - ecg_signal.min()
+    set_ecg_peaks = find_peaks(
+        ecg_signal,
+        prominence=(max_peak*lower_border_percent/100, max_peak)
+    )
+    return set_ecg_peaks

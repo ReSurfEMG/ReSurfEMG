@@ -127,8 +127,6 @@ class Config:
 
     def get_directory(self, directory, value=None):
         if value is None:
-            # import pdb
-            # pdb.set_trace()
             return self._loaded[directory]
         return value
 
