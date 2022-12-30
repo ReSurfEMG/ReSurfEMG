@@ -1361,8 +1361,7 @@ def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
 
     :param ecg_signal: frequency array sampled at in Hertz
     :type ecg_signal: ~numpy.ndarray
-    :param low_border_percent: percentage of max below which you
-    do not expect ecg peaks
+    :param low_border_percent: percentage max below which no peaks expected
     :type low_border_percent: int
 
     :returns: set_ecg_peaks a set of peak location
