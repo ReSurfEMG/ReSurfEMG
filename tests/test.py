@@ -17,7 +17,6 @@ from resurfemg.tmsisdk_lite import Poly5Reader
 from resurfemg.converter_functions import poly5unpad
 from resurfemg.config import hash_it_up_right_all
 # multi_lead_type
-# from resurfemg.multi_lead_type import compute_ICA_two_comp_selective
 from resurfemg.multi_lead_type import compute_ICA_two_comp_selective
 from resurfemg.multi_lead_type import working_pipe_multi
 from resurfemg.multi_lead_type import working_pipeline_pre_ml_multi
@@ -237,7 +236,6 @@ class TestPipelineMethods(unittest.TestCase):
             pipelined_0_1.shape,
             pipelined_0_2.shape,
         )
-
 
 
 class TestCuttingingMethods(unittest.TestCase):

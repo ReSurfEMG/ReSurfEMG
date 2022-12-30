@@ -5,6 +5,7 @@ You will see various notebooks you can use and adapt alongside our package. If y
 > * [You want to configure everything to run on your own data](#configuration)
 > * [You want to properly align your ventilator and EMG signal](#align)
 > * [You want to understand gating](#gating)
+> * [You want to see some basic analysis](#analysis)
 > * [You want to make array-snippets for ML](#snippets)
 > * [You want to see some ML in action](#mlaction)
 
@@ -28,7 +29,7 @@ Now a *comprehensive list* (under development, missing many notebooks as of 17/0
 
 > #### Preprocessing exploration 
 
->> Our explortion of basic preprocessing is shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/basic_preprocessing.ipynb). 
+>> Our explortion of basic preprocessing is shown [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/basic_preprocessing.ipynb).
 
 > #### Gating 
 
@@ -38,6 +39,11 @@ Now a *comprehensive list* (under development, missing many notebooks as of 17/0
 > #### Entropy
 
 >> Our explortion of entropy are multiple. We can use it in various ways to automatically identify inhalation  [using multiple cut-offs](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/widgeted_entropy_updated_june.ipynb) or [a single cutt off](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/widgeted_entropy1.ipynb). Entropy is also used as part of some workflows to determine stegnth of respiratory efforts (listed in a seperate section).
+
+
+> #### Analysis
+
+>> Explortion of very basic analysis for simple parameters in a preprocessed EMG signal is showen [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/basic_emg_analysis.ipynb)
 
 
 > #### Snippets 
