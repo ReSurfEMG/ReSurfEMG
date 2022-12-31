@@ -9,7 +9,7 @@ from tempfile import TemporaryDirectory
 import json
 from unittest import TestCase, main
 
-#resurfemg.tmsisdk_lite
+# tmsisdk_lite
 from resurfemg.tmsisdk_lite import Poly5Reader
 # converter_functions 
 from resurfemg.converter_functions import poly5unpad
@@ -346,10 +346,19 @@ class TestArrayMath(unittest.TestCase):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
         new_emg = scale_arrays(sample_emg_filtered , 3,0)
-        print(new_emg)
         self.assertEqual(
             (new_emg.shape),
-            (sample_emg_filtered.shape) ,
+            (sample_emg_filtered.shape),
+        )
+
+    def test_zero_one_for_jumps_base(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
+        new_emg = zero_one_for_jumps_base(sample_emg_filtered[0] , sample_emg_filtered[0].mean())
+        new_emg = np.array(np.vstack((new_emg, new_emg)))
+        self.assertEqual(
+            (new_emg.shape[1]),
+            (sample_emg_filtered.shape[1]),
         )
 
     def test_count_decision_array(self):

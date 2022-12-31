@@ -395,8 +395,8 @@ def zero_one_for_jumps_base(array, cut_off):
     :param cut_off: The number defining a cut-off line for binarization
     :type cut_off: float
 
-    :returns: Binarized array
-    :rtype: ~numpy.ndarray
+    :returns: Binarized list that can be turned into array
+    :rtype: list
     """
     array_list = []
     for i in array:
