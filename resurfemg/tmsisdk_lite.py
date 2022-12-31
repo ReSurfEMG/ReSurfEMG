@@ -3,7 +3,7 @@ The following module is a modification of a
 few classes from a larger code base
 created by Twente Medical Systems International B.V., Oldenzaal
 The Netherlands. Some docstrings, formatting,
-variables and variable names have been changed.
+variables, variable names and even classes have been changed.
 The Twente Medical Systems International B.V.
 lisencing information is as below:
 

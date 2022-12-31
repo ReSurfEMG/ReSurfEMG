@@ -20,6 +20,10 @@ from .config import make_realistic_syn_emg_cli
 
 
 def common(parser):
+    """
+    This function defines some arguments that can be called from any command
+    line function to be defined.
+    """
     parser.add_argument(
         '-i',
         '--input',
@@ -39,6 +43,9 @@ def common(parser):
 
 
 def make_parser():
+    """
+    This is the setting up parser for our CLI.
+    """
     parser = ArgumentParser('ReSurfEMG CLI')
     parser.add_argument(
         '-c',
@@ -148,6 +155,9 @@ def make_parser():
 
 
 def main(argv):
+    """
+    This runs the parser and subparsers.
+    """
     parser = make_parser()
     parsed = parser.parse_args()
     config = Config(parsed.config)
