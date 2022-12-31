@@ -784,8 +784,8 @@ def smooth_for_baseline(
     :param smooth: The number of samples to work over
     :type smooth: int
 
-    :return: Array
-    :rtype: ~numpy.ndarray
+    :return: tuple of arrays
+    :rtype: tuple
     """
     array = single_filtered_array[start:end]
     dists = np.zeros(len(array))
@@ -821,8 +821,8 @@ def smooth_for_baseline_with_overlay(
     :param smooth: The number of samples to work over
     :type smooth: int
 
-    :return: Array
-    :rtype: ~numpy.ndarray
+    :return: tuple of arrays
+    :rtype: tuple
     """
     array = my_own_array[start:end]
     overlay = np.zeros(len(array)).astype('int8')

@@ -28,7 +28,6 @@ from resurfemg.helper_functions import count_decision_array
 from resurfemg.helper_functions import emg_bandpass_butter
 from resurfemg.helper_functions import emg_bandpass_butter_sample
 from resurfemg.helper_functions import notch_filter
-from resurfemg.helper_functions import show_my_power_spectrum
 from resurfemg.helper_functions import naive_rolling_rms
 from resurfemg.helper_functions import vect_naive_rolling_rms
 from resurfemg.helper_functions import pick_more_peaks_array
@@ -151,6 +150,24 @@ class TestFilteringMethods(unittest.TestCase):
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,
         )
+
+    def test_naive_rolling_rms(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = naive_rolling_rms(sample_read.samples[0], 10)
+        self.assertNotEqual(
+            (len(sample_emg_filtered)),
+            len(sample_read.samples[0]) ,
+        )
+    
+    def test_vect_naive_rolling_rms(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = vect_naive_rolling_rms(sample_read.samples[0], 10)
+        self.assertNotEqual(
+            (len(sample_emg_filtered)),
+            len(sample_read.samples[0]) ,
+        )
+
+
 
 class TestPickingMethods(unittest.TestCase):
 
