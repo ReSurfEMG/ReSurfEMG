@@ -7,16 +7,9 @@ from various hardware/software combinations, and convert them down to
 an array that can be further processed with helper_functions or other modules.
 """
 
-# import sys
-# import glob
-import os
 
 import pandas as pd
 import numpy as np
-
-# import hashlib
-# import h5py
-# import re
 import scipy.io as sio
 from resurfemg.tmsisdk_lite import Poly5Reader
 

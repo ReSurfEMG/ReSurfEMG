@@ -3,8 +3,6 @@
 
 import unittest
 import os
-import glob
-import sys
 import numpy as np
 import scipy
 from tempfile import TemporaryDirectory
@@ -146,6 +144,13 @@ class TestFilteringMethods(unittest.TestCase):
             len(sample_read.samples[0]) ,
         )
 
+    def test_notch_filter(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = notch_filter(sample_read.samples, 2048, 80,2)
+        self.assertEqual(
+            (len(sample_emg_filtered[0])),
+            len(sample_read.samples[0]) ,
+        )
 
 class TestPickingMethods(unittest.TestCase):
 
