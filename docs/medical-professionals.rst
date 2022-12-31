@@ -3,9 +3,9 @@ Medical Professional Documentation
 ==================================
 
 This is the present documentation home **for medical
-professionals** who do not spend most of their time coding.  In the
-future you will be able to link to our explanatory videos...
-which will be linked here but are under development.
+professionals** who do not spend most of their time coding.  At 
+the end of this documentation is a link to our learning repository
+which has some explanatory videos.
 
 Introduction
 ============
@@ -21,7 +21,7 @@ After you have created/installed the dashboard once, you will be able to run it 
 executable programs you are used to. If you want to get a new release you will need to repeat the process. 
 
 If you have no idea what a terminal even is, grab a scientist or programmer, and
-ask for 10 minutes of thier time.
+ask for 10 minutes of their time.
 
 If you want to do more than collect data with preset filtering
 pipelines, and actually do computational research with modern tools,
@@ -29,5 +29,6 @@ please visit our notebooks. You can copy one, alter it, and even send
 back a merge request on it if you feel the whole community
 of researchers will benefit.
 
+Our [learning repository](https://github.com/ReSurfEMG/learning) has some videos on our project.
 If you would like to see more specific questions answered in this 
 documentation, please write us at  e.mos-oppersma@utwente.nl

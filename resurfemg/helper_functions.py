@@ -1357,7 +1357,9 @@ def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
     This function assumes you have isolated an ecg-like signal with
     QRS peaks "higher" (or lower) than ST waves.
     In this case it can be applied to return an array of
-    ecg peak locations.
+    ecg peak locations. NB: This function assumes that the ECG
+    signal has already been through a bandpass or low-pass filter
+    or has little baseline drift.
 
     :param ecg_signal: frequency array sampled at in Hertz
     :type ecg_signal: ~numpy.ndarray
