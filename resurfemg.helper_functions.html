@@ -462,7 +462,9 @@ algorithm first, apply, then run the find peak algorithm.</p>
 <dd><p>This function assumes you have isolated an ecg-like signal with
 QRS peaks “higher” (or lower) than ST waves.
 In this case it can be applied to return an array of
-ecg peak locations.</p>
+ecg peak locations. NB: This function assumes that the ECG
+signal has already been through a bandpass or low-pass filter
+or has little baseline drift.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
