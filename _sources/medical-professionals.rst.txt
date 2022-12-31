@@ -29,6 +29,6 @@ please visit our notebooks. You can copy one, alter it, and even send
 back a merge request on it if you feel the whole community
 of researchers will benefit.
 
-Our [learning repository](https://github.com/ReSurfEMG/learning) has some videos on our project.
+Our learning repository (https://github.com/ReSurfEMG/learning) has some videos on our project.
 If you would like to see more specific questions answered in this 
 documentation, please write us at  e.mos-oppersma@utwente.nl
