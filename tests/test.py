@@ -46,6 +46,7 @@ from resurfemg.helper_functions import area_under_curve
 from resurfemg.helper_functions import find_peak_in_breath
 from resurfemg.helper_functions import distance_matrix
 from resurfemg.helper_functions import butter_lowpass_filter
+from resurfemg.helper_functions import find_peaks_in_ecg_signal
 # config
 from resurfemg.config import Config
 from resurfemg.config import make_realistic_syn_emg
@@ -359,6 +360,14 @@ class TestArrayMath(unittest.TestCase):
         self.assertEqual(
             (new_emg.shape[1]),
             (sample_emg_filtered.shape[1]),
+        )
+
+    def test_find_peaks_in_ecg_signal(self):
+        samp_array = np.array([0,0,0,0,10,0,0,0,10,0,0,0,4,0,0,])
+        peaks = find_peaks_in_ecg_signal(samp_array, lower_border_percent=50)
+        self.assertEqual(
+            len(peaks),
+            2,
         )
 
     def test_count_decision_array(self):
