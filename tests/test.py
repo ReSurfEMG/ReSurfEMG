@@ -50,6 +50,8 @@ from resurfemg.helper_functions import find_peaks_in_ecg_signal
 # config
 from resurfemg.config import Config
 from resurfemg.config import make_realistic_syn_emg
+# ml
+from resurfemg.ml import save_ml_output
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -338,6 +340,17 @@ class TestGating(unittest.TestCase):
             (len(self.sample_emg_filtered[0, :10*2048])),
             len(ecg_gated_3) ,
         )
+
+
+class TestCommandLineAndML(unittest.TestCase):
+    
+    
+    def test_save_ml_output(self):
+        sample_read= Poly5Reader(sample_emg)
+        with TemporaryDirectory() as td:
+            samples_named = np.save('outy',sample_read.samples, allow_pickle=True)
+            saved_emg = save_ml_output(samples_named, td, force=True)
+        self.assertTrue(os.path.isfile(saved_emg))
 
 
 class TestArrayMath(unittest.TestCase):
