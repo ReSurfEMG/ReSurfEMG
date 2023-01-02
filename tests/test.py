@@ -342,15 +342,18 @@ class TestGating(unittest.TestCase):
         )
 
 
-class TestCommandLineAndML(unittest.TestCase):
-    
-    
+class TestMl(unittest.TestCase):
+
+
     def test_save_ml_output(self):
         sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
         with TemporaryDirectory() as td:
-            samples_named = np.save('outy',sample_read.samples, allow_pickle=True)
-            saved_emg = save_ml_output(samples_named, td, force=True)
-        self.assertTrue(os.path.isfile(saved_emg))
+            our_path = os.path.join(td,'outy.npy')
+            emg_saved = save_ml_output(sample_emg_filtered, our_path , force=True)
+            loaded = np.load(our_path)
+
+        self.assertEqual(loaded.max(),sample_emg_filtered.max())
 
 
 class TestArrayMath(unittest.TestCase):
