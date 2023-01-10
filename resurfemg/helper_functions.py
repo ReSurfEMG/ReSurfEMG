@@ -1033,8 +1033,9 @@ def gating(
     elif method == 2:
         # Method 2: Fill with window length mean over prior section
         for i, peak in enumerate(gate_peaks):
-            pre_ave_emg = np.mean(
-                src_signal[int(peak-1.5*gate_width): int(peak-gate_width/2-1)])
+            pre_ave_emg = np.nanmean(
+                src_signal[int(peak-1.5*gate_width): int(peak-gate_width/2-1)]
+                )
 
             k_start = max([0, int(peak-gate_width/2)])
             k_end = min([int(peak+gate_width/2), src_signal_gated.shape[0]])
