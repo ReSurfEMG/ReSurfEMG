@@ -57,7 +57,7 @@ jobs:
           conda-channels: conda-forge
           python-version: 3.8
       - run: python3 -m venv .venv
-      - run: .venv/bin/python -m pip install wheel
+      - run: .venv/bin/python -m pip install wheel sphinx
       - run: .venv/bin/python setup.py install
       - run: .venv/bin/python setup.py apidoc
       - run: .venv/bin/python setup.py build_sphinx -W
