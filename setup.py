@@ -593,7 +593,7 @@ if __name__ == '__main__':
                 'config_dir': ('setup.py', './docs'),
             },
         },
-        setup_requires=['sphinx', 'wheel'],
+        setup_requires=['wheel'],
         extras_require={
             'dev': ['pytest', 'codestyle', 'isort', 'wheel'],
         },
