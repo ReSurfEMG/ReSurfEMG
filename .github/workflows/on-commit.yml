@@ -44,6 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       github.ref == 'refs/heads/main' ||
+      github.ref == 'refs/heads/drcandacemakedamoore/remove_sphinx' ||
       github.ref == 'refs/heads/wvxvw/documentation-fixes' ||
       github.ref == 'refs/heads/wvxvw/readthedocs-integration'
     steps:
