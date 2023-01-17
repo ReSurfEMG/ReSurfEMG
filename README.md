@@ -15,7 +15,7 @@
 of respiratory electromyography (EMG).  On the same site as 
 the repository for this library we keep [related resources](https://github.com/ReSurfEMG?tab=repositories). 
 
-Most important to know before using ReSurfEMG is that we have a [main code library](https://github.com/ReSurfEMG/ReSurfEMG) where the user can access the code to change various filter and analysis settings directly and/or in our [researcher interface notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/researcher_interface), and a [dashboard interface](https://github.com/ReSurfEMG/ReSurfEMG-dashboard) which contains default settings for preprocessing and analysis which can be changed through a graphical (no code) interface. 
+Most important to know before using ReSurfEMG is that we have a [main code library](https://github.com/ReSurfEMG/ReSurfEMG) where the user can access the code to change various filter and analysis settings directly and/or in our [researcher interface notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/researcher_interface), and a [dashboard interface](https://github.com/ReSurfEMG/ReSurfEMG-dashboard) which contains default settings for preprocessing and analysis which can be changed through a graphical (no code) interface. We have some functionality available through a [command line interface](#command-line-interface) as well.
 
 The library was initially
 built for surface EMG, however many functions will also work for
@@ -149,7 +149,8 @@ pip install wheel sphinx
 ./setup.py build_sphinx
 ```
 
-If you are working in a VScode command line interface (terminal cmd):
+If you are working in a VScode command line interface (terminal cmd)
+should be more or less something like the following:
 
 This is given with `cmd.exe` in mind:
 
