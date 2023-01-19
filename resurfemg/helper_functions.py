@@ -1330,7 +1330,7 @@ def helper_lowpass(cutoff, fs, order=5):
     return butter(order, cutoff, fs=fs, btype='low', analog=False)
 
 
-def butter_lowpass_filter(array, cutoff, fs, order=5):
+def emg_lowpass_butter(array, cutoff, fs, order=5):
     """
     This is a lowpass filter of butterworth design.
 
