@@ -45,7 +45,7 @@ from resurfemg.helper_functions import scale_arrays
 from resurfemg.helper_functions import area_under_curve
 from resurfemg.helper_functions import find_peak_in_breath
 from resurfemg.helper_functions import distance_matrix
-from resurfemg.helper_functions import butter_lowpass_filter
+from resurfemg.helper_functions import emg_lowpass_butter
 from resurfemg.helper_functions import find_peaks_in_ecg_signal
 # config
 from resurfemg.config import Config
@@ -138,9 +138,9 @@ class TestFilteringMethods(unittest.TestCase):
             len(sample_read.samples[0]) ,
         )
     
-    def test_butter_lowpass_filter(self):
+    def test_emg_lowpass_butter(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = butter_lowpass_filter(sample_read.samples, 5, 2048)
+        sample_emg_filtered = emg_lowpass_butter(sample_read.samples, 5, 2048)
         self.assertEqual(
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,
