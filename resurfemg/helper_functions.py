@@ -1365,8 +1365,8 @@ def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
     :param low_border_percent: percentage max below which no peaks expected
     :type low_border_percent: int
 
-    :returns: set_ecg_peaks a set of peak location
-    :rtype: ~numpy.ndarray
+    :returns: a tuple with first element the set of peak locations, next element a dictionary of information on them
+    :rtype: tuple
 
     """
     ecg_signal = abs(ecg_signal)
