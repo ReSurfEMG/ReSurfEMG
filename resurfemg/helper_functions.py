@@ -1365,7 +1365,7 @@ def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
     :param low_border_percent: percentage max below which no peaks expected
     :type low_border_percent: int
 
-    :returns: a tuple with first element the set of peak locations, next element a dictionary of information on them
+    :returns: a tuple of first element peak locations, next an info dictionary
     :rtype: tuple
 
     """
