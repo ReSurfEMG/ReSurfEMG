@@ -36,12 +36,13 @@ bibliography: paper.bib
 # Summary
 
 
-To be written
+ReSurfEMG is an open source collaborative python library for analysis of respiratory electromyography (EMG). At present there is a lack of internationally accepted respiratory surface EMG processing conventions. [needs a reference!] As the issues involved concern both clinicians and technical specialists including software engineers, the data must be considered in by groups of profoundly different computation skill levels. Therefore our package provides several interfaces that researchers can use to investiage different processing and analytic pipelines. The package not only allows for pre-processing and analysis with either command line or Jupyter notebooks, it supports a graphic user interface package which allows code free interaction with the data. [reference dashboard!]. 
+ReSUrfEMG code allows for analysis of various parameters in respiratory durface EMG from simple ones e.g. area under curve to more complex ones such as entropy. These charecteristics can be used in machine learning models, which there is code in the notebooks to demonstrate. The current state of research in the field includes much scientific work without any published code and therefore it currently difficult to compare paramters such as entropy, as it may be calculated with various algorithms differently. This library enables communication towards reproducible research. 
 
 
 
 # Statement of need
-When the diaphragm and/or other respiratory muscles fail, breathing needs mechanical support, and then it is essential to monitor respiratory muscle activity, both to prevent further failure and optimize treatment. Muscle activity can be measured invasively or measured by electrodes attached to the skin via an electromyogram (EMG). Yet, preprocessing analysis of these inherently complex data sets of EMG, remains very limited due to various factors including proprietary software. This package aims to create open proprocessing and analysis pipelines to further the use of this signal in clinical research that can be compared across institutions.  
+When the diaphragm and/or other respiratory muscles fail, breathing needs mechanical support, and then it is essential to monitor respiratory muscle activity, both to prevent further failure and optimize treatment. Muscle activity can be measured invasively or measured by electrodes attached to the skin via an electromyogram (EMG). Yet, preprocessing analysis of these inherently complex data sets of EMG, remains very limited due to various factors including proprietary software. This package aims to create open preprocessing and analysis pipelines to further the use of this signal in clinical research that can be compared across institutions.  
 
 # Acknowledgements
 
