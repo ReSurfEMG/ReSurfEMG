@@ -42,7 +42,7 @@ ReSUrfEMG code allows for analysis of various parameters in respiratory durface 
 
 
 # Statement of need
-When the diaphragm and/or other respiratory muscles fail, breathing needs mechanical support, and then it is essential to monitor respiratory muscle activity, both to prevent further failure and optimize treatment. Muscle activity can be measured invasively or measured by electrodes attached to the skin via an electromyogram (EMG). Yet, preprocessing analysis of these inherently complex data sets of EMG, remains very limited due to various factors including proprietary software. This package aims to create open preprocessing and analysis pipelines to further the use of this signal in clinical research that can be compared across institutions.  
+When the diaphragm and/or other respiratory muscles fail, breathing needs mechanical support, and then it is essential to monitor respiratory muscle activity, both to prevent further failure and optimize treatment. Muscle activity can be measured invasively or measured by electrodes attached to the skin via an electromyogram (EMG). Yet, preprocessing and analysis of these inherently complex data sets of EMGs, remains very limited due to various factors including proprietary software. This package aims to create open preprocessing and analysis pipelines to further the use of this signal in clinical research that can be compared across institutions and across various acquisition hardware set-ups.  
 
 # Acknowledgements
 
