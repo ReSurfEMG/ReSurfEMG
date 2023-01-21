@@ -29,7 +29,7 @@ affiliations:
  - name: University of Twente, Netherlands
    index: 3
 
-date: 22 December 2022
+date: 22 January 2023
 bibliography: paper.bib
 ---
 
@@ -41,7 +41,7 @@ To be written
 
 
 # Statement of need
-To be written
+When the diaphragm and/or other respiratory muscles fail, breathing needs mechanical support, and then it is essential to monitor respiratory muscle activity, both to prevent further failure and optimize treatment. Muscle activity can be measured invasively or measured by electrodes attached to the skin via an electromyogram (EMG). Yet, preprocessing analysis of these inherently complex data sets of EMG, remains very limited due to various factors including proprietary software. This package aims to create open proprocessing and analysis pipelines to further the use of this signal in clinical research that can be compared across institutions.  
 
 # Acknowledgements
 
