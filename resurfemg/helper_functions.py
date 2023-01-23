@@ -984,7 +984,7 @@ def gating(
     The filling method for the gate is encoded as follows:
     0: Filled with zeros
     1: Interpolation samples before and after
-    2: Fill with average of prior segment if exists, otherwise fill with zeross
+    2: Fill with average of prior segment if exists, otherwise fill with zeros
     3: Fill with running average of RMS (default)
 
     :param src_signal: Signal to process
@@ -1366,7 +1366,7 @@ def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
     :param low_border_percent: percentage max below which no peaks expected
     :type low_border_percent: int
 
-    :returns: a tuple with first element the set of peak locations, next element a dictionary of information on them
+    :returns: tuple first element peak locations, next a dictionary of info
     :rtype: tuple
 
     """
