@@ -984,7 +984,7 @@ def gating(
     The filling method for the gate is encoded as follows:
     0: Filled with zeros
     1: Interpolation samples before and after
-    2: Filled with average of prior segment. If no prior segment, fill with zeros
+    2: Fill with average of prior segment if exists, otherwise fill with zeross
     3: Fill with running average of RMS (default)
 
     :param src_signal: Signal to process
