@@ -329,6 +329,13 @@ class TestGating(unittest.TestCase):
             (len(self.sample_emg_filtered[0])),
             len(ecg_gated_2) ,
         )
+
+    def test_gating_method_2_no_prior_segment(self):
+        ecg_gated_2 = gating(self.sample_emg_filtered[0, :], [100], gate_width=205, method=2)
+
+        self.assertFalse(
+            np.isnan(np.sum(ecg_gated_2))
+        )
     
     def test_gating_method_3(self):
         ecg_peaks, _  = scipy.signal.find_peaks(self.sample_emg_filtered[0, :10*2048-1])
