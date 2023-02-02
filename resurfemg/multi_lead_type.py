@@ -428,10 +428,11 @@ def compute_ICA_n_comp(
     answer = S.T
     return answer
 
+
 def pick_highest_correlation_array_multi(components, ecg_lead):
     """Here we have a function that takes a tuple with n parts
-    of ICA and the array defined by the user as the ECG recording, and finds the
-    ICA component with the highest similarity to the ECG.
+    of ICA and the array defined by the user as the ECG recording,
+    and finds the ICA component with the highest similarity to the ECG.
     Data should not have been finally filtered to envelope level
 
     :param components: n-dimensional array representing different components.
@@ -457,6 +458,7 @@ def pick_highest_correlation_array_multi(components, ecg_lead):
     hi_index = np.argmax(corr_matrix[0][1:])
     
     return hi_index
+
 
 def compute_ICA_n_comp_selective_zeroing(
     emg_samples,
@@ -504,7 +506,7 @@ def compute_ICA_n_comp_selective_zeroing(
     S = ica.fit_transform(X)
     S_copy = copy(S)
 
-    hi_index=pick_highest_correlation_array_multi(
+    hi_index = pick_highest_correlation_array_multi(
         S_copy.transpose(),
         emg_samples[ECGlead_to_remove])
 
