@@ -28,6 +28,7 @@ from resurfemg.helper_functions import emg_bandpass_butter_sample
 from resurfemg.helper_functions import pick_lowest_correlation_array
 from resurfemg.helper_functions import pick_more_peaks_array
 from resurfemg.helper_functions import emg_highpass_butter
+from resurfemg.helper_functions import pick_highest_correlation_array
 from resurfemg.tmsisdk_lite import Poly5Reader
 
 
@@ -427,10 +428,38 @@ def compute_ICA_n_comp(
     answer = S.T
     return answer
 
+def pick_highest_correlation_array_multi(components_tuple, ecg_lead):
+    """Here we have a function that takes a tuple with n parts
+    of ICA and the array defined by the user as the ECG recording, and finds the
+    ICA component with the highest similarity to the ECG.
+    Data should not have been finally filtered to envelope level
+
+    :param components_tuple: tuple of n arrays representing different signals
+    :type components_tuple: Tuple[~numpy.ndarray, ~numpy.ndarray]
+
+    :param ecg_lead: array containing the ECG recording
+    :type ecg_lead: numpy.ndarray
+
+    :returns: Index of the array with the highest correlation coefficient
+     to the ECG lead (should usually be the  ECG)
+    :rtype: int
+    """
+    corr_tuple= ecg_lead
+    corr_tuple = [np.row_stack((corr_tuple, item)) for item in components_tuple]
+    corr_matrix = abs(np.corrcoef(corr_tuple))
+
+    # get the component with the highest correlation to ECG
+    # the matriz is symmetric, so we can check just the first row
+    # the first coefficient is the autocorrelation of the ECG lead,
+    # so we can check the other rows
+
+    hi_index = np.argmax(corr_matrix[0][1:])
+    
+    return hi_index
 
 def compute_ICA_n_comp_selective_zeroing(
     emg_samples,
-    lead_to_remove,
+    ECGlead_to_remove,
     use_all_leads=True,
     desired_leads=(0, 2),
 ):
@@ -442,8 +471,8 @@ def compute_ICA_n_comp_selective_zeroing(
 
     :param emg_samples: Original signal array with three or more layers
     :type emg_samples: ~numpy.ndarray
-    :param lead_to_remove: Lead number counting from zero to get rid of
-    :type lead_to_remove: int
+    :param ECGlead_to_remove: Lead number counting from zero to get rid of
+    :type ECGlead_to_remove: int
     :param use_all_leads: True if all leads used, otherwise specify leads
     :type use_all_leads: bool
     :param desired_leads: tuple of leads to use starting from 0
@@ -472,7 +501,8 @@ def compute_ICA_n_comp_selective_zeroing(
     ica = FastICA(n_components, random_state=1)
     S = ica.fit_transform(X)
     S_copy = copy(S)
-    S_copy.T[lead_to_remove] = np.zeros(len(S_copy.T[lead_to_remove]))
+    hi_index=pick_highest_correlation_array_multi(S_copy, ECGlead_to_remove)
+    S_copy.T[hi_index] = np.zeros(len(S_copy.T[hi_index]))
     reconstructed = ica.inverse_transform(S_copy)
     reconstructed = reconstructed.T
     return reconstructed
