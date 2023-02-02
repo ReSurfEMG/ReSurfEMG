@@ -428,14 +428,15 @@ def compute_ICA_n_comp(
     answer = S.T
     return answer
 
-def pick_highest_correlation_array_multi(components_tuple, ecg_lead):
+def pick_highest_correlation_array_multi(components, ecg_lead):
     """Here we have a function that takes a tuple with n parts
     of ICA and the array defined by the user as the ECG recording, and finds the
     ICA component with the highest similarity to the ECG.
     Data should not have been finally filtered to envelope level
 
-    :param components_tuple: tuple of n arrays representing different signals
-    :type components_tuple: Tuple[~numpy.ndarray, ~numpy.ndarray]
+    :param components: n-dimensional array representing different components.
+    Each row is a component.
+    :type components: ~numpy.ndarray
 
     :param ecg_lead: array containing the ECG recording
     :type ecg_lead: numpy.ndarray
@@ -444,8 +445,8 @@ def pick_highest_correlation_array_multi(components_tuple, ecg_lead):
      to the ECG lead (should usually be the  ECG)
     :rtype: int
     """
-    corr_tuple= ecg_lead
-    corr_tuple = [np.row_stack((corr_tuple, item)) for item in components_tuple]
+
+    corr_tuple = np.row_stack((ecg_lead, components))
     corr_matrix = abs(np.corrcoef(corr_tuple))
 
     # get the component with the highest correlation to ECG
@@ -497,12 +498,19 @@ def compute_ICA_n_comp_selective_zeroing(
     # TODO (makeda): change to list comprehension on refactoring
     for i in all_component_numbers:
         list_to_c.append(emg_samples[i])
+
     X = np.column_stack(list_to_c)
     ica = FastICA(n_components, random_state=1)
     S = ica.fit_transform(X)
     S_copy = copy(S)
-    hi_index=pick_highest_correlation_array_multi(S_copy, ECGlead_to_remove)
+
+    hi_index=pick_highest_correlation_array_multi(
+        S_copy.transpose(),
+        emg_samples[ECGlead_to_remove])
+
     S_copy.T[hi_index] = np.zeros(len(S_copy.T[hi_index]))
+
     reconstructed = ica.inverse_transform(S_copy)
     reconstructed = reconstructed.T
+
     return reconstructed
