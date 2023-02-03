@@ -43,6 +43,7 @@ from resurfemg.helper_functions import relative_levenshtein
 from resurfemg.helper_functions import gating
 from resurfemg.helper_functions import scale_arrays
 from resurfemg.helper_functions import area_under_curve
+from resurfemg.helper_functions import simple_area_under_curve
 from resurfemg.helper_functions import find_peak_in_breath
 from resurfemg.helper_functions import distance_matrix
 from resurfemg.helper_functions import emg_lowpass_butter
@@ -399,6 +400,16 @@ class TestArrayMath(unittest.TestCase):
         self.assertEqual(
             counted,
              3,
+        )
+
+    def test_simple_area_under_curve(self):
+        sample_array= np.array(
+            [0,0,0,0,1,1,1,-5,10,10,0,0,0,1,1,1,0,1,1,1,0,0,0]
+        )
+        counted = simple_area_under_curve(sample_array,0,10)
+        self.assertEqual(
+            counted,
+            28,
         )
 
     def test_area_under_curve(self):
