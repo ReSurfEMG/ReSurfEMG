@@ -1407,7 +1407,7 @@ def newer_area_under_curve(
     :returns: area; area under the curve
     :rtype: float
     """
-    if not (0 < end_curve < 100):
+    if not (0 <= end_curve >= 100):
         raise ValueError(
             'end_curve must be between 0 and 100, '
             'but {} given'.format(end_curve),
