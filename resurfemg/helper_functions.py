@@ -1240,74 +1240,6 @@ def simple_area_under_curve(
     return area
 
 
-# def area_under_curve(
-#     array,
-#     start_index,
-#     end_index,
-#     end_curve=0,
-#     smooth_algorithm='none',
-# ):
-#     """
-#     This algorithm should be applied to breaths longer than 60 values
-#     on an index. The mid_savgol assumes a parabolic fit. It is
-#     reccomended to test a smoothing algorithm first, apply,
-#     then run the area_under the curve with none for smooth_algortihm.
-#     If a cutoff of the curve before it hits bottom is desired then a value
-#     other than zero must be in end_curve variable. This variable
-#     should be written from 0 to 100 for the perfentage of the max value
-#     at which to cut off after the peak.
-
-#     :param array: an array e.g. single lead EMG recording
-#     :type array: np.array
-#     :param start_index: which index number the breath starts on
-#     :type start_index: int
-#     :param end_index: which index number the breath ends on
-#     :type end_index: int
-#     :param end_curve: percentage of peak value to stop summing at
-#     :type end_curve: float
-#     :param smooth_algorithm: algorithm for smoothing
-#     :type smooth_algorithm: str
-
-#     :returns: area; area under the curve
-#     :rtype: float
-#     """
-
-#     new_array = array[start_index: (end_index+1)]
-#     max_ind = (new_array.argmax())
-#     if end_curve > 100 or end_curve < 0:
-#         print('You picked an impossible number for end_curve')
-#         area = 'mistake'
-#     else:
-#         end_curve = end_curve/100
-#         if array[start_index] < array[end_index]:
-#             print('You picked an end point above baseline,')
-#             print('caution with end_curve variable!')
-#         if smooth_algorithm == 'none':
-#             absolute_val_array = np.abs(
-#                 new_array[max_ind:] - new_array.max() * end_curve)
-#             smallest_difference_index = absolute_val_array.argmin()
-#             smallest_difference_index = smallest_difference_index + max_ind
-#             area = np.sum(new_array[:smallest_difference_index])
-#         if smooth_algorithm == 'mid_savgol':
-#             new_array = savgol_filter(
-#                 new_array,
-#                 int(len(new_array)),
-#                 2,
-#                 deriv=0,
-#                 delta=1.0,
-#                 axis=- 1,
-#                 mode='interp',
-#                 cval=0.0,
-#             )
-#             absolute_val_array = np.abs(
-#                 new_array[max_ind:] - new_array.max() * end_curve)
-#             smallest_difference_index = absolute_val_array.argmin()
-#             smallest_difference_index = smallest_difference_index + max_ind
-#             area = np.sum(new_array[:smallest_difference_index])
-
-#     return area
-
-
 def area_under_curve(
     array,
     start_index,
@@ -1407,7 +1339,7 @@ def newer_area_under_curve(
     :returns: area; area under the curve
     :rtype: float
     """
-    if not (0 <= end_curve >= 100):
+    if not (0 <= end_curve <= 100):
         raise ValueError(
             'end_curve must be between 0 and 100, '
             'but {} given'.format(end_curve),
@@ -1443,7 +1375,7 @@ def newer_area_under_curve(
     tail = new_array[max_ind:] < new_array.max() * end_curve
     nonzero = np.nonzero(tail)[0]
     end = nonzero[0] if len(nonzero) else new_array.shape[0] - 1
-    return np.sum(new_array[:end])
+    return np.sum(new_array[:(max_ind + end)])
 
 
 def find_peak_in_breath(
