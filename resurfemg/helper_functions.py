@@ -25,6 +25,7 @@ import textdistance
 import pandas as pd
 import logging
 
+
 class Range(namedtuple('RangeBase', 'start,end')):
     """Utility class for working with ranges (intervals).
 
