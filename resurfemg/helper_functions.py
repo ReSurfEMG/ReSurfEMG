@@ -24,7 +24,10 @@ from sklearn.decomposition import FastICA
 import textdistance
 import pandas as pd
 import logging
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9dd3505 (add logging)
 
 class Range(namedtuple('RangeBase', 'start,end')):
     """Utility class for working with ranges (intervals).
