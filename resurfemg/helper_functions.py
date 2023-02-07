@@ -1312,11 +1312,10 @@ def area_under_curve(
     array,
     start_index,
     end_index,
-    end_curve=99,
+    end_curve=70,
     smooth_algorithm='none',
 ):
     """
-    REFACTOR for experimental
     This algorithm should be applied to breaths longer than 60 values
     on an index. The mid_savgol assumes a parabolic fit. It is
     reccomended to test a smoothing algorithm first, apply,
@@ -1352,6 +1351,7 @@ def area_under_curve(
     if array[start_index] < array[end_index]:
         logging.warning(
             'You picked an end point above baseline, '
+            'as defined by the last value on the whole curve, '
             'caution with end_curve variable!',
         )
 
