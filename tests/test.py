@@ -121,7 +121,7 @@ class TestComponentPickingMethods(unittest.TestCase):
             sum(sample_emg_filtered[2]) ,
         )
 
-    def test_pick_highest_correlation_array(self):
+    def test_pick_highest_correlation_array_multi(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
         sample_emg_filtered[1] = sample_emg_filtered[0]
