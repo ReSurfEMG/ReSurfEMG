@@ -15,11 +15,12 @@ from resurfemg.tmsisdk_lite import Poly5Reader
 from resurfemg.converter_functions import poly5unpad
 from resurfemg.config import hash_it_up_right_all
 # multi_lead_type
+from resurfemg.multi_lead_type import compute_ICA_n_comp
+from resurfemg.multi_lead_type import compute_ICA_n_comp_selective_zeroing
 from resurfemg.multi_lead_type import compute_ICA_two_comp_selective
+from resurfemg.multi_lead_type import pick_highest_correlation_array_multi
 from resurfemg.multi_lead_type import working_pipe_multi
 from resurfemg.multi_lead_type import working_pipeline_pre_ml_multi
-from resurfemg.multi_lead_type import compute_ICA_n_comp_selective_zeroing
-from resurfemg.multi_lead_type import compute_ICA_n_comp
 # helper_functions
 from resurfemg.helper_functions import bad_end_cutter
 from resurfemg.helper_functions import bad_end_cutter_better
@@ -32,7 +33,6 @@ from resurfemg.helper_functions import naive_rolling_rms
 from resurfemg.helper_functions import vect_naive_rolling_rms
 from resurfemg.helper_functions import pick_more_peaks_array
 from resurfemg.helper_functions import pick_lowest_correlation_array
-from resurfemg.helper_functions import pick_highest_correlation_array_multi
 from resurfemg.helper_functions import zero_one_for_jumps_base
 from resurfemg.helper_functions import compute_ICA_two_comp
 from resurfemg.helper_functions import compute_ICA_two_comp_multi

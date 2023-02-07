@@ -456,7 +456,6 @@ def pick_highest_correlation_array_multi(components, ecg_lead):
     # so we can check the other rows
 
     hi_index = np.argmax(corr_matrix[0][1:])
-    
     return hi_index
 
 
