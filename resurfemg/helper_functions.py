@@ -1215,31 +1215,6 @@ def simple_area_under_curve(
     return area
 
 
-def simple_area_under_curve(
-    array,
-    start_index,
-    end_index,
-):
-    """
-    This function is just a wrapper over np.sum written because it isn't
-    apparent to some clinically oriented people that an area under the curve
-    will be a sum of all the numbers
-
-    :param array: an array e.g. single lead EMG recording
-    :type array: np.array
-    :param start_index: which index number the breath starts on
-    :type start_index: int
-    :param end_index: which index number the breath ends on
-    :type end_index: int
-
-    :returns: area; area under the curve
-    :rtype: float
-    """
-    breath = array[start_index:end_index]
-    area = np.sum(abs(breath))
-    return area
-
-
 def area_under_curve(
     array,
     start_index,
