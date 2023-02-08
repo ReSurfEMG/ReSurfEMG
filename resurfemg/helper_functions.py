@@ -986,7 +986,7 @@ def gating(
     0: Filled with zeros
     1: Interpolation samples before and after
     2: Fill with average of prior segment if exists
-        otherwise fill with post segment
+    otherwise fill with post segment
     3: Fill with running average of RMS (default)
 
     :param src_signal: Signal to process
@@ -1307,6 +1307,7 @@ def area_under_curve(
     nonzero = np.nonzero(tail)[0]
     end = nonzero[0] if len(nonzero) else new_array.shape[0] - 1
     return np.sum(new_array[:(max_ind + end)])
+
 
 def find_peak_in_breath(
     array,
