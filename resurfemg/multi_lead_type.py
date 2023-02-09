@@ -436,9 +436,8 @@ def pick_highest_correlation_array_multi(components, ecg_lead):
     Data should not have been finally filtered to envelope level
 
     :param components: n-dimensional array representing different components.
-    Each row is a component.
+        Each row is a component.
     :type components: ~numpy.ndarray
-
     :param ecg_lead: array containing the ECG recording
     :type ecg_lead: numpy.ndarray
 
