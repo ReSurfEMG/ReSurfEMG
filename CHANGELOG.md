@@ -66,3 +66,13 @@
 	- New independent component analysis (ICA) functions which allow processing of any number of leads
 	- More functions for signal analysis including clinically relevant variations of area under curve and a function (distance_matrix) that produces various mathematical distances which can be used to compare EMG and other signals e.g. ventilator or EMG
 	
+
+## Release 0.0.7
+
+### Added 
+
+* Seventh version of this Python project, containing (added to this version):
+
+	- Function for looking at time to peak in a curve absolute and relative i.e. times_under_curve()
+	- Upgrade of CI to include a newer setup-conda action (v1.1.1)
+	- Function to calculate slope until peak in a breath
