@@ -1215,6 +1215,42 @@ def simple_area_under_curve(
     return area
 
 
+def times_under_curve(
+    array,
+    start_index,
+    end_index,
+):
+    """
+    This function is meant to calculate the legnth of time to peak in
+    an absolute and relative sense
+
+    :param array: an array e.g. single lead EMG recording
+    :type array: np.array
+    :param start_index: which index number the breath starts on
+    :type start_index: int
+    :param end_index: which index number the breath ends on
+    :type end_index: int
+
+    :returns: times; a tuple of absolute and relative times
+    :rtype: tuple
+    """
+    breath_arc = array[start_index:end_index]
+    smoothed_breath = savgol_filter(
+            breath_arc,
+            len(breath_arc),
+            2,
+            deriv=0,
+            delta=1.0,
+            axis=- 1,
+            mode='interp',
+            cval=0.0,
+        )
+    abs_time = smoothed_breath.argmax()
+    percent_time = abs_time / len(breath_arc)
+    times = ((abs_time, percent_time))
+    return times
+
+
 def area_under_curve(
     array,
     start_index,
