@@ -436,9 +436,8 @@ def pick_highest_correlation_array_multi(components, ecg_lead):
     Data should not have been finally filtered to envelope level
 
     :param components: n-dimensional array representing different components.
-    Each row is a component.
+        Each row is a component.
     :type components: ~numpy.ndarray
-
     :param ecg_lead: array containing the ECG recording
     :type ecg_lead: numpy.ndarray
 
@@ -465,6 +464,7 @@ def compute_ICA_n_comp_selective_zeroing(
     use_all_leads=True,
     desired_leads=(0, 2),
 ):
+
     """A function that performs an independant component analysis
     (ICA) meant for EMG data that includes stacked arrays,
     there should be at least two arrays but there can be more.
@@ -483,6 +483,7 @@ def compute_ICA_n_comp_selective_zeroing(
     :returns: Arrays of independent components (ECG-like and EMG)
     :rtype: ~numpy.ndarray
     """
+
     if use_all_leads:
         all_component_numbers = list(range(emg_samples.shape[0]))
         n_components = len(all_component_numbers)
