@@ -461,7 +461,7 @@ def pick_highest_correlation_array_multi(components, ecg_lead):
 
 def compute_ICA_n_comp_selective_zeroing(
     emg_samples,
-    ECGlead_to_remove,
+    ecg_lead_to_remove,
     use_all_leads=True,
     desired_leads=(0, 2),
 ):
@@ -473,8 +473,8 @@ def compute_ICA_n_comp_selective_zeroing(
 
     :param emg_samples: Original signal array with three or more layers
     :type emg_samples: ~numpy.ndarray
-    :param ECGlead_to_remove: Lead number counting from zero to get rid of
-    :type ECGlead_to_remove: int
+    :param ecg_lead_to_remove: Lead number counting from zero to get rid of
+    :type ecg_lead_to_remove: int
     :param use_all_leads: True if all leads used, otherwise specify leads
     :type use_all_leads: bool
     :param desired_leads: tuple of leads to use starting from 0
@@ -507,7 +507,7 @@ def compute_ICA_n_comp_selective_zeroing(
 
     hi_index = pick_highest_correlation_array_multi(
         S_copy.transpose(),
-        emg_samples[ECGlead_to_remove])
+        emg_samples[ecg_lead_to_remove])
 
     S_copy.T[hi_index] = np.zeros(len(S_copy.T[hi_index]))
 
