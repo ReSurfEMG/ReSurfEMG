@@ -75,4 +75,3 @@
 
 	- Function for looking at time to peak in a curve absolute and relative i.e. times_under_curve()
 	- Upgrade of CI to include a newer setup-conda action (v1.1.1)
-	- Function to calculate slope until peak in a breath
