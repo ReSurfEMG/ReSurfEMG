@@ -1215,6 +1215,17 @@ def simple_area_under_curve(
     return area
 
 
+def running_smoother(array):
+    """
+    This is the smoother to use in time calculations
+    """
+    n= len(array) //10
+    new_list = np.convolve(array, np.ones(n), "valid")/n
+    zeros = np.zeros(n-1)
+    smoothed_array= np.hstack((new_list,zeros))
+    return smoothed_array
+
+
 def times_under_curve(
     array,
     start_index,
@@ -1235,16 +1246,7 @@ def times_under_curve(
     :rtype: tuple
     """
     breath_arc = array[start_index:end_index]
-    smoothed_breath = savgol_filter(
-            breath_arc,
-            len(breath_arc),
-            2,
-            deriv=0,
-            delta=1.0,
-            axis=- 1,
-            mode='interp',
-            cval=0.0,
-        )
+    smoothed_breath = running_smoother(breath_arc)
     abs_time = smoothed_breath.argmax()
     percent_time = abs_time / len(breath_arc)
     times = ((abs_time, percent_time))
