@@ -31,4 +31,4 @@ of researchers will benefit.
 
 Our learning repository (https://github.com/ReSurfEMG/learning) has some videos on our project.
 If you would like to see more specific questions answered in this 
-documentation, please write us at  e.mos-oppersma@utwente.nl
+documentation, please write us at resurfemg@gmail.com
