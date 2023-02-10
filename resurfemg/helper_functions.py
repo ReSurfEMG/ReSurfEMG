@@ -1220,7 +1220,7 @@ def running_smoother(array):
     This is the smoother to use in time calculations
     """
     n = len(array) // 10
-    new_list = np.convolve(array, np.ones(n), "valid") / n
+    new_list = np.convolve(abs(array), np.ones(n), "valid") / n
     zeros = np.zeros(n - 1)
     smoothed_array = np.hstack((new_list, zeros))
     return smoothed_array
