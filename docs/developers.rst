@@ -8,7 +8,7 @@ Sending Your Work
 We accept pull requests made through GitHub. As is usual,
 we request that the changes be rebased
 on the branch they are to be integrated into.  We also request that
-you pre-lint and test anything you send
+you pre-lint and test anything you send.
 
 We'll try our best to attribute
 your work to you, however, you need to release your work under
@@ -41,14 +41,14 @@ it and then add development dependencies to what was installed.
 The Traditional Ways
 ^^^^^^^^^^^^^^^^^^^^
 
-Regradless of the downsides of this approach, we try to support more
+Regardless of the downsides of this approach, we try to support more
 common ways to work with Python projects.  It's a common practice to
 "install" a project during development by either using `pip install
 --editable` command, or by using `conda` environment files.
 
 We provide limited support for approaches not based on Anaconda right
 now.  For instance, if you want to work on the project using `pip`,
-you could try it, and contact us:
+you could try it, and contact us: resurfemg@gmail.com
 
 .
 
@@ -64,7 +64,7 @@ The environment files are generated using:
 Rationale
 ^^^^^^^^^
 
-There are several problems with traditional way Python programmers are
+There are several problems with the traditional way Python programmers are
 taught to organize their development environment.  The way a typical
 Python project is developed, it is designed to support a single
 version of Python, rarely multiple Python distributions or operating
