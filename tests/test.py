@@ -43,6 +43,7 @@ from resurfemg.helper_functions import smooth_for_baseline_with_overlay
 from resurfemg.helper_functions import relative_levenshtein
 from resurfemg.helper_functions import gating
 from resurfemg.helper_functions import scale_arrays
+from resurfemg.helper_functions import pseudo_slope
 from resurfemg.helper_functions import area_under_curve
 from resurfemg.helper_functions import simple_area_under_curve
 from resurfemg.helper_functions import times_under_curve
@@ -465,6 +466,17 @@ class TestArrayMath(unittest.TestCase):
             (1,6),
         )
 
+    def test_pseudo_slope(self):
+        test_arr_1 = np.array(
+            [0,9,8,7,10,11,13,15,12,16,13,17,18,6,5,4,3,2,1,0,0,0,0,0]
+        )
+        slope = pseudo_slope(test_arr_1,0,17)
+        self.assertEqual(
+            slope,
+            1.5
+        )
+    
+
     def test_find_peak_in_breath(self):
         sample_array= np.array(
             [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
@@ -475,6 +487,7 @@ class TestArrayMath(unittest.TestCase):
             (9,13)
         )
     
+
 
 class TestConfig(TestCase):
 

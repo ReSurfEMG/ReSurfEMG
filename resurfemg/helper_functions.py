@@ -1253,6 +1253,37 @@ def times_under_curve(
     return times
 
 
+def pseudo_slope(
+    array,
+    start_index,
+    end_index,
+):
+    """
+    This is a function to get the shape/slope of the take-off angle
+    of the resp. surface EMG signal, however we are returning values of
+    mV divided by samples (in abs values), not a true slope
+    and the number will depend on sampling rate
+    and pre-processing, therefore it is reccomended
+    only to compare across the same single sample run
+
+    :param array: an array e.g. single lead EMG recording
+    :type array: np.array
+    :param start_index: which index number the breath starts on
+    :type start_index: int
+    :param end_index: which index number the breath ends on
+    :type end_index: int
+    :returns: pseudoslope
+    :rtype: float
+    """
+    breath_arc = array[start_index:end_index]
+    pos_arc = abs(breath_arc)
+    smoothed_breath = running_smoother(pos_arc)
+    abs_time = smoothed_breath.argmax()
+    abs_height = pos_arc[abs_time]
+    pseudoslope = abs_height / abs_time
+    return pseudoslope
+
+
 def area_under_curve(
     array,
     start_index,
