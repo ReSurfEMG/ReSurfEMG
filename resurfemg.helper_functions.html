@@ -706,6 +706,32 @@ opposed to ECG)</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.pseudo_slope">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">pseudo_slope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.pseudo_slope" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a function to get the shape/slope of the take-off angle
+of the resp. surface EMG signal, however we are returning values of
+mV divided by samples (in abs values), not a true slope
+and the number will depend on sampling rate
+and pre-processing, therefore it is reccomended
+only to compare across the same single sample run</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>np.array</em>) – an array e.g. single lead EMG recording</p></li>
+<li><p><strong>start_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which index number the breath starts on</p></li>
+<li><p><strong>end_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which index number the breath ends on</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pseudoslope</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.ranges_of">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">ranges_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.ranges_of" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function is made to work with <a class="reference internal" href="#resurfemg.helper_functions.Range" title="resurfemg.helper_functions.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a> class objects, such
@@ -1086,6 +1112,7 @@ on a cut-off value.</p>
 <li><a class="reference internal" href="#resurfemg.helper_functions.pick_highest_correlation_array"><code class="docutils literal notranslate"><span class="pre">pick_highest_correlation_array()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.pick_lowest_correlation_array"><code class="docutils literal notranslate"><span class="pre">pick_lowest_correlation_array()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.pick_more_peaks_array"><code class="docutils literal notranslate"><span class="pre">pick_more_peaks_array()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.pseudo_slope"><code class="docutils literal notranslate"><span class="pre">pseudo_slope()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.ranges_of"><code class="docutils literal notranslate"><span class="pre">ranges_of()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.raw_overlap_percent"><code class="docutils literal notranslate"><span class="pre">raw_overlap_percent()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.relative_levenshtein"><code class="docutils literal notranslate"><span class="pre">relative_levenshtein()</span></code></a></li>
