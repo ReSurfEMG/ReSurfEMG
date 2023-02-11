@@ -119,7 +119,7 @@ metadata is available.
 
     * Install within the blank environment:
       `conda activate blank`
-      `conda install -c conda-forge -c resurfemg resurfemg jupyter`
+      `conda install -c conda-forge -c resurfemg resurfemg jupyter ipympl`
 
 1. To work with the most current versions:
     Install all Python packages required, using conda and the

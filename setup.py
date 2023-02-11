@@ -52,7 +52,6 @@ def run_and_log(cmd, **kwargs):
 def translate_reqs(packages):
     re = importlib.import_module('re')
     tr = {
-        'sklearn': 'scikit-learn',
         'codestyle': 'pycodestyle',
         # Apparently, there isn't mne-base on PyPI...
         'mne': 'mne-base',
@@ -582,7 +581,7 @@ if __name__ == '__main__':
             'scipy',
             'matplotlib',
             'h5py',
-            'scikit-learn',
+            'scikit-learn==1.1.1',
         ],
         tests_require=['pytest', 'pycodestyle', 'isort', 'wheel', ],
         command_options={
