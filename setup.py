@@ -6,6 +6,8 @@ import subprocess
 import sys
 from glob import glob
 from contextlib import contextmanager
+from urllib import parse as urlparse
+from urllib import request as urlrequest
 
 from setuptools import Command, setup
 from setuptools.command.bdist_egg import bdist_egg as BDistEgg
@@ -59,6 +61,8 @@ def translate_reqs(packages):
     result = []
 
     for p in packages:
+        p = re.sub('\s+', '', p)
+        p = re.sub('=+', '=', p)
         parts = re.split(r'[ <>=]', p, maxsplit=1)
         name = parts[0]
         version = p[len(name):]
@@ -257,6 +261,11 @@ class SphinxApiDoc(Command):
 
 class InstallDev(InstallCommand):
 
+    def local_repo(self):
+        return urlparse.urljoin('file:', urlrequest.pathname2url(
+            os.path.join(project_dir, 'dist')
+        ))
+
     def run(self):
         if os.environ.get('CONDA_DEFAULT_ENV'):
             bdist_conda = BdistConda(self.distribution)
@@ -267,9 +276,7 @@ class InstallDev(InstallCommand):
                 '--strict-channel-priority',
                 '--override-channels',
                 '-c', 'conda-forge',
-                '-c', 'file://{}'.format(
-                    os.path.join(project_dir, 'dist'),
-                ),
+                '-c', self.local_repo(),
                 '--update-deps',
                 '--force-reinstall',
                 '-y',
@@ -583,7 +590,7 @@ if __name__ == '__main__':
         test_suite='setup.my_test_suite',
         install_requires=[
             'pyxdf',
-            'mne==0.21.2',
+            'mne==0.23.4',
             'textdistance',
             'pandas',
             'scipy',
@@ -591,7 +598,7 @@ if __name__ == '__main__':
             'h5py',
             'scikit-learn==1.1.1',
         ],
-        tests_require=['pytest', 'pycodestyle', 'isort', 'wheel', ],
+        tests_require=['pytest', 'pycodestyle', 'isort', 'wheel'],
         command_options={
             'build_sphinx': {
                 'project': ('setup.py', name),
@@ -602,7 +609,7 @@ if __name__ == '__main__':
         },
         setup_requires=['wheel'],
         extras_require={
-            'dev': ['pytest', 'codestyle', 'isort', 'wheel'],
+            'dev': ['pytest', 'codestyle', 'isort', 'wheel', 'jupyter', 'ipympl'],
         },
         zip_safe=False,
     )
