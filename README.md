@@ -110,12 +110,13 @@ metadata is available.
 
 0. If you want to work with the stable version create an empty
     environment, and install there:
+    NB: at present (February 2023) we do not reccomend this route.
     * Make sure you are in no environment:
       `conda deactivate` (repeat if you are in the base environment)
       You should be in no environment now 
 
-    * Create a blank environment
-      `conda create -n blank`
+    * Create a blank environment with python pinned to 3.8
+      `conda create -n blank python=3.8`
 
     * Install within the blank environment:
       `conda activate blank`
