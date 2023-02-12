@@ -615,7 +615,8 @@ if __name__ == '__main__':
                 'isort',
                 'wheel',
                 'jupyter',
-                'ipympl'],
+                'ipympl',
+            ],
         },
         zip_safe=False,
     )
