@@ -108,9 +108,9 @@ docker rm -f test-data
 How to get the notebooks running? Assuming the raw data set and
 metadata is available.
 
-0. If you want to work with the stable version create an empty
-    environment, and install there:
-    NB: at present (February 2023) we do not reccomend this route.
+0. In theory if you want to work, but never develop, as a conda user
+    with the stable version create an empty environment, and install there:
+    NB: at present (February 2023) we do not reccomend this route for any users.
     * Make sure you are in no environment:
       `conda deactivate` (repeat if you are in the base environment)
       You should be in no environment now 
@@ -127,7 +127,7 @@ metadata is available.
     `environment.yml` file.
    * The command for Windows/Anaconda users can be something like:
      `conda env create -f environment.yml`.
-   * Linux users can create their own environment by hand.
+   * Linux users can create their own environment by hand (use install_dev as in setup).
 
 2. Open a notebook (we use [Jupyter notebooks](https://jupyter.org/try-jupyter/retro/notebooks/?path=notebooks/Intro.ipynb)) in researcher_interface folder and interactively run the
    cells. You can use the command `jupyter notebook` to open a browser window on the folders of notebooks. Note, if you run with an installed library import appropriately
