@@ -78,7 +78,7 @@
 
 ## Release 0.0.8
 
-### Pending
+### Added
 
 * Eight version of this Python project, containing (added to this version):
 
