@@ -93,3 +93,4 @@ venv.bak/
 *.zip
 *.ipynb_checkpoints
 not_pushed
+conda-pkg/meta.yaml
