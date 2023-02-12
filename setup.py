@@ -523,13 +523,12 @@ class BdistConda(BDistEgg):
             'install', '-y',
             '--strict-channel-priority',
             '--override-channels',
-            '-c', 'anaconda',
             '-c', 'conda-forge',
+            '-c', 'anaconda',
             'conda-build',
             'conda-verify',
             'anaconda-client',
             'python=={}'.format(frozen),
-            'conda=={}'.format(conda),
         ]
         if run_and_log(cmd):
             sys.stderr.write('Failed to install conda-build\n')
