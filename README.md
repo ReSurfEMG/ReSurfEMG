@@ -162,8 +162,7 @@ metadata is available.
 
 After checkign out the source code, create virtual environment.  Both
 `conda` and `venv` environments are supported, however, if you are on
-Windows, we don't have instructions for installing all the necessary
-shared libraries.
+Windows, we reccomend using `conda`.
 
 0. Using python.org Python
 
