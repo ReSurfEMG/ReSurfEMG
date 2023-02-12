@@ -267,7 +267,9 @@ class InstallDev(InstallCommand):
                 '--strict-channel-priority',
                 '--override-channels',
                 '-c', 'conda-forge',
-                '--use-local',
+                '-c', 'file://{}'.format(
+                    os.path.join(project_dir, 'dist'),
+                ),
                 '--update-deps',
                 '--force-reinstall',
                 '-y',
@@ -314,12 +316,12 @@ class GenerateCondaYaml(Command):
             'requirements': {
                 'host': [python, conda, 'sphinx'],
                 'build': ['setuptools'],
-                'run': [python, conda] + translate_reqs(
+                'run': [python] + translate_reqs(
                     self.distribution.install_requires,
                 )
             },
             'test': {
-                'requires': [python, conda],
+                'requires': [python],
                 'imports': [name],
             },
             'about': {
@@ -396,6 +398,12 @@ class SdistConda(Command):
         if install_dir is None:
             install_dir = sysconfig.get_path('platlib')
 
+        self.distribution.install_requires = translate_reqs(
+            self.distribution.install_requires,
+        )
+        self.distribution.tests_require = translate_reqs(
+            self.distribution.tests_require,
+        )
         bdist_egg = BDistEgg(self.distribution)
         bdist_egg.initialize_options()
         bdist_egg.finalize_options()
@@ -508,8 +516,8 @@ class BdistConda(BDistEgg):
             'install', '-y',
             '--strict-channel-priority',
             '--override-channels',
-            '-c', 'conda-forge',
             '-c', 'anaconda',
+            '-c', 'conda-forge',
             'conda-build',
             'conda-verify',
             'anaconda-client',
@@ -575,7 +583,7 @@ if __name__ == '__main__':
         test_suite='setup.my_test_suite',
         install_requires=[
             'pyxdf',
-            'mne',
+            'mne<1.3.0',
             'textdistance',
             'pandas',
             'scipy',
