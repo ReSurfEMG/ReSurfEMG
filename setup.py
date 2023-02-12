@@ -583,7 +583,7 @@ if __name__ == '__main__':
         test_suite='setup.my_test_suite',
         install_requires=[
             'pyxdf',
-            'mne<1.3.0',
+            'mne==0.21.2',
             'textdistance',
             'pandas',
             'scipy',
