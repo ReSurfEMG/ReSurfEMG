@@ -105,32 +105,101 @@ docker rm -f test-data
 
 ## Getting started
 
-How to get the notebooks running? Assuming the raw data set and
+How to get the notebooks running?  Assuming the raw data set and
 metadata is available.
 
 0. In theory if you want to work, but never develop, as a conda user
-    with the stable version create an empty environment, and install there:
-    NB: at present (February 2023) we do not reccomend this route for any users.
+   with the stable version create an empty environment, and install
+   there:
+
+   _NB: at present (February 2023) we do not reccomend this route for
+   any users._
+
     * Make sure you are in no environment:
-      `conda deactivate` (repeat if you are in the base environment)
-      You should be in no environment now 
+
+      ```sh
+      conda deactivate
+      ```
+
+      _(repeat if you are in the base environment)_
+
+      You should be in no environment now
 
     * Create a blank environment with python pinned to 3.8
-      `conda create -n blank python=3.8`
+
+      ```sh
+      conda create -n blank python=3.8
+      ```
 
     * Install within the blank environment:
-      `conda activate blank`
-      `conda install -c conda-forge -c resurfemg resurfemg jupyter ipympl`
 
-1. To work with the most current versions:
-    Install all Python packages required, using conda and the
-    `environment.yml` file.
+      ```sh
+      conda activate blank
+      conda install -c conda-forge -c resurfemg resurfemg jupyter ipympl
+      ```
+
+1. To work with the most current versions: Install all Python packages
+   required, using `conda` and the `environment.yml` file.
+
    * The command for Windows/Anaconda users can be something like:
-     `conda env create -f environment.yml`.
-   * Linux users can create their own environment by hand (use install_dev as in setup).
 
-2. Open a notebook (we use [Jupyter notebooks](https://jupyter.org/try-jupyter/retro/notebooks/?path=notebooks/Intro.ipynb)) in researcher_interface folder and interactively run the
-   cells. You can use the command `jupyter notebook` to open a browser window on the folders of notebooks. Note, if you run with an installed library import appropriately
+     ```sh
+     conda env create -f environment.yml
+     ```
+
+   * Linux users can create their own environment by hand (use
+     install_dev as in setup).
+
+2. Open a notebook (we use [Jupyter
+   notebooks](https://jupyter.org/try-jupyter/retro/notebooks/?path=notebooks/Intro.ipynb))
+   in researcher_interface folder and interactively run the cells.
+   You can use the command `jupyter notebook` to open a browser window
+   on the folders of notebooks.  Note, if you run with an installed
+   library import appropriately.
+
+
+## Developer's setup
+
+After checkign out the source code, create virtual environment.  Both
+`conda` and `venv` environments are supported, however, if you are on
+Windows, we don't have instructions for installing all the necessary
+shared libraries.
+
+0. Using python.org Python
+
+   ```sh
+   python3.8 -m venv .venv
+   . .venv/bin/activate
+   # Windows user need to run:
+   # .venv/bin/activate
+   python setup.py install_dev
+   ```
+
+   This will create a distributable package from the your source code,
+   then install it in the currently active environment.  This will
+   also install development tools we use s.a. `pytest` and
+   `codestyle`.  This will also install tools we use for working with
+   the library, s.a. `jupyter`.
+
+1. Using Anaconda Python
+
+   ```sh
+   conda create -n resurfemg python=3.8
+   conda activate resurfemg
+   python setup.py anaconda_gen_meta
+   python setup.py install_dev
+   ```
+
+   Note, you will need to run `anaconda_gen_meta`.  This generates
+   `meta.yaml` which is necessary to create `conda` package.  In the
+   future this will probably be called automatically by `install_dev`.
+
+Now you should have everything necessary to start working on the
+source code.  Whenever you make any changes, re-run `install_dev` to
+see them applied in your environment.  It's possible to find a
+shortcut sometimes to running the entire cycle (`install_dev` takes a
+long time to run).  Look at the source of `bdist_conda` and
+`sdist_conda` commands in `setup.py` for more info.
 
 
 ## Generating documentation
