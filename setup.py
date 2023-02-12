@@ -61,7 +61,7 @@ def translate_reqs(packages):
     result = []
 
     for p in packages:
-        p = re.sub('\s+', '', p)
+        p = re.sub(r'\s+', '', p)
         p = re.sub('=+', '=', p)
         parts = re.split(r'[ <>=]', p, maxsplit=1)
         name = parts[0]
@@ -609,7 +609,13 @@ if __name__ == '__main__':
         },
         setup_requires=['wheel'],
         extras_require={
-            'dev': ['pytest', 'codestyle', 'isort', 'wheel', 'jupyter', 'ipympl'],
+            'dev': [
+                'pytest',
+                'codestyle',
+                'isort',
+                'wheel',
+                'jupyter',
+                'ipympl'],
         },
         zip_safe=False,
     )
