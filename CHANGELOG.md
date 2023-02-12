@@ -84,4 +84,4 @@
 
 	- Improved function at time to peak in a curve absolute and relative i.e. times_under_curve()
 	- Function for psuedoslope of take-off i.e. helper_functions.pseudoslope()
-	- Upgrade of setup to pin skikit-learn version
+	- Upgrade of setup.py to pin mne/mne-base, skikit-learn version, other setup file changes
