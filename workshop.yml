@@ -1,6 +1,6 @@
 #  environment document
 
-name: emg_workshop
+name: you_workshop
 channels:
   - conda-forge
   #- resurfemg
@@ -16,6 +16,7 @@ dependencies:
   - numpy=1.22.3
   - pandas
   - pip=20.2
+  - pycodestyle
   - pyxdf
   #- resurfemg
   - scikit-learn=1.1.1
