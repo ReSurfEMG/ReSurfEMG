@@ -1362,7 +1362,10 @@ def find_peak_in_breath(
     """
     This algorithm locates peaks on a breath. It is assumed
     an array of absolute values for electrophysiological signal
-    will be used as the array. Te mid_savgol assumes a parabolic fit.
+    will be used as the array. The mid_savgol assumes a parabolic fit.
+    The convy option uses a convolution to essentially
+    smooth values with those around it as in function
+    running_smoother() in the same module.
     It is reccomended to test a smoothing
     algorithm first, apply, then run the find peak algorithm.
 
@@ -1372,15 +1375,16 @@ def find_peak_in_breath(
     :type start_index: int
     :param end_index: which index number the breath ends on
     :type end_index: int
-    :param smooth_algorithm: algorithm for smoothing (none or 'mid-savgol')
+    :param smooth_algorithm: algorithm for smoothing (none or
+    'mid-savgol' or 'convy')
     :type smooth_algorithm: str
 
-    :returns: index of max point, value at max point
+    :returns: index of max point, value at max point, smoothed value
     :rtype: tuple
     """
     new_array = array[start_index: (end_index+1)]
     if smooth_algorithm == 'mid_savgol':
-        new_array = savgol_filter(
+        new_array2 = savgol_filter(
             new_array, int(len(new_array)),
             2,
             deriv=0,
@@ -1389,12 +1393,19 @@ def find_peak_in_breath(
             mode='interp',
             cval=0.0,
         )
-        max_ind = (new_array.argmax())
+        max_ind = (new_array2.argmax())
         max_val = new_array[max_ind]
+        smooth_max = new_array2[max_ind]
+    elif smooth_algorithm == 'convy':
+        new_array2 = running_smoother(new_array)
+        max_ind = (new_array2.argmax())
+        max_val = new_array[max_ind]
+        smooth_max = new_array2[max_ind]
     else:
         max_ind = (new_array.argmax())
         max_val = new_array[max_ind]
-    return (max_ind, max_val)
+        smooth_max = max_val
+    return (max_ind, max_val, smooth_max)
 
 
 def distance_matrix(array_a, array_b):
