@@ -1397,13 +1397,15 @@ def find_peak_in_breath(
         max_val = new_array[max_ind]
         smooth_max = new_array2[max_ind]
     elif smooth_algorithm == 'convy':
-        new_array2 = running_smoother(new_array)
+        abs_new_array = abs(new_array)
+        new_array2 = running_smoother(abs_new_array)
         max_ind = (new_array2.argmax())
         max_val = new_array[max_ind]
         smooth_max = new_array2[max_ind]
     else:
-        max_ind = (new_array.argmax())
-        max_val = new_array[max_ind]
+        abs_new_array = abs(new_array)
+        max_ind = (abs_new_array.argmax())
+        max_val = abs_new_array[max_ind]
         smooth_max = max_val
     return (max_ind, max_val, smooth_max)
 
