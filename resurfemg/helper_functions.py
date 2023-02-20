@@ -1260,6 +1260,7 @@ def pseudo_slope(
     array,
     start_index,
     end_index,
+    smoothing=True,
 ):
     """
     This is a function to get the shape/slope of the take-off angle
@@ -1275,13 +1276,19 @@ def pseudo_slope(
     :type start_index: int
     :param end_index: which index number the breath ends on
     :type end_index: int
+    :param smoothing: smoothing which can or can not run before calculations
+    :type smoothing: bool
+
     :returns: pseudoslope
     :rtype: float
     """
     breath_arc = array[start_index:end_index]
     pos_arc = abs(breath_arc)
-    smoothed_breath = running_smoother(pos_arc)
-    abs_time = smoothed_breath.argmax()
+    if smoothing:
+        smoothed_breath = running_smoother(pos_arc)
+        abs_time = smoothed_breath.argmax()
+    else:
+        abs_time = pos_arc.argmax()
     abs_height = pos_arc[abs_time]
     pseudoslope = abs_height / abs_time
     return pseudoslope
