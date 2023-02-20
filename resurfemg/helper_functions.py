@@ -1385,7 +1385,7 @@ def find_peak_in_breath(
     new_array = array[start_index: (end_index+1)]
     if smooth_algorithm == 'mid_savgol':
         new_array2 = savgol_filter(
-            new_array, int(len(new_array)),
+            abs(new_array), int(len(new_array)),
             2,
             deriv=0,
             delta=1.0,
