@@ -26,14 +26,16 @@ import textdistance
 import pandas as pd
 import logging
 
-
 class Range(namedtuple('RangeBase', 'start,end')):
+
     """Utility class for working with ranges (intervals).
 
     :ivar start: Start of the range
     :type start: ~number.Number
+
     :ivar end: End of the range
     :type end: ~number.Number
+
 
     """
 
