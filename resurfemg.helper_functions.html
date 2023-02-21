@@ -430,7 +430,10 @@ to read over slices.</p>
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">find_peak_in_breath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.find_peak_in_breath" title="Permalink to this definition">¶</a></dt>
 <dd><p>This algorithm locates peaks on a breath. It is assumed
 an array of absolute values for electrophysiological signal
-will be used as the array. Te mid_savgol assumes a parabolic fit.
+will be used as the array. The mid_savgol assumes a parabolic fit.
+The convy option uses a convolution to essentially
+smooth values with those around it as in function
+running_smoother() in the same module.
 It is reccomended to test a smoothing
 algorithm first, apply, then run the find peak algorithm.</p>
 <dl class="field-list simple">
@@ -439,11 +442,12 @@ algorithm first, apply, then run the find peak algorithm.</p>
 <li><p><strong>array</strong> (<em>np.array</em>) – an array e.g. single lead EMG recording</p></li>
 <li><p><strong>start_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which index number the breath starts on</p></li>
 <li><p><strong>end_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which index number the breath ends on</p></li>
-<li><p><strong>smooth_algorithm</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – algorithm for smoothing (none or ‘mid-savgol’)</p></li>
+<li><p><strong>smooth_algorithm</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – algorithm for smoothing (none or
+‘mid-savgol’ or ‘convy’)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>index of max point, value at max point</p>
+<dd class="field-even"><p>index of max point, value at max point, smoothed value</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)">tuple</a></p>
@@ -707,7 +711,7 @@ opposed to ECG)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.pseudo_slope">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">pseudo_slope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.pseudo_slope" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">pseudo_slope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoothing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.pseudo_slope" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is a function to get the shape/slope of the take-off angle
 of the resp. surface EMG signal, however we are returning values of
 mV divided by samples (in abs values), not a true slope
@@ -720,6 +724,7 @@ only to compare across the same single sample run</p>
 <li><p><strong>array</strong> (<em>np.array</em>) – an array e.g. single lead EMG recording</p></li>
 <li><p><strong>start_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which index number the breath starts on</p></li>
 <li><p><strong>end_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which index number the breath ends on</p></li>
+<li><p><strong>smoothing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – smoothing which can or can not run before calculations</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
