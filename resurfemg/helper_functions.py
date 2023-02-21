@@ -1386,7 +1386,7 @@ def find_peak_in_breath(
     :param end_index: which index number the breath ends on
     :type end_index: int
     :param smooth_algorithm: algorithm for smoothing (none or
-    'mid-savgol' or 'convy')
+        'mid-savgol' or 'convy')
     :type smooth_algorithm: str
 
     :returns: index of max point, value at max point, smoothed value
