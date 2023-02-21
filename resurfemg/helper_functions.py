@@ -33,6 +33,7 @@ class Range(namedtuple('RangeBase', 'start,end')):
     :type start: ~number.Number
     :ivar end: End of the range
     :type end: ~number.Number
+    
     """
 
     def intersects(self, other):
