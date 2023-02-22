@@ -1,5 +1,5 @@
 """
-Copyright 2022 Netherlands eScience Center and UTwente
+Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 This file contains functions to work with various EMG arrays
@@ -77,7 +77,7 @@ class Range(namedtuple('RangeBase', 'start,end')):
 
 def emg_bandpass_butter(data_emg, low_pass, high_pass):
     """The parameter taken in here is the Poly5 file. Output is
-    the emg after a bandpass as made here.
+    the EMG after a bandpass as made here.
 
     :param data_emg: Poly5 file with the samples to work over
     :type data_emg: ~TMSiSDK.file_readers.Poly5Reader
@@ -96,7 +96,7 @@ def emg_bandpass_butter(data_emg, low_pass, high_pass):
         fs=data_emg.sample_rate,
         output='sos',
     )
-    # sos (output parameter)is second order section  -> "stabilizes" ?
+    # sos (output parameter) is second order section  -> "stabilizes" ?
     emg_filtered = signal.sosfiltfilt(sos, data_emg.samples)
     return emg_filtered
 
@@ -111,7 +111,7 @@ def emg_bandpass_butter_sample(
     """The paramemter taken in here is the Poly5 file.  Output is the
     EMG after a bandpass as made here.
 
-    :param data_emg_samp: The array in the poly5 or other sample
+    :param data_emg_samp: The array in the Poly5 or other sample
     :type data_emg_samp: ~numpy.ndarray
     :param low_pass: The number to cut off :code:`frequenciesabove`
     :type low_pass: int
@@ -142,7 +142,7 @@ def bad_end_cutter(data_emg, percent_to_cut=7, tolerance_percent=10):
     radically altered, or if not radically altered cuts the last 10
     values but returns only the array, not an altered Poly5.
 
-    :param data_emg: A poly5
+    :param data_emg: A Poly5
     :type data_emg: ~TMSiSDK.file_readers.Poly5Reader
     :param percent_to_cut: Percentage to look at on the end
     :type percent_to_cut: int
@@ -236,7 +236,7 @@ def bad_end_cutter_better(data_emg, percent_to_cut=7, tolerance_percent=10):
     radically altered, or if not radically altered cuts the last 10
     values but returns only the array not an altered Poly5.
 
-    :param data_emg: A poly5
+    :param data_emg: A Poly5
     :type data_emg: ~TMSiSDK.file_readers.Poly5Reader
     :param percent_to_cut: Percentage to look at on the end
     :type percent_to_cut: int
@@ -274,7 +274,7 @@ def bad_end_cutter_better(data_emg, percent_to_cut=7, tolerance_percent=10):
 def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
     """This is a filter designed to take out a specific frequency.  In
     the EU in some data electrical cords can interfere at around 50
-    hertz.  In some other locations the interference is at 60 Hertz.
+    Hertz.  In some other locations the interference is at 60 Hertz.
     The specificities of a local power grid may neccesitate notch
     filtering.
 
@@ -282,7 +282,7 @@ def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
     :type sample: int
     :param sample_frequ: The frequency at which the sample was captured
     :type sample_frequ: int
-    :param freq_to_pull: The frequency you desire to remove from teh signal
+    :param freq_to_pull: The frequency you desire to remove from the signal
     :type freq_to_pull: int
     :param quality_factor_q: How high the quality of the removal is
     :type quality_factor_q: int
@@ -305,7 +305,7 @@ def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
 
 def show_my_power_spectrum(sample, sample_rate, upper_window):
     """This function plots a power spectrum of the frequencies
-    comtained in an emg based on a fourier transform.  It does not
+    comtained in an EMG based on a Fourier transform.  It does not
     return the graph, rather the values but plots the graph before it
     return.  Sample should be one single row (1-dimensional array.)
 
@@ -333,7 +333,7 @@ def show_my_power_spectrum(sample, sample_rate, upper_window):
 
 
 def emg_highpass_butter(data_emg, cut_above, sample_rate):
-    """The paramemter taken in here is the Poly5 file's samples or
+    """The parameter taken in here is the Poly5 file's samples or
     another array.  Output is the EMG after a bandpass as made here.
 
     :param data_emg: Samples from the EMG
@@ -354,12 +354,12 @@ def emg_highpass_butter(data_emg, cut_above, sample_rate):
 
 def naive_rolling_rms(x, N):
     """This function computes a root mean squared envelope over an
-    array :code:`x`.  To do this it uses number of sample values
+    array :code:`x`. To do this it uses number of sample values
     :code:`N`.
 
     :param x: Samples from the EMG
     :type x: ~numpy.ndarray
-    :param N: Legnth of the sample use as window for function
+    :param N: Length of the sample use as window for function
     :type N: int
 
     :returns: The root-mean-squared EMG sample data
@@ -413,8 +413,8 @@ def zero_one_for_jumps_base(array, cut_off):
 
 
 def compute_ICA_two_comp(emg_samples):
-    """A function that performs an independant component analysis
-    (ICA) meant for EMG data that includes stacked three arrays.
+    """A function that performs an independent component analysis
+    (ICA) meant for EMG data that includes three stacked arrays.
 
     :param emg_samples: Original signal array with three layers
     :type emg_samples: ~numpy.ndarray
@@ -505,7 +505,7 @@ def pick_lowest_correlation_array(components_tuple, ecg_lead):
     corr_matrix = abs(np.corrcoef(corr_tuple))
 
     # get the component with the lowest correlation to ECG
-    # the matriz is symmetric, so we can check just the first row
+    # the matrix is symmetric, so we can check just the first row
     # the first coefficient is the autocorrelation of the ECG lead,
     # so we can check row 1 and 2
 
@@ -537,7 +537,7 @@ def pick_highest_correlation_array(components_tuple, ecg_lead):
     corr_matrix = abs(np.corrcoef(corr_tuple))
 
     # get the component with the highest correlation to ECG
-    # the matriz is symmetric, so we can check just the first row
+    # the matrix is symmetric, so we can check just the first row
     # the first coefficient is the autocorrelation of the ECG lead,
     # so we can check row 1 and 2
 
@@ -554,7 +554,7 @@ def working_pipeline_exp(our_chosen_file):
     option is a corresponding function in multi_lead_type
     The inputs are :code:`our_chosen_file` which we
     give the function as a string of filename.  The output is the
-    processed EMG signal filtered and seperated from ecg components.
+    processed EMG signal filtered and seperated from ECG components.
     The algorithm to pick out the EMG here is by having
     more peaks.
 
@@ -584,7 +584,7 @@ def working_pipeline_exp(our_chosen_file):
     )
     # do ICA
     components = compute_ICA_two_comp(re_cut_file_data)
-    #  pick components with more peaj
+    #  pick components with more peak
     emg = pick_more_peaks_array(components)
     # now process it in final steps
     abs_values = abs(emg)
@@ -597,7 +597,7 @@ def working_pipeline_exp(our_chosen_file):
 def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
     """
     This is a pipeline to pre-process
-    an array of specific fixed dimenstions
+    an array of specific fixed dimensions
     i.e. a three lead array into an EMG singal,
     the function is legacy code, and most
     processsing should be done with
@@ -606,7 +606,7 @@ def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
 
     :param our_chosen_samples: the read EMG file arrays
     :type our_chosen_samples: ~numpy.ndarray
-    :param picker: the picking strategy for independant components
+    :param picker: the picking strategy for independent components
     :type picker: str
 
     :returns: final_envelope_a
@@ -648,15 +648,15 @@ def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
 
 
 def slices_slider(array_sample, slice_len):
-    """This function produces continous sequential slices over an
-    array of a certain legnth.  The inputs are the following -
+    """This function produces continuous sequential slices over an
+    array of a certain length.  The inputs are the following -
     :code:`array_sample`, the signal and :code:`slice_len` - the
     window which you wish to slide with.  The function yields, does
     not return these slices.
 
     :param array_sample: array containing the signal
     :type array_sample: ~numpy.ndarray
-    :param slice_len: the legnth of window on the array
+    :param slice_len: the length of window on the array
     :type slice_len: int
 
     :returns: Actually yields, no return
@@ -668,16 +668,16 @@ def slices_slider(array_sample, slice_len):
 
 def slices_jump_slider(array_sample, slice_len, jump):
     """
-    This function produces continous sequential slices over an
-    array of a certain legnth spaced out by a 'jump'.
+    This function produces continuous sequential slices over an
+    array of a certain length spaced out by a 'jump'.
     The function yields, does
     not return these slices.
 
     :param array_sample: array containing the signal
     :type array_sample: ~numpy.ndarray
-    :param slice_len: the legnth of window on the array
+    :param slice_len: the length of window on the array
     :type slice_len: int
-    :param jump: the amount by which the winow is moved at iteration
+    :param jump: the amount by which the window is moved at iteration
     :type jump: int
 
     :returns: Actually yields, no return
@@ -781,9 +781,9 @@ def smooth_for_baseline(
 
     :param single_filtered_array: Array.
     :type single_filtered_array: ~numpy.ndarray
-    :param start: The number on samples to work from
+    :param start: The number of samples to work from
     :type start: int
-    :param end: The number on samples to work until
+    :param end: The number of samples to work until
     :type end: int
     :param smooth: The number of samples to work over
     :type smooth: int
@@ -818,9 +818,9 @@ def smooth_for_baseline_with_overlay(
     :type  my_own_array: ~numpy.ndarray
     :param threshold: Number where to cut the mask for overlay
     :type threshold: int
-    :param start: The number on samples to work from
+    :param start: The number of samples to work from
     :type start: int
-    :param end: The number on samples to work until
+    :param end: The number of samples to work until
     :type end: int
     :param smooth: The number of samples to work over
     :type smooth: int
@@ -923,7 +923,7 @@ def raw_overlap_percent(signal1, signal2):
     :rtype: float
     """
     if len(signal1) != len(signal2):
-        print('Warning: legnth of arrays is not matched')
+        print('Warning: length of arrays is not matched')
         longer_signal_len = np.max([len(signal1), len(signal2)])
     else:
         longer_signal_len = len(signal1)
@@ -938,7 +938,7 @@ def relative_levenshtein(signal1, signal2):
     """
     Here we take two arrays, and create an edit distance based on Levelshtien
     edit distance The distance is then normalized between 0 and one regardless
-    of signal legnth
+    of signal length
 
     """
     signal1_list = []
@@ -949,7 +949,7 @@ def relative_levenshtein(signal1, signal2):
         signal2_list.append(element)
     distance = textdistance.levenshtein.similarity(signal1_list, signal2_list)
     if len(signal1) != len(signal2):
-        print('Warning: legnth of arrays is not matched')
+        print('Warning: length of arrays is not matched')
     longer_signal_len = np.max([len(signal1), len(signal2)])
     normalized_distance = distance / longer_signal_len
     return normalized_distance
@@ -1127,7 +1127,7 @@ def hi_envelope(our_signal, dmax=24):
 
     :param our_signal: 1d signal array usually of emg
     :type our_signal: ~numpy.ndarray
-    :param dmax: legnth of chunk to look for local max in
+    :param dmax: length of chunk to look for local max in
     :type dmax: int
 
     :returns: src_signal_gated, the gated result
@@ -1235,7 +1235,7 @@ def times_under_curve(
     end_index,
 ):
     """
-    This function is meant to calculate the legnth of time to peak in
+    This function is meant to calculate the length of time to peak in
     an absolute and relative sense
 
     :param array: an array e.g. single lead EMG recording
@@ -1267,7 +1267,7 @@ def pseudo_slope(
     of the resp. surface EMG signal, however we are returning values of
     mV divided by samples (in abs values), not a true slope
     and the number will depend on sampling rate
-    and pre-processing, therefore it is reccomended
+    and pre-processing, therefore it is recommended
     only to compare across the same single sample run
 
     :param array: an array e.g. single lead EMG recording
@@ -1304,11 +1304,11 @@ def area_under_curve(
     """
     This algorithm should be applied to breaths longer than 60 values
     on an index. The mid_savgol assumes a parabolic fit. It is
-    reccomended to test a smoothing algorithm first, apply,
+    recommended to test a smoothing algorithm first, apply,
     then run the area_under the curve with none for smooth_algortihm.
     If a cutoff of the curve before it hits bottom is desired then a value
     other than zero must be in end_curve variable. This variable
-    should be written from 0 to 100 for the perfentage of the max value
+    should be written from 0 to 100 for the percentage of the max value
     at which to cut off after the peak.
     :param array: an array e.g. single lead EMG recording
     :type array: np.array
@@ -1371,12 +1371,12 @@ def find_peak_in_breath(
 ):
     """
     This algorithm locates peaks on a breath. It is assumed
-    an array of absolute values for electrophysiological signal
+    an array of absolute values for electrophysiological signals
     will be used as the array. The mid_savgol assumes a parabolic fit.
     The convy option uses a convolution to essentially
     smooth values with those around it as in function
     running_smoother() in the same module.
-    It is reccomended to test a smoothing
+    It is recommended to test a smoothing
     algorithm first, apply, then run the find peak algorithm.
 
     :param array: an array e.g. single lead EMG recording
@@ -1431,7 +1431,7 @@ def distance_matrix(array_a, array_b):
     :rtype: pd.DataFrame
     """
     if len(array_a) != len(array_b):
-        print('Your arrays do not match in legnth, caution!')
+        print('Your arrays do not match in length, caution!')
     array_a_list = array_a.tolist()
     array_b_list = array_b.tolist()
     distance_earthmover = scipy.stats.wasserstein_distance(array_a, array_b)
@@ -1466,7 +1466,7 @@ def emg_lowpass_butter(array, cutoff, fs, order=5):
     """
     This is a lowpass filter of butterworth design.
 
-    :param array: 1d signal array usually of emg
+    :param array: 1d signal array usually of EMG
     :type array: ~numpy.ndarray
     :param cutoff: frequency above which to filter out
     :type cutoff: int
@@ -1488,7 +1488,7 @@ def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
     This function assumes you have isolated an ecg-like signal with
     QRS peaks "higher" (or lower) than ST waves.
     In this case it can be applied to return an array of
-    ecg peak locations. NB: This function assumes that the ECG
+    ECG peak locations. NB: This function assumes that the ECG
     signal has already been through a bandpass or low-pass filter
     or has little baseline drift.
 
