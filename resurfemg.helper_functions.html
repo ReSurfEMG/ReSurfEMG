@@ -46,7 +46,7 @@
             
   <section id="module-resurfemg.helper_functions">
 <span id="resurfemg-helper-functions-module"></span><h1>resurfemg.helper_functions module<a class="headerlink" href="#module-resurfemg.helper_functions" title="Permalink to this heading">¶</a></h1>
-<p>Copyright 2022 Netherlands eScience Center and UTwente
+<p>Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
 <p>This file contains functions to work with various EMG arrays
 and other types of data arrays e.g. ventilator signals.</p>
@@ -120,11 +120,11 @@ end set to this range’s end</p>
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">area_under_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_curve</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">70</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.area_under_curve" title="Permalink to this definition">¶</a></dt>
 <dd><p>This algorithm should be applied to breaths longer than 60 values
 on an index. The mid_savgol assumes a parabolic fit. It is
-reccomended to test a smoothing algorithm first, apply,
+recommended to test a smoothing algorithm first, apply,
 then run the area_under the curve with none for smooth_algortihm.
 If a cutoff of the curve before it hits bottom is desired then a value
 other than zero must be in end_curve variable. This variable
-should be written from 0 to 100 for the perfentage of the max value
+should be written from 0 to 100 for the percentage of the max value
 at which to cut off after the peak.
 :param array: an array e.g. single lead EMG recording
 :type array: np.array
@@ -149,7 +149,7 @@ values but returns only the array, not an altered Poly5.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_emg</strong> (<em>Poly5Reader</em>) – A poly5</p></li>
+<li><p><strong>data_emg</strong> (<em>Poly5Reader</em>) – A Poly5</p></li>
 <li><p><strong>percent_to_cut</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Percentage to look at on the end</p></li>
 <li><p><strong>tolerance_percent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Percent variation tolerance to allow without
 cutting</p></li>
@@ -173,7 +173,7 @@ values but returns only the array not an altered Poly5.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_emg</strong> (<em>Poly5Reader</em>) – A poly5</p></li>
+<li><p><strong>data_emg</strong> (<em>Poly5Reader</em>) – A Poly5</p></li>
 <li><p><strong>percent_to_cut</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Percentage to look at on the end</p></li>
 <li><p><strong>tolerance_percent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Percentage variation to allow without cut</p></li>
 </ul>
@@ -213,8 +213,8 @@ values but returns only the array.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.compute_ICA_two_comp">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">compute_ICA_two_comp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_samples</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.compute_ICA_two_comp" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function that performs an independant component analysis
-(ICA) meant for EMG data that includes stacked three arrays.</p>
+<dd><p>A function that performs an independent component analysis
+(ICA) meant for EMG data that includes three stacked arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>emg_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – Original signal array with three layers</p>
@@ -319,7 +319,7 @@ on a time series array that has been reduced down to a binary
 <dt class="sig sig-object py" id="resurfemg.helper_functions.emg_bandpass_butter">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">emg_bandpass_butter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_emg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_pass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high_pass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.emg_bandpass_butter" title="Permalink to this definition">¶</a></dt>
 <dd><p>The parameter taken in here is the Poly5 file. Output is
-the emg after a bandpass as made here.</p>
+the EMG after a bandpass as made here.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -345,7 +345,7 @@ EMG after a bandpass as made here.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_emg_samp</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – The array in the poly5 or other sample</p></li>
+<li><p><strong>data_emg_samp</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – The array in the Poly5 or other sample</p></li>
 <li><p><strong>low_pass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number to cut off <code class="code docutils literal notranslate"><span class="pre">frequenciesabove</span></code></p></li>
 <li><p><strong>high_pass</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The number to cut off <code class="code docutils literal notranslate"><span class="pre">frequenceisbelow</span></code></p></li>
 <li><p><strong>sample_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of samples per second i.e. Hertz</p></li>
@@ -364,7 +364,7 @@ EMG after a bandpass as made here.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.emg_highpass_butter">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">emg_highpass_butter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_emg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut_above</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.emg_highpass_butter" title="Permalink to this definition">¶</a></dt>
-<dd><p>The paramemter taken in here is the Poly5 file’s samples or
+<dd><p>The parameter taken in here is the Poly5 file’s samples or
 another array.  Output is the EMG after a bandpass as made here.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -390,7 +390,7 @@ another array.  Output is the EMG after a bandpass as made here.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – 1d signal array usually of emg</p></li>
+<li><p><strong>array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – 1d signal array usually of EMG</p></li>
 <li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – frequency above which to filter out</p></li>
 <li><p><strong>fs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – frequency array sampled at in Hertz</p></li>
 <li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – order of the filter</p></li>
@@ -429,12 +429,12 @@ to read over slices.</p>
 <dt class="sig sig-object py" id="resurfemg.helper_functions.find_peak_in_breath">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">find_peak_in_breath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.find_peak_in_breath" title="Permalink to this definition">¶</a></dt>
 <dd><p>This algorithm locates peaks on a breath. It is assumed
-an array of absolute values for electrophysiological signal
+an array of absolute values for electrophysiological signals
 will be used as the array. The mid_savgol assumes a parabolic fit.
 The convy option uses a convolution to essentially
 smooth values with those around it as in function
 running_smoother() in the same module.
-It is reccomended to test a smoothing
+It is recommended to test a smoothing
 algorithm first, apply, then run the find peak algorithm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -461,7 +461,7 @@ algorithm first, apply, then run the find peak algorithm.</p>
 <dd><p>This function assumes you have isolated an ecg-like signal with
 QRS peaks “higher” (or lower) than ST waves.
 In this case it can be applied to return an array of
-ecg peak locations. NB: This function assumes that the ECG
+ECG peak locations. NB: This function assumes that the ECG
 signal has already been through a bandpass or low-pass filter
 or has little baseline drift.</p>
 <dl class="field-list simple">
@@ -548,7 +548,7 @@ dmax: int, size of chunks,</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>our_signal</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – 1d signal array usually of emg</p></li>
-<li><p><strong>dmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – legnth of chunk to look for local max in</p></li>
+<li><p><strong>dmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – length of chunk to look for local max in</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -593,13 +593,13 @@ the <code class="code docutils literal notranslate"><span class="pre">right</spa
 <dt class="sig sig-object py" id="resurfemg.helper_functions.naive_rolling_rms">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">naive_rolling_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.naive_rolling_rms" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function computes a root mean squared envelope over an
-array <code class="code docutils literal notranslate"><span class="pre">x</span></code>.  To do this it uses number of sample values
+array <code class="code docutils literal notranslate"><span class="pre">x</span></code>. To do this it uses number of sample values
 <code class="code docutils literal notranslate"><span class="pre">N</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – Samples from the EMG</p></li>
-<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Legnth of the sample use as window for function</p></li>
+<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Length of the sample use as window for function</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -616,7 +616,7 @@ array <code class="code docutils literal notranslate"><span class="pre">x</span>
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">notch_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_frequ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_to_pull</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_factor_q</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.notch_filter" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is a filter designed to take out a specific frequency.  In
 the EU in some data electrical cords can interfere at around 50
-hertz.  In some other locations the interference is at 60 Hertz.
+Hertz.  In some other locations the interference is at 60 Hertz.
 The specificities of a local power grid may neccesitate notch
 filtering.</p>
 <dl class="field-list simple">
@@ -624,7 +624,7 @@ filtering.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sample</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Percentage variation tolerance to allow without cutting</p></li>
 <li><p><strong>sample_frequ</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The frequency at which the sample was captured</p></li>
-<li><p><strong>freq_to_pull</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The frequency you desire to remove from teh signal</p></li>
+<li><p><strong>freq_to_pull</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The frequency you desire to remove from the signal</p></li>
 <li><p><strong>quality_factor_q</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – How high the quality of the removal is</p></li>
 </ul>
 </dd>
@@ -716,7 +716,7 @@ opposed to ECG)</p>
 of the resp. surface EMG signal, however we are returning values of
 mV divided by samples (in abs values), not a true slope
 and the number will depend on sampling rate
-and pre-processing, therefore it is reccomended
+and pre-processing, therefore it is recommended
 only to compare across the same single sample run</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -780,7 +780,7 @@ the percentage of overlap.</p>
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">relative_levenshtein</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.relative_levenshtein" title="Permalink to this definition">¶</a></dt>
 <dd><p>Here we take two arrays, and create an edit distance based on Levelshtien
 edit distance The distance is then normalized between 0 and one regardless
-of signal legnth</p>
+of signal length</p>
 </dd></dl>
 
 <dl class="py function">
@@ -816,7 +816,7 @@ value of the maximum parameter</p>
 <dt class="sig sig-object py" id="resurfemg.helper_functions.show_my_power_spectrum">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">show_my_power_spectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_window</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.show_my_power_spectrum" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function plots a power spectrum of the frequencies
-comtained in an emg based on a fourier transform.  It does not
+comtained in an EMG based on a Fourier transform.  It does not
 return the graph, rather the values but plots the graph before it
 return.  Sample should be one single row (1-dimensional array.)</p>
 <dl class="field-list simple">
@@ -863,16 +863,16 @@ will be a sum of all the numbers</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.slices_jump_slider">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">slices_jump_slider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array_sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jump</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.slices_jump_slider" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function produces continous sequential slices over an
-array of a certain legnth spaced out by a ‘jump’.
+<dd><p>This function produces continuous sequential slices over an
+array of a certain length spaced out by a ‘jump’.
 The function yields, does
 not return these slices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>array_sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – array containing the signal</p></li>
-<li><p><strong>slice_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the legnth of window on the array</p></li>
-<li><p><strong>jump</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the amount by which the winow is moved at iteration</p></li>
+<li><p><strong>slice_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the length of window on the array</p></li>
+<li><p><strong>jump</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the amount by which the window is moved at iteration</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -887,8 +887,8 @@ not return these slices.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.slices_slider">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">slices_slider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array_sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_len</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.slices_slider" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function produces continous sequential slices over an
-array of a certain legnth.  The inputs are the following -
+<dd><p>This function produces continuous sequential slices over an
+array of a certain length.  The inputs are the following -
 <code class="code docutils literal notranslate"><span class="pre">array_sample</span></code>, the signal and <code class="code docutils literal notranslate"><span class="pre">slice_len</span></code> - the
 window which you wish to slide with.  The function yields, does
 not return these slices.</p>
@@ -896,7 +896,7 @@ not return these slices.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>array_sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – array containing the signal</p></li>
-<li><p><strong>slice_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the legnth of window on the array</p></li>
+<li><p><strong>slice_len</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the length of window on the array</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -916,8 +916,8 @@ not return these slices.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>single_filtered_array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – Array.</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number on samples to work from</p></li>
-<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number on samples to work until</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of samples to work from</p></li>
+<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of samples to work until</p></li>
 <li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of samples to work over</p></li>
 </ul>
 </dd>
@@ -940,8 +940,8 @@ overlay 0 or 1 mask tagging the baseline.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>my_own_array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – Array</p></li>
 <li><p><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number where to cut the mask for overlay</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number on samples to work from</p></li>
-<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number on samples to work until</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of samples to work from</p></li>
+<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of samples to work until</p></li>
 <li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of samples to work over</p></li>
 </ul>
 </dd>
@@ -957,7 +957,7 @@ overlay 0 or 1 mask tagging the baseline.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.times_under_curve">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">times_under_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.times_under_curve" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is meant to calculate the legnth of time to peak in
+<dd><p>This function is meant to calculate the length of time to peak in
 an absolute and relative sense</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1008,7 +1008,7 @@ It produces a filtered respiratory EMG signal from a
 option is a corresponding function in multi_lead_type
 The inputs are <code class="code docutils literal notranslate"><span class="pre">our_chosen_file</span></code> which we
 give the function as a string of filename.  The output is the
-processed EMG signal filtered and seperated from ecg components.
+processed EMG signal filtered and seperated from ECG components.
 The algorithm to pick out the EMG here is by having
 more peaks.</p>
 <dl class="field-list simple">
@@ -1028,7 +1028,7 @@ more peaks.</p>
 <dt class="sig sig-object py" id="resurfemg.helper_functions.working_pipeline_pre_ml">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">working_pipeline_pre_ml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'heart'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.working_pipeline_pre_ml" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is a pipeline to pre-process
-an array of specific fixed dimenstions
+an array of specific fixed dimensions
 i.e. a three lead array into an EMG singal,
 the function is legacy code, and most
 processsing should be done with
@@ -1038,7 +1038,7 @@ or <code class="code docutils literal notranslate"><span class="pre">multi_lead_
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
-<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the picking strategy for independant components</p></li>
+<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the picking strategy for independent components</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
