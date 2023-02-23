@@ -7,6 +7,7 @@ and other types of data arrays e.g. ventilator signals.
 
 """
 
+
 import collections
 from collections import namedtuple
 import math
@@ -27,12 +28,14 @@ import logging
 
 
 class Range(namedtuple('RangeBase', 'start,end')):
+
     """Utility class for working with ranges (intervals).
 
     :ivar start: Start of the range
     :type start: ~number.Number
     :ivar end: End of the range
     :type end: ~number.Number
+
     """
 
     def intersects(self, other):
@@ -233,7 +236,11 @@ def bad_end_cutter_better(data_emg, percent_to_cut=7, tolerance_percent=10):
     radically altered, or if not radically altered cuts the last 10
     values but returns only the array, not an altered Poly5.
 
+<<<<<<< HEAD
     :param data_emg: A Poly5 file
+=======
+    :param data_emg: A Poly5
+>>>>>>> 34c28d308fcf55d0865363461ebf6ad5a42eb8c4
     :type data_emg: ~TMSiSDK.file_readers.Poly5Reader
     :param percent_to_cut: Percentage to look at on the end
     :type percent_to_cut: int
@@ -302,9 +309,15 @@ def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
 
 def show_my_power_spectrum(sample, sample_rate, upper_window):
     """This function plots a power spectrum of the frequencies
+<<<<<<< HEAD
     contained in an EMG based on a Fourier transform. It does not
     return the graph, rather the values but plots the graph before its
     return. Sample should be one single row (1-dimensional array).
+=======
+    comtained in an EMG based on a Fourier transform.  It does not
+    return the graph, rather the values but plots the graph before it
+    return.  Sample should be one single row (1-dimensional array.)
+>>>>>>> 34c28d308fcf55d0865363461ebf6ad5a42eb8c4
 
     :param sample: The sample array
     :type sample: ~numpy.ndarray
@@ -331,7 +344,11 @@ def show_my_power_spectrum(sample, sample_rate, upper_window):
 
 def emg_highpass_butter(data_emg, cut_above, sample_rate):
     """The parameter taken in here is the Poly5 file's samples or
+<<<<<<< HEAD
     another array. Output is the EMG after a bandpass as made here.
+=======
+    another array.  Output is the EMG after a bandpass as made here.
+>>>>>>> 34c28d308fcf55d0865363461ebf6ad5a42eb8c4
 
     :param data_emg: Samples from the EMG
     :type data_emg: ~numpy.ndarray
@@ -550,7 +567,11 @@ def working_pipeline_exp(our_chosen_file):
     3 lead sEMG file. A better
     option is a corresponding function in multi_lead_type
     The inputs are :code:`our_chosen_file` which we
+<<<<<<< HEAD
     give the function as a string of filename. The output is the
+=======
+    give the function as a string of filename.  The output is the
+>>>>>>> 34c28d308fcf55d0865363461ebf6ad5a42eb8c4
     processed EMG signal filtered and seperated from ECG components.
     The algorithm to pick out the EMG here is by having
     more peaks.
@@ -581,7 +602,11 @@ def working_pipeline_exp(our_chosen_file):
     )
     # do ICA
     components = compute_ICA_two_comp(re_cut_file_data)
+<<<<<<< HEAD
     #  pick components with more peaks
+=======
+    #  pick components with more peak
+>>>>>>> 34c28d308fcf55d0865363461ebf6ad5a42eb8c4
     emg = pick_more_peaks_array(components)
     # now process it in final steps
     abs_values = abs(emg)
@@ -645,8 +670,13 @@ def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
 
 
 def slices_slider(array_sample, slice_len):
+<<<<<<< HEAD
     """This function produces continous sequential slices over an
     array of a certain length. The inputs are the following -
+=======
+    """This function produces continuous sequential slices over an
+    array of a certain length.  The inputs are the following -
+>>>>>>> 34c28d308fcf55d0865363461ebf6ad5a42eb8c4
     :code:`array_sample`, the signal and :code:`slice_len` - the
     window which you wish to slide with. The function yields, does
     not return these slices.
@@ -933,9 +963,15 @@ def raw_overlap_percent(signal1, signal2):
 
 def relative_levenshtein(signal1, signal2):
     """
+<<<<<<< HEAD
     Here we take two arrays, and create an edit distance based on Levenshtein
     edit distance. The distance is then normalized between 0 and 1 regardless
     of signal length.
+=======
+    Here we take two arrays, and create an edit distance based on Levelshtien
+    edit distance The distance is then normalized between 0 and one regardless
+    of signal length
+>>>>>>> 34c28d308fcf55d0865363461ebf6ad5a42eb8c4
 
     """
     signal1_list = []
@@ -1257,6 +1293,7 @@ def pseudo_slope(
     array,
     start_index,
     end_index,
+    smoothing=True,
 ):
     """
     This is a function to get the shape/slope of the take-off angle
@@ -1272,13 +1309,19 @@ def pseudo_slope(
     :type start_index: int
     :param end_index: which index number the breath ends on
     :type end_index: int
+    :param smoothing: smoothing which can or can not run before calculations
+    :type smoothing: bool
+
     :returns: pseudoslope
     :rtype: float
     """
     breath_arc = array[start_index:end_index]
     pos_arc = abs(breath_arc)
-    smoothed_breath = running_smoother(pos_arc)
-    abs_time = smoothed_breath.argmax()
+    if smoothing:
+        smoothed_breath = running_smoother(pos_arc)
+        abs_time = smoothed_breath.argmax()
+    else:
+        abs_time = pos_arc.argmax()
     abs_height = pos_arc[abs_time]
     pseudoslope = abs_height / abs_time
     return pseudoslope
@@ -1295,11 +1338,19 @@ def area_under_curve(
     This algorithm should be applied to breaths longer than 60 values
     on an index. The mid_savgol assumes a parabolic fit. It is
     recommended to test a smoothing algorithm first, apply,
+<<<<<<< HEAD
     then run the area_under the curve with none for smooth_algorithm.
     If a cutoff of the curve before it hits bottom is desired then a value
     other than zero must be in end_curve variable. This variable
     should be written from 0 to 100 for the percentage of the max value
     at which to cutoff after the peak.
+=======
+    then run the area_under the curve with none for smooth_algortihm.
+    If a cutoff of the curve before it hits bottom is desired then a value
+    other than zero must be in end_curve variable. This variable
+    should be written from 0 to 100 for the percentage of the max value
+    at which to cut off after the peak.
+>>>>>>> 34c28d308fcf55d0865363461ebf6ad5a42eb8c4
     :param array: an array e.g. single lead EMG recording
     :type array: np.array
     :param start_index: which index number the breath starts on
@@ -1362,8 +1413,16 @@ def find_peak_in_breath(
     """
     This algorithm locates peaks on a breath. It is assumed
     an array of absolute values for electrophysiological signals
+<<<<<<< HEAD
     will be used as the array. Te mid_savgol assumes a parabolic fit.
     It is reccomended to test a smoothing
+=======
+    will be used as the array. The mid_savgol assumes a parabolic fit.
+    The convy option uses a convolution to essentially
+    smooth values with those around it as in function
+    running_smoother() in the same module.
+    It is recommended to test a smoothing
+>>>>>>> 34c28d308fcf55d0865363461ebf6ad5a42eb8c4
     algorithm first, apply, then run the find peak algorithm.
 
     :param array: an array e.g. single lead EMG recording
@@ -1372,16 +1431,17 @@ def find_peak_in_breath(
     :type start_index: int
     :param end_index: which index number the breath ends on
     :type end_index: int
-    :param smooth_algorithm: algorithm for smoothing (none or 'mid-savgol')
+    :param smooth_algorithm: algorithm for smoothing (none or
+        'mid-savgol' or 'convy')
     :type smooth_algorithm: str
 
-    :returns: index of max point, value at max point
+    :returns: index of max point, value at max point, smoothed value
     :rtype: tuple
     """
     new_array = array[start_index: (end_index+1)]
     if smooth_algorithm == 'mid_savgol':
-        new_array = savgol_filter(
-            new_array, int(len(new_array)),
+        new_array2 = savgol_filter(
+            abs(new_array), int(len(new_array)),
             2,
             deriv=0,
             delta=1.0,
@@ -1389,12 +1449,21 @@ def find_peak_in_breath(
             mode='interp',
             cval=0.0,
         )
-        max_ind = (new_array.argmax())
+        max_ind = (new_array2.argmax())
         max_val = new_array[max_ind]
+        smooth_max = new_array2[max_ind]
+    elif smooth_algorithm == 'convy':
+        abs_new_array = abs(new_array)
+        new_array2 = running_smoother(abs_new_array)
+        max_ind = (new_array2.argmax())
+        max_val = new_array[max_ind]
+        smooth_max = new_array2[max_ind]
     else:
-        max_ind = (new_array.argmax())
-        max_val = new_array[max_ind]
-    return (max_ind, max_val)
+        abs_new_array = abs(new_array)
+        max_ind = (abs_new_array.argmax())
+        max_val = abs_new_array[max_ind]
+        smooth_max = max_val
+    return (max_ind, max_val, smooth_max)
 
 
 def distance_matrix(array_a, array_b):
@@ -1465,7 +1534,7 @@ def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
     This function assumes you have isolated an ECG-like signal with
     QRS peaks "higher" (or lower) than ST waves.
     In this case it can be applied to return an array of
-    ecg peak locations. NB: This function assumes that the ECG
+    ECG peak locations. NB: This function assumes that the ECG
     signal has already been through a bandpass or low-pass filter
     or has little baseline drift.
 
