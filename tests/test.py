@@ -38,6 +38,7 @@ from resurfemg.helper_functions import compute_ICA_two_comp
 from resurfemg.helper_functions import compute_ICA_two_comp_multi
 from resurfemg.helper_functions import working_pipeline_exp
 from resurfemg.helper_functions import entropical
+from resurfemg.helper_functions import entropy_scipy
 from resurfemg.helper_functions import smooth_for_baseline
 from resurfemg.helper_functions import smooth_for_baseline_with_overlay
 from resurfemg.helper_functions import relative_levenshtein
