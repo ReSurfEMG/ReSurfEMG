@@ -19,6 +19,7 @@ from scipy.fft import fft, fftfreq
 from scipy.signal import find_peaks
 from scipy.signal import savgol_filter
 from scipy.signal import butter, lfilter
+from scipy.stats import entropy
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import FastICA
@@ -689,21 +690,40 @@ def slices_jump_slider(array_sample, slice_len, jump):
 
 
 def entropical(sig):
-    """This function computes a certain type of entropy of a series
-    signal array.  Input is sig, the signal, and output is an array of
-    entropy measurements. The function can be used inside a generator
-    to read over slices.
+    """This function computes something close to certain type of entropy
+    of a series signal array.  Input is sig, the signal, and output is an
+    array of entropy measurements. The function can be used inside a generator
+    to read over slices. Note it is not a true entropy, and works best with
+    very small numbers.
 
     :param sig: array containin the signal
     :type sig: ~numpy.ndarray
 
-    :returns: A number expressing the entropy using math.log w/base 2
+    :returns: number for an entropy-like signal using math.log w/base 2
     :rtype: float
 
     """
     probabilit = [n_x/len(sig) for x, n_x in collections.Counter(sig).items()]
     e_x = [-p_x*math.log(p_x, 2) for p_x in probabilit]
     return sum(e_x)
+
+
+def entropy_scipy(sli, base=None):
+    """
+    This function wraps scipy.stats entropy for use in the resurfemg
+    library, it can be used in a slice iterator as a drop-in substitute
+    for the hf.entropical except it is a true entropy.
+
+    :param sli: array
+    :type sli: ~numpy.ndarray
+
+    :returns: entropy_count
+    :rtype: float
+    """
+
+    value, counts = np.unique(sli, return_counts=True)
+    entropy_count = entropy(counts, base=base)
+    return entropy_count
 
 
 def compute_power_loss(
