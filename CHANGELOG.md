@@ -85,3 +85,13 @@
 	- Improved function at time to peak in a curve absolute and relative i.e. times_under_curve()
 	- Function for psuedoslope of take-off i.e. helper_functions.pseudoslope()
 	- Upgrade of setup.py to pin mne/mne-base, skikit-learn version, other setup file changes
+
+
+## Release 0.0.9
+
+### Not yet added
+
+* Ninth version of this Python project, containing (added to this version):
+
+	- Improved function for entropy (entropy_scipy) in helper functions module
+	- More to be added
