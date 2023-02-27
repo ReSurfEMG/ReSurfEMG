@@ -722,7 +722,7 @@ def entropy_scipy(sli, base=None):
     """
 
     value, counts = np.unique(sli, return_counts=True)
-    entropy_count = entropy(counts, base=base)
+    entropy_count = entropy(counts/len(counts), base=base)
     return entropy_count
 
 
