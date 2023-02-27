@@ -143,6 +143,19 @@ class TestComponentPickingMethods(unittest.TestCase):
             sum(sample_emg_filtered[1]),
         )
 
+
+class TestEntropyMethods(unittest.TestCase):
+
+    def test_entropy_scipy(self):
+        sample_array_lo_entropy = [0,0,0,0,0,0,0,0,0,0]
+        sample_array_hi_entropy = [0,4,0,5,8,0,12,0,1,0]
+        ent_sample_array_lo_entropy = entropy_scipy(sample_array_lo_entropy)
+        ent_sample_array_hi_entropy = entropy_scipy(sample_array_hi_entropy)
+        self.assertGreater(
+            ent_sample_array_hi_entropy ,
+            ent_sample_array_lo_entropy ,
+        )
+
     
 class TestFilteringMethods(unittest.TestCase):
 
