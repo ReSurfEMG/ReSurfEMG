@@ -710,9 +710,9 @@ def entropical(sig):
 
 def entropy_scipy(sli, base=None):
     """
-    This function wraps scipy.stats entropy for use in the resurfemg
-    library, it can be used in a slice iterator as a drop-in substitute
-    for the hf.entropical except it is a true entropy.
+    This function wraps scipy.stats entropy  (which is a Shannon entropy)
+    for use in the resurfemg library, it can be used in a slice iterator
+    as a drop-in substitute for the hf.entropical but it is a true entropy.
 
     :param sli: array
     :type sli: ~numpy.ndarray
