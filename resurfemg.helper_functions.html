@@ -408,16 +408,36 @@ another array.  Output is the EMG after a bandpass as made here.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.entropical">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">entropical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.entropical" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function computes a certain type of entropy of a series
-signal array.  Input is sig, the signal, and output is an array of
-entropy measurements. The function can be used inside a generator
-to read over slices.</p>
+<dd><p>This function computes something close to certain type of entropy
+of a series signal array.  Input is sig, the signal, and output is an
+array of entropy measurements. The function can be used inside a generator
+to read over slices. Note it is not a true entropy, and works best with
+very small numbers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sig</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – array containin the signal</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A number expressing the entropy using math.log w/base 2</p>
+<dd class="field-even"><p>number for an entropy-like signal using math.log w/base 2</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.entropy_scipy">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">entropy_scipy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sli</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.entropy_scipy" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function wraps scipy.stats entropy  (which is a Shannon entropy)
+for use in the resurfemg library, it can be used in a slice iterator
+as a drop-in substitute for the hf.entropical but it is a true entropy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sli</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a>) – array</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>entropy_count</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
@@ -1104,6 +1124,7 @@ on a cut-off value.</p>
 <li><a class="reference internal" href="#resurfemg.helper_functions.emg_highpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_highpass_butter()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.emg_lowpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_lowpass_butter()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.entropical"><code class="docutils literal notranslate"><span class="pre">entropical()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.entropy_scipy"><code class="docutils literal notranslate"><span class="pre">entropy_scipy()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.find_peak_in_breath"><code class="docutils literal notranslate"><span class="pre">find_peak_in_breath()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.find_peaks_in_ecg_signal"><code class="docutils literal notranslate"><span class="pre">find_peaks_in_ecg_signal()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.full_rolling_rms"><code class="docutils literal notranslate"><span class="pre">full_rolling_rms()</span></code></a></li>
