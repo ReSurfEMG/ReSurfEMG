@@ -1539,10 +1539,10 @@ def variability_maker(array, segment_size, method='variance'):
     :param array: the input array
     :type array: ~numpy.ndarray
 
-    :param segment_size: legnth over which variabilty calculated
+    :param segment_size: length over which variabilty calculated
     :type segment_size: int
 
-    :param method: method for variability caulculation
+    :param method: method for calculation i.e. variance or standard deviation
     :type method: str
 
     :returns: variability_values array showing variability over segments
