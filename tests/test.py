@@ -52,6 +52,7 @@ from resurfemg.helper_functions import find_peak_in_breath
 from resurfemg.helper_functions import distance_matrix
 from resurfemg.helper_functions import emg_lowpass_butter
 from resurfemg.helper_functions import find_peaks_in_ecg_signal
+from resurfemg.helper_functions import variability_maker
 # config
 from resurfemg.config import Config
 from resurfemg.config import make_realistic_syn_emg
@@ -154,6 +155,28 @@ class TestEntropyMethods(unittest.TestCase):
         self.assertGreater(
             ent_sample_array_hi_entropy ,
             ent_sample_array_lo_entropy ,
+        )
+
+class TestVariabilityMethods(unittest.TestCase):
+
+    def test_variability_maker_variance(self):
+        sample_array_lo_var = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
+        sample_array_hi_var = [0,4,0,5,8,0,12,0,1,0,0,9,0,9,0,0,9,6,0]
+        var_sample_array_lo_var = variability_maker(sample_array_lo_var, 10)
+        var_sample_array_hi_var = variability_maker(sample_array_hi_var, 10)
+        self.assertGreater(
+            np.sum(var_sample_array_hi_var) ,
+            np.sum(var_sample_array_lo_var) ,
+        )
+
+    def test_variability_maker_std(self):
+        sample_array_lo_var = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
+        sample_array_hi_var = [0,4,0,5,8,0,12,0,1,0,0,9,0,9,0,0,9,6,0]
+        var_sample_array_lo_var = variability_maker(sample_array_lo_var, 10, method='std')
+        var_sample_array_hi_var = variability_maker(sample_array_hi_var, 10, method='std')
+        self.assertGreater(
+            np.sum(var_sample_array_hi_var) ,
+            np.sum(var_sample_array_lo_var) ,
         )
 
     
