@@ -1528,3 +1528,47 @@ def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
         prominence=(max_peak*lower_border_percent/100, max_peak)
     )
     return set_ecg_peaks
+
+
+def variability_maker(array, segment_size, method='variance'):
+    """
+    Calculate variability of segments of an array according to a specific
+    method, then interpolate the values back to the original legnth of array
+
+
+    :param array: the input array
+    :type array: ~numpy.ndarray
+
+    :param segment_size: legnth over which variabilty calculated
+    :type segment_size: int
+
+    :param method: method for variability caulculation
+    :type method: str
+
+    :returns: variability_values array showing variability over segments
+    :rtype: ~numpy.ndarray
+
+    """
+    variability_values = []
+    if method == 'variance':
+        for i in range(1, len(array) - segment_size):
+            var_emg = np.var(array[i:i + segment_size])
+            variability_values.append(var_emg)
+
+        values_out = np.array(variability_values)
+
+    elif method == 'std':
+        # Calculate the standard deviation of each segment
+        segments = [
+            array[i:i+segment_size] for i in range(0, len(array), segment_size)
+        ]
+        for segment in segments:
+            variability_value = np.std(segment)
+            variability_values.append(variability_value)
+        values_out = np.array(variability_values)
+
+    else:
+        print("You did not choose an exisitng method")
+
+    variability_array = scipy.signal.resample(values_out, len(array))
+    return variability_array
