@@ -1560,12 +1560,10 @@ def variability_maker(array, segment_size, method='variance'):
 
     elif method == 'std':
         # Calculate the standard deviation of each segment
-        segments = [
-            array[i:i+segment_size] for i in range(0, len(array), segment_size)
+        variability_values = [
+            np.std(array[i:i+segment_size])
+            for i in range(0, len(array), segment_size)
         ]
-        for segment in segments:
-            variability_value = np.std(segment)
-            variability_values.append(variability_value)
         values_out = np.array(variability_values)
 
     else:
