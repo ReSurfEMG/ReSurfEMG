@@ -1551,9 +1551,7 @@ def variability_maker(array, segment_size, method='variance'):
     """
     variability_values = []
     if method == 'variance':
-        for i in range(1, len(array) - segment_size):
-            var_emg = np.var(array[i:i + segment_size])
-            variability_values.append(var_emg)
+        variability_values = [np.var(array[i:i + segment_size]) for i in range(1, len(array) - segment_size)]
 
         values_out = np.array(variability_values)
 
