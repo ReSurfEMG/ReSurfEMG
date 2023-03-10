@@ -1530,7 +1530,12 @@ def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
     return set_ecg_peaks
 
 
-def variability_maker(array, segment_size, method='variance'):
+def variability_maker(
+        array,
+        segment_size,
+        method='variance',
+        fill_method='avg',
+):
     """
     Calculate variability of segments of an array according to a specific
     method, then interpolate the values back to the original legnth of array
@@ -1543,6 +1548,11 @@ def variability_maker(array, segment_size, method='variance'):
     :type segment_size: int
 
     :param method: method for calculation i.e. variance or standard deviation
+    :type method: str
+
+    :param fill_method: method to fill missing values at end result array,
+    'avg' will fill with average of last values, 'zeros' fills zeros, and
+    'resample' will resample (not fill) and strech array to the correct length
     :type method: str
 
     :returns: variability_values array showing variability over segments
@@ -1568,6 +1578,23 @@ def variability_maker(array, segment_size, method='variance'):
 
     else:
         print("You did not choose an exisitng method")
+    num_missing_values = len(array) - len(values_out)
+    avg_values_end = np.sum(
+        values_out[(len(values_out) - num_missing_values):]
+        ) \
+        / num_missing_values
+    last_values_avg = np.full(num_missing_values, avg_values_end)
 
-    variability_array = scipy.signal.resample(values_out, len(array))
+    if fill_method == 'avg':
+        variability_array = np.hstack((values_out, last_values_avg))
+    elif fill_method == 'zeros':
+        variability_array = np.hstack(
+            (values_out, np.zeros(num_missing_values))
+        )
+    elif fill_method == 'resample':
+        variability_array = scipy.signal.resample(values_out, len(array))
+    else:
+        print("You did not choose an exisitng method")
+        variability_array = np.hstack((values_out, last_values_avg))
+
     return variability_array
