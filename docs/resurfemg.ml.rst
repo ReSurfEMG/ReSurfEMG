@@ -1,5 +1,5 @@
 resurfemg.ml module
-==================================
+===================
 
 .. automodule:: resurfemg.ml
    :members:
