@@ -1,5 +1,5 @@
 resurfemg.config module
-=====================================
+=======================
 
 .. automodule:: resurfemg.config
    :members:
