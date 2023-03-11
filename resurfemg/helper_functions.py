@@ -1552,7 +1552,8 @@ def variability_maker(
 
     :param fill_method: method to fill missing values at end result array,
         'avg' will fill with average of last values, 'zeros' fills zeros, and
-        'resample' will resample (not fill) and strech array to the correct length
+        'resample' will resample (not fill) and strech array
+        to the full 'correct' length of the original signal
     :type method: str
 
     :returns: variability_values array showing variability over segments
