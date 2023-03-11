@@ -1551,8 +1551,8 @@ def variability_maker(
     :type method: str
 
     :param fill_method: method to fill missing values at end result array,
-    'avg' will fill with average of last values, 'zeros' fills zeros, and
-    'resample' will resample (not fill) and strech array to the correct length
+        'avg' will fill with average of last values, 'zeros' fills zeros, and
+        'resample' will resample (not fill) and strech array to the correct length
     :type method: str
 
     :returns: variability_values array showing variability over segments
