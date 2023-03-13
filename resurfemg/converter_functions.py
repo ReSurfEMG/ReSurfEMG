@@ -33,15 +33,15 @@ def poly5unpad(to_be_read):
 
 def matlab5_jkmn_to_array(file_name):
     """
-    This file reads matlab5 files as produced in the Jonkman
+    This file reads Matlab files as produced in the Jonkman
     laboratory, on the Biopac system
     and returns arrays in the format and shape
     our functions,those in helper_functions work on.
 
-    :param file_name: Filename of matlab5 files
+    :param file_name: Filename of Matlab file
     :type file_name: str
 
-    :returns: arrayed
+    :returns: array
     :rtype: ~numpy.ndarray
     """
     file = sio.loadmat(file_name, mdict=None, appendmat=False)
@@ -63,7 +63,7 @@ def csv_from_jkmn_to_array(file_name):
     :param file_name: Filename of csv files
     :type file_name: str
 
-    :returns: arrayed
+    :returns: array
     :rtype: ~numpy.ndarray
     """
     file = pd.read_csv(file_name)
@@ -80,7 +80,7 @@ def poly_dvrman(file_name):
     """
     This is a function to read in Duiverman type Poly5 files,
     which has 18 layers/pseudo-leads,
-    and return an array of the twelve  unprocessed leads
+    and return an array of the twelve unprocessed leads
     for further pre-processing. The leads eliminated
     were RMS calculated on other leads (leads 6-12).
     The expected organization returned is from leads 0-5
@@ -88,7 +88,7 @@ def poly_dvrman(file_name):
     # 6 Paw: airway pressure (not always recorded)
     # 7 Pes: esophageal pressure (not always recorded)
     # 8 Pga: gastric pressure (not always recorded)
-    # 9 RR: respiratory rate I guess (very unreliable)
+    # 9 RR: respiratory rate  (very unreliable)
     # 10 HR: heart rate
     # 11 Tach: number of breath (not reliable)
 
@@ -113,7 +113,7 @@ def dvrmn_csv_to_array(file_name):
     :param file_name: Filename of csv file
     :type file_name: str
 
-    :returns: arrayed
+    :returns: array
     :rtype: ~numpy.ndarray
     """
     file = pd.read_csv(file_name)
@@ -125,8 +125,8 @@ def dvrmn_csv_to_array(file_name):
 
 def dvrmn_csv_freq_find(file_name):
     """
-    This is means to extract the frequency of a Duiverman
-    type csv of emg. Note this data may be resampled down by a
+    This is to extract the frequency of a Duiverman
+    type csv of EMG. Note this data may be resampled down by a
     factor of 10.
 
     :param file_name: Filename of csv file
