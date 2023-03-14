@@ -93,5 +93,6 @@
 
 * Ninth version of this Python project, containing (added to this version):
 
-	- Improved function for entropy (entropy_scipy) in helper functions module
-	- More to be added
+	- Improved function for entropy in helper_functions module
+	- Variability over array function (variability_maker) in helper_functions module
+	
