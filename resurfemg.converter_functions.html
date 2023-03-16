@@ -177,6 +177,43 @@ EMG data, then the following leads
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.converter_functions.save_j_as_np">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">save_j_as_np</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">made</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.save_j_as_np" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is an implementation of the save_j_as_np_single function in the
+same module which can be run from the commmand-line cli module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the directory with EMG files</p></li>
+<li><p><strong>processed</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the output directory</p></li>
+<li><p><strong>our_chosen_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – the leads selected for the pipeline to run over</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.converter_functions.save_j_as_np_single">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">save_j_as_np_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.save_j_as_np_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes a file in csv format
+where teh sequence is top to bottom
+and changes it
+into the shape the library functions work on,
+then saves it as a numpy file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Filename of csv files</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>arrayed</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -196,6 +233,8 @@ EMG data, then the following leads
 <li><a class="reference internal" href="#resurfemg.converter_functions.matlab5_jkmn_to_array"><code class="docutils literal notranslate"><span class="pre">matlab5_jkmn_to_array()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.converter_functions.poly5unpad"><code class="docutils literal notranslate"><span class="pre">poly5unpad()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.converter_functions.poly_dvrman"><code class="docutils literal notranslate"><span class="pre">poly_dvrman()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.converter_functions.save_j_as_np"><code class="docutils literal notranslate"><span class="pre">save_j_as_np()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.converter_functions.save_j_as_np_single"><code class="docutils literal notranslate"><span class="pre">save_j_as_np_single()</span></code></a></li>
 </ul>
 </li>
 </ul>
