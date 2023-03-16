@@ -100,22 +100,13 @@ def save_j_as_np(
         recursive=True,
     )
     for file_name in file_directory_list:
-        file = pd.read_csv(file_name)
-        new_df = (
-            file.T.reset_index().T.reset_index(drop=True)
-            .set_axis([f'lead.{i+1}' for i in range(file.shape[1])], axis=1)
-        )
-        arrayed = np.rot90(new_df)
-        arrayed = np.flipud(arrayed)
-
         rel_fname = os.path.relpath(file_name, file_directory)
         out_fname = os.path.join(made, rel_fname)
         # check the directory does not exist
         if not (os.path.exists(made)):
             # create the directory you want to save to
             os.mkdir(made)
-
-        np.save(out_fname, arrayed)
+        save_j_as_np_single(file_name)
 
 
 def save_j_as_np_single(file_name):
