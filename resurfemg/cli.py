@@ -17,6 +17,7 @@ from .multi_lead_type import preprocess
 from .ml import applu_model
 from .config import Config
 from .config import make_realistic_syn_emg_cli
+from .converter_functions import save_j_as_np
 
 
 def common(parser):
@@ -107,6 +108,18 @@ def make_parser():
         '''
     )
 
+    save_np = subparsers.add_parser('save_np')
+    save_np.set_defaults(action='save_np')
+    common(save_np)
+    # save_np.add_argument(
+    #     '-N',
+    #     '--number',
+    #     default=1,
+    #     help='''
+    #     Number of synthetic EMG to be made.
+    #     '''
+    # )
+
     ml = subparsers.add_parser('ml')
     ml.set_defaults(action='ml')
     common(ml)
@@ -171,6 +184,17 @@ def main(argv):
                 parsed.preprocessing,
                 config.get_directory('preprocessed', parsed.output),
                 parsed.force,
+            )
+        except Exception as e:
+            logging.exception(e)
+            return 1
+
+    if parsed.action == 'save_np':
+        try:
+
+            save_j_as_np(
+                config.get_directory('data', parsed.input),
+                config.get_directory('made', parsed.output),
             )
         except Exception as e:
             logging.exception(e)

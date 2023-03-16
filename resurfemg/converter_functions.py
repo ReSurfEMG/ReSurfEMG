@@ -8,6 +8,8 @@ an array that can be further processed with helper_functions or other modules.
 """
 
 
+import os
+import glob
 import pandas as pd
 import numpy as np
 import scipy.io as sio
@@ -73,6 +75,71 @@ def csv_from_jkmn_to_array(file_name):
     )
     arrayed = np.rot90(new_df)
     arrayed = np.flipud(arrayed)
+    return arrayed
+
+
+def save_j_as_np(
+    file_directory,
+    made,
+    force=False
+):
+    """
+    This is an implementation of the save_j_as_np_single function in the
+    same module which can be run from the commmand-line cli module.
+
+    :param file_directory: the directory with EMG files
+    :type file_directory: str
+    :param processed: the output directory
+    :type processed: str
+    :param our_chosen_leads: the leads selected for the pipeline to run over
+    :type our_chosen_leads: list
+
+    """
+    file_directory_list = glob.glob(
+        os.path.join(file_directory, '**/*.csv'),
+        recursive=True,
+    )
+    for file_name in file_directory_list:
+        file = pd.read_csv(file_name)
+        new_df = (
+            file.T.reset_index().T.reset_index(drop=True)
+            .set_axis([f'lead.{i+1}' for i in range(file.shape[1])], axis=1)
+        )
+        arrayed = np.rot90(new_df)
+        arrayed = np.flipud(arrayed)
+
+        rel_fname = os.path.relpath(file_name, file_directory)
+        out_fname = os.path.join(made, rel_fname)
+        # check the directory does not exist
+        if not (os.path.exists(made)):
+            # create the directory you want to save to
+            os.mkdir(made)
+
+        np.save(out_fname, arrayed)
+
+
+def save_j_as_np_single(file_name):
+    """
+    This function takes a file in csv format
+    where teh sequence is top to bottom
+    and changes it
+    into the shape the library functions work on,
+    then saves it as a numpy file
+
+    :param file_name: Filename of csv files
+    :type file_name: str
+
+    :returns: arrayed
+    :rtype: ~numpy.ndarray
+    """
+    file = pd.read_csv(file_name)
+    new_df = (
+        file.T.reset_index().T.reset_index(drop=True)
+        .set_axis([f'lead.{i+1}' for i in range(file.shape[1])], axis=1)
+    )
+    arrayed = np.rot90(new_df)
+    arrayed = np.flipud(arrayed)
+    np.save(file_name, arrayed)
     return arrayed
 
 
