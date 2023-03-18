@@ -134,8 +134,8 @@ metadata is available.
    * Linux users can create their own environment by hand (use
      install_dev as in setup).
 
-Option B: In theory if you want to work, but never develop, as a conda user
-   with the stable version create an empty environment, and install
+Option B: In theory if you want to work, but never develop (i.e. add code), as a conda user
+   with the stable (released) version create an empty environment, and install
    there: 
 
 
