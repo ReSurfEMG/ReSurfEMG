@@ -139,18 +139,19 @@ metadata is available.
    with the stable version create an empty environment, and install
    there:
 
-    * Create a blank environment with python pinned to 3.8
+      * Create a blank environment with python pinned to 3.8
 
-      ```sh
-      conda create -n blank python=3.8
-      ```
+        ```sh
+        conda create -n blank python=3.8
+        ```
 
-    * Install within the blank environment:
 
-      ```sh
-      conda activate blank
-      conda install -c conda-forge -c resurfemg resurfemg jupyter ipympl
-      ```
+      * Install within the blank environment:
+
+        ```sh
+        conda activate blank
+        conda install -c conda-forge -c resurfemg resurfemg jupyter ipympl
+        ```
 
 
 
