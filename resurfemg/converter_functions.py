@@ -38,7 +38,7 @@ def matlab5_jkmn_to_array(file_name):
     This file reads matlab5 files as produced in the Jonkman
     laboratory, on the Biopac system
     and returns arrays in the format and shape
-    our functions,those in helper_functions work on.
+    our functions, those in helper_functions work on.
 
     :param file_name: Filename of matlab5 files
     :type file_name: str
@@ -193,7 +193,7 @@ def dvrmn_csv_to_array(file_name):
 def dvrmn_csv_freq_find(file_name):
     """
     This is means to extract the frequency of a Duiverman
-    type csv of emg. Note this data may be resampled down by a
+    type csv of EMG. Note this data may be resampled down by a
     factor of 10.
 
     :param file_name: Filename of csv file
