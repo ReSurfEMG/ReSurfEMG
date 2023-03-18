@@ -109,14 +109,8 @@ docker rm -f test-data
 How to get the notebooks running?  Assuming the raw data set and
 metadata is available.
 
-0. In theory if you want to work, but never develop, as a conda user
-   with the stable version create an empty environment, and install
-   there:
-
-   _NB: at present (February 2023) we do not reccomend this route for
-   any users._
-
-    * Make sure you are in no environment:
+0. Assuming you are using conda for package management:    
+  * Make sure you are in no environment:
 
       ```sh
       conda deactivate
@@ -126,21 +120,10 @@ metadata is available.
 
       You should be in no environment now
 
-    * Create a blank environment with python pinned to 3.8
 
-      ```sh
-      conda create -n blank python=3.8
-      ```
+1. Option A: To work with the most current versions with the possibility for development:
+  Install all Python packages required, using `conda` and the `environment.yml` file. 
 
-    * Install within the blank environment:
-
-      ```sh
-      conda activate blank
-      conda install -c conda-forge -c resurfemg resurfemg jupyter ipympl
-      ```
-
-1. To work with the most current versions: Install all Python packages
-   required, using `conda` and the `environment.yml` file.
 
    * The command for Windows/Anaconda users can be something like:
 
@@ -150,6 +133,23 @@ metadata is available.
 
    * Linux users can create their own environment by hand (use
      install_dev as in setup).
+
+Option B: In theory if you want to work, but never develop, as a conda user
+   with the stable version create an empty environment, and install
+   there: 
+
+
+   * Create a blank environment with python pinned to 3.8:
+
+     ```sh
+     conda create -n blank python=3.8
+     ```
+
+   * Install within the blank environment
+      ```sh
+        conda activate blank
+        conda install -c conda-forge -c resurfemg resurfemg jupyter ipympl
+        ```
 
 2. Open a notebook (we use [Jupyter
    notebooks](https://jupyter.org/try-jupyter/retro/notebooks/?path=notebooks/Intro.ipynb))
@@ -344,7 +344,9 @@ docker run --rm -v $(pwd):/ci \
 ## Command-Line Interface
 
 You will be able to preprocess, train and use models using command-line interface.
-(Some functionality still pending module development completion)
+You can also, in some cases, create files in the correct format for our Dashboard
+in a per folder batch process.
+
 Below is an example of how to do that:
 
 This will pre-process (with the alternative_a_pipeline_multi algorithm) the
@@ -368,6 +370,9 @@ The following will run an ML model over all files:
 
 You can also make synthetic data. To explore this start with
     `python -m resurfemg synth --help`
+You can also make from horizontally formated csv files 
+that can be read by the dashboard. To explore this start with
+    `python -m resurfemg save_np --help`
 The help commandis also available for ml and acquire.
 
 All long options have short aliases.
