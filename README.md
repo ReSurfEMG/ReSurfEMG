@@ -134,42 +134,22 @@ metadata is available.
    * Linux users can create their own environment by hand (use
      install_dev as in setup).
 
-Option B: In theory if you want to work, but never develop, as a conda user
-   with the stable version create an empty environment, and install
-   there: 
+  Option B: In theory if you want to work, but never develop, as a conda user
+    with the stable version create an empty environment, and install
+    there: 
 
 
-   * Create a blank environment with python pinned to 3.8:
+    * Create a blank environment with python pinned to 3.8:
 
-     ```sh
-     conda create -n blank python=3.8
-     ```
-
-   * Install within the blank environment
       ```sh
-        conda activate blank
-        conda install -c conda-forge -c resurfemg resurfemg jupyter ipympl
-        ```
+      conda create -n blank python=3.8
+      ```
 
-  Option B2: In theory if you want to work, but never develop, as a conda user
-   with the stable version create an empty environment, and install
-   there:
-
-    * Create a blank environment with python pinned to 3.8
-
+    * Install within the blank environment
         ```sh
-        conda create -n blank python=3.8
-        ```
-
-
-    * Install within the blank environment:
-
-        ```sh
-        conda activate blank
-        conda install -c conda-forge -c resurfemg resurfemg jupyter ipympl
-        ```
-
-
+          conda activate blank
+          conda install -c conda-forge -c resurfemg resurfemg jupyter ipympl
+          ```
 
 2. Open a notebook (we use [Jupyter
    notebooks](https://jupyter.org/try-jupyter/retro/notebooks/?path=notebooks/Intro.ipynb))
