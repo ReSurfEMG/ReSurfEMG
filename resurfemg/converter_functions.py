@@ -102,6 +102,31 @@ def poly_dvrman(file_name):
     samps = np.vstack([data_samples.samples[:6], data_samples.samples[12:]])
     return samps
 
+def poly_dvrman_new(file_name):
+    """
+    This is a function to read in Duiverman type Poly5 files,
+    which has 18 layers/pseudo-leads,
+    and return an array of the twelve  unprocessed leads
+    for further pre-processing. The leads eliminated
+    were RMS calculated on other leads (leads 6-12) and eliminates RR, HR and tach and EMG abdominal.
+    The expected organization returned is from leads 0-5
+    EMG data, then the following leads
+    # 6 Paw: airway pressure (not always recorded)
+    # 7 Pes: esophageal pressure (not always recorded)
+    # 8 Pga: gastric pressure (not always recorded)
+    # 9 RR: respiratory rate I guess (very unreliable)
+    # 10 HR: heart rate
+    # 11 Tach: number of breath (not reliable)
+
+    :param file_name: Filename of Poly5 Duiverman type file
+    :type file_name: str
+
+    :returns: samps
+    :rtype: ~numpy.ndarray
+    """
+    data_samples = Poly5Reader(file_name)
+    samps = np.vstack([data_samples.samples[:3], data_samples.samples[4:6],  data_samples.samples[12:16]])
+    return samps
 
 def dvrmn_csv_to_array(file_name):
     """
