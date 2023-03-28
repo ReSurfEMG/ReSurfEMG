@@ -13,9 +13,13 @@
 import sys, subprocess
 import os
 
-# TODO(makeda): This is wrong, the resurfemg module needs to have an __init__.py file.
-# Once that happens, the resurfemg component should be removed from this path, and
+# TODO(Eline or Rob): This is wrong, the resurfemg module now has an __init__.py file.
+# The resurfemg component should be removed from this path, and
 # the modules inside resurfemg folder will become its submodules.
+# Example commented below (please check and change):
+
+#
+
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
