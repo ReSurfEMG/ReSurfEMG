@@ -10,7 +10,7 @@ ReSurfEMG contains various notebooks you can use and adapt alongside our package
 
 > #### Entropy
 
->> There are multiple entropy notebooks; this notebook provides [multiple approaches to use entropy for breath detection](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/entropy_eline_near_final.ipynb), using different thresholds and visualization on breath by breath basis, as well as a manual check of breath count. We can use it in various ways to automatically identify inhalation  [using multiple cut-offs](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/widgeted_entropy_updated_june.ipynb) or [a single cutt off](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/widgeted_entropy1.ipynb). Entropy is also used as part of some workflows to determine stegnth of respiratory efforts (listed in a seperate section).
+>> There are multiple entropy notebooks; this notebook provides [multiple approaches to use entropy for breath detection](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/entropy_eline_near_final.ipynb), using different thresholds and visualization on breath by breath basis, as well as a manual check of breath count. We can use it in various ways to automatically identify inhalation  [using multiple cut-offs](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/widgeted_entropy_updated_june.ipynb) or [a single cutt off](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/widgeted_entropy1.ipynb). Entropy is also used as part of some workflows to determine strength of respiratory efforts (listed in a separate section).
 
 > #### Align
 
@@ -27,7 +27,7 @@ ReSurfEMG contains various notebooks you can use and adapt alongside our package
 
 > #### Automated breath analyses
 
->> Our first analyses sought to quantify how many breaths occured based on simple parameters. We do not recconed this approach, but the interfaces for them exists [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/widgeted_breath_experiments.ipynb).
+>> Our first analyses sought to quantify how many breaths occurred based on simple parameters. We do not recommend this approach, but the interfaces for them exists [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/widgeted_breath_experiments.ipynb).
 
 > #### Information loss
 
