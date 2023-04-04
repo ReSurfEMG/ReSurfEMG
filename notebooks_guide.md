@@ -55,32 +55,31 @@ ReSurfEMG contains various notebooks you can use and adapt alongside our package
 
 
 > #### Historical notebooks :ghost:
-> ##### history
 
->> Our [historical notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/historical_notebooks) are basically notebooks we keep around just in case we want to look back on them. If you feel one of these or your own contribution is relevant to the entire community, let us know and we will add it to the researcher interface in a more polished form.
+> Our historical notebooks are basically notebooks we keep around just in case we want to look back on them, or that we are still working on. If you feel one of these or your own contribution is relevant to the entire community, let us know and we will add it to the researcher interface in a more polished form.
 
-These notebooks are:
+> These notebooks are:
 
->>> * [a lag lead mismatch with downsampling](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/historical_notebooks/lag_lead_match_downsample_BAD.ipynb)
->>> * [another lag lead mismatch with downsampling](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/historical_notebooks/lag_lead_match.ipynb)
->>> * [another lag lead mismatch with downsampling](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/historical_notebooks/lag_lead_match.ipynb)
->>> * [amplitude exploration](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/amplitude_exploration.ipynb)
->>> * [area under curve work](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/area_under_curve_work.ipynb)
->>> * [breath detection variability](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/breath_detection_variability.ipynb)
->>> * [another breath detection variability](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/breath_detection_variability_nb.ipynb)
->>> * [distances](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/distances.ipynb)
->>> * [ECG puller](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ecg_puller.ipynb)
->>> * [entropy cycler](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/entropy_cycler.ipynb)
->>> * [entropy testing](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/entropy_tests.ipynb)
->>> * [file reading](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/file_reading.ipynb)
->>> * [ica comparison](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ica_comparison-Copy1.ipynb)
->>> * [ica remix function](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ica_remix_function.ipynb)
->>> * [ml inf loop](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ml_inf_loop.ipynb)
->>> * [ml model creation](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ml_model_creation_111.ipynb)
->>> * [n array](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/n_array.ipynb)
->>> * [notes on nans](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/notes_on_nans.ipynb)
->>> * [synthetic ECG maker](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/synthetic_ecg_maker.ipynb)
->>> * [time smooth and slope](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/time_smooth_and_slope.ipynb)
->>> * [various ICA examples](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/various_ICA_examples.ipynb)
->>> * [example of bad working ICA](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/why_n_ICA_is_bad.ipynb)
->>> * [widgeted baseline experiments](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/widgeted_baseline_experiments.ipynb)
+>> * [a lag lead mismatch with downsampling](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/historical_notebooks/lag_lead_match_downsample_BAD.ipynb)
+>> * [another lag lead mismatch with downsampling](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/historical_notebooks/lag_lead_match.ipynb)
+>> * [another lag lead mismatch with downsampling](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/historical_notebooks/lag_lead_match.ipynb)
+>> * [amplitude exploration](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/amplitude_exploration.ipynb)
+>> * [area under curve work](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/area_under_curve_work.ipynb)
+>> * [breath detection variability](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/breath_detection_variability.ipynb)
+>> * [another breath detection variability](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/breath_detection_variability_nb.ipynb)
+>> * [distances](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/distances.ipynb)
+>> * [ECG puller](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ecg_puller.ipynb)
+>> * [entropy cycler](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/entropy_cycler.ipynb)
+>> * [entropy testing](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/entropy_tests.ipynb)
+>> * [file reading](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/file_reading.ipynb)
+>> * [ica comparison](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ica_comparison-Copy1.ipynb)
+>> * [ica remix function](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ica_remix_function.ipynb)
+>> * [ml inf loop](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ml_inf_loop.ipynb)
+>> * [ml model creation](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ml_model_creation_111.ipynb)
+>> * [n array](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/n_array.ipynb)
+>> * [notes on nans](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/notes_on_nans.ipynb)
+>> * [synthetic ECG maker](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/synthetic_ecg_maker.ipynb)
+>> * [time smooth and slope](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/time_smooth_and_slope.ipynb)
+>> * [various ICA examples](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/various_ICA_examples.ipynb)
+>> * [example of bad working ICA](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/why_n_ICA_is_bad.ipynb)
+>> * [widgeted baseline experiments](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/widgeted_baseline_experiments.ipynb)
