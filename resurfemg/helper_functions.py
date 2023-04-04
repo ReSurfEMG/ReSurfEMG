@@ -1642,9 +1642,6 @@ def sampen(
         tolerance=None,
         dist=rowwise_chebyshev,
         closed=False,
-        debug_plot=False,
-        debug_data=False,
-        plot_file=None
 ):
     """
     The following code is adapted from openly licensed code written by
@@ -1675,14 +1672,6 @@ def sampen(
         if True, will check for vector pairs whose distance is in the closed
         interval [0, r] (less or equal to r), otherwise the open interval
         [0, r) (less than r) will be used
-        debug_plot (boolean):
-        if True, a histogram of the individual distances for m and m+1
-        debug_data (boolean):
-        if True, debugging data will be returned alongside the result
-        plot_file (str):
-        if debug_plot is True and plot_file is not None, the plot will be saved
-        under the given file name instead of directly showing it through
-        ``plt.show()``
     Returns:
         float:
         the sample entropy of the data (negative logarithm of ratio between
@@ -1720,19 +1709,15 @@ def sampen(
     # 1 and thus does
     # not count towards the conditional probability
     # (otherwise first dimension would be n-emb_dim+1 and not n-emb_dim)
-    tVecs = delay_embedding(np.asarray(data), emb_dim+1, lag=1)
-    plot_data = []
+    t_vecs = delay_embedding(np.asarray(data), emb_dim + 1, lag=1)
     counts = []
     for m in [emb_dim, emb_dim + 1]:
         counts.append(0)
-        plot_data.append([])
         # get the matrix that we need for the current m
-        tVecsM = tVecs[:n - m + 1, :m]
+        t_vecs_m = t_vecs[:n - m + 1, :m]
         # successively calculate distances between each pair of templ vectrs
-        for i in range(len(tVecsM) - 1):
-            dsts = dist(tVecsM[i + 1:], tVecsM[i])
-        if debug_plot or debug_data:
-            plot_data[-1].extend(dsts)
+        for i in range(len(t_vecs_m) - 1):
+            dsts = dist(t_vecs_m[i + 1:], t_vecs_m[i])
         # count how many distances are smaller than the tolerance
         if closed:
             counts[-1] += np.sum(dsts <= tolerance)
@@ -1748,13 +1733,14 @@ def sampen(
         if counts[1] == 0:
             zcounts.append("emb_dim + 1")
         print_message = (
-            "Zero vectors are within tolerance for %s. "
-            + "Consider raising tolerance parameter to avoid %s result."
+            "Zero vectors are within tolerance for {}. "
+            "Consider raising tolerance parameter to avoid {} result."
         )
         warnings.warn(
-
-            print_message
-            % (" and ".join(zcounts), "NaN" if len(zcounts) == 2 else "inf"),
+            print_message.format(
+                " and ".join(zcounts),
+                "NaN" if len(zcounts) == 2 else "inf",
+            ),
             RuntimeWarning
         )
         if counts[0] == 0 and counts[1] == 0:
@@ -1763,14 +1749,7 @@ def sampen(
             saen = -np.inf
         else:
             saen = np.inf
-    # if debug_plot:
-    #     plot_dists(
-    # plot_data, tolerance, m, title="sampEn = {:.3f}".format(saen),
-    #             fname=plot_file)
-    if debug_data:
-        return (saen, counts, plot_data)
-    else:
-        return saen
+    return saen
 
 
 def entropy_maker(

@@ -24,6 +24,8 @@ limitations under the License.
 
 """
 
+import logging
+
 import numpy as np
 import struct
 import datetime
@@ -47,7 +49,7 @@ class Poly5Reader:
 
         self.filename = filename
         self.readAll = readAll
-        print('Reading file ', filename)
+        logging.info('Reading file %s', filename)
         self._readFile(filename)
 
     def read_data_MNE(self,) -> mne.io.RawArray:
@@ -180,7 +182,7 @@ class Poly5Reader:
                 s._Channel__unit_name for s in self.channels
             ]
             self.samples = samples
-            print('Done reading data.')
+            logging.info('Done reading data.')
             self.file_obj.close()
 
     def readSamples(self, n_blocks=None):
@@ -226,13 +228,13 @@ class Poly5Reader:
         self.num_data_blocks = header_data[15]
         self.num_samples_per_block = header_data[16]
         if magic_number != "b'POLY SAMPLE FILEversion 2.03\\r\\n\\x1a'":
-            print('This is not a Poly5 file.')
+            loggin.info('This is not a Poly5 file.')
         elif version_number != 203:
-            print('Version number of file is invalid.')
+            logging.info('Version number of file is invalid.')
         else:
-            print('\t Number of samples:  %s ' % self.num_samples)
-            print('\t Number of channels:  %s ' % self.num_channels)
-            print('\t Sample rate: %s Hz' % self.sample_rate)
+            logging.info('Number of samples: %s', self.num_samples)
+            logging.info('Number of channels: %s', self.num_channels)
+            logging.info('Sample rate: %s Hz', self.sample_rate)
 
     def _readSignalDescription(self, f):
         chan_list = []
