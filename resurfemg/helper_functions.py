@@ -1599,3 +1599,192 @@ def variability_maker(
         variability_array = np.hstack((values_out, last_values_avg))
 
     return variability_array
+
+
+def rowwise_chebyshev(x, y):
+    return np.max(np.abs(x - y), axis=1)
+
+
+def delay_embedding(data, emb_dim, lag=1):
+    """
+    The following code is adapted from openly licensed code written by
+    Christopher Schölzel in his package nolds
+    (NOnLinear measures for Dynamical Systems).
+    It performs a time-delay embedding of a time series
+
+    :param data: array-like
+    :type data: array
+    :param emb_dim: the embedded dimension
+    :type emb_dim: int
+    :param lag: the lag between elements in the embedded vectors
+    :type lag: int
+
+    :returns: matrix_vectors
+    :rtype: ~nd.array
+    """
+    data = np.asarray(data)
+    min_len = (emb_dim - 1) * lag + 1
+    if len(data) < min_len:
+        msg = "cannot embed data of length {} with embedding dimension {} " \
+            + "and lag {}, minimum required length is {}"
+        raise ValueError(msg.format(len(data), emb_dim, lag, min_len))
+    m = len(data) - min_len + 1
+    indices = np.repeat([np.arange(emb_dim) * lag], m, axis=0)
+    indices += np.arange(m).reshape((m, 1))
+    matrix_vectors = data[indices]
+    return matrix_vectors
+
+
+def sampen(
+        data,
+        emb_dim=2,
+        tolerance=None,
+        dist=rowwise_chebyshev,
+        closed=False,
+        debug_plot=False,
+        debug_data=False,
+        plot_file=None
+):
+    """
+    The following code is adapted from openly licensed code written by
+    Christopher Schölzel in his package
+    nolds (NOnLinear measures for Dynamical Systems).
+    It computes the sample entropy of time sequence data.
+    Reference:
+        .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
+        analysis using approximate entropy and sample entropy,”
+        American Journal of Physiology-Heart and Circulatory Physiology,
+        vol. 278, no. 6, pp. H2039–H2049, 2000.
+
+    Args:
+        data (array-like of float):
+        input data
+    Kwargs:
+        emb_dim (int):
+        the embedding dimension (length of vectors to compare)
+        tolerance (float):
+        distance threshold for two template vectors to be considered equal
+        (default: 0.2 * std(data) at emb_dim = 2, corrected for
+        dimension effect for other values of emb_dim)
+        dist (function (2d-array, 1d-array) -> 1d-array):
+        distance function used to calculate the distance between template
+        vectors. Sampen is defined using ``rowwise_chebyshev``. You should only
+        use something else, if you are sure that you need it.
+        closed (boolean):
+        if True, will check for vector pairs whose distance is in the closed
+        interval [0, r] (less or equal to r), otherwise the open interval
+        [0, r) (less than r) will be used
+        debug_plot (boolean):
+        if True, a histogram of the individual distances for m and m+1
+        debug_data (boolean):
+        if True, debugging data will be returned alongside the result
+        plot_file (str):
+        if debug_plot is True and plot_file is not None, the plot will be saved
+        under the given file name instead of directly showing it through
+        ``plt.show()``
+    Returns:
+        float:
+        the sample entropy of the data (negative logarithm of ratio between
+        similar template vectors of length emb_dim + 1 and emb_dim)
+        [c_m, c_m1]:
+        list of two floats: count of similar template vectors of length emb_dim
+        (c_m) and of length emb_dim + 1 (c_m1)
+        [float list, float list]:
+        Lists of lists of the form ``[dists_m, dists_m1]`` containing the
+        distances between template vectors for m (dists_m)
+        and for m + 1 (dists_m1).
+    """
+    data = np.asarray(data)
+
+    if tolerance is None:
+        lint_helper = (0.5627 * np.log(emb_dim) + 1.3334)
+        tolerance = np.std(data, ddof=1) * 0.1164 * lint_helper
+    n = len(data)
+
+    # build matrix of "template vectors"
+    # (all consecutive subsequences of length m)
+    # x0 x1 x2 x3 ... xm-1
+    # x1 x2 x3 x4 ... xm
+    # x2 x3 x4 x5 ... xm+1
+    # ...
+    # x_n-m-1     ... xn-1
+
+    # since we need two of these matrices for m = emb_dim and
+    #  m = emb_dim +1,
+    # we build one that is large enough => shape (emb_dim+1, n-emb_dim)
+
+    # note that we ignore the last possible template vector with
+    #  length emb_dim,
+    # because this vector has no corresponding vector of length m+
+    # 1 and thus does
+    # not count towards the conditional probability
+    # (otherwise first dimension would be n-emb_dim+1 and not n-emb_dim)
+    tVecs = delay_embedding(np.asarray(data), emb_dim+1, lag=1)
+    plot_data = []
+    counts = []
+    for m in [emb_dim, emb_dim + 1]:
+        counts.append(0)
+        plot_data.append([])
+        # get the matrix that we need for the current m
+        tVecsM = tVecs[:n - m + 1, :m]
+        # successively calculate distances between each pair of templ vectrs
+        for i in range(len(tVecsM) - 1):
+            dsts = dist(tVecsM[i + 1:], tVecsM[i])
+        if debug_plot or debug_data:
+            plot_data[-1].extend(dsts)
+        # count how many distances are smaller than the tolerance
+        if closed:
+            counts[-1] += np.sum(dsts <= tolerance)
+        else:
+            counts[-1] += np.sum(dsts < tolerance)
+    if counts[0] > 0 and counts[1] > 0:
+        saen = -np.log(1.0 * counts[1] / counts[0])
+    else:
+        # log would be infinite or undefined => cannot determine saen
+        zcounts = []
+        if counts[0] == 0:
+            zcounts.append("emb_dim")
+        if counts[1] == 0:
+            zcounts.append("emb_dim + 1")
+        warnings.warn(
+            (
+                "Zero vectors are within tolerance for %s. "
+            ) % (" and ".join(zcounts), "NaN" if len(zcounts) == 2 else "inf"),
+            RuntimeWarning
+        )
+        if counts[0] == 0 and counts[1] == 0:
+            saen = np.nan
+        elif counts[0] == 0:
+            saen = -np.inf
+        else:
+            saen = np.inf
+    # if debug_plot:
+    #     plot_dists(
+    # plot_data, tolerance, m, title="sampEn = {:.3f}".format(saen),
+    #             fname=plot_file)
+    if debug_data:
+        return (saen, counts, plot_data)
+    else:
+        return saen
+
+
+def entropy_maker(
+        array,
+        method='nolds',
+        base=None,
+):
+    """
+    The following code allows a user to input an array and calculate either
+    a time-series specific entropy i.e. the nolds or a more general
+    Shannon entropy as calculated in scipy.
+    It calls entropy functions in the file.
+
+    """
+    if method == 'scipy':
+        output = entropy_scipy(array, base=base)
+    elif method == 'nolds':
+        output = sampen(array)
+    else:
+        print('your method is not an option, we have defaulted to noal')
+        output = sampen(array)
+    return output
