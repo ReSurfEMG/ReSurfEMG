@@ -60,9 +60,6 @@ ReSurfEMG contains various notebooks you can use and adapt alongside our package
 
 > These notebooks are:
 
->> * [a lag lead mismatch with downsampling](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/historical_notebooks/lag_lead_match_downsample_BAD.ipynb)
->> * [another lag lead mismatch with downsampling](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/historical_notebooks/lag_lead_match.ipynb)
->> * [another lag lead mismatch with downsampling](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/historical_notebooks/lag_lead_match.ipynb)
 >> * [amplitude exploration](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/amplitude_exploration.ipynb)
 >> * [area under curve work](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/area_under_curve_work.ipynb)
 >> * [breath detection variability](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/breath_detection_variability.ipynb)
