@@ -11,6 +11,7 @@ and other types of data arrays e.g. ventilator signals.
 import collections
 from collections import namedtuple
 import math
+import warnings
 from math import log, e
 import copy
 import scipy
@@ -1746,10 +1747,14 @@ def sampen(
             zcounts.append("emb_dim")
         if counts[1] == 0:
             zcounts.append("emb_dim + 1")
+        print_message = (
+            "Zero vectors are within tolerance for %s. "
+            + "Consider raising tolerance parameter to avoid %s result."
+        )
         warnings.warn(
-            (
-                "Zero vectors are within tolerance for %s. "
-            ) % (" and ".join(zcounts), "NaN" if len(zcounts) == 2 else "inf"),
+
+            print_message
+            % (" and ".join(zcounts), "NaN" if len(zcounts) == 2 else "inf"),
             RuntimeWarning
         )
         if counts[0] == 0 and counts[1] == 0:
