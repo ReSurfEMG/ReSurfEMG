@@ -211,6 +211,16 @@ values but returns only the array.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.calc_closed_sampent">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">calc_closed_sampent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_vecs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.calc_closed_sampent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.calc_open_sampent">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">calc_open_sampent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_vecs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.calc_open_sampent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.compute_ICA_two_comp">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">compute_ICA_two_comp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_samples</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.compute_ICA_two_comp" title="Permalink to this definition">¶</a></dt>
 <dd><p>A function that performs an independent component analysis
@@ -292,6 +302,30 @@ on a time series array that has been reduced down to a binary
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.delay_embedding">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">delay_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.delay_embedding" title="Permalink to this definition">¶</a></dt>
+<dd><p>The following code is adapted from openly licensed code written by
+Christopher Schölzel in his package nolds
+(NOnLinear measures for Dynamical Systems).
+It performs a time-delay embedding of a time series</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array</em>) – array-like</p></li>
+<li><p><strong>emb_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the embedded dimension</p></li>
+<li><p><strong>lag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the lag between elements in the embedded vectors</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>matrix_vectors</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>array</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -424,6 +458,15 @@ very small numbers.</p>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.entropy_maker">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">entropy_maker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nolds'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.entropy_maker" title="Permalink to this definition">¶</a></dt>
+<dd><p>The following code allows a user to input an array and calculate either
+a time-series specific entropy i.e. the nolds or a more general
+Shannon entropy as calculated in scipy.
+It calls entropy functions in the file.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -804,9 +847,124 @@ of signal length</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.rowwise_chebyshev">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">rowwise_chebyshev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.rowwise_chebyshev" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.running_smoother">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">running_smoother</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.running_smoother" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is the smoother to use in time calculations</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.sampen">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">sampen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim=2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist=&lt;function</span> <span class="pre">rowwise_chebyshev&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.sampen" title="Permalink to this definition">¶</a></dt>
+<dd><p>The following code is adapted from openly licensed code written by
+Christopher Schölzel in his package
+nolds (NOnLinear measures for Dynamical Systems).
+It computes the sample entropy of time sequence data.
+Returns
+the sample entropy of the data (negative logarithm of ratio between
+similar template vectors of length emb_dim + 1 and emb_dim)
+[c_m, c_m1]:
+list of two floats: count of similar template vectors of length emb_dim
+(c_m) and of length emb_dim + 1 (c_m1)
+[float list, float list]:
+Lists of lists of the form <code class="docutils literal notranslate"><span class="pre">[dists_m,</span> <span class="pre">dists_m1]</span></code> containing the
+distances between template vectors for m (dists_m)
+and for m + 1 (dists_m1).
+Reference
+.. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
+analysis using approximate entropy and sample entropy,”
+American Journal of Physiology-Heart and Circulatory Physiology,
+vol. 278, no. 6, pp. H2039-H2049, 2000.</p>
+<p>Kwargs are
+emb_dim (int):
+the embedding dimension (length of vectors to compare)
+tolerance (float):
+distance threshold for two template vectors to be considered equal
+(default: 0.2 * std(data) at emb_dim = 2, corrected for
+dimension effect for other values of emb_dim)
+dist (function (2d-array, 1d-array) -&gt; 1d-array):
+distance function used to calculate the distance between template
+vectors. Sampen is defined using <code class="docutils literal notranslate"><span class="pre">rowwise_chebyshev</span></code>. You should only
+use something else, if you are sure that you need it.
+closed (boolean):
+if True, will check for vector pairs whose distance is in the closed
+interval [0, r] (less or equal to r), otherwise the open interval
+[0, r) (less than r) will be used</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array</em>) – array-like</p></li>
+<li><p><strong>emb_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the embedded dimension</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – distance threshold for two template vectors</p></li>
+<li><p><strong>distance</strong> (<em>function</em>) – function to calculate distance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>saen</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.sampen_optimized">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">sampen_optimized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.sampen_optimized" title="Permalink to this definition">¶</a></dt>
+<dd><p>The following code is adapted from openly licensed code written by
+Christopher Schölzel in his package
+nolds (NOnLinear measures for Dynamical Systems).
+It computes the sample entropy of time sequence data.
+Returns
+the sample entropy of the data (negative logarithm of ratio between
+similar template vectors of length emb_dim + 1 and emb_dim)
+[c_m, c_m1]:
+list of two floats: count of similar template vectors of length emb_dim
+(c_m) and of length emb_dim + 1 (c_m1)
+[float list, float list]:
+Lists of lists of the form <code class="docutils literal notranslate"><span class="pre">[dists_m,</span> <span class="pre">dists_m1]</span></code> containing the
+distances between template vectors for m (dists_m)
+and for m + 1 (dists_m1).
+Reference:
+.. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
+analysis using approximate entropy and sample entropy,”
+American Journal of Physiology-Heart and Circulatory Physiology,
+vol. 278, no. 6, pp. H2039–H2049, 2000.</p>
+<p>Kwargs are
+emb_dim (int):
+the embedding dimension (length of vectors to compare)
+tolerance (float):
+distance threshold for two template vectors to be considered equal
+(default: 0.2 * std(data) at emb_dim = 2, corrected for
+dimension effect for other values of emb_dim)
+dist (function (2d-array, 1d-array) -&gt; 1d-array):
+distance function used to calculate the distance between template
+vectors. Sampen is defined using <code class="docutils literal notranslate"><span class="pre">rowwise_chebyshev</span></code>. You should only
+use something else, if you are sure that you need it.
+closed (boolean):
+if True, will check for vector pairs whose distance is in the closed
+interval [0, r] (less or equal to r), otherwise the open interval
+[0, r) (less than r) will be used</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array</em>) – array-like</p></li>
+<li><p><strong>emb_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the embedded dimension</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – distance threshold for two template vectors</p></li>
+<li><p><strong>distance</strong> (<em>function</em>) – function to calculate distance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>saen</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1140,16 +1298,20 @@ on a cut-off value.</p>
 <li><a class="reference internal" href="#resurfemg.helper_functions.bad_end_cutter"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.bad_end_cutter_better"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter_better()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.bad_end_cutter_for_samples"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter_for_samples()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.calc_closed_sampent"><code class="docutils literal notranslate"><span class="pre">calc_closed_sampent()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.calc_open_sampent"><code class="docutils literal notranslate"><span class="pre">calc_open_sampent()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.compute_ICA_two_comp"><code class="docutils literal notranslate"><span class="pre">compute_ICA_two_comp()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.compute_ICA_two_comp_multi"><code class="docutils literal notranslate"><span class="pre">compute_ICA_two_comp_multi()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.compute_power_loss"><code class="docutils literal notranslate"><span class="pre">compute_power_loss()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.count_decision_array"><code class="docutils literal notranslate"><span class="pre">count_decision_array()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.delay_embedding"><code class="docutils literal notranslate"><span class="pre">delay_embedding()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.distance_matrix"><code class="docutils literal notranslate"><span class="pre">distance_matrix()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.emg_bandpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_bandpass_butter()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.emg_bandpass_butter_sample"><code class="docutils literal notranslate"><span class="pre">emg_bandpass_butter_sample()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.emg_highpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_highpass_butter()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.emg_lowpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_lowpass_butter()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.entropical"><code class="docutils literal notranslate"><span class="pre">entropical()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.entropy_maker"><code class="docutils literal notranslate"><span class="pre">entropy_maker()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.entropy_scipy"><code class="docutils literal notranslate"><span class="pre">entropy_scipy()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.find_peak_in_breath"><code class="docutils literal notranslate"><span class="pre">find_peak_in_breath()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.find_peaks_in_ecg_signal"><code class="docutils literal notranslate"><span class="pre">find_peaks_in_ecg_signal()</span></code></a></li>
@@ -1168,7 +1330,10 @@ on a cut-off value.</p>
 <li><a class="reference internal" href="#resurfemg.helper_functions.ranges_of"><code class="docutils literal notranslate"><span class="pre">ranges_of()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.raw_overlap_percent"><code class="docutils literal notranslate"><span class="pre">raw_overlap_percent()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.relative_levenshtein"><code class="docutils literal notranslate"><span class="pre">relative_levenshtein()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.rowwise_chebyshev"><code class="docutils literal notranslate"><span class="pre">rowwise_chebyshev()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.running_smoother"><code class="docutils literal notranslate"><span class="pre">running_smoother()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.sampen"><code class="docutils literal notranslate"><span class="pre">sampen()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.sampen_optimized"><code class="docutils literal notranslate"><span class="pre">sampen_optimized()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.scale_arrays"><code class="docutils literal notranslate"><span class="pre">scale_arrays()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.show_my_power_spectrum"><code class="docutils literal notranslate"><span class="pre">show_my_power_spectrum()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.simple_area_under_curve"><code class="docutils literal notranslate"><span class="pre">simple_area_under_curve()</span></code></a></li>
