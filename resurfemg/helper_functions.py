@@ -1658,11 +1658,11 @@ def sampen(
     Lists of lists of the form ``[dists_m, dists_m1]`` containing the
     distances between template vectors for m (dists_m)
     and for m + 1 (dists_m1).
-    Reference:
-        .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
-        analysis using approximate entropy and sample entropy,”
-        American Journal of Physiology-Heart and Circulatory Physiology,
-        vol. 278, no. 6, pp. H2039–H2049, 2000.
+    Reference
+    .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
+    analysis using approximate entropy and sample entropy,”
+    American Journal of Physiology-Heart and Circulatory Physiology,
+    vol. 278, no. 6, pp. H2039-H2049, 2000.
 
     Kwargs are
     emb_dim (int):
@@ -1783,10 +1783,10 @@ def sampen_optimized(
     distances between template vectors for m (dists_m)
     and for m + 1 (dists_m1).
     Reference:
-        .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
-        analysis using approximate entropy and sample entropy,”
-        American Journal of Physiology-Heart and Circulatory Physiology,
-        vol. 278, no. 6, pp. H2039–H2049, 2000.
+    .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
+    analysis using approximate entropy and sample entropy,”
+    American Journal of Physiology-Heart and Circulatory Physiology,
+    vol. 278, no. 6, pp. H2039–H2049, 2000.
 
     Kwargs are
     emb_dim (int):
