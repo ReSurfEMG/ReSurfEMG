@@ -1876,6 +1876,35 @@ def sampen_optimized(
     return saen
 
 
+def calc_closed_sampent(emb_dim, t_vecs):
+    counts = []
+    for m in (emb_dim, emb_dim + 1):
+        counts.append(0)
+        # get the matrix that we need for the current m
+        t_vecs_m = t_vecs[:n - m + 1, :m]
+        # successively calculate distances between each pair of templ vectrs
+        for i in range(len(t_vecs_m) - 1):
+            dsts = dist(t_vecs_m[i + 1:], t_vecs_m[i])
+            # count how many distances are smaller than the tolerance
+            counts[-1] += np.sum(dsts <= tolerance)
+    return counts
+
+
+def calc_open_sampent(emb_dim, t_vecs):
+    # TODO
+    counts = []
+    for m in [emb_dim, emb_dim + 1]:
+        counts.append(0)
+        # get the matrix that we need for the current m
+        t_vecs_m = t_vecs[:n - m + 1, :m]
+        # successively calculate distances between each pair of templ vectrs
+        for i in range(len(t_vecs_m) - 1):
+            dsts = dist(t_vecs_m[i + 1:], t_vecs_m[i])
+            # count how many distances are smaller than the tolerance
+            counts[-1] += np.sum(dsts < tolerance)
+    return counts
+
+
 def entropy_maker(
         array,
         method='nolds',
