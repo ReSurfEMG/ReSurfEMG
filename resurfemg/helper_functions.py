@@ -1648,41 +1648,49 @@ def sampen(
     Christopher Schölzel in his package
     nolds (NOnLinear measures for Dynamical Systems).
     It computes the sample entropy of time sequence data.
+    Returns
+    the sample entropy of the data (negative logarithm of ratio between
+    similar template vectors of length emb_dim + 1 and emb_dim)
+    [c_m, c_m1]:
+    list of two floats: count of similar template vectors of length emb_dim
+    (c_m) and of length emb_dim + 1 (c_m1)
+    [float list, float list]:
+    Lists of lists of the form ``[dists_m, dists_m1]`` containing the
+    distances between template vectors for m (dists_m)
+    and for m + 1 (dists_m1).
     Reference:
         .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
         analysis using approximate entropy and sample entropy,”
         American Journal of Physiology-Heart and Circulatory Physiology,
         vol. 278, no. 6, pp. H2039–H2049, 2000.
 
-    Args:
-        data (array-like of float):
-        input data
-    Kwargs:
-        emb_dim (int):
-        the embedding dimension (length of vectors to compare)
-        tolerance (float):
-        distance threshold for two template vectors to be considered equal
-        (default: 0.2 * std(data) at emb_dim = 2, corrected for
-        dimension effect for other values of emb_dim)
-        dist (function (2d-array, 1d-array) -> 1d-array):
-        distance function used to calculate the distance between template
-        vectors. Sampen is defined using ``rowwise_chebyshev``. You should only
-        use something else, if you are sure that you need it.
-        closed (boolean):
-        if True, will check for vector pairs whose distance is in the closed
-        interval [0, r] (less or equal to r), otherwise the open interval
-        [0, r) (less than r) will be used
-    Returns:
-        float:
-        the sample entropy of the data (negative logarithm of ratio between
-        similar template vectors of length emb_dim + 1 and emb_dim)
-        [c_m, c_m1]:
-        list of two floats: count of similar template vectors of length emb_dim
-        (c_m) and of length emb_dim + 1 (c_m1)
-        [float list, float list]:
-        Lists of lists of the form ``[dists_m, dists_m1]`` containing the
-        distances between template vectors for m (dists_m)
-        and for m + 1 (dists_m1).
+    Kwargs are
+    emb_dim (int):
+    the embedding dimension (length of vectors to compare)
+    tolerance (float):
+    distance threshold for two template vectors to be considered equal
+    (default: 0.2 * std(data) at emb_dim = 2, corrected for
+    dimension effect for other values of emb_dim)
+    dist (function (2d-array, 1d-array) -> 1d-array):
+    distance function used to calculate the distance between template
+    vectors. Sampen is defined using ``rowwise_chebyshev``. You should only
+    use something else, if you are sure that you need it.
+    closed (boolean):
+    if True, will check for vector pairs whose distance is in the closed
+    interval [0, r] (less or equal to r), otherwise the open interval
+    [0, r) (less than r) will be used
+
+    :param data: array-like
+    :type data: array
+    :param emb_dim: the embedded dimension
+    :type emb_dim: int
+    :param tolerance: distance threshold for two template vectors
+    :type tolerance: float
+    :param distance: function to calculate distance
+    :type distance: function
+
+    :returns: saen
+    :rtype: float
     """
     data = np.asarray(data)
 
@@ -1759,42 +1767,54 @@ def sampen_optimized(
         closed=False,
 ):
     """
+
     The following code is adapted from openly licensed code written by
     Christopher Schölzel in his package
     nolds (NOnLinear measures for Dynamical Systems).
     It computes the sample entropy of time sequence data.
+    Returns
+    the sample entropy of the data (negative logarithm of ratio between
+    similar template vectors of length emb_dim + 1 and emb_dim)
+    [c_m, c_m1]:
+    list of two floats: count of similar template vectors of length emb_dim
+    (c_m) and of length emb_dim + 1 (c_m1)
+    [float list, float list]:
+    Lists of lists of the form ``[dists_m, dists_m1]`` containing the
+    distances between template vectors for m (dists_m)
+    and for m + 1 (dists_m1).
     Reference:
         .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
         analysis using approximate entropy and sample entropy,”
         American Journal of Physiology-Heart and Circulatory Physiology,
         vol. 278, no. 6, pp. H2039–H2049, 2000.
 
-    Args:
-        data (array-like of float):
-        input data
-    Kwargs:
-        emb_dim (int):
-        the embedding dimension (length of vectors to compare)
-        tolerance (float):
-        distance threshold for two template vectors to be considered equal
-        (default: 0.2 * std(data) at emb_dim = 2, corrected for
-        dimension effect for other values of emb_dim)
-        use something else, if you are sure that you need it.
-        closed (boolean):
-        if True, will check for vector pairs whose distance is in the closed
-        interval [0, r] (less or equal to r), otherwise the open interval
-        [0, r) (less than r) will be used
-    Returns:
-        float:
-        the sample entropy of the data (negative logarithm of ratio between
-        similar template vectors of length emb_dim + 1 and emb_dim)
-        [c_m, c_m1]:
-        list of two floats: count of similar template vectors of length emb_dim
-        (c_m) and of length emb_dim + 1 (c_m1)
-        [float list, float list]:
-        Lists of lists of the form ``[dists_m, dists_m1]`` containing the
-        distances between template vectors for m (dists_m)
-        and for m + 1 (dists_m1).
+    Kwargs are
+    emb_dim (int):
+    the embedding dimension (length of vectors to compare)
+    tolerance (float):
+    distance threshold for two template vectors to be considered equal
+    (default: 0.2 * std(data) at emb_dim = 2, corrected for
+    dimension effect for other values of emb_dim)
+    dist (function (2d-array, 1d-array) -> 1d-array):
+    distance function used to calculate the distance between template
+    vectors. Sampen is defined using ``rowwise_chebyshev``. You should only
+    use something else, if you are sure that you need it.
+    closed (boolean):
+    if True, will check for vector pairs whose distance is in the closed
+    interval [0, r] (less or equal to r), otherwise the open interval
+    [0, r) (less than r) will be used
+
+    :param data: array-like
+    :type data: array
+    :param emb_dim: the embedded dimension
+    :type emb_dim: int
+    :param tolerance: distance threshold for two template vectors
+    :type tolerance: float
+    :param distance: function to calculate distance
+    :type distance: function
+
+    :returns: saen
+    :rtype: float
     """
     data = np.asarray(data)
 
