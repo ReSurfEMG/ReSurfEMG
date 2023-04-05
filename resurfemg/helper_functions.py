@@ -28,6 +28,8 @@ import textdistance
 import pandas as pd
 import logging
 
+import time
+
 
 class Range(namedtuple('RangeBase', 'start,end')):
 
@@ -1754,7 +1756,6 @@ def sampen(
 
 def sampen_optimized(
         data,
-        emb_dim=2,
         tolerance=None,
         closed=False,
 ):
@@ -1773,8 +1774,6 @@ def sampen_optimized(
         data (array-like of float):
         input data
     Kwargs:
-        emb_dim (int):
-        the embedding dimension (length of vectors to compare)
         tolerance (float):
         distance threshold for two template vectors to be considered equal
         (default: 0.2 * std(data) at emb_dim = 2, corrected for
@@ -1797,45 +1796,28 @@ def sampen_optimized(
         and for m + 1 (dists_m1).
     """
     data = np.asarray(data)
-
     if tolerance is None:
-        lint_helper = (0.5627 * np.log(emb_dim) + 1.3334)
+        lint_helper = (0.5627 * np.log(2) + 1.3334)
         tolerance = np.std(data, ddof=1) * 0.1164 * lint_helper
     n = len(data)
 
-    # build matrix of "template vectors"
-    # (all consecutive subsequences of length m)
-    # x0 x1 x2 x3 ... xm-1
-    # x1 x2 x3 x4 ... xm
-    # x2 x3 x4 x5 ... xm+1
-    # ...
-    # x_n-m-1     ... xn-1
+    # TODO(wvxvw): This can be done with just using NumPy
+    t_vecs = delay_embedding(np.asarray(data), 3, lag=1)
 
-    # since we need two of these matrices for m = emb_dim and
-    #  m = emb_dim +1,
-    # we build one that is large enough => shape (emb_dim+1, n-emb_dim)
-
-    # note that we ignore the last possible template vector with
-    #  length emb_dim,
-    # because this vector has no corresponding vector of length m+
-    # 1 and thus does
-    # not count towards the conditional probability
-    # (otherwise first dimension would be n-emb_dim+1 and not n-emb_dim)
-    t_vecs = delay_embedding(np.asarray(data), emb_dim + 1, lag=1)
-    counts = []
     if closed:
-        counts = calc_closed_sampent(emb_dim, t_vecs)
+        counts = calc_closed_sampent(t_vecs, n, tolerance)
     else:
-        counts = calc_open_sampent(emb_dim, t_vecs)
+        counts = calc_open_sampent(t_vecs, n, tolerance)
+
     if counts[0] > 0 and counts[1] > 0:
         saen = -np.log(1.0 * counts[1] / counts[0])
     else:
         # log would be infinite or undefined => cannot determine saen
         zcounts = []
         if counts[0] == 0:
-            zcounts.append("emb_dim")
+            zcounts.append("2")
         if counts[1] == 0:
-            zcounts.append("emb_dim + 1")
+            zcounts.append("3")
         print_message = (
             "Zero vectors are within tolerance for {}. "
             "Consider raising tolerance parameter to avoid {} result."
@@ -1856,33 +1838,34 @@ def sampen_optimized(
     return saen
 
 
-def calc_closed_sampent(emb_dim, t_vecs):
-    counts = []
-    for m in (emb_dim, emb_dim + 1):
-        counts.append(0)
-        # get the matrix that we need for the current m
-        t_vecs_m = t_vecs[:n - m + 1, :m]
-        # successively calculate distances between each pair of templ vectrs
-        for i in range(len(t_vecs_m) - 1):
-            dsts = dist(t_vecs_m[i + 1:], t_vecs_m[i])
-            # count how many distances are smaller than the tolerance
-            counts[-1] += np.sum(dsts <= tolerance)
-    return counts
+# TODO(wvxvw): This doesn't achieve better performance:
+# n_tvecs_m = len(t_vecs_m)
+# dsts = np.triu(
+#     np.tile(t_vecs_m, (n_tvecs_m, 1, 1)) - t_vecs_m[:, np.newaxis],
+# )
+#
+# And it's also wrong: I need to find a way to subtract each
+# pair from t_vecs_m from a column in the tile.
 
 
-def calc_open_sampent(emb_dim, t_vecs):
-    # TODO
-    counts = []
-    for m in [emb_dim, emb_dim + 1]:
-        counts.append(0)
-        # get the matrix that we need for the current m
-        t_vecs_m = t_vecs[:n - m + 1, :m]
-        # successively calculate distances between each pair of templ vectrs
-        for i in range(len(t_vecs_m) - 1):
-            dsts = dist(t_vecs_m[i + 1:], t_vecs_m[i])
-            # count how many distances are smaller than the tolerance
-            counts[-1] += np.sum(dsts < tolerance)
-    return counts
+def calc_closed_sampent(t_vecs, n, tolerance):
+    # TODO(wvxvw): Analogous to calc_open_sampent
+    return np.nan, np.nan
+
+
+def calc_open_sampent(t_vecs, n, tolerance):
+    triplets = t_vecs[:n - 2, :3]
+
+    raw_dsts = tuple(
+        triplets[i + 1:] - triplets[i]
+        for i in range(len(triplets) - 1)
+    )
+    dsts = np.concatenate(raw_dsts)
+    dsts_abs = np.abs(dsts)
+    dsts_gt = dsts_abs < tolerance
+    dsts_max_a = np.logical_and(dsts_gt[:, 0], dsts_gt[:, 1])
+    dsts_max = np.logical_and(dsts_max_a, dsts_gt[:, 2])
+    return np.sum(dsts_max_a), np.sum(dsts_max)
 
 
 def entropy_maker(
