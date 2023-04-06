@@ -12,6 +12,7 @@ import collections
 from collections import namedtuple
 import math
 import warnings
+import time
 from math import log, e
 import copy
 import scipy
@@ -1762,7 +1763,6 @@ def sampen(
 
 def sampen_optimized(
         data,
-        emb_dim=2,
         tolerance=None,
         closed=False,
 ):
@@ -1788,26 +1788,11 @@ def sampen_optimized(
     American Journal of Physiology-Heart and Circulatory Physiology,
     vol. 278, no. 6, pp. H2039–H2049, 2000.
 
-    Kwargs are
-    emb_dim (int):
-    the embedding dimension (length of vectors to compare)
-    tolerance (float):
-    distance threshold for two template vectors to be considered equal
-    (default: 0.2 * std(data) at emb_dim = 2, corrected for
-    dimension effect for other values of emb_dim)
-    dist (function (2d-array, 1d-array) -> 1d-array):
-    distance function used to calculate the distance between template
-    vectors. Sampen is defined using ``rowwise_chebyshev``. You should only
-    use something else, if you are sure that you need it.
-    closed (boolean):
-    if True, will check for vector pairs whose distance is in the closed
-    interval [0, r] (less or equal to r), otherwise the open interval
-    [0, r) (less than r) will be used
+    Kwargs are pre-set and not available. For more extensive
+    you should use the sampen function. 
 
     :param data: array-like
     :type data: array
-    :param emb_dim: the embedded dimension
-    :type emb_dim: int
     :param tolerance: distance threshold for two template vectors
     :type tolerance: float
     :param distance: function to calculate distance
@@ -1817,45 +1802,28 @@ def sampen_optimized(
     :rtype: float
     """
     data = np.asarray(data)
-
     if tolerance is None:
-        lint_helper = (0.5627 * np.log(emb_dim) + 1.3334)
+        lint_helper = (0.5627 * np.log(2) + 1.3334)
         tolerance = np.std(data, ddof=1) * 0.1164 * lint_helper
     n = len(data)
 
-    # build matrix of "template vectors"
-    # (all consecutive subsequences of length m)
-    # x0 x1 x2 x3 ... xm-1
-    # x1 x2 x3 x4 ... xm
-    # x2 x3 x4 x5 ... xm+1
-    # ...
-    # x_n-m-1     ... xn-1
+    # TODO(): This can be done with just using NumPy
+    t_vecs = delay_embedding(np.asarray(data), 3, lag=1)
 
-    # since we need two of these matrices for m = emb_dim and
-    #  m = emb_dim +1,
-    # we build one that is large enough => shape (emb_dim+1, n-emb_dim)
-
-    # note that we ignore the last possible template vector with
-    #  length emb_dim,
-    # because this vector has no corresponding vector of length m+
-    # 1 and thus does
-    # not count towards the conditional probability
-    # (otherwise first dimension would be n-emb_dim+1 and not n-emb_dim)
-    t_vecs = delay_embedding(np.asarray(data), emb_dim + 1, lag=1)
-    counts = []
     if closed:
-        counts = calc_closed_sampent(emb_dim, t_vecs)
+        counts = calc_closed_sampent(t_vecs, n, tolerance)
     else:
-        counts = calc_open_sampent(emb_dim, t_vecs)
+        counts = calc_open_sampent(t_vecs, n, tolerance)
+
     if counts[0] > 0 and counts[1] > 0:
         saen = -np.log(1.0 * counts[1] / counts[0])
     else:
         # log would be infinite or undefined => cannot determine saen
         zcounts = []
         if counts[0] == 0:
-            zcounts.append("emb_dim")
+            zcounts.append("2")
         if counts[1] == 0:
-            zcounts.append("emb_dim + 1")
+            zcounts.append("3")
         print_message = (
             "Zero vectors are within tolerance for {}. "
             "Consider raising tolerance parameter to avoid {} result."
@@ -1876,38 +1844,29 @@ def sampen_optimized(
     return saen
 
 
-def calc_closed_sampent(emb_dim, t_vecs):
-    counts = []
-    for m in (emb_dim, emb_dim + 1):
-        counts.append(0)
-        # get the matrix that we need for the current m
-        t_vecs_m = t_vecs[:n - m + 1, :m]
-        # successively calculate distances between each pair of templ vectrs
-        for i in range(len(t_vecs_m) - 1):
-            dsts = dist(t_vecs_m[i + 1:], t_vecs_m[i])
-            # count how many distances are smaller than the tolerance
-            counts[-1] += np.sum(dsts <= tolerance)
-    return counts
+def calc_closed_sampent(t_vecs, n, tolerance):
+    # TODO(someone?): Analogous to calc_open_sampent
+    return np.nan, np.nan
 
 
-def calc_open_sampent(emb_dim, t_vecs):
-    # TODO
-    counts = []
-    for m in [emb_dim, emb_dim + 1]:
-        counts.append(0)
-        # get the matrix that we need for the current m
-        t_vecs_m = t_vecs[:n - m + 1, :m]
-        # successively calculate distances between each pair of templ vectrs
-        for i in range(len(t_vecs_m) - 1):
-            dsts = dist(t_vecs_m[i + 1:], t_vecs_m[i])
-            # count how many distances are smaller than the tolerance
-            counts[-1] += np.sum(dsts < tolerance)
-    return counts
+def calc_open_sampent(t_vecs, n, tolerance):
+    triplets = t_vecs[:n - 2, :3]
+
+    raw_dsts = tuple(
+        triplets[i + 1:] - triplets[i]
+        for i in range(len(triplets) - 1)
+    )
+    dsts = np.concatenate(raw_dsts)
+    dsts_abs = np.abs(dsts)
+    dsts_gt = dsts_abs < tolerance
+    dsts_max_a = np.logical_and(dsts_gt[:, 0], dsts_gt[:, 1])
+    dsts_max = np.logical_and(dsts_max_a, dsts_gt[:, 2])
+    return np.sum(dsts_max_a), np.sum(dsts_max)
 
 
 def entropy_maker(
         array,
-        method='nolds',
+        method='nolds_optimized',
         base=None,
 ):
     """
@@ -1921,7 +1880,10 @@ def entropy_maker(
         output = entropy_scipy(array, base=base)
     elif method == 'nolds':
         output = sampen(array)
+    elif method == 'nolds_optimized':
+        output = sampen_optimized(array)
     else:
-        print('your method is not an option, we have defaulted to noal')
+        print('your method is not an option, we have defaulted to a slow nolds')
         output = sampen(array)
     return output
+
