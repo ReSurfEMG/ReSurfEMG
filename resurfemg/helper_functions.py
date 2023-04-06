@@ -1772,6 +1772,7 @@ def sampen_optimized(
     Christopher Schölzel in his package
     nolds (NOnLinear measures for Dynamical Systems).
     It computes the sample entropy of time sequence data.
+    emb_dim has been set to 1 (not parameterized)
     Returns
     the sample entropy of the data (negative logarithm of ratio between
     similar template vectors of length emb_dim + 1 and emb_dim)
@@ -1801,9 +1802,10 @@ def sampen_optimized(
     :returns: saen
     :rtype: float
     """
+    # TODO: this function can still be further optimized
     data = np.asarray(data)
     if tolerance is None:
-        lint_helper = (0.5627 * np.log(2) + 1.3334)
+        lint_helper = (0.5627 * np.log() + 1.3334)
         tolerance = np.std(data, ddof=1) * 0.1164 * lint_helper
     n = len(data)
 
@@ -1821,9 +1823,9 @@ def sampen_optimized(
         # log would be infinite or undefined => cannot determine saen
         zcounts = []
         if counts[0] == 0:
-            zcounts.append("2")
+            zcounts.append("1")
         if counts[1] == 0:
-            zcounts.append("3")
+            zcounts.append("2")
         print_message = (
             "Zero vectors are within tolerance for {}. "
             "Consider raising tolerance parameter to avoid {} result."
@@ -1866,7 +1868,7 @@ def calc_open_sampent(t_vecs, n, tolerance):
 
 def entropy_maker(
         array,
-        method='nolds_optimized',
+        method='sample_entropy',
         base=None,
 ):
     """
@@ -1880,9 +1882,10 @@ def entropy_maker(
         output = entropy_scipy(array, base=base)
     elif method == 'nolds':
         output = sampen(array)
-    elif method == 'nolds_optimized':
+    elif method == 'sample_entropy':
         output = sampen_optimized(array)
     else:
-        print('your method is not an option, we defaulted to a slow nolds')
+        print('your method is not an option,')
+        print('we defaulted to a slow unoptimized sample entropy')
         output = sampen(array)
     return output
