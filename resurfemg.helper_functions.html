@@ -212,12 +212,12 @@ values but returns only the array.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.calc_closed_sampent">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">calc_closed_sampent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_vecs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.calc_closed_sampent" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">calc_closed_sampent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_vecs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.calc_closed_sampent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.calc_open_sampent">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">calc_open_sampent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_vecs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.calc_open_sampent" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">calc_open_sampent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_vecs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.calc_open_sampent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -462,7 +462,7 @@ very small numbers.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.entropy_maker">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">entropy_maker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nolds'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.entropy_maker" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">entropy_maker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sample_entropy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.entropy_maker" title="Permalink to this definition">¶</a></dt>
 <dd><p>The following code allows a user to input an array and calculate either
 a time-series specific entropy i.e. the nolds or a more general
 Shannon entropy as calculated in scipy.
@@ -914,11 +914,12 @@ interval [0, r] (less or equal to r), otherwise the open interval
 
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.sampen_optimized">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">sampen_optimized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.sampen_optimized" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.</span></span><span class="sig-name descname"><span class="pre">sampen_optimized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.sampen_optimized" title="Permalink to this definition">¶</a></dt>
 <dd><p>The following code is adapted from openly licensed code written by
 Christopher Schölzel in his package
 nolds (NOnLinear measures for Dynamical Systems).
 It computes the sample entropy of time sequence data.
+emb_dim has been set to 1 (not parameterized)
 Returns
 the sample entropy of the data (negative logarithm of ratio between
 similar template vectors of length emb_dim + 1 and emb_dim)
@@ -934,26 +935,12 @@ Reference:
 analysis using approximate entropy and sample entropy,”
 American Journal of Physiology-Heart and Circulatory Physiology,
 vol. 278, no. 6, pp. H2039–H2049, 2000.</p>
-<p>Kwargs are
-emb_dim (int):
-the embedding dimension (length of vectors to compare)
-tolerance (float):
-distance threshold for two template vectors to be considered equal
-(default: 0.2 * std(data) at emb_dim = 2, corrected for
-dimension effect for other values of emb_dim)
-dist (function (2d-array, 1d-array) -&gt; 1d-array):
-distance function used to calculate the distance between template
-vectors. Sampen is defined using <code class="docutils literal notranslate"><span class="pre">rowwise_chebyshev</span></code>. You should only
-use something else, if you are sure that you need it.
-closed (boolean):
-if True, will check for vector pairs whose distance is in the closed
-interval [0, r] (less or equal to r), otherwise the open interval
-[0, r) (less than r) will be used</p>
+<p>Kwargs are pre-set and not available. For more extensive
+you should use the sampen function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>array</em>) – array-like</p></li>
-<li><p><strong>emb_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the embedded dimension</p></li>
 <li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – distance threshold for two template vectors</p></li>
 <li><p><strong>distance</strong> (<em>function</em>) – function to calculate distance</p></li>
 </ul>
