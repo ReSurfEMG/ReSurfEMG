@@ -1789,7 +1789,7 @@ def sampen_optimized(
     vol. 278, no. 6, pp. H2039–H2049, 2000.
 
     Kwargs are pre-set and not available. For more extensive
-    you should use the sampen function. 
+    you should use the sampen function.
 
     :param data: array-like
     :type data: array
@@ -1883,7 +1883,6 @@ def entropy_maker(
     elif method == 'nolds_optimized':
         output = sampen_optimized(array)
     else:
-        print('your method is not an option, we have defaulted to a slow nolds')
+        print('your method is not an option, we defaulted to a slow nolds')
         output = sampen(array)
     return output
-
