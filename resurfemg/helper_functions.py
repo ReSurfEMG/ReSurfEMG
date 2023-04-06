@@ -1805,7 +1805,7 @@ def sampen_optimized(
     # TODO: this function can still be further optimized
     data = np.asarray(data)
     if tolerance is None:
-        lint_helper = (0.5627 * np.log() + 1.3334)
+        lint_helper = (0.5627 * np.log(1) + 1.3334)
         tolerance = np.std(data, ddof=1) * 0.1164 * lint_helper
     n = len(data)
 
