@@ -2,7 +2,11 @@ name: Sanity
 on: [push]
 jobs:
   Sanity:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ['ubuntu-latest']
+        python-version: ['3.8', '3.9']
     steps:
       - uses: actions/checkout@v3
         with:
