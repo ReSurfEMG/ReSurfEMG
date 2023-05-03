@@ -1,6 +1,6 @@
 #  environment document
 
-name: emgandash
+name: you_workshop
 channels:
   - conda-forge
   #- resurfemg
@@ -16,8 +16,10 @@ dependencies:
   - numpy=1.22.3
   - pandas
   - pip=20.2
+  - pycodestyle
   - pyxdf
   #- resurfemg
+  - scikit-learn=1.1.1
   - scipy=1.7.1
   - sphinx=4.5.0
   - textdistance=4.2.1
