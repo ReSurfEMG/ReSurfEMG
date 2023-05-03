@@ -53,6 +53,13 @@ The notebooks are configured to run on various datasets.  Contact
 Dr. Eline Mos-Oppersma( 📫 e.mos-oppersma@utwente.nl) to discuss any
 questions on data configuration for your datasets.
 
+If you want to use a standardized dataset for any purpose we reccomend
+the data in the ReSurfEMG/synthetic_data repository
+
+[![DOI](https://zenodo.org/badge/635680008.svg)](https://zenodo.org/badge/latestdoi/635680008)
+
+Data there can be used with any respiratory EMG algorithms in any program. Thus that data can function as a benchmarking set to compare algorithms across different programs.
+
 
 ### Configuring (to work with your data)
 
