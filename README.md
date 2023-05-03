@@ -118,7 +118,8 @@ metadata is available.
 
       _(repeat if you are in the base environment)_
 
-      You should be in no environment now
+      You should be in no environment now, (or alternatively you can build on your
+      base environment if you want)
 
 
 1. Option A: To work with the most current versions with the possibility for development:
@@ -133,6 +134,8 @@ metadata is available.
 
    * Linux users can create their own environment by hand (use
      install_dev as in setup).
+    
+  Make sure to enter your newly created environment.
 
 Option B: In theory if you want to work, but never develop (i.e. add code), as a conda user
    with the stable (released) version create an empty environment, and install
