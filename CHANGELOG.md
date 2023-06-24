@@ -96,7 +96,7 @@
 	- Improved function for entropy in helper_functions module
 	- Variability over array function (variability_maker) in helper_functions module
 	- Additional command line functionality to convert certain csv files into files that can be processing in the ReSurfEMG-Dashboard.
-	- Expanded testing matrix to include Python 3.8 and 3.9 
+	- Testing matrix to include Python 3.9 
 
 ## Release 0.0.10
 
