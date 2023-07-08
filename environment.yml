@@ -1,9 +1,8 @@
 #  environment document
 
-name: you_workshop
+name: julytry2
 channels:
   - conda-forge
-  #- resurfemg
 dependencies:
   - python=3.8.6
   - ipympl
