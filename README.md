@@ -123,13 +123,26 @@ metadata is available.
       conda deactivate
       ```
 
-      _(repeat if you are in the base environment)_
+      _(optional repeat if you are in the base environment)_
 
-      You should be in no environment now, (or alternatively you can build on your
-      base environment if you want)
+      You can build on your
+      base environment if you want, or if you want to not use option A, you can go below it (no environment)
 
 
-1. Option A: To work with the most current versions with the possibility for development:
+1. Option A: Fastest option:
+  In a base-like environment with mamba installed, you can install all Python packages required, using `mamba` and the `environment.yml` file. 
+
+  If you do not have mamba installed you can follow instructions (here)[https://anaconda.org/conda-forge/mamba]
+  
+
+
+   * The command for Windows/Anaconda/Mamba users can be something like:
+
+     ```sh
+     mamba env create -f environment.yml
+     ```
+
+Option B: To work with the most current versions with the possibility for development:
   Install all Python packages required, using `conda` and the `environment.yml` file. 
 
 
@@ -144,7 +157,7 @@ metadata is available.
     
   Make sure to enter your newly created environment.
 
-Option B: In theory if you want to work, but never develop (i.e. add code), as a conda user
+Option C: In theory if you want to work, but never develop (i.e. add code), as a conda user
    with the stable (released) version create an empty environment, and install
    there: 
 
