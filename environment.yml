@@ -1,6 +1,6 @@
 #  environment document
 
-name: julytry3
+name: julytry4
 channels:
   - conda-forge
 dependencies:
