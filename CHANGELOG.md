@@ -98,9 +98,14 @@
 	- Additional command line functionality to convert certain csv files into files that can be processing in the ReSurfEMG-Dashboard.
 	- Testing matrix to include Python 3.9 
 
-## Release 0.0.10
+## Release 0.1.0
 
 ### Not yet added
 
-* Tenth version: 
+* Tenth version, first major revisions:
+
+	- Switch of all environments and functionality to run on Python 3.9
+	- Installation possibility via mamba added (preffered)
+	- (Pending 15/07/2023) Revision of all notebooks to allow processing of numpy array files directly
+
 	
