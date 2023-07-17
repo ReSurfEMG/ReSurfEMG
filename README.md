@@ -158,11 +158,11 @@ Option B: To work with the most current versions with the possibility for develo
   Make sure to enter your newly created environment.
 
 Option C: In theory if you want to work, but never develop (i.e. add code), as a conda user
-   with the stable (released) version create an empty environment, and install
+   with a stable (released) version create an empty environment, and install
    there: 
 
 
-   * Create a blank environment with python pinned to 3.8:
+   * Create a blank environment with python pinned to 3.8 (assuming version < 0.1.0):
 
      ```sh
      conda create -n blank python=3.8
@@ -184,7 +184,9 @@ Option C: In theory if you want to work, but never develop (i.e. add code), as a
 
 ## Developer's setup
 
-After checkign out the source code, create virtual environment.  Both
+We are currently transitioning to a fully Python 3.9 environment. The
+instructions below are for our versions below 0.1.0:
+After checking out the source code, create virtual environment.  Both
 `conda` and `venv` environments are supported, however, if you are on
 Windows, we reccomend using `conda`.
 
