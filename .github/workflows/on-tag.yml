@@ -19,11 +19,11 @@ jobs:
         # build a wheel... and we need this stuff to be able to build
         # for CPython.
       
-      - name: Set up Python 3.8
+      - name: Set up Python 3.9
         uses: actions/setup-python@v1
         with:
-          python-version: 3.8
-      - run: python3.8 -m venv .venv
+          python-version: 3.9
+      - run: python3.9 -m venv .venv
       - run: .venv/bin/python -m pip install wheel twine
       - run: .venv/bin/python setup.py bdist_wheel
       - run: .venv/bin/python setup.py bdist_egg
@@ -41,7 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8]
+        python-version: [3.9]
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v2
@@ -53,7 +53,7 @@ jobs:
           conda-channels: conda-forge
           python-version: ${{ matrix.python-version }}
       - run: conda config --remove channels defaults
-      - name: Generate conda meta.yaml (Python 3.8)
+      - name: Generate conda meta.yaml (Python 3.9)
         run: python -u setup.py anaconda_gen_meta
       - if: ${{ matrix.os == 'macos-latest' }}
         run: python -u setup.py bdist_conda -o
