@@ -381,7 +381,11 @@ and certainly not a patient.
 It is possible to run tests in container created from this image.
 Alternatively, you may download the image and extract directory
 `/ReSurfEMG/tests/not_pushed` into `not_pushed` in the root of the
-project.
+project and run:
+
+``` sh
+python setup.py test
+```
 
 Below is a snippet that may help you to run the tests in a container:
 
@@ -396,6 +400,8 @@ docker run --rm -v $(pwd):/ci \
         mount --bind /ReSurfEMG/tests/not_pushed/ ./not_pushed/
         python setup.py test'
 ```
+
+
 
 ## Command-Line Interface
 
