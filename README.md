@@ -194,9 +194,9 @@ Windows, we reccomend using `conda`.
 
    ```sh
    python3.8 -m venv .venv
-   . .venv/bin/activate
+   . .venv/Scripts/activate
    # Windows user need to run:
-   # .venv/bin/activate
+   # .venv/Scripts/activate
    python setup.py install_dev
    ```
 
