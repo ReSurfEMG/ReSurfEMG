@@ -86,7 +86,6 @@ However, we highly recommend you use the home directory.
 This file can have this or similar contents:
 
     {
- 
         "root_emg_directory": "/mnt/data",
         "preprocessed": "/mnt/data/preprocessed",
         "models": "/mnt/data/models",
