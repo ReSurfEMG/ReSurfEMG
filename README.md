@@ -132,7 +132,7 @@ metadata is available.
 1. Option A: Fastest option:
   In a base-like environment with mamba installed, you can install all Python packages required, using `mamba` and the `environment.yml` file. 
 
-  If you do not have mamba installed you can follow instructions (here)[https://anaconda.org/conda-forge/mamba]
+  If you do not have mamba installed you can follow instructions [here](https://anaconda.org/conda-forge/mamba)
   
 
 
