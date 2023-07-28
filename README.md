@@ -186,20 +186,12 @@ Option C: In theory if you want to work, but never develop (i.e. add code), as a
 
 We are currently transitioning to a fully Python 3.9 environment. The
 instructions below are for our versions below 0.1.0:
+
 After checking out the source code, create virtual environment.  Both
 `conda` and `venv` environments are supported, however, if you are on
-Windows, we reccomend using `conda`.
-
-0. Using python.org Python
-
-   ```sh
-   python3.8 -m venv .venv
-   . .venv/Scripts/activate
-   # Windows user need to run:
-   # .venv/Scripts/activate
-   python setup.py install_dev
-   ```
-
+Windows, we reccomend using `conda`. 
+For instructions with `venv` please
+see versions below 0.1.0, and adapt is using Windows.
    This will create a distributable package from the your source code,
    then install it in the currently active environment.  This will
    also install development tools we use s.a. `pytest` and
