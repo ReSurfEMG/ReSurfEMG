@@ -191,11 +191,13 @@ After checking out the source code, create virtual environment.  Both
 `conda` and `venv` environments are supported, however, if you are on
 Windows, we reccomend using `conda`. 
 For instructions with `venv` please
-see versions below 0.1.0, and adapt is using Windows.
+see versions below 0.1.0, and adapt them if using Windows and/or a different Python version
+than Python.org Python e.g. you may need to use `.venv/Scripts/activate` in place of
+`.venv/bin/activate`.
    This will create a distributable package from the your source code,
    then install it in the currently active environment.  This will
    also install development tools we use s.a. `pytest` and
-   `codestyle`.  This will also install tools we use for working with
+   `codestyle` and  will also install tools we use for working with
    the library, s.a. `jupyter`.
 
 1. Using Anaconda Python
