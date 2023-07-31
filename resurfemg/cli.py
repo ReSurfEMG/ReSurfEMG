@@ -173,28 +173,36 @@ def main(argv):
     """
     parser = make_parser()
     parsed = parser.parse_args()
-    config = Config(parsed.config)
 
-    if parsed.action == 'acquire':
+    path_in = parsed.input
+    path_out = parsed.output
+
+    # if the paths are not specified, use the config file
+    if (path_in is None) or (path_out is None):
         try:
-
-            preprocess(
-                config.get_directory('data', parsed.input),
-                parsed.lead or [0, 2],  # list of chosen leads
-                parsed.preprocessing,
-                config.get_directory('preprocessed', parsed.output),
-                parsed.force,
-            )
+            config = Config(parsed.config)
+            path_in = config.get_directory('data', path_in)
+            path_out = config.get_directory('preprocessed', path_out)
         except Exception as e:
             logging.exception(e)
             return 1
+
+    if parsed.action == 'acquire':
+
+        preprocess(
+                path_in,
+                parsed.lead or [0, 2],  # list of chosen leads
+                parsed.preprocessing,
+                path_out,
+                parsed.force,
+        )
 
     if parsed.action == 'save_np':
         try:
 
             save_j_as_np(
-                config.get_directory('data', parsed.input),
-                config.get_directory('made', parsed.output),
+                path_in,
+                path_out,
             )
         except Exception as e:
             logging.exception(e)
@@ -204,9 +212,9 @@ def main(argv):
         try:
 
             make_realistic_syn_emg_cli(
-                config.get_directory('data', parsed.input),
+                path_in,
                 parsed.number,
-                config.get_directory('made', parsed.output),
+                path_out,
             )
         except Exception as e:
             logging.exception(e)
@@ -215,9 +223,9 @@ def main(argv):
     if parsed.action == 'ml':
         try:
             applu_model(
-                config.get_directory('data', parsed.input),
+                path_in,
                 parsed.model,
-                config.get_directory('preprocessed', parsed.output),
+                path_out,
                 parsed.features,
             )
         except Exception as e:
