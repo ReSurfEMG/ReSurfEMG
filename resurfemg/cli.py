@@ -173,15 +173,16 @@ def main(argv):
     """
     parser = make_parser()
     parsed = parser.parse_args()
+    config = Config(parsed.config)
 
     if parsed.action == 'acquire':
         try:
 
             preprocess(
-                parsed.input,
+                config.get_directory('data', parsed.input),
                 parsed.lead or [0, 2],  # list of chosen leads
                 parsed.preprocessing,
-                parsed.output,
+                config.get_directory('preprocessed', parsed.output),
                 parsed.force,
             )
         except Exception as e:
@@ -192,8 +193,8 @@ def main(argv):
         try:
 
             save_j_as_np(
-                parsed.input,
-                parsed.output,
+                config.get_directory('data', parsed.input),
+                config.get_directory('made', parsed.output),
             )
         except Exception as e:
             logging.exception(e)
@@ -203,9 +204,9 @@ def main(argv):
         try:
 
             make_realistic_syn_emg_cli(
-                parsed.input,
+                config.get_directory('data', parsed.input),
                 parsed.number,
-                parsed.output,
+                config.get_directory('made', parsed.output),
             )
         except Exception as e:
             logging.exception(e)
@@ -214,9 +215,9 @@ def main(argv):
     if parsed.action == 'ml':
         try:
             applu_model(
-                parsed.input,
+                config.get_directory('data', parsed.input),
                 parsed.model,
-                parsed.output,
+                config.get_directory('preprocessed', parsed.output),
                 parsed.features,
             )
         except Exception as e:
