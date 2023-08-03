@@ -1,6 +1,6 @@
 #  environment document
 
-name: julytry4
+name: julytry5
 channels:
   - conda-forge
 dependencies:
@@ -22,6 +22,7 @@ dependencies:
   - scipy=1.7.1
   - sphinx=4.5.0
   - textdistance=4.2.1
+  - tk=8.6.12 
 
   - pip:
 
