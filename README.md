@@ -111,7 +111,8 @@ docker rm -f test-data
 ```
 
 
-## Getting Started (with the reccomended Conda setup){#Getting-Started}
+## Getting Started 
+#### with the reccomended Conda setup
 
 How to get the notebooks running?  Assuming the raw data set and
 metadata is available. Note for non-conda installations see next sections.
@@ -198,7 +199,7 @@ that versions 3.8 or 3.9 (depending on the release) are supported.
 
 ### Installation for all supported platforms
 
-Installation with Anaconda/conda and/or mamba are covered in [getting started](#Getting-Started). If you wish to install with pip.... is Here we need to add pip instructions.
+Installation with Anaconda/conda and/or mamba are covered in [the "Getting Started" section](#Getting-Started). If you wish to install with pip.... is Here we need to add pip instructions.
 
 
 ## Developer's setup
