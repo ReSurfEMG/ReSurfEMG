@@ -184,7 +184,8 @@ Option C: In theory if you want to work, but never develop (i.e. add code), as a
 ### Supported Platforms
 
 ReSurfEMG is a pure Python package. Below is the list of
-platforms that should work. Please note that where
+platforms that should work. Other platforms may work, but have had less extensive testing.
+Please note that where
 python.org Python or Anaconda Python stated as supported, it means
 that versions 3.8 or 3.9 (depending on the release) are supported.
 
@@ -194,6 +195,10 @@ that versions 3.8 or 3.9 (depending on the release) are supported.
 |:---------------------------:|:---------:|:---------:|:---------:|
 | ![p](etc/python-logo.png)   | Supported | Unknown   | Unknown   |
 | ![a](etc/anaconda-logo.png) | Supported | Supported | Supported |
+
+### Installation for all platforms
+
+Installation with Anaconda/conda and/or mamba are covered in [getting started](# getting started). If you wish to install with pip.... is Here we need to add pip instructions.
 
 
 ## Developer's setup
