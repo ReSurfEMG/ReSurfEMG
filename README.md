@@ -111,7 +111,7 @@ docker rm -f test-data
 ```
 
 
-## Getting Started (with the reccomended Conda setup)
+## Getting Started (with the reccomended Conda setup){#Getting-Started}
 
 How to get the notebooks running?  Assuming the raw data set and
 metadata is available. Note for non-conda installations see next sections.
