@@ -111,7 +111,7 @@ docker rm -f test-data
 ```
 
 
-## Getting started
+## Getting started (with the reccomended Conda setup)
 
 How to get the notebooks running?  Assuming the raw data set and
 metadata is available.
@@ -180,6 +180,20 @@ Option C: In theory if you want to work, but never develop (i.e. add code), as a
    You can use the command `jupyter notebook` to open a browser window
    on the folders of notebooks.  Note, if you run with an installed
    library import appropriately.
+
+### Supported Platforms
+
+ReSurfEMG is a pure Python package. Below is the list of
+platforms that should work. Please note that where
+python.org Python or Anaconda Python stated as supported, it means
+that versions 3.8 or 3.9 (depending on the release) are supported.
+
+#### AMD64 (x86)
+
+|                             | Linux     | Win       | OSX       |
+|:---------------------------:|:---------:|:---------:|:---------:|
+| ![p](etc/python-logo.png)   | Supported | Unknown   | Unknown   |
+| ![a](etc/anaconda-logo.png) | Supported | Supported | Supported |
 
 
 ## Developer's setup
