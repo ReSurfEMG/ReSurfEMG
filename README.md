@@ -196,9 +196,9 @@ that versions 3.8 or 3.9 (depending on the release) are supported.
 | ![p](etc/python-logo.png)   | Supported | Unknown   | Unknown   |
 | ![a](etc/anaconda-logo.png) | Supported | Supported | Supported |
 
-### Installation for all platforms
+### Installation for all supported platforms
 
-Installation with Anaconda/conda and/or mamba are covered in [getting started](# getting started). If you wish to install with pip.... is Here we need to add pip instructions.
+Installation with Anaconda/conda and/or mamba are covered in [getting started](#Getting Started). If you wish to install with pip.... is Here we need to add pip instructions.
 
 
 ## Developer's setup
