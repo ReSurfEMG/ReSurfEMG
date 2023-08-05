@@ -111,7 +111,7 @@ docker rm -f test-data
 ```
 
 
-## Getting Started 
+## Getting Started
 #### with the reccomended Conda setup
 
 How to get the notebooks running?  Assuming the raw data set and
@@ -199,7 +199,12 @@ that versions 3.8 or 3.9 (depending on the release) are supported.
 
 ### Installation for all supported platforms
 
-Installation with Anaconda/conda and/or mamba are covered in [the "Getting Started" section](#Getting-Started). If you wish to install with pip.... is Here we need to add pip instructions.
+Installation with Anaconda/conda and/or mamba are covered in [the
+"Getting Started" section](#Getting-Started). If you wish to install
+with pip:
+
+1. Create and activate virtual environment.
+2. Install ResurfEMG package by running `pip install resurfemg`.
 
 
 ## Developer's setup
@@ -232,6 +237,17 @@ than Python.org Python e.g. you may need to use `.venv/Scripts/activate` in plac
    Note, you will need to run `anaconda_gen_meta`.  This generates
    `meta.yaml` which is necessary to create `conda` package.  In the
    future this will probably be called automatically by `install_dev`.
+
+2. Using PyPI Python
+
+   ```sh
+   python3.9 -m venv .venv3.9
+   # On Linux:
+   . .venv3.9/bin/activate
+   # On Windows:
+   .venv3.9/Scripts/activate
+   python setup.py install_dev
+   ```
 
 Now you should have everything necessary to start working on the
 source code.  Whenever you make any changes, re-run `install_dev` to
