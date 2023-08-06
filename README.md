@@ -87,10 +87,10 @@ This file can have this or similar contents:
 
     {
  
-        'root_emg_directory': '/mnt/data',
-        'preprocessed': '/mnt/data/preprocessed',
-        'models': '/mnt/data/models',
-        'output': '/mnt/data/output',
+        "root_emg_directory": "/mnt/data",
+        "preprocessed": "/mnt/data/preprocessed",
+        "models": "/mnt/data/models",
+        "output": "/mnt/data/output",
     }
 
 The file is read as follows: if the files specifies `root_emg_directory`
@@ -204,7 +204,8 @@ Option C: In theory if you want to work, but never develop (i.e. add code), as a
    in researcher_interface folder and interactively run the cells.
    You can use the command `jupyter notebook` to open a browser window
    on the folders of notebooks.  Note, if you run with an installed
-   library import appropriately.
+   library import appropriately. The [basic_emg_analysis](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/basic_emg_analysis.ipynb) notebook can 
+   be used to understand how to use the package. 
 
 
 
