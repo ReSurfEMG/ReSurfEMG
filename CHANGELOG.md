@@ -102,10 +102,11 @@
 
 ### Not yet added
 
-* Tenth version, first major revisions:
+* Tenth version, first major revision/version:
 
 	- Switch of all environments and functionality to run on Python 3.9
 	- Installation possibility via mamba added (preffered)
-	- (Pending 15/07/2023) Revision of all notebooks to allow processing of numpy array files directly
+	- Revision of some notebooks to allow processing of numpy array files directly
+	- Fixed lack of tkinter in environment yaml
 
 	
