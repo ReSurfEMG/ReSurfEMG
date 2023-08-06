@@ -110,6 +110,30 @@ docker cp test-data:/ReSurfEMG/tests/not_pushed/. .
 docker rm -f test-data
 ```
 
+### Supported Platforms
+
+ReSurfEMG is a pure Python package. Below is the list of
+platforms that should work. Other platforms may work, but have had less extensive testing.
+Please note that where
+python.org Python or Anaconda Python stated as supported, it means
+that versions 3.8 or 3.9 (depending on the release) are supported.
+
+#### AMD64 (x86)
+
+|                             | Linux     | Win       | OSX       |
+|:---------------------------:|:---------:|:---------:|:---------:|
+| ![p](etc/python-logo.png)   | Supported | Unknown   | Unknown   |
+| ![a](etc/anaconda-logo.png) | Supported | Supported | Supported |
+
+### Installation for all supported platforms
+
+Installation with Anaconda/conda and/or mamba are the preffered methods.
+They are covered in [the "Getting Started" section](#Getting-Started). 
+If you wish to install with pip:
+
+1. Create and activate a virtual environment (see developer setup section for more details) 
+2. Install ResurfEMG package by running `pip install resurfemg`.
+
 
 ## Getting Started
 #### with the reccomended Conda setup
@@ -182,29 +206,6 @@ Option C: In theory if you want to work, but never develop (i.e. add code), as a
    on the folders of notebooks.  Note, if you run with an installed
    library import appropriately.
 
-### Supported Platforms
-
-ReSurfEMG is a pure Python package. Below is the list of
-platforms that should work. Other platforms may work, but have had less extensive testing.
-Please note that where
-python.org Python or Anaconda Python stated as supported, it means
-that versions 3.8 or 3.9 (depending on the release) are supported.
-
-#### AMD64 (x86)
-
-|                             | Linux     | Win       | OSX       |
-|:---------------------------:|:---------:|:---------:|:---------:|
-| ![p](etc/python-logo.png)   | Supported | Unknown   | Unknown   |
-| ![a](etc/anaconda-logo.png) | Supported | Supported | Supported |
-
-### Installation for all supported platforms
-
-Installation with Anaconda/conda and/or mamba are covered in [the
-"Getting Started" section](#Getting-Started). If you wish to install
-with pip:
-
-1. Create and activate virtual environment.
-2. Install ResurfEMG package by running `pip install resurfemg`.
 
 
 ## Developer's setup
