@@ -100,7 +100,6 @@
 
 ## Release 0.1.0
 
-### Not yet added
 
 * Tenth version, first major revision/version:
 
