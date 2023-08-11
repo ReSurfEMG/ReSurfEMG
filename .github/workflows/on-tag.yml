@@ -85,4 +85,4 @@ jobs:
             ./dist/*/osx-64/resurfemg-*.tar.bz2
             ./dist/*/win-64/resurfemg-*.tar.bz2
             ./dist/pypi-build/*.whl
-            ./dist/pypi-build/*.egg
+            
