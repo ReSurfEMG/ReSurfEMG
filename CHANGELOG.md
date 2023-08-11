@@ -98,7 +98,7 @@
 	- Additional command line functionality to convert certain csv files into files that can be processing in the ReSurfEMG-Dashboard.
 	- Testing matrix to include Python 3.9 
 
-## Release 0.1.0
+## Release 0.1.1
 
 
 * Tenth version, first major revision/version:
@@ -107,5 +107,6 @@
 	- Installation possibility via mamba added (preffered)
 	- Revision of some notebooks to allow processing of numpy array files directly
 	- Fixed lack of tkinter in environment yaml
+	- renamed from 0.1.0 to 0.1.1 for incidental technical reasons
 
 	
