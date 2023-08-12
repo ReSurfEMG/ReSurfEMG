@@ -30,7 +30,7 @@ jobs:
       - run: >-
           TWINE_USERNAME=__token__
           TWINE_PASSWORD=${{ secrets.PYPI_TOKEN }}
-          .venv/bin/python -m twine upload --skip-existing ./dist/*
+          .venv/bin/python -m twine upload --skip-existing ./dist/*.whl
       - uses: actions/upload-artifact@v2
         with:
           name: pypi-build
@@ -85,4 +85,4 @@ jobs:
             ./dist/*/osx-64/resurfemg-*.tar.bz2
             ./dist/*/win-64/resurfemg-*.tar.bz2
             ./dist/pypi-build/*.whl
-            
+            ./dist/pypi-build/*.egg
