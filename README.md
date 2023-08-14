@@ -208,26 +208,31 @@ Option C: In theory if you want to work, but never develop (i.e. add code), as a
 
 
 
-## Advanced contributor's setup/ "Developer's setup"
+## Advanced contributor's setup / "Developer's setup"
 
-Developers are users who want to contribute code back to the
-repository. Although technically you can simply put a PR from a fork,
-this setup allows code testing and code editing with ease. 
-We have transitioned to a fully Python 3.9 environment. The
+We distinguish between developers who want to use this library in
+their own code and those who want to develop this library, be it as
+members of our team or independent contributors.  Developers who
+simply want to use our library need to install the packaged version
+from one of the package indexes to which we publish released versions
+(eg. PyPI).  This section of the readme is for developers who want to
+modify the library code (and possibly contribute their changes back).
+
+We have transitioned to a fully Python 3.9 environment.  The
 instructions below are for our versions below 0.1.0:
 
 After checking out the source code, create virtual environment.  Both
 `conda` and `venv` environments are supported, however, if you are on
 Windows, we reccomend using `conda`. 
-For instructions with `venv` please
-see versions below 0.1.0, and adapt them if using Windows and/or a different Python version
-than Python.org Python e.g. you may need to use `.venv/Scripts/activate` in place of
-`.venv/bin/activate`.
-   This will create a distributable package from the your source code,
-   then install it in the currently active environment.  This will
-   also install development tools we use s.a. `pytest` and
-   `codestyle` and  will also install tools we use for working with
-   the library, s.a. `jupyter`.
+
+For instructions with `venv` please see versions below 0.1.0, and
+adapt them if using Windows and/or a different Python version than
+Python.org Python e.g. you may need to use `.venv/Scripts/activate` in
+place of `.venv/bin/activate`.  This will create a distributable
+package from the source code, then install it in the currently active
+environment.  This will also install development tools we use
+s.a. `pytest` and `codestyle` and will also install tools we use for
+working with the library, s.a. `jupyter`.
 
 1. Using Anaconda Python
 
