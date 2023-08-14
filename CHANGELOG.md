@@ -109,4 +109,10 @@
 	- Fixed lack of tkinter in environment yaml
 	
 
+## Release 0.1.2
+
+
+* Identical to tenth version, first major revision/version:
+
+	- created due to technical problems with pypi
 	
