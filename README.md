@@ -208,9 +208,12 @@ Option C: In theory if you want to work, but never develop (i.e. add code), as a
 
 
 
-## Developer's setup
+## Advanced contributor's setup/ "Developer's setup"
 
-We are currently transitioning to a fully Python 3.9 environment. The
+Developers are users who want to contribute code back to the
+repository. Although technically you can simply put a PR from a fork,
+this setup allows code testing and code editing with ease. 
+We have transitioned to a fully Python 3.9 environment. The
 instructions below are for our versions below 0.1.0:
 
 After checking out the source code, create virtual environment.  Both
@@ -229,7 +232,7 @@ than Python.org Python e.g. you may need to use `.venv/Scripts/activate` in plac
 1. Using Anaconda Python
 
    ```sh
-   conda create -n resurfemg python=3.8
+   conda create -n resurfemg python=3.9
    conda activate resurfemg
    python setup.py anaconda_gen_meta
    python setup.py install_dev
