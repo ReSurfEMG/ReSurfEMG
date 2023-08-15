@@ -219,20 +219,21 @@ from one of the package indexes to which we publish released versions
 modify the library code (and possibly contribute their changes back).
 
 We have transitioned to a fully Python 3.9 environment.  The
-instructions below are for our versions below 0.1.0:
-
-After checking out the source code, create virtual environment.  Both
-`conda` and `venv` environments are supported, however, if you are on
-Windows, we reccomend using `conda`. 
-
-For instructions with `venv` please see versions below 0.1.0, and
+instructions below are for our newer versions above 0.1.0:
+(For older instructions with `venv` please see versions below 0.1.0, and
 adapt them if using Windows and/or a different Python version than
 Python.org Python e.g. you may need to use `.venv/Scripts/activate` in
 place of `.venv/bin/activate`.  This will create a distributable
 package from the source code, then install it in the currently active
 environment.  This will also install development tools we use
 s.a. `pytest` and `codestyle` and will also install tools we use for
-working with the library, s.a. `jupyter`.
+working with the library, s.a. `jupyter`.)
+
+After checking out the source code, create virtual environment.  Both
+`conda` and `venv` environments are supported, however, if you are on
+Windows, we reccomend using `conda`. 
+
+
 
 1. Using Anaconda Python
 
