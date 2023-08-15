@@ -210,13 +210,14 @@ Option C: In theory if you want to work, but never develop (i.e. add code), as a
 
 ## Advanced contributor's setup / "Developer's setup"
 
-We distinguish between developers who want to use this library in
-their own code and those who want to develop this library, be it as
-members of our team or independent contributors.  Developers who
+We distinguish between people who want to use this library in
+their own code and/or analysis and people who also want to develop this library who we call developers, be it as
+members of our team or independent contributors.  People who
 simply want to use our library need to install the packaged version
 from one of the package indexes to which we publish released versions
-(eg. PyPI).  This section of the readme is for developers who want to
-modify the library code (and possibly contribute their changes back).
+(eg. PyPI).  This section of the readme is for advanced developers who want to
+modify the library code (and possibly contribute their changes back or eventually publish thier own modified fork). NB: you can accomplish modifications of the code, submit PRs and soforth without 
+a 'developer's setup' but we feel this setup will make advanced contributions easier.
 
 We have transitioned to a fully Python 3.9 environment.  The
 instructions below are for our newer versions above 0.1.0:
