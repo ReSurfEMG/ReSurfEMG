@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>resurfemg.tmsisdk_lite module &#8212; resurfemg 0.1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=8fc2db88" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=2389946f"></script>
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=601dbdee" />
+    <script src="_static/documentation_options.js?v=01f34227"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Developer’s Guide" href="developers.html" />
@@ -44,7 +44,7 @@
           <div class="body" role="main">
             
   <section id="module-resurfemg.tmsisdk_lite">
-<span id="resurfemg-tmsisdk-lite-module"></span><h1>resurfemg.tmsisdk_lite module<a class="headerlink" href="#module-resurfemg.tmsisdk_lite" title="Permalink to this heading">¶</a></h1>
+<span id="resurfemg-tmsisdk-lite-module"></span><h1>resurfemg.tmsisdk_lite module<a class="headerlink" href="#module-resurfemg.tmsisdk_lite" title="Link to this heading">¶</a></h1>
 <p>The following module is a modification of a
 few classes from a larger code base
 created by Twente Medical Systems International B.V., Oldenzaal
@@ -67,14 +67,14 @@ See the License for the specific language governing permissions and
 limitations under the License.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="resurfemg.tmsisdk_lite.Channel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.tmsisdk_lite.</span></span><span class="sig-name descname"><span class="pre">Channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.tmsisdk_lite.Channel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.tmsisdk_lite.</span></span><span class="sig-name descname"><span class="pre">Channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.tmsisdk_lite.Channel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>‘Channel’ represents a device channel. It has the next properties:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the name of the channel</p></li>
-<li><p><strong>unit_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the name of unit (e.g. ‘μVolt’) of channel sample-data</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the name of the channel</p></li>
+<li><p><strong>unit_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the name of unit (e.g. ‘μVolt’) of channel sample-data</p></li>
 </ul>
 </dd>
 </dl>
@@ -82,25 +82,25 @@ limitations under the License.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="resurfemg.tmsisdk_lite.Poly5Reader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.tmsisdk_lite.</span></span><span class="sig-name descname"><span class="pre">Poly5Reader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readAll</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.tmsisdk_lite.Poly5Reader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.tmsisdk_lite.</span></span><span class="sig-name descname"><span class="pre">Poly5Reader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readAll</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.tmsisdk_lite.Poly5Reader" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>This class allows reading in various file types
 created on TMSi devices and/or in Poly5 format.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="resurfemg.tmsisdk_lite.Poly5Reader.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.tmsisdk_lite.Poly5Reader.close" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.tmsisdk_lite.Poly5Reader.close" title="Link to this definition">¶</a></dt>
 <dd><p>Function to close off file object after reading</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="resurfemg.tmsisdk_lite.Poly5Reader.readSamples">
-<span class="sig-name descname"><span class="pre">readSamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.tmsisdk_lite.Poly5Reader.readSamples" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">readSamples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.tmsisdk_lite.Poly5Reader.readSamples" title="Link to this definition">¶</a></dt>
 <dd><p>Function to read a subset of sample blocks from a file</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="resurfemg.tmsisdk_lite.Poly5Reader.read_data_MNE">
-<span class="sig-name descname"><span class="pre">read_data_MNE</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RawArray</span></span></span><a class="headerlink" href="#resurfemg.tmsisdk_lite.Poly5Reader.read_data_MNE" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">read_data_MNE</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RawArray</span></span></span><a class="headerlink" href="#resurfemg.tmsisdk_lite.Poly5Reader.read_data_MNE" title="Link to this definition">¶</a></dt>
 <dd><p>Return MNE RawArray given internal channel names and types</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -193,7 +193,7 @@ created on TMSi devices and/or in Poly5 format.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2022, c.moore@esciencecenter.nl.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

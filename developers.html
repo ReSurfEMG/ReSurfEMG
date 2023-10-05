@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Developer’s Guide &#8212; resurfemg 0.1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=8fc2db88" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=2389946f"></script>
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=601dbdee" />
+    <script src="_static/documentation_options.js?v=01f34227"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Medical Professional Documentation" href="medical-professionals.html" />
@@ -42,9 +42,9 @@
           <div class="body" role="main">
             
   <section id="developer-s-guide">
-<h1>Developer’s Guide<a class="headerlink" href="#developer-s-guide" title="Permalink to this heading">¶</a></h1>
+<h1>Developer’s Guide<a class="headerlink" href="#developer-s-guide" title="Link to this heading">¶</a></h1>
 <section id="sending-your-work">
-<h2>Sending Your Work<a class="headerlink" href="#sending-your-work" title="Permalink to this heading">¶</a></h2>
+<h2>Sending Your Work<a class="headerlink" href="#sending-your-work" title="Link to this heading">¶</a></h2>
 <p>We accept pull requests made through GitHub. As is usual,
 we request that the changes be rebased
 on the branch they are to be integrated into.  We also request that
@@ -61,16 +61,16 @@ submission.</p>
 </div>
 </section>
 <section id="setting-up-development-environment">
-<h2>Setting Up Development Environment<a class="headerlink" href="#setting-up-development-environment" title="Permalink to this heading">¶</a></h2>
+<h2>Setting Up Development Environment<a class="headerlink" href="#setting-up-development-environment" title="Link to this heading">¶</a></h2>
 <section id="the-way-we-do-it">
-<h3>The Way We Do It<a class="headerlink" href="#the-way-we-do-it" title="Permalink to this heading">¶</a></h3>
+<h3>The Way We Do It<a class="headerlink" href="#the-way-we-do-it" title="Link to this heading">¶</a></h3>
 <p>If you want to develop using Anaconda Python, you would:</p>
 <p>Follow the instructions on the readme.</p>
 <p>This will create a virtual environment, build <cite>conda</cite> package, install
 it and then add development dependencies to what was installed.</p>
 </section>
 <section id="the-traditional-ways">
-<h3>The Traditional Ways<a class="headerlink" href="#the-traditional-ways" title="Permalink to this heading">¶</a></h3>
+<h3>The Traditional Ways<a class="headerlink" href="#the-traditional-ways" title="Link to this heading">¶</a></h3>
 <p>Regardless of the downsides of this approach, we try to support more
 common ways to work with Python projects.  It’s a common practice to
 “install” a project during development by either using <cite>pip install
@@ -85,7 +85,7 @@ you could try it, and contact us: <a class="reference external" href="mailto:res
 </div>
 </section>
 <section id="rationale">
-<h3>Rationale<a class="headerlink" href="#rationale" title="Permalink to this heading">¶</a></h3>
+<h3>Rationale<a class="headerlink" href="#rationale" title="Link to this heading">¶</a></h3>
 <p>There are several problems with the traditional way Python programmers are
 taught to organize their development environment.  The way a typical
 Python project is developed, it is designed to support a single
@@ -95,7 +95,7 @@ now we are doing what is simple and fast.</p>
 </section>
 </section>
 <section id="testing">
-<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this heading">¶</a></h2>
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading">¶</a></h2>
 <p>You may run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>./tests/test.py
 </pre></div>
@@ -109,19 +109,19 @@ i.e.
 <div><p>python setup.py test</p>
 </div></blockquote>
 <section id="style-guide-for-python-code">
-<h3>Style Guide for Python Code<a class="headerlink" href="#style-guide-for-python-code" title="Permalink to this heading">¶</a></h3>
+<h3>Style Guide for Python Code<a class="headerlink" href="#style-guide-for-python-code" title="Link to this heading">¶</a></h3>
 <p>We have linting!</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>./setup.py<span class="w"> </span>lint
 </pre></div>
 </div>
 </section>
 <section id="continuous-integration">
-<h3>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this heading">¶</a></h3>
+<h3>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Link to this heading">¶</a></h3>
 <p>This project has CI setup that uses GitHub Actions
 platform.</p>
 </section>
 <section id="style">
-<h3>Style<a class="headerlink" href="#style" title="Permalink to this heading">¶</a></h3>
+<h3>Style<a class="headerlink" href="#style" title="Link to this heading">¶</a></h3>
 <p>When it comes to style, beyond linting we are trying
 to conform, more or less, to the Google Python style
 <a class="reference external" href="https://google.github.io/styleguide/pyguide.html">https://google.github.io/styleguide/pyguide.html</a></p>
@@ -210,7 +210,7 @@ to conform, more or less, to the Google Python style
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2022, c.moore@esciencecenter.nl.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>
