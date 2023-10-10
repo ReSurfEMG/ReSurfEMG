@@ -166,7 +166,7 @@ class UnitTest(TestCommand):
         unittest = importlib.import_module('unittest')
         if env_python is None:
             loader = unittest.TestLoader()
-            suite = loader.discover('tests', pattern='test.py')
+            suite = loader.discover('tests')
             runner = unittest.TextTestRunner()
             result = runner.run(suite)
             sys.exit(1 if result.errors else 0)
