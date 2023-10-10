@@ -1,0 +1,7 @@
+{
+
+    "root_emg_directory": "data",
+    "preprocessed": "data/preprocessed",
+    "models": "data/models",
+    "output": "data/output"
+}
