@@ -79,7 +79,7 @@ def naive_rolling_rms(data_emg, window_length):
     """
     x_c = np.cumsum(abs(data_emg)**2)
     emg_rms = np.sqrt((x_c[window_length:] - x_c[:-window_length])
-                      /window_length)
+                      / window_length)
     return emg_rms
 
 
