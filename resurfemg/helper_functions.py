@@ -349,7 +349,8 @@ def show_my_power_spectrum(sample, sample_rate, upper_window):
 #     :returns: The bandpass filtered EMG sample data
 #     :rtype: ~numpy.ndarray
 #     """
-#     sos = signal.butter(3, cut_above, 'highpass', fs=sample_rate, output='sos')
+#     sos = signal.butter(3, cut_above, 'highpass', fs=sample_rate, 
+#     output='sos')
 #     # sos (output parameter)is second order section  -> "stabilizes" ?
 #     emg_filtered = signal.sosfiltfilt(sos, data_emg)
 #     return emg_filtered
@@ -441,7 +442,8 @@ def compute_ICA_two_comp(emg_samples):
 #     .. note::
 #         Data should not have been finally filtered to envelope level
 
-#     :param components_tuple: tuple of two arrays representing different signals
+#     :param components_tuple: tuple of two arrays representing different 
+#      signals
 #     :type components_tuple: Tuple[~numpy.ndarray, ~numpy.ndarray]
 
 #     :return: Array with more peaks (should usually be the EMG as
@@ -482,7 +484,8 @@ def compute_ICA_two_comp(emg_samples):
 #     ICA component with the lowest similarity to the ECG.
 #     Data should not have been finally filtered to envelope level
 
-#     :param components_tuple: tuple of two arrays representing different signals
+#     :param components_tuple: tuple of two arrays representing different 
+#      signals
 #     :type components_tuple: Tuple[~numpy.ndarray, ~numpy.ndarray]
 
 #     :param ecg_lead: array containing the ECG recording
@@ -524,7 +527,8 @@ def compute_ICA_two_comp(emg_samples):
 #     ICA component with the highest similarity to the ECG.
 #     Data should not have been finally filtered to envelope level
 
-#     :param components_tuple: tuple of two arrays representing different signals
+#     :param components_tuple: tuple of two arrays representing different 
+#     signals
 #     :type components_tuple: Tuple[~numpy.ndarray, ~numpy.ndarray]
 
 #     :param ecg_lead: array containing the ECG recording
@@ -1031,7 +1035,8 @@ def full_rolling_rms(x, N):
 #     half_gate_width = gate_width // 2
 #     if method == 0:
 #         # Method 0: Fill with zeros
-#         # TODO: can rewrite with slices from numpy irange to be more efficient
+#         # TODO: can rewrite with slices from numpy irange to be more 
+#           efficient
 #         gate_samples = []
 #         for i, peak in enumerate(gate_peaks):
 #             for k in range(
