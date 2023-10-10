@@ -2,7 +2,7 @@
 
 import sys
 
-from .cli import main
+from .cli.cli import main
 
 
 sys.exit(main(sys.argv[1:]))
