@@ -26,8 +26,8 @@ from resurfemg.multi_lead_type import working_pipeline_pre_ml_multi
 # from resurfemg.helper_functions import bad_end_cutter_better
 # from resurfemg.helper_functions import bad_end_cutter_for_samples
 from resurfemg.helper_functions import count_decision_array
-# from resurfemg.helper_functions import emg_bandpass_butter
-# from resurfemg.helper_functions import emg_bandpass_butter_sample
+from resurfemg.preprocessing.filtering  import emg_bandpass_butter
+from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
 # from resurfemg.helper_functions import notch_filter
 # from resurfemg.helper_functions import naive_rolling_rms
 # from resurfemg.helper_functions import vect_naive_rolling_rms
@@ -51,7 +51,7 @@ from resurfemg.helper_functions import times_under_curve
 from resurfemg.helper_functions import find_peak_in_breath
 from resurfemg.helper_functions import distance_matrix
 # from resurfemg.helper_functions import emg_lowpass_butter
-# from resurfemg.helper_functions import find_peaks_in_ecg_signal
+from resurfemg.preprocessing.ecg_removal import find_peaks_in_ecg_signal
 from resurfemg.helper_functions import variability_maker
 # config
 from resurfemg.config import Config
