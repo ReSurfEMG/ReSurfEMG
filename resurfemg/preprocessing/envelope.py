@@ -13,8 +13,8 @@ from scipy.signal import savgol_filter
 def full_rolling_rms(data_emg, window_length):
     """This function computes a root mean squared envelope over an
     array :code:`data_emg`.  To do this it uses number of sample values
-    :code:`window_length`. It differs from :func:`naive_rolling_rms` by that the
-    output is the same length as the input vector.
+    :code:`window_length`. It differs from :func:`naive_rolling_rms` 
+    by that the     output is the same length as the input vector.
 
     :param data_emg: Samples from the EMG
     :type data_emg: ~numpy.ndarray
@@ -35,6 +35,7 @@ def full_rolling_rms(data_emg, window_length):
     window = np.ones(window_length)/float(window_length)
     emg_rms = np.sqrt(np.convolve(x_2, window, 'valid'))
     return emg_rms
+
 
 def hi_envelope(our_signal, dmax=24):
     """
@@ -62,6 +63,7 @@ def hi_envelope(our_signal, dmax=24):
 
     return smoothed_interped
 
+
 def naive_rolling_rms(data_emg, window_length):
     """This function computes a root mean squared envelope over an
     array :code:`data_emg`. To do this it uses number of sample values
@@ -79,6 +81,7 @@ def naive_rolling_rms(data_emg, window_length):
     emg_rms = np.sqrt((x_c[window_length:] - x_c[:-window_length])/window_length)
     return emg_rms
 
+
 def running_smoother(array):
     """
     This is the smoother to use in time calculations
@@ -88,6 +91,7 @@ def running_smoother(array):
     zeros = np.zeros(n_samples - 1)
     smoothed_array = np.hstack((new_list, zeros))
     return smoothed_array
+
 
 def smooth_for_baseline(
     single_filtered_array, start=None, end=None, smooth=100
@@ -122,6 +126,7 @@ def smooth_for_baseline(
         dists[i] = dist
         wmax, wmin = nwmax, nwmin
     return array, dists
+
 
 def smooth_for_baseline_with_overlay(
     my_own_array, threshold=10, start=None, end=None, smooth=100
@@ -171,6 +176,7 @@ def smooth_for_baseline_with_overlay(
         dists[i] = dist
         wmax, wmin = nwmax, nwmin
     return array, overlay, dists
+
 
 def vect_naive_rolling_rms(x, N):
     """This function computes a root mean squared envelope over an
