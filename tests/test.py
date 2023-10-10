@@ -95,7 +95,7 @@ class TestHashMethods(unittest.TestCase):
             self.assertTrue(hash_it_up_right_all(td, '.Poly5').equals(hash_it_up_right_all(td, '.Poly5')))
 
 
-class TestComponentPickingMethods(unittest.TestCase):
+#class TestComponentPickingMethods(unittest.TestCase):
 
     # def test_pick_more_peaks_array(self):
     #     sample_read= Poly5Reader(sample_emg)
@@ -146,7 +146,7 @@ class TestComponentPickingMethods(unittest.TestCase):
 
 
 class TestEntropyMethods(unittest.TestCase):
-
+    
     def test_entropy_scipy(self):
         sample_array_lo_entropy = [0,0,0,0,0,0,0,0,0,0]
         sample_array_hi_entropy = [0,4,0,5,8,0,12,0,1,0]
@@ -180,7 +180,7 @@ class TestVariabilityMethods(unittest.TestCase):
         )
 
     
-class TestFilteringMethods(unittest.TestCase):
+#class TestFilteringMethods(unittest.TestCase):
 
     # def test_emg_band_pass_butter(self):
     #     sample_read= Poly5Reader(sample_emg)
