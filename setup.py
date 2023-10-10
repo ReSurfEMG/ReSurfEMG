@@ -171,8 +171,9 @@ class UnitTest(TestCommand):
             result = runner.run(suite)
             sys.exit(1 if result.errors else 0)
 
-        tests = os.path.join(project_dir, 'tests', 'test.py')
-        sys.exit(subprocess.call((env_python, '-m', 'unittest', tests)))
+        tests = os.path.join(project_dir, 'tests')
+        sys.exit(subprocess.call(
+            (env_python, '-m', 'unittest', 'discover', tests, '*test.py')))
 
 
 class Pep8(TestCommand):
