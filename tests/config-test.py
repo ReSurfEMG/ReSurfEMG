@@ -30,3 +30,4 @@ class TestConfig(TestCase):
 
             config = Config(config_file)
             assert config.get_directory('root_emg_directory')
+            

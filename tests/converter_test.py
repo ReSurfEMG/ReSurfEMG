@@ -9,7 +9,7 @@ from unittest import main
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 # converter_functions 
 from resurfemg.data_connector.converter_functions import poly5unpad
-from resurfemg.config import hash_it_up_right_all
+from resurfemg.config.config import hash_it_up_right_all
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -43,4 +43,5 @@ class TestHashMethods(unittest.TestCase):
                 tf.write('string')
             with open(os.path.join(td, tempfile2), 'w') as tf:
                 tf.write('string')
-            self.assertTrue(hash_it_up_right_all(td, '.Poly5').equals(hash_it_up_right_all(td, '.Poly5')))
+            self.assertTrue(hash_it_up_right_all(td, '.Poly5').equals(
+                hash_it_up_right_all(td, '.Poly5')))
