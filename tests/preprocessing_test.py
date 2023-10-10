@@ -1,29 +1,27 @@
-#sanity tests for the preprocessing functions, including filtering, ecg removal and envelope calculation
+#sanity tests for the preprocessing functions, including filtering,
+#ecg removal and envelope calculation
 
 
 import unittest
 import os
 import scipy
 import numpy as np
-from resurfemg.helper_functions import emg_bandpass_butter
-from resurfemg.helper_functions import emg_bandpass_butter_sample
-from resurfemg.helper_functions import bad_end_cutter
-from resurfemg.helper_functions import bad_end_cutter_better
-from resurfemg.helper_functions import bad_end_cutter_for_samples
-from resurfemg.helper_functions import notch_filter
-from resurfemg.helper_functions import emg_lowpass_butter
-from resurfemg.tmsisdk_lite import Poly5Reader
-from resurfemg.helper_functions import compute_ICA_two_comp
-from resurfemg.helper_functions import compute_ICA_two_comp_multi
-from resurfemg.helper_functions import pick_lowest_correlation_array
-from resurfemg.helper_functions import pick_more_peaks_array
-from resurfemg.helper_functions import gating
-from resurfemg.helper_functions import find_peaks_in_ecg_signal
+from resurfemg.preprocessing.filtering import emg_bandpass_butter
+from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
+from resurfemg.preprocessing.filtering import bad_end_cutter
+from resurfemg.preprocessing.filtering import bad_end_cutter_better
+from resurfemg.preprocessing.filtering import bad_end_cutter_for_samples
+from resurfemg.preprocessing.filtering import notch_filter
+from resurfemg.preprocessing.filtering import emg_lowpass_butter
+from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
+from resurfemg.preprocessing.ecg_removal import compute_ica_two_comp
+from resurfemg.preprocessing.ecg_removal import compute_ica_two_comp_multi
+from resurfemg.preprocessing.ecg_removal import pick_lowest_correlation_array
+from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
+from resurfemg.preprocessing.ecg_removal import gating
 from resurfemg.multi_lead_type import pick_highest_correlation_array_multi
 from resurfemg.helper_functions import naive_rolling_rms
 from resurfemg.helper_functions import vect_naive_rolling_rms
-from resurfemg.helper_functions import smooth_for_baseline
-from resurfemg.helper_functions import smooth_for_baseline_with_overlay
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -50,7 +48,6 @@ class TestFilteringMethods(unittest.TestCase):
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,
         )
-    
     def test_emg_lowpass_butter(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_lowpass_butter(sample_read.samples, 5, 2048)
@@ -73,7 +70,6 @@ class TestFilteringMethods(unittest.TestCase):
             (len(sample_emg_filtered)),
             len(sample_read.samples[0]) ,
         )
-    
     def test_vect_naive_rolling_rms(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = vect_naive_rolling_rms(sample_read.samples[0], 10)
@@ -114,7 +110,7 @@ class TestComponentPickingMethods(unittest.TestCase):
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
         sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
         sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
-        components = compute_ICA_two_comp(sample_emg_filtered)
+        components = compute_ica_two_comp(sample_emg_filtered)
         emg = pick_more_peaks_array(components)
         self.assertEqual(
             (len(emg)),
@@ -163,7 +159,7 @@ class TestPickingMethods(unittest.TestCase):
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
         sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
         sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
-        components = compute_ICA_two_comp(sample_emg_filtered)
+        components = compute_ica_two_comp(sample_emg_filtered)
         self.assertEqual(
             (len(components[1])),
             len(components[0]) ,
@@ -174,7 +170,7 @@ class TestPickingMethods(unittest.TestCase):
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
         sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
         sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
-        components = compute_ICA_two_comp_multi(sample_emg_filtered)
+        components = compute_ica_two_comp_multi(sample_emg_filtered)
         self.assertEqual(
             (len(components)),
             2 ,
@@ -187,7 +183,8 @@ class TestGating(unittest.TestCase):
     ecg_peaks, _  = scipy.signal.find_peaks(sample_emg_filtered[0, :])
 
     def test_gating_method_0(self):
-        ecg_gated_0 = gating(self.sample_emg_filtered[0, :], self.ecg_peaks, gate_width=205, method=0)
+        ecg_gated_0 = gating(self.sample_emg_filtered[0, :], self.ecg_peaks,
+                             gate_width=205, method=0)
 
         self.assertEqual(
             (len(self.sample_emg_filtered[0])),
@@ -206,9 +203,9 @@ class TestGating(unittest.TestCase):
             (len(self.sample_emg_filtered[0])),
             len(ecg_gated_1) ,
         )
-    
     def test_gating_method_2(self):
-        ecg_gated_2 = gating(self.sample_emg_filtered[0, :], self.ecg_peaks, gate_width=205, method=2)
+        ecg_gated_2 = gating(self.sample_emg_filtered[0, :], self.ecg_peaks,
+                             gate_width=205, method=2)
 
         self.assertEqual(
             (len(self.sample_emg_filtered[0])),
@@ -221,10 +218,10 @@ class TestGating(unittest.TestCase):
         self.assertFalse(
             np.isnan(np.sum(ecg_gated_2))
         )
-    
     def test_gating_method_3(self):
         ecg_peaks, _  = scipy.signal.find_peaks(self.sample_emg_filtered[0, :10*2048-1])
-        ecg_gated_3 = gating(self.sample_emg_filtered[0, :10*2048], ecg_peaks, gate_width=205, method=3)
+        ecg_gated_3 = gating(self.sample_emg_filtered[0, :10*2048], ecg_peaks,
+                             gate_width=205, method=3)
 
         self.assertEqual(
             (len(self.sample_emg_filtered[0, :10*2048])),

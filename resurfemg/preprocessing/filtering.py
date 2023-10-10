@@ -44,7 +44,7 @@ def emg_bandpass_butter_sample(
     sample_rate,
     output='sos'
 ):
-    """The paramemter taken in here is the Poly5 file.  Output is the
+    """The parameter taken in here is the Poly5 file.  Output is the
     EMG after a bandpass as made here.
 
     :param data_emg_samp: The array in the Poly5 or other sample
