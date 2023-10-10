@@ -175,7 +175,6 @@ class UnitTest(TestCommand):
         sys.exit(subprocess.call(
             (env_python, '-m', 'unittest', 'discover', tests, '*test.py')))
 
-
 class Pep8(TestCommand):
 
     description = 'validate sources against PEP8'
