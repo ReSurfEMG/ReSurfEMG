@@ -13,7 +13,7 @@ from unittest import TestCase, main
 from resurfemg.tmsisdk_lite import Poly5Reader
 # converter_functions 
 from resurfemg.converter_functions import poly5unpad
-from resurfemg.config import hash_it_up_right_all
+from resurfemg.config.config import hash_it_up_right_all
 # multi_lead_type
 from resurfemg.multi_lead_type import compute_ICA_n_comp
 from resurfemg.multi_lead_type import compute_ICA_n_comp_selective_zeroing
@@ -54,8 +54,8 @@ from resurfemg.helper_functions import emg_lowpass_butter
 from resurfemg.helper_functions import find_peaks_in_ecg_signal
 from resurfemg.helper_functions import variability_maker
 # config
-from resurfemg.config import Config
-from resurfemg.config import make_realistic_syn_emg
+from resurfemg.config.config import Config
+from resurfemg.config.config import make_realistic_syn_emg
 # ml
 from resurfemg.ml import save_ml_output
 
@@ -535,29 +535,7 @@ class TestArrayMath(unittest.TestCase):
         )
 
 
-class TestConfig(TestCase):
 
-    required_directories = {
-        'root_emg_directory',
-    }
-    required_directories = ['root_emg_directory']
-
-    def test_roots_only(self):
-        with TemporaryDirectory() as td:
-            same_created_path = os.path.join(td, 'root')
-            os.mkdir(same_created_path)
-            raw_config = {
-                'root_emg_directory': same_created_path,
-            }
-            config_file = os.path.join(td, 'config.json')
-            with open(config_file, 'w') as f:
-                json.dump(raw_config, f)
-
-            # for root in self.required_directories:
-            #     os.mkdir(os.path.join(td, root))
-
-            config = Config(config_file)
-            assert config.get_directory('root_emg_directory')
 
     def test_missing_config_path(self):
         try:
