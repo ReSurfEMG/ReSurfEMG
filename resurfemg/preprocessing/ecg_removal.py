@@ -13,6 +13,7 @@ from scipy.signal import find_peaks
 
 from . import envelope as evl
 
+
 def compute_ica_two_comp(emg_samples):
     """A function that performs an independent component analysis
     (ICA) meant for EMG data that includes three stacked arrays.
@@ -29,6 +30,7 @@ def compute_ica_two_comp(emg_samples):
     component_0 = S.T[0]
     component_1 = S.T[1]
     return component_0, component_1
+
 
 def compute_ica_two_comp_multi(emg_samples):
     """A function that performs an independant component analysis
@@ -51,6 +53,7 @@ def compute_ica_two_comp_multi(emg_samples):
     component_0 = S.T[0]
     component_1 = S.T[1]
     return component_0, component_1
+
 
 def pick_more_peaks_array(components_tuple):
     """Here we have a function that takes a tuple with the two parts
@@ -94,6 +97,7 @@ def pick_more_peaks_array(components_tuple):
         print("this is very strange data, please examine by hand")
     return emg_component
 
+
 def pick_lowest_correlation_array(components_tuple, ecg_lead):
     """Here we have a function that takes a tuple with the two parts
     of ICA and the array containing the ECG recording, and finds the
@@ -135,6 +139,7 @@ def pick_lowest_correlation_array(components_tuple, ecg_lead):
 
     return emg_component
 
+
 def pick_highest_correlation_array(components_tuple, ecg_lead):
     """Here we have a function that takes a tuple with the two parts
     of ICA and the array containing the ECG recording, and finds the
@@ -165,6 +170,7 @@ def pick_highest_correlation_array(components_tuple, ecg_lead):
     ecg_component = components_tuple[hi_index]
 
     return ecg_component
+
 
 def gating(
     src_signal,
@@ -275,7 +281,6 @@ def gating(
                 )
 
     return src_signal_gated
-
 
 
 def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):

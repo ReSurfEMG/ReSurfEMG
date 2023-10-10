@@ -238,6 +238,7 @@ def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
     output_signal = signal.filtfilt(b_notch, a_notch, sample)
     return output_signal
 
+
 def emg_highpass_butter(data_emg, cut_above, sample_rate):
     """The parameter taken in here is the Poly5 file's samples or
     another array.  Output is the EMG after a bandpass as made here.
@@ -256,6 +257,7 @@ def emg_highpass_butter(data_emg, cut_above, sample_rate):
     # sos (output parameter)is second order section  -> "stabilizes" ?
     emg_filtered = signal.sosfiltfilt(sos, data_emg)
     return emg_filtered
+
 
 def compute_power_loss(
     original_signal,
@@ -306,6 +308,7 @@ def compute_power_loss(
     power_loss = 100*(1-(np.sum(Pxx_den_processed)/np.sum(Pxx_den_orig)))
 
     return power_loss
+
 
 def helper_lowpass(cutoff, fs, order=5):
     """
