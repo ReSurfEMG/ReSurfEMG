@@ -14,11 +14,11 @@ import glob
 from copy import copy
 import numpy as np
 from sklearn.decomposition import FastICA
-from resurfemg.helper_functions import bad_end_cutter_for_samples
-from resurfemg.helper_functions import emg_bandpass_butter_sample
-from resurfemg.helper_functions import pick_lowest_correlation_array
-from resurfemg.helper_functions import pick_more_peaks_array
-from resurfemg.helper_functions import emg_highpass_butter
+from resurfemg.preprocessing.filtering import bad_end_cutter_for_samples
+from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
+from resurfemg.preprocessing.ecg_removal import pick_lowest_correlation_array
+from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
+from resurfemg.preprocessing.filtering import emg_highpass_butter
 from .data_connector.tmsisdk_lite import Poly5Reader
 
 
