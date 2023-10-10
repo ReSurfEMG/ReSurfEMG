@@ -10,9 +10,9 @@ import json
 from unittest import TestCase, main
 
 # tmsisdk_lite
-from resurfemg.tmsisdk_lite import Poly5Reader
+from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 # converter_functions 
-from resurfemg.converter_functions import poly5unpad
+from resurfemg.data_connector.converter_functions import poly5unpad
 from resurfemg.config import hash_it_up_right_all
 # multi_lead_type
 from resurfemg.multi_lead_type import compute_ICA_n_comp
