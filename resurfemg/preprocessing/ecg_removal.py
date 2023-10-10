@@ -9,8 +9,7 @@ This file contains functions to eliminate ECG artifacts from
 import copy
 import numpy as np
 from sklearn.decomposition import FastICA
-from scipy import signal
-from scipy.signal import find_peaks, savgol_filter
+from scipy.signal import find_peaks
 
 from . import envelope as evl
 
