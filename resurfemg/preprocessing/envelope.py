@@ -13,7 +13,7 @@ from scipy.signal import savgol_filter
 def full_rolling_rms(data_emg, window_length):
     """This function computes a root mean squared envelope over an
     array :code:`data_emg`.  To do this it uses number of sample values
-    :code:`window_length`. It differs from :func:`naive_rolling_rms` 
+    :code:`window_length`. It differs from :func:`naive_rolling_rms`
     by that the     output is the same length as the input vector.
 
     :param data_emg: Samples from the EMG
@@ -27,7 +27,7 @@ def full_rolling_rms(data_emg, window_length):
     x_pad = np.pad(
         data_emg,
         (0, window_length-1),
-        'constant', 
+        'constant',
         constant_values=(0, 0)
     )
 
@@ -78,7 +78,8 @@ def naive_rolling_rms(data_emg, window_length):
     :rtype: ~numpy.ndarray
     """
     x_c = np.cumsum(abs(data_emg)**2)
-    emg_rms = np.sqrt((x_c[window_length:] - x_c[:-window_length])/window_length)
+    emg_rms = np.sqrt((x_c[window_length:] - x_c[:-window_length])
+                      /window_length)
     return emg_rms
 
 
