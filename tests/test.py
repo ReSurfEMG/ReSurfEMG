@@ -31,7 +31,7 @@ from resurfemg.helper_functions import count_decision_array
 # from resurfemg.helper_functions import notch_filter
 # from resurfemg.helper_functions import naive_rolling_rms
 # from resurfemg.helper_functions import vect_naive_rolling_rms
-from resurfemg.helper_functions import pick_more_peaks_array
+from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
 # from resurfemg.helper_functions import pick_lowest_correlation_array
 from resurfemg.helper_functions import zero_one_for_jumps_base
 # from resurfemg.helper_functions import compute_ICA_two_comp
