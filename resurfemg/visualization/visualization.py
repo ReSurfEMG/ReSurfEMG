@@ -10,6 +10,7 @@ import numpy as np
 from scipy.fft import fft, fftfreq
 import matplotlib.pyplot as plt
 
+
 def show_my_power_spectrum(sample, sample_rate, upper_window):
     """This function plots a power spectrum of the frequencies
     comtained in an EMG based on a Fourier transform.  It does not
