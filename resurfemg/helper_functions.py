@@ -17,17 +17,23 @@ from math import log, e
 import copy
 import scipy
 from scipy import signal
-from scipy.fft import fft, fftfreq
-from scipy.signal import find_peaks
+# from scipy.fft import fft, fftfreq
+# from scipy.signal import find_peaks
 from scipy.signal import savgol_filter
-from scipy.signal import butter, lfilter
+# from scipy.signal import butter, lfilter
 from scipy.stats import entropy
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.decomposition import FastICA
 import textdistance
 import pandas as pd
 import logging
+from .preprocessing.filtering import bad_end_cutter
+from .preprocessing.filtering import bad_end_cutter_for_samples
+from .preprocessing.filtering import emg_bandpass_butter_sample
+from .preprocessing.filtering import emg_highpass_butter
+from .preprocessing.ecg_removal import pick_more_peaks_array
+from .preprocessing.ecg_removal import pick_lowest_correlation_array
 
 
 class Range(namedtuple('RangeBase', 'start,end')):
@@ -306,33 +312,33 @@ class Range(namedtuple('RangeBase', 'start,end')):
 #     return output_signal
 
 
-def show_my_power_spectrum(sample, sample_rate, upper_window):
-    """This function plots a power spectrum of the frequencies
-    comtained in an EMG based on a Fourier transform.  It does not
-    return the graph, rather the values but plots the graph before it
-    return.  Sample should be one single row (1-dimensional array.)
+# def show_my_power_spectrum(sample, sample_rate, upper_window):
+#     """This function plots a power spectrum of the frequencies
+#     comtained in an EMG based on a Fourier transform.  It does not
+#     return the graph, rather the values but plots the graph before it
+#     return.  Sample should be one single row (1-dimensional array.)
 
-    :param sample: The sample array
-    :type sample: ~numpy.ndarray
-    :param sample_rate: Number of samples per second
-    :type sample_rate: int
-    :param upper_window: The end of window over which values will be plotted
-    :type upper_window: int
+#     :param sample: The sample array
+#     :type sample: ~numpy.ndarray
+#     :param sample_rate: Number of samples per second
+#     :type sample_rate: int
+#     :param upper_window: The end of window over which values will be plotted
+#     :type upper_window: int
 
-    :return: :code:`yf, xf` tuple of fourier transformed array and
-        frequencies (the values for plotting the power spectrum)
-    :rtype: Tuple[float, float]
-    """
-    N = len(sample)
-    # for our emgs sample rate is usually 2048
-    yf = np.abs(fft(sample))**2
-    xf = fftfreq(N, 1 / sample_rate)
+#     :return: :code:`yf, xf` tuple of fourier transformed array and
+#         frequencies (the values for plotting the power spectrum)
+#     :rtype: Tuple[float, float]
+#     """
+#     N = len(sample)
+#     # for our emgs sample rate is usually 2048
+#     yf = np.abs(fft(sample))**2
+#     xf = fftfreq(N, 1 / sample_rate)
 
-    idx = [i for i, v in enumerate(xf) if (0 <= v <= upper_window)]
+#     idx = [i for i, v in enumerate(xf) if (0 <= v <= upper_window)]
 
-    plt.plot(xf[idx], yf[idx])
-    plt.show()
-    return yf, xf
+#     plt.plot(xf[idx], yf[idx])
+#     plt.show()
+#     return yf, xf
 
 
 # def emg_highpass_butter(data_emg, cut_above, sample_rate):
