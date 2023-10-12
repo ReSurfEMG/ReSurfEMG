@@ -11,6 +11,7 @@ import logging
 from ..preprocessing.envelope import running_smoother
 from ..helper_functions.helper_functions import delay_embedding
 
+
 def show_my_power_spectrum(sample, sample_rate, upper_window):
     """This function plots a power spectrum of the frequencies
     comtained in an EMG based on a Fourier transform.  It does not
