@@ -13,6 +13,7 @@ from resurfemg.helper_functions import times_under_curve
 from resurfemg.helper_functions import find_peak_in_breath
 from resurfemg.helper_functions import variability_maker
 
+
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
     'not_pushed',
@@ -57,7 +58,7 @@ class TestVariabilityMethods(unittest.TestCase):
         )
 
 class TestArrayMath(unittest.TestCase):
-    
+   
 
     def test_simple_area_under_curve(self):
         sample_array= np.array(
@@ -78,7 +79,7 @@ class TestArrayMath(unittest.TestCase):
             counted,
             28,
         )
-    
+   
     def test_times_under_curve(self):
         sample_array= np.array(
             [0,1,2,3,1,5,6,-5,8,9,20,11,12,13,4,5,6,1,1,1,0]
@@ -118,6 +119,6 @@ class TestArrayMath(unittest.TestCase):
             peak,
             (8,10, 11.5)
         )
-              
+             
 if __name__ == '__main__':
     unittest.main()
