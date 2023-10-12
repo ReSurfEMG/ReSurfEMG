@@ -13,7 +13,7 @@ import glob
 import pandas as pd
 import numpy as np
 import scipy.io as sio
-from resurfemg.tmsisdk_lite import Poly5Reader
+from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 
 
 def poly5unpad(to_be_read):
