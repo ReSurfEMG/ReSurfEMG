@@ -2,6 +2,7 @@
 
 
 import unittest
+import os
 import numpy as np
 # helper_functions
 from resurfemg.helper_functions import entropy_scipy
@@ -12,6 +13,14 @@ from resurfemg.helper_functions import times_under_curve
 from resurfemg.helper_functions import find_peak_in_breath
 from resurfemg.helper_functions import variability_maker
 
+sample_emg = os.path.join(
+    os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
+    'not_pushed',
+    'Test_lung_data',
+    '2022-05-13_11-51-04',
+    '002',
+    'EMG_recording.Poly5',
+)
 
 class TestEntropyMethods(unittest.TestCase):
 

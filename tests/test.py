@@ -7,7 +7,7 @@ import numpy as np
 import scipy
 from tempfile import TemporaryDirectory
 import json
-from unittest import TestCase, main
+# from unittest import TestCase, main
 
 # tmsisdk_lite
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
@@ -37,24 +37,24 @@ from resurfemg.helper_functions import zero_one_for_jumps_base
 # from resurfemg.helper_functions import compute_ICA_two_comp
 # from resurfemg.helper_functions import compute_ICA_two_comp_multi
 from resurfemg.helper_functions import working_pipeline_exp
-from resurfemg.helper_functions import entropical
-from resurfemg.helper_functions import entropy_scipy
+# from resurfemg.helper_functions import entropical
+# from resurfemg.helper_functions import entropy_scipy
 # from resurfemg.helper_functions import smooth_for_baseline
 # from resurfemg.helper_functions import smooth_for_baseline_with_overlay
 from resurfemg.helper_functions import relative_levenshtein
 # from resurfemg.helper_functions import gating
 from resurfemg.helper_functions import scale_arrays
-from resurfemg.helper_functions import pseudo_slope
-from resurfemg.helper_functions import area_under_curve
-from resurfemg.helper_functions import simple_area_under_curve
-from resurfemg.helper_functions import times_under_curve
-from resurfemg.helper_functions import find_peak_in_breath
+# from resurfemg.helper_functions import pseudo_slope
+# from resurfemg.helper_functions import area_under_curve
+# from resurfemg.helper_functions import simple_area_under_curve
+# from resurfemg.helper_functions import times_under_curve
+# from resurfemg.helper_functions import find_peak_in_breath
 from resurfemg.helper_functions import distance_matrix
 # from resurfemg.helper_functions import emg_lowpass_butter
 from resurfemg.preprocessing.ecg_removal import find_peaks_in_ecg_signal
-from resurfemg.helper_functions import variability_maker
+# from resurfemg.helper_functions import variability_maker
 # config
-from resurfemg.config.config import Config
+# from resurfemg.config.config import Config
 from resurfemg.config.config import make_realistic_syn_emg
 # ml
 from resurfemg.ml import save_ml_output
@@ -145,39 +145,39 @@ class TestHashMethods(unittest.TestCase):
     #     )
 
 
-class TestEntropyMethods(unittest.TestCase):
+# class TestEntropyMethods(unittest.TestCase):
     
-    def test_entropy_scipy(self):
-        sample_array_lo_entropy = [0,0,0,0,0,0,0,0,0,0]
-        sample_array_hi_entropy = [0,4,0,5,8,0,12,0,1,0]
-        ent_sample_array_lo_entropy = entropy_scipy(sample_array_lo_entropy)
-        ent_sample_array_hi_entropy = entropy_scipy(sample_array_hi_entropy)
-        self.assertGreater(
-            ent_sample_array_hi_entropy ,
-            ent_sample_array_lo_entropy ,
-        )
+#     def test_entropy_scipy(self):
+#         sample_array_lo_entropy = [0,0,0,0,0,0,0,0,0,0]
+#         sample_array_hi_entropy = [0,4,0,5,8,0,12,0,1,0]
+#         ent_sample_array_lo_entropy = entropy_scipy(sample_array_lo_entropy)
+#         ent_sample_array_hi_entropy = entropy_scipy(sample_array_hi_entropy)
+#         self.assertGreater(
+#             ent_sample_array_hi_entropy ,
+#             ent_sample_array_lo_entropy ,
+#         )
 
-class TestVariabilityMethods(unittest.TestCase):
+# class TestVariabilityMethods(unittest.TestCase):
 
-    def test_variability_maker_variance(self):
-        sample_array_lo_var = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
-        sample_array_hi_var = [0,4,0,5,8,0,12,0,1,0,0,9,0,9,0,0,9,6,0]
-        var_sample_array_lo_var = variability_maker(sample_array_lo_var, 10)
-        var_sample_array_hi_var = variability_maker(sample_array_hi_var, 10)
-        self.assertGreater(
-            np.sum(var_sample_array_hi_var) ,
-            np.sum(var_sample_array_lo_var) ,
-        )
+#     def test_variability_maker_variance(self):
+#         sample_array_lo_var = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
+#         sample_array_hi_var = [0,4,0,5,8,0,12,0,1,0,0,9,0,9,0,0,9,6,0]
+#         var_sample_array_lo_var = variability_maker(sample_array_lo_var, 10)
+#         var_sample_array_hi_var = variability_maker(sample_array_hi_var, 10)
+#         self.assertGreater(
+#             np.sum(var_sample_array_hi_var) ,
+#             np.sum(var_sample_array_lo_var) ,
+#         )
 
-    def test_variability_maker_std(self):
-        sample_array_lo_var = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
-        sample_array_hi_var = [0,4,0,5,8,0,12,0,1,0,0,9,0,9,0,0,9,6,0]
-        var_sample_array_lo_var = variability_maker(sample_array_lo_var, 10, method='std')
-        var_sample_array_hi_var = variability_maker(sample_array_hi_var, 10, method='std')
-        self.assertGreater(
-            np.sum(var_sample_array_hi_var) ,
-            np.sum(var_sample_array_lo_var) ,
-        )
+#     def test_variability_maker_std(self):
+#         sample_array_lo_var = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
+#         sample_array_hi_var = [0,4,0,5,8,0,12,0,1,0,0,9,0,9,0,0,9,6,0]
+#         var_sample_array_lo_var = variability_maker(sample_array_lo_var, 10, method='std')
+#         var_sample_array_hi_var = variability_maker(sample_array_hi_var, 10, method='std')
+#         self.assertGreater(
+#             np.sum(var_sample_array_hi_var) ,
+#             np.sum(var_sample_array_lo_var) ,
+#         )
 
     
 #class TestFilteringMethods(unittest.TestCase):
@@ -460,35 +460,35 @@ class TestArrayMath(unittest.TestCase):
              3,
         )
 
-    def test_simple_area_under_curve(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,-5,10,10,0,0,0,1,1,1,0,1,1,1,0,0,0]
-        )
-        counted = simple_area_under_curve(sample_array,0,10)
-        self.assertEqual(
-            counted,
-            28,
-        )
+    # def test_simple_area_under_curve(self):
+    #     sample_array= np.array(
+    #         [0,0,0,0,1,1,1,-5,10,10,0,0,0,1,1,1,0,1,1,1,0,0,0]
+    #     )
+    #     counted = simple_area_under_curve(sample_array,0,10)
+    #     self.assertEqual(
+    #         counted,
+    #         28,
+    #     )
 
-    def test_area_under_curve(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,5,10,10,5,0,1,1,1,1,0,1,1,1,0,0,0]
-        )
-        counted = area_under_curve(sample_array,0,20,70)
-        self.assertEqual(
-            counted,
-            28,
-        )
+    # def test_area_under_curve(self):
+    #     sample_array= np.array(
+    #         [0,0,0,0,1,1,1,5,10,10,5,0,1,1,1,1,0,1,1,1,0,0,0]
+    #     )
+    #     counted = area_under_curve(sample_array,0,20,70)
+    #     self.assertEqual(
+    #         counted,
+    #         28,
+    #     )
     
-    def test_times_under_curve(self):
-        sample_array= np.array(
-            [0,1,2,3,1,5,6,-5,8,9,20,11,12,13,4,5,6,1,1,1,0]
-        )
-        counted = times_under_curve(sample_array,0,20)
-        self.assertEqual(
-            counted,
-            ((10,0.5)),
-        )
+    # def test_times_under_curve(self):
+    #     sample_array= np.array(
+    #         [0,1,2,3,1,5,6,-5,8,9,20,11,12,13,4,5,6,1,1,1,0]
+    #     )
+    #     counted = times_under_curve(sample_array,0,20)
+    #     self.assertEqual(
+    #         counted,
+    #         ((10,0.5)),
+    #     )
 
     def test_distance_matrix(self):
         sample_array_a= np.array(
@@ -503,36 +503,36 @@ class TestArrayMath(unittest.TestCase):
             (1,6),
         )
 
-    def test_pseudo_slope(self):
-        test_arr_1 = np.array(
-            [0,9,8,7,10,11,13,15,12,16,13,17,18,6,5,4,3,2,1,0,0,0,0,0]
-        )
-        slope = pseudo_slope(test_arr_1,0,17)
-        self.assertEqual(
-            slope,
-            1.5
-        )
+    # def test_pseudo_slope(self):
+    #     test_arr_1 = np.array(
+    #         [0,9,8,7,10,11,13,15,12,16,13,17,18,6,5,4,3,2,1,0,0,0,0,0]
+    #     )
+    #     slope = pseudo_slope(test_arr_1,0,17)
+    #     self.assertEqual(
+    #         slope,
+    #         1.5
+    #     )
     
 
-    def test_find_peak_in_breath(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
-        )
-        peak =find_peak_in_breath(sample_array,0,20)
-        self.assertEqual(
-            peak,
-            (9,13, 13)
-        )
+    # def test_find_peak_in_breath(self):
+    #     sample_array= np.array(
+    #         [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
+    #     )
+    #     peak =find_peak_in_breath(sample_array,0,20)
+    #     self.assertEqual(
+    #         peak,
+    #         (9,13, 13)
+    #     )
     
-    def test_find_peak_in_breath_convy(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
-        )
-        peak =find_peak_in_breath(sample_array,0,20,'convy')
-        self.assertEqual(
-            peak,
-            (8,10, 11.5)
-        )
+    # def test_find_peak_in_breath_convy(self):
+    #     sample_array= np.array(
+    #         [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
+    #     )
+    #     peak =find_peak_in_breath(sample_array,0,20,'convy')
+    #     self.assertEqual(
+    #         peak,
+    #         (8,10, 11.5)
+    #     )
 
 
 # class TestConfig(TestCase):
