@@ -2,43 +2,13 @@ import collections
 import math
 import warnings
 import scipy
-from scipy.fft import fft, fftfreq
 from scipy.signal import savgol_filter
 from scipy.stats import entropy
 import matplotlib.pyplot as plt
 import numpy as np
 import logging
 from ..preprocessing.envelope import running_smoother
-from ..helper_functions.helper_functions import delay_embedding
-
-
-def show_my_power_spectrum(sample, sample_rate, upper_window):
-    """This function plots a power spectrum of the frequencies
-    comtained in an EMG based on a Fourier transform.  It does not
-    return the graph, rather the values but plots the graph before it
-    return.  Sample should be one single row (1-dimensional array.)
-
-    :param sample: The sample array
-    :type sample: ~numpy.ndarray
-    :param sample_rate: Number of samples per second
-    :type sample_rate: int
-    :param upper_window: The end of window over which values will be plotted
-    :type upper_window: int
-
-    :return: :code:`yf, xf` tuple of fourier transformed array and
-        frequencies (the values for plotting the power spectrum)
-    :rtype: Tuple[float, float]
-    """
-    N = len(sample)
-    # for our emgs sample rate is usually 2048
-    yf = np.abs(fft(sample))**2
-    xf = fftfreq(N, 1 / sample_rate)
-
-    idx = [i for i, v in enumerate(xf) if (0 <= v <= upper_window)]
-
-    plt.plot(xf[idx], yf[idx])
-    plt.show()
-    return yf, xf
+from ..helper_functions import delay_embedding
 
 
 def entropical(sig):
@@ -73,7 +43,7 @@ def entropy_scipy(sli, base=None):
     :rtype: float
     """
 
-    value, counts = np.unique(sli, return_counts=True)
+    _ , counts = np.unique(sli, return_counts=True)
     entropy_count = entropy(counts/len(counts), base=base)
     return entropy_count
 
@@ -277,18 +247,18 @@ def find_peak_in_breath(
             mode='interp',
             cval=0.0,
         )
-        max_ind = (new_array2.argmax())
+        max_ind = new_array2.argmax()
         max_val = new_array[max_ind]
         smooth_max = new_array2[max_ind]
     elif smooth_algorithm == 'convy':
         abs_new_array = abs(new_array)
         new_array2 = running_smoother(abs_new_array)
-        max_ind = (new_array2.argmax())
+        max_ind = new_array2.argmax()
         max_val = new_array[max_ind]
         smooth_max = new_array2[max_ind]
     else:
         abs_new_array = abs(new_array)
-        max_ind = (abs_new_array.argmax())
+        max_ind = abs_new_array.argmax()
         max_val = abs_new_array[max_ind]
         smooth_max = max_val
     return (max_ind, max_val, smooth_max)
