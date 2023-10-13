@@ -1,8 +1,7 @@
 """
 Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
-
-This file contains general functions to support the functions in this 
+This file contains general functions to support the functions in this
 repository
 
 """
@@ -60,7 +59,7 @@ class Range(namedtuple('RangeBase', 'start,end')):
         :rtype: slice
         """
         return slice(*map(int, self))   # maps whole tuple set
-  
+
 
 def zero_one_for_jumps_base(array, cut_off):
     """This function takes an array and makes it binary (0, 1) based
@@ -82,6 +81,7 @@ def zero_one_for_jumps_base(array, cut_off):
             i = 1
         array_list.append(i)
     return array_list
+
 
 def slices_slider(array_sample, slice_len):
     """This function produces continuous sequential slices over an
