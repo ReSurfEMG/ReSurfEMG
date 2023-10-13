@@ -20,8 +20,8 @@ from resurfemg.preprocessing.ecg_removal import pick_lowest_correlation_array
 from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
 from resurfemg.preprocessing.ecg_removal import gating
 from resurfemg.multi_lead_type import pick_highest_correlation_array_multi
-from resurfemg.helper_functions import naive_rolling_rms
-from resurfemg.helper_functions import vect_naive_rolling_rms
+from resurfemg.helper_functions.helper_functions import naive_rolling_rms
+from resurfemg.helper_functions.helper_functions import vect_naive_rolling_rms
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),

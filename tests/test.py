@@ -346,7 +346,7 @@ class TestPipelineMethods(unittest.TestCase):
 #             len(sample_read.samples[0]) ,
 #         )
 
-class TestVentCompareMethods(unittest.TestCase):
+#class TestVentCompareMethods(unittest.TestCase):
 
     # def test_relative_levenshtein(self):
     #     array1 = np.array([1,0,1,0,1,0])
@@ -410,7 +410,6 @@ class TestVentCompareMethods(unittest.TestCase):
 
 class TestMl(unittest.TestCase):
 
-
     def test_save_ml_output(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
@@ -419,12 +418,13 @@ class TestMl(unittest.TestCase):
             emg_saved = save_ml_output(sample_emg_filtered, our_path , force=True)
             loaded = np.load(our_path)
 
-        self.assertEqual(loaded.max(),sample_emg_filtered.max())
+        self.assertEqual(
+            loaded.max(),sample_emg_filtered.max()
+            )
 
 
 class TestArrayMath(unittest.TestCase):
-    
-    
+        
     # def test_scale_arrays(self):
     #     sample_read= Poly5Reader(sample_emg)
     #     sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
