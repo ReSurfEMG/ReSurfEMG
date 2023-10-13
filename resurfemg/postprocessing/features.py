@@ -43,7 +43,7 @@ def entropy_scipy(sli, base=None):
     :rtype: float
     """
 
-    _ , counts = np.unique(sli, return_counts=True)
+    _, counts = np.unique(sli, return_counts=True)
     entropy_count = entropy(counts/len(counts), base=base)
     return entropy_count
 
