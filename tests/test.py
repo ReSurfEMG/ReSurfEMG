@@ -410,7 +410,6 @@ class TestVentCompareMethods(unittest.TestCase):
 
 class TestMl(unittest.TestCase):
 
-
     def test_save_ml_output(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
@@ -423,8 +422,7 @@ class TestMl(unittest.TestCase):
 
 
 class TestArrayMath(unittest.TestCase):
-    
-    
+        
     # def test_scale_arrays(self):
     #     sample_read= Poly5Reader(sample_emg)
     #     sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
