@@ -5,13 +5,13 @@ import unittest
 import os
 import numpy as np
 # helper_functions
-from resurfemg.helper_functions import entropy_scipy
-from resurfemg.helper_functions import pseudo_slope
-from resurfemg.helper_functions import area_under_curve
-from resurfemg.helper_functions import simple_area_under_curve
-from resurfemg.helper_functions import times_under_curve
-from resurfemg.helper_functions import find_peak_in_breath
-from resurfemg.helper_functions import variability_maker
+from resurfemg.postprocessing.features import entropy_scipy
+from resurfemg.postprocessing.features import pseudo_slope
+from resurfemg.postprocessing.features import area_under_curve
+from resurfemg.postprocessing.features import simple_area_under_curve
+from resurfemg.postprocessing.features import times_under_curve
+from resurfemg.postprocessing.features import find_peak_in_breath
+from resurfemg.postprocessing.features import variability_maker
 
 
 sample_emg = os.path.join(
