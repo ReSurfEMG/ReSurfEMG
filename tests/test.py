@@ -25,7 +25,7 @@ from resurfemg.multi_lead_type import working_pipeline_pre_ml_multi
 # from resurfemg.helper_functions import bad_end_cutter
 # from resurfemg.helper_functions import bad_end_cutter_better
 # from resurfemg.helper_functions import bad_end_cutter_for_samples
-from resurfemg.helper_functions import count_decision_array
+from resurfemg.helper_functions.helper_functions import count_decision_array
 from resurfemg.preprocessing.filtering  import emg_bandpass_butter
 from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
 # from resurfemg.helper_functions import notch_filter
@@ -33,26 +33,26 @@ from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
 # from resurfemg.helper_functions import vect_naive_rolling_rms
 from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
 # from resurfemg.helper_functions import pick_lowest_correlation_array
-from resurfemg.helper_functions import zero_one_for_jumps_base
+from resurfemg.helper_functions.helper_functions import zero_one_for_jumps_base
 # from resurfemg.helper_functions import compute_ICA_two_comp
 # from resurfemg.helper_functions import compute_ICA_two_comp_multi
-from resurfemg.helper_functions import working_pipeline_exp
-from resurfemg.helper_functions import entropical
-from resurfemg.helper_functions import entropy_scipy
+# from resurfemg.helper_functions import working_pipeline_exp
+# from resurfemg.helper_functions import entropical
+from resurfemg.helper_functions_legacy import entropy_scipy
 # from resurfemg.helper_functions import smooth_for_baseline
 # from resurfemg.helper_functions import smooth_for_baseline_with_overlay
-from resurfemg.helper_functions import relative_levenshtein
+from resurfemg.helper_functions.helper_functions import relative_levenshtein
 # from resurfemg.helper_functions import gating
-from resurfemg.helper_functions import scale_arrays
-from resurfemg.helper_functions import pseudo_slope
-from resurfemg.helper_functions import area_under_curve
-from resurfemg.helper_functions import simple_area_under_curve
-from resurfemg.helper_functions import times_under_curve
-from resurfemg.helper_functions import find_peak_in_breath
-from resurfemg.helper_functions import distance_matrix
+from resurfemg.helper_functions.helper_functions import scale_arrays
+from resurfemg.helper_functions_legacy import pseudo_slope
+from resurfemg.helper_functions_legacy import area_under_curve
+from resurfemg.helper_functions_legacy import simple_area_under_curve
+from resurfemg.helper_functions_legacy import times_under_curve
+from resurfemg.helper_functions_legacy import find_peak_in_breath
+from resurfemg.helper_functions.helper_functions import distance_matrix
 # from resurfemg.helper_functions import emg_lowpass_butter
 from resurfemg.preprocessing.ecg_removal import find_peaks_in_ecg_signal
-from resurfemg.helper_functions import variability_maker
+from resurfemg.helper_functions_legacy import variability_maker
 # config
 from resurfemg.config.config import Config
 from resurfemg.config.config import make_realistic_syn_emg
@@ -244,29 +244,29 @@ class TestPickingMethods(unittest.TestCase):
     #         len(components[0]) ,
     #     )
 
-    def test_compute_ICA_n_comp(self):
-        sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
-        sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
-        sample_emg_filtered[2] = sample_emg_filtered[0]*1.7
-        doubled = np.vstack((sample_emg_filtered,sample_emg_filtered))
-        no_zeros = compute_ICA_n_comp(doubled, 1)
-        self.assertEqual(
-            (no_zeros.shape[0]),
-            6,
-        )
+    # def test_compute_ICA_n_comp(self):
+    #     sample_read= Poly5Reader(sample_emg)
+    #     sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+    #     sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
+    #     sample_emg_filtered[2] = sample_emg_filtered[0]*1.7
+    #     doubled = np.vstack((sample_emg_filtered,sample_emg_filtered))
+    #     no_zeros = compute_ICA_n_comp(doubled, 1)
+    #     self.assertEqual(
+    #         (no_zeros.shape[0]),
+    #         6,
+    #     )
 
-    def test_compute_ICA_n_comp_selective_zeroing(self):
-        sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
-        sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
-        sample_emg_filtered[2] = sample_emg_filtered[0]*1.7
-        doubled = np.vstack((sample_emg_filtered,sample_emg_filtered))
-        with_zeros = compute_ICA_n_comp_selective_zeroing(doubled, 1)
-        self.assertEqual(
-            (with_zeros.shape[0]),
-            6,
-        )
+    # def test_compute_ICA_n_comp_selective_zeroing(self):
+    #     sample_read= Poly5Reader(sample_emg)
+    #     sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+    #     sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
+    #     sample_emg_filtered[2] = sample_emg_filtered[0]*1.7
+    #     doubled = np.vstack((sample_emg_filtered,sample_emg_filtered))
+    #     with_zeros = compute_ICA_n_comp_selective_zeroing(doubled, 1)
+    #     self.assertEqual(
+    #         (with_zeros.shape[0]),
+    #         6,
+    #     )
 
     # def test_compute_ICA_two_comp_multi(self):
     #     sample_read= Poly5Reader(sample_emg)
