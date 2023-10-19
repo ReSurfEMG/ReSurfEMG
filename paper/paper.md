@@ -22,11 +22,11 @@ authors:
     orcid: 0000-0002-0150-306X
     affiliation: 3
 affiliations:
- - name: Netherlands eScience Center, Amsterdam, Netherlands
+ - name: Netherlands eScience Center, Amsterdam, The Netherlands
    index: 1
- - name: Bright Computing / NVIDIA, Netherlands
+ - name: Bright Computing / NVIDIA, Amsterdam, The Netherlands
    index: 2
- - name: Cardiovascular and Respiratory Physiology Group, Technical Medical Centre, University of Twente, Enschede, The Netherlands.
+ - name: Cardiovascular and Respiratory Physiology Group, Technical Medical Centre, University of Twente, Enschede, the Netherlands.
    index: 3
 
 date: 22 January 2023
