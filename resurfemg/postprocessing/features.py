@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import logging
 from ..preprocessing.envelope import running_smoother
-from resurfemg.helper_functions_legacy import delay_embedding
+from resurfemg.helper_functions.helper_functions import delay_embedding
 
 
 def entropical(sig):
