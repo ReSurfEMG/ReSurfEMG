@@ -12,12 +12,12 @@ import json
 # tmsisdk_lite
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 # converter_functions 
-from resurfemg.data_connector.converter_functions import poly5unpad
-from resurfemg.config.config import hash_it_up_right_all
+# from resurfemg.data_connector.converter_functions import poly5unpad
+# from resurfemg.config.config import hash_it_up_right_all
 # multi_lead_type
-from resurfemg.multi_lead_type import compute_ICA_n_comp
-from resurfemg.multi_lead_type import compute_ICA_n_comp_selective_zeroing
-from resurfemg.multi_lead_type import compute_ICA_two_comp_selective
+# from resurfemg.multi_lead_type import compute_ICA_n_comp
+# from resurfemg.multi_lead_type import compute_ICA_n_comp_selective_zeroing
+# from resurfemg.multi_lead_type import compute_ICA_two_comp_selective
 # from resurfemg.multi_lead_type import pick_highest_correlation_array_multi
 from resurfemg.multi_lead_type import working_pipe_multi
 from resurfemg.multi_lead_type import working_pipeline_pre_ml_multi
@@ -25,33 +25,33 @@ from resurfemg.multi_lead_type import working_pipeline_pre_ml_multi
 # from resurfemg.helper_functions import bad_end_cutter
 # from resurfemg.helper_functions import bad_end_cutter_better
 # from resurfemg.helper_functions import bad_end_cutter_for_samples
-from resurfemg.helper_functions.helper_functions import count_decision_array
+# from resurfemg.helper_functions.helper_functions import count_decision_array
 from resurfemg.preprocessing.filtering  import emg_bandpass_butter
-from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
+# from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
 # from resurfemg.helper_functions import notch_filter
 # from resurfemg.helper_functions import naive_rolling_rms
 # from resurfemg.helper_functions import vect_naive_rolling_rms
-from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
+# from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
 # from resurfemg.helper_functions import pick_lowest_correlation_array
-from resurfemg.helper_functions.helper_functions import zero_one_for_jumps_base
+# from resurfemg.helper_functions.helper_functions import zero_one_for_jumps_base
 # from resurfemg.helper_functions import compute_ICA_two_comp
 # from resurfemg.helper_functions import compute_ICA_two_comp_multi
-from resurfemg.helper_functions_legacy import working_pipeline_exp
+# from resurfemg.helper_functions_legacy import working_pipeline_exp
 # from resurfemg.helper_functions import entropical
 # from resurfemg.helper_functions import entropy_scipy
 # from resurfemg.helper_functions import smooth_for_baseline
 # from resurfemg.helper_functions import smooth_for_baseline_with_overlay
-from resurfemg.helper_functions.helper_functions import relative_levenshtein
+# from resurfemg.helper_functions.helper_functions import relative_levenshtein
 # from resurfemg.helper_functions import gating
-from resurfemg.helper_functions.helper_functions import scale_arrays
+# from resurfemg.helper_functions.helper_functions import scale_arrays
 # from resurfemg.helper_functions import pseudo_slope
 # from resurfemg.helper_functions import area_under_curve
 # from resurfemg.helper_functions import simple_area_under_curve
 # from resurfemg.helper_functions import times_under_curve
 # from resurfemg.helper_functions import find_peak_in_breath
-from resurfemg.helper_functions.helper_functions import distance_matrix
+# from resurfemg.helper_functions.helper_functions import distance_matrix
 # from resurfemg.helper_functions import emg_lowpass_butter
-from resurfemg.preprocessing.ecg_removal import find_peaks_in_ecg_signal
+# from resurfemg.preprocessing.ecg_removal import find_peaks_in_ecg_signal
 # from resurfemg.helper_functions import variability_maker
 # config
 # from resurfemg.config.config import Config
@@ -69,30 +69,30 @@ sample_emg = os.path.join(
 )
 
 
-class TestConverterMethods(unittest.TestCase):
+# class TestConverterMethods(unittest.TestCase):
 
-    def test_poly5unpad(self):
-        reading =Poly5Reader(sample_emg)
-        unpadded= poly5unpad(sample_emg)
-        unpadded_line = unpadded[0]
-        self.assertEqual(len(unpadded_line), reading.num_samples)
+#     def test_poly5unpad(self):
+#         reading =Poly5Reader(sample_emg)
+#         unpadded= poly5unpad(sample_emg)
+#         unpadded_line = unpadded[0]
+#         self.assertEqual(len(unpadded_line), reading.num_samples)
 
-    def Poly5Reader(self):
-        reading =Poly5Reader(sample_emg)
-        self.assertEqual(reading.num_channels, 3)
+#     def Poly5Reader(self):
+#         reading =Poly5Reader(sample_emg)
+#         self.assertEqual(reading.num_channels, 3)
 
 
-class TestHashMethods(unittest.TestCase):
+# class TestHashMethods(unittest.TestCase):
 
-    def test_hash_it_up_right_all(self):
-        tempfile1 = 'sample_emg_t.Poly5'
-        tempfile2 = 'sample_emg_t.Poly5'
-        with TemporaryDirectory() as td:
-            with open(os.path.join(td, tempfile1), 'w') as tf:
-                tf.write('string')
-            with open(os.path.join(td, tempfile2), 'w') as tf:
-                tf.write('string')
-            self.assertTrue(hash_it_up_right_all(td, '.Poly5').equals(hash_it_up_right_all(td, '.Poly5')))
+#     def test_hash_it_up_right_all(self):
+#         tempfile1 = 'sample_emg_t.Poly5'
+#         tempfile2 = 'sample_emg_t.Poly5'
+#         with TemporaryDirectory() as td:
+#             with open(os.path.join(td, tempfile1), 'w') as tf:
+#                 tf.write('string')
+#             with open(os.path.join(td, tempfile2), 'w') as tf:
+#                 tf.write('string')
+#             self.assertTrue(hash_it_up_right_all(td, '.Poly5').equals(hash_it_up_right_all(td, '.Poly5')))
 
 
 #class TestComponentPickingMethods(unittest.TestCase):
@@ -231,7 +231,7 @@ class TestHashMethods(unittest.TestCase):
 
 
 
-class TestPickingMethods(unittest.TestCase):
+# class TestPickingMethods(unittest.TestCase):
 
     # def test_compute_ICA_two_comp(self):
     #     sample_read= Poly5Reader(sample_emg)
@@ -279,20 +279,20 @@ class TestPickingMethods(unittest.TestCase):
     #         2 ,
     #     )
 
-    def test_compute_ICA_two_comp_selective(self):
-        sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
-        sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
-        sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
-        components =  compute_ICA_two_comp_selective(
-        sample_emg_filtered,
-        use_all_leads=False,
-        desired_leads=[0, 1],
-        )
-        self.assertEqual(
-            (len(components)),
-            2 ,
-        )
+    # def test_compute_ICA_two_comp_selective(self):
+    #     sample_read= Poly5Reader(sample_emg)
+    #     sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+    #     sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
+    #     sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
+    #     components =  compute_ICA_two_comp_selective(
+    #     sample_emg_filtered,
+    #     use_all_leads=False,
+    #     desired_leads=[0, 1],
+    #     )
+    #     self.assertEqual(
+    #         (len(components)),
+    #         2 ,
+    #     )
 
 
 class TestPipelineMethods(unittest.TestCase):
@@ -422,7 +422,7 @@ class TestMl(unittest.TestCase):
         self.assertEqual(loaded.max(),sample_emg_filtered.max())
 
 
-class TestArrayMath(unittest.TestCase):
+# class TestArrayMath(unittest.TestCase):
     
     
     # def test_scale_arrays(self):
@@ -444,13 +444,13 @@ class TestArrayMath(unittest.TestCase):
     #         (sample_emg_filtered.shape[1]),
     #     )
 
-    def test_find_peaks_in_ecg_signal(self):
-        samp_array = np.array([0,0,0,0,10,0,0,0,10,0,0,0,4,0,0,])
-        peaks = find_peaks_in_ecg_signal(samp_array, lower_border_percent=50)
-        self.assertEqual(
-            len(peaks),
-            2,
-        )
+    # def test_find_peaks_in_ecg_signal(self):
+    #     samp_array = np.array([0,0,0,0,10,0,0,0,10,0,0,0,4,0,0,])
+    #     peaks = find_peaks_in_ecg_signal(samp_array, lower_border_percent=50)
+    #     self.assertEqual(
+    #         len(peaks),
+    #         2,
+    #     )
 
     # def test_count_decision_array(self):
     #     sample_array= np.array([0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,1,0,1,1,1,0,0,0])

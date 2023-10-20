@@ -14,6 +14,9 @@ from resurfemg.preprocessing.filtering import bad_end_cutter_for_samples
 from resurfemg.preprocessing.filtering import notch_filter
 from resurfemg.preprocessing.filtering import emg_lowpass_butter
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
+from resurfemg.multi_lead_type import compute_ICA_two_comp_selective
+# from resurfemg.multi_lead_type import compute_ICA_n_comp
+# from resurfemg.multi_lead_type import compute_ICA_n_comp_selective_zeroing
 from resurfemg.preprocessing.ecg_removal import compute_ica_two_comp
 from resurfemg.preprocessing.ecg_removal import compute_ica_two_comp_multi
 from resurfemg.preprocessing.ecg_removal import pick_lowest_correlation_array
@@ -22,6 +25,7 @@ from resurfemg.preprocessing.ecg_removal import gating
 from resurfemg.multi_lead_type import pick_highest_correlation_array_multi
 from resurfemg.preprocessing.envelope import naive_rolling_rms
 from resurfemg.preprocessing.envelope import vect_naive_rolling_rms
+from resurfemg.preprocessing.ecg_removal import find_peaks_in_ecg_signal
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -152,7 +156,39 @@ class TestComponentPickingMethods(unittest.TestCase):
             sum(sample_emg_filtered[1]),
         )
 
+    def test_find_peaks_in_ecg_signal(self):
+        samp_array = np.array([0,0,0,0,10,0,0,0,10,0,0,0,4,0,0,])
+        peaks = find_peaks_in_ecg_signal(samp_array, lower_border_percent=50)
+        self.assertEqual(
+            len(peaks),
+            2,
+        )
 class TestPickingMethods(unittest.TestCase):
+
+
+    # def test_compute_ICA_n_comp(self):
+    #     sample_read= Poly5Reader(sample_emg)
+    #     sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+    #     sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
+    #     sample_emg_filtered[2] = sample_emg_filtered[0]*1.7
+    #     doubled = np.vstack((sample_emg_filtered,sample_emg_filtered))
+    #     no_zeros = compute_ICA_n_comp(doubled, 1)
+    #     self.assertEqual(
+    #         (no_zeros.shape[0]),
+    #         6,
+    #     )
+
+    # def test_compute_ICA_n_comp_selective_zeroing(self):
+    #     sample_read= Poly5Reader(sample_emg)
+    #     sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+    #     sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
+    #     sample_emg_filtered[2] = sample_emg_filtered[0]*1.7
+    #     doubled = np.vstack((sample_emg_filtered,sample_emg_filtered))
+    #     with_zeros = compute_ICA_n_comp_selective_zeroing(doubled, 1)
+    #     self.assertEqual(
+    #         (with_zeros.shape[0]),
+    #         6,
+    #     )
 
     def test_compute_ICA_two_comp(self):
         sample_read= Poly5Reader(sample_emg)
@@ -171,6 +207,21 @@ class TestPickingMethods(unittest.TestCase):
         sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
         sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
         components = compute_ica_two_comp_multi(sample_emg_filtered)
+        self.assertEqual(
+            (len(components)),
+            2 ,
+        )
+
+    def test_compute_ICA_two_comp_selective(self):
+        sample_read= Poly5Reader(sample_emg)
+        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
+        sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
+        components =  compute_ICA_two_comp_selective(
+        sample_emg_filtered,
+        use_all_leads=False,
+        desired_leads=[0, 1],
+        )
         self.assertEqual(
             (len(components)),
             2 ,
