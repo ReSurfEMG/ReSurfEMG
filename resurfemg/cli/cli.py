@@ -15,9 +15,9 @@ from argparse import ArgumentParser
 
 from ..multi_lead_type import preprocess
 from ..ml import applu_model
-from ..config import Config
-from ..config import make_realistic_syn_emg_cli
-from ..converter_functions import save_j_as_np
+from ..config.config import Config
+from ..config.config import make_realistic_syn_emg_cli
+from ..data_connector.converter_functions import save_j_as_np
 
 
 def common(parser):
