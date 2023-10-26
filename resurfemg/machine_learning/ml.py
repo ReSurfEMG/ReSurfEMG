@@ -17,7 +17,7 @@ from scipy.stats import entropy
 # ml stuff
 from sklearn.preprocessing import StandardScaler
 import joblib
-from resurfemg import helper_functions as hf
+from resurfemg.helper_functions import helper_functions as hf
 
 
 def save_ml_output(arrays, out_fname, force):
