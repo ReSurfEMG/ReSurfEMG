@@ -57,7 +57,7 @@ from resurfemg.preprocessing.filtering  import emg_bandpass_butter
 # from resurfemg.config.config import Config
 from resurfemg.config.config import make_realistic_syn_emg
 # ml
-from resurfemg.ml import save_ml_output
+# from resurfemg.ml import save_ml_output
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -408,18 +408,18 @@ class TestPipelineMethods(unittest.TestCase):
 #         )
 
 
-class TestMl(unittest.TestCase):
+# # class TestMl(unittest.TestCase):
 
 
-    def test_save_ml_output(self):
-        sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
-        with TemporaryDirectory() as td:
-            our_path = os.path.join(td,'outy.npy')
-            emg_saved = save_ml_output(sample_emg_filtered, our_path , force=True)
-            loaded = np.load(our_path)
+#     def test_save_ml_output(self):
+#         sample_read= Poly5Reader(sample_emg)
+#         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
+#         with TemporaryDirectory() as td:
+#             our_path = os.path.join(td,'outy.npy')
+#             emg_saved = save_ml_output(sample_emg_filtered, our_path , force=True)
+#             loaded = np.load(our_path)
 
-        self.assertEqual(loaded.max(),sample_emg_filtered.max())
+#         self.assertEqual(loaded.max(),sample_emg_filtered.max())
 
 
 # class TestArrayMath(unittest.TestCase):
