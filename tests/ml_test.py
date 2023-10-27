@@ -27,7 +27,7 @@ class TestMl(unittest.TestCase):
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
         with TemporaryDirectory() as td:
             our_path = os.path.join(td,'outy.npy')
-            emg_saved = save_ml_output(sample_emg_filtered, our_path , force=True)
+            save_ml_output(sample_emg_filtered, our_path , force=True)
             loaded = np.load(our_path)
 
         self.assertEqual(loaded.max(),sample_emg_filtered.max())
