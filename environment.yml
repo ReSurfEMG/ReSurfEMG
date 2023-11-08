@@ -1,26 +1,28 @@
 #  environment document
 
-name: emgandash
+name: julytry5
 channels:
   - conda-forge
-  #- resurfemg
 dependencies:
-  - python=3.8.6
+  - python=3.9
   - ipympl
   - ipywidgets=7.7.0
   - jupyter=1.0.0
   - matplotlib=3.3.3
-  - mne=0.21.2
+  - mne=0.23.4
   - notebook=6.4.10
   - numexpr=2.7.3
   - numpy=1.22.3
   - pandas
   - pip=20.2
+  - pycodestyle
   - pyxdf
   #- resurfemg
+  - scikit-learn=1.1.1
   - scipy=1.7.1
   - sphinx=4.5.0
   - textdistance=4.2.1
+  - tk=8.6.12 
 
   - pip:
 

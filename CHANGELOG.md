@@ -89,11 +89,30 @@
 
 ## Release 0.0.9
 
-### Not yet added
+### Added
 
 * Ninth version of this Python project, containing (added to this version):
 
 	- Improved function for entropy in helper_functions module
 	- Variability over array function (variability_maker) in helper_functions module
 	- Additional command line functionality to convert certain csv files into files that can be processing in the ReSurfEMG-Dashboard.
+	- Testing matrix to include Python 3.9 
+
+## Release 0.1.0
+
+
+* Tenth version, first major revision/version:
+
+	- Switch of all environments and functionality to run on Python 3.9
+	- Installation possibility via mamba added (preffered)
+	- Revision of some notebooks to allow processing of numpy array files directly
+	- Fixed lack of tkinter in environment yaml
+	
+
+## Release 0.1.2
+
+
+* Identical to tenth version, first major revision/version:
+
+	- created due to technical problems with pypi
 	

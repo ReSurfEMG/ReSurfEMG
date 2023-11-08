@@ -8,28 +8,18 @@ when EMG leads represent something other than inspiratory muscles
 and/or diaphragm in some cases.
 """
 
-import collections
-from collections import namedtuple
-import math
-from math import log, e
-import builtins
-from scipy import signal
-from scipy.fft import fft, fftfreq
-from scipy.signal import find_peaks
-from scipy.signal import savgol_filter
-import matplotlib.pyplot as plt
-import numpy as np
+
 import os
 import glob
 from copy import copy
+import numpy as np
 from sklearn.decomposition import FastICA
-from resurfemg.helper_functions import bad_end_cutter_for_samples
-from resurfemg.helper_functions import emg_bandpass_butter_sample
-from resurfemg.helper_functions import pick_lowest_correlation_array
-from resurfemg.helper_functions import pick_more_peaks_array
-from resurfemg.helper_functions import emg_highpass_butter
-from resurfemg.helper_functions import pick_highest_correlation_array
-from resurfemg.tmsisdk_lite import Poly5Reader
+from resurfemg.preprocessing.filtering import bad_end_cutter_for_samples
+from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
+from resurfemg.preprocessing.ecg_removal import pick_lowest_correlation_array
+from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
+from resurfemg.preprocessing.filtering import emg_highpass_butter
+from .data_connector.tmsisdk_lite import Poly5Reader
 
 
 def compute_ICA_two_comp_selective(

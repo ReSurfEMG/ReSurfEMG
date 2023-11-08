@@ -2,7 +2,11 @@ name: Sanity
 on: [push]
 jobs:
   Sanity:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ['ubuntu-latest']
+        python-version: ['3.9']
     steps:
       - uses: actions/checkout@v3
         with:
@@ -35,7 +39,7 @@ jobs:
       - uses: s-weigand/setup-conda@v1
         with:
           conda-channels: conda-forge
-          python-version: 3.8
+          python-version: 3.9
       - run: python3 -m venv .venv
       - run: .venv/bin/python -m pip install wheel
       - run: .venv/bin/python setup.py lint
@@ -45,7 +49,9 @@ jobs:
     if: |
       github.ref == 'refs/heads/main' ||
       github.ref == 'refs/heads/drcandacemakedamoore/remove_sphinx' ||
+      github.ref == 'refs/heads/wvxvw/sphinx-command' ||
       github.ref == 'refs/heads/drcandacemakedamoore/sphinx_and_nb' ||
+      github.ref == 'refs/heads/drcandacemakedamoore/expandmatrix' ||
       github.ref == 'refs/heads/wvxvw/documentation-fixes' ||
       github.ref == 'refs/heads/wvxvw/readthedocs-integration'
     steps:
@@ -56,7 +62,7 @@ jobs:
       - uses: s-weigand/setup-conda@v1
         with:
           conda-channels: conda-forge
-          python-version: 3.8
+          python-version: 3.9
       - run: python3 -m venv .venv
       - run: .venv/bin/python -m pip install wheel sphinx
       - run: .venv/bin/python setup.py install

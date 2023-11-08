@@ -53,6 +53,13 @@ The notebooks are configured to run on various datasets.  Contact
 Dr. Eline Mos-Oppersma( 📫 e.mos-oppersma@utwente.nl) to discuss any
 questions on data configuration for your datasets.
 
+If you want to use a standardized dataset for any purpose we reccomend
+the data in the ReSurfEMG/synthetic_data repository
+
+[![DOI](https://zenodo.org/badge/635680008.svg)](https://zenodo.org/badge/latestdoi/635680008)
+
+Data there can be used with any respiratory EMG algorithms in any program. Thus that data can function as a benchmarking set to compare algorithms across different programs.
+
 
 ### Configuring (to work with your data)
 
@@ -79,11 +86,10 @@ However, we highly recommend you use the home directory.
 This file can have this or similar contents:
 
     {
- 
-        'root_emg_directory': '/mnt/data',
-        'preprocessed': '/mnt/data/preprocessed',
-        'models': '/mnt/data/models',
-        'output': '/mnt/data/output',
+        "root_emg_directory": "/mnt/data",
+        "preprocessed": "/mnt/data/preprocessed",
+        "models": "/mnt/data/models",
+        "output": "/mnt/data/output",
     }
 
 The file is read as follows: if the files specifies `root_emg_directory`
@@ -103,11 +109,36 @@ docker cp test-data:/ReSurfEMG/tests/not_pushed/. .
 docker rm -f test-data
 ```
 
+### Supported Platforms
 
-## Getting started
+ReSurfEMG is a pure Python package. Below is the list of
+platforms that should work. Other platforms may work, but have had less extensive testing.
+Please note that where
+python.org Python or Anaconda Python stated as supported, it means
+that versions 3.8 or 3.9 (depending on the release) are supported.
+
+#### AMD64 (x86)
+
+|                             | Linux     | Win       | OSX       |
+|:---------------------------:|:---------:|:---------:|:---------:|
+| ![p](etc/python-logo.png)   | Supported | Unknown   | Unknown   |
+| ![a](etc/anaconda-logo.png) | Supported | Supported | Supported |
+
+### Installation for all supported platforms
+
+Installation with Anaconda/conda and/or mamba are the preffered methods.
+They are covered in [the "Getting Started" section](#Getting-Started). 
+If you wish to install with pip:
+
+1. Create and activate a virtual environment (see developer setup section for more details) 
+2. Install ResurfEMG package by running `pip install resurfemg`.
+
+
+## Getting Started
+#### with the reccomended Conda setup
 
 How to get the notebooks running?  Assuming the raw data set and
-metadata is available.
+metadata is available. Note for non-conda installations see next sections.
 
 0. Assuming you are using conda for package management:    
   * Make sure you are in no environment:
@@ -116,12 +147,26 @@ metadata is available.
       conda deactivate
       ```
 
-      _(repeat if you are in the base environment)_
+      _(optional repeat if you are in the base environment)_
 
-      You should be in no environment now
+      You can build on your
+      base environment if you want, or if you want to not use option A, you can go below it (no environment)
 
 
-1. Option A: To work with the most current versions with the possibility for development:
+1. Option A: Fastest option:
+  In a base-like environment with mamba installed, you can install all Python packages required, using `mamba` and the `environment.yml` file. 
+
+  If you do not have mamba installed you can follow instructions [here](https://anaconda.org/conda-forge/mamba)
+  
+
+
+   * The command for Windows/Anaconda/Mamba users can be something like:
+
+     ```sh
+     mamba env create -f environment.yml
+     ```
+
+Option B: To work with the most current versions with the possibility for development:
   Install all Python packages required, using `conda` and the `environment.yml` file. 
 
 
@@ -133,13 +178,15 @@ metadata is available.
 
    * Linux users can create their own environment by hand (use
      install_dev as in setup).
+    
+  Make sure to enter your newly created environment.
 
-Option B: In theory if you want to work, but never develop (i.e. add code), as a conda user
-   with the stable (released) version create an empty environment, and install
+Option C: In theory if you want to work, but never develop (i.e. add code), as a conda user
+   with a stable (released) version create an empty environment, and install
    there: 
 
 
-   * Create a blank environment with python pinned to 3.8:
+   * Create a blank environment with python pinned to 3.8 (assuming version < 0.1.0):
 
      ```sh
      conda create -n blank python=3.8
@@ -156,35 +203,43 @@ Option B: In theory if you want to work, but never develop (i.e. add code), as a
    in researcher_interface folder and interactively run the cells.
    You can use the command `jupyter notebook` to open a browser window
    on the folders of notebooks.  Note, if you run with an installed
-   library import appropriately.
+   library import appropriately. The [basic_emg_analysis](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/basic_emg_analysis.ipynb) notebook can 
+   be used to understand how to use the package. 
 
 
-## Developer's setup
 
-After checkign out the source code, create virtual environment.  Both
+## Advanced contributor's setup / "Developer's setup"
+
+We distinguish between people who want to use this library in
+their own code and/or analysis and people who also want to develop this library who we call developers, be it as
+members of our team or independent contributors.  People who
+simply want to use our library need to install the packaged version
+from one of the package indexes to which we publish released versions
+(eg. PyPI).  This section of the readme is for advanced developers who want to
+modify the library code (and possibly contribute their changes back or eventually publish thier own modified fork). NB: you can accomplish modifications of the code, submit PRs and soforth without 
+a 'developer's setup' but we feel this setup will make advanced contributions easier.
+
+We have transitioned to a fully Python 3.9 environment.  The
+instructions below are for our newer versions above 0.1.0:
+(For older instructions with `venv` please see versions below 0.1.0, and
+adapt them if using Windows and/or a different Python version than
+Python.org Python e.g. you may need to use `.venv/Scripts/activate` in
+place of `.venv/bin/activate`.  This will create a distributable
+package from the source code, then install it in the currently active
+environment.  This will also install development tools we use
+s.a. `pytest` and `codestyle` and will also install tools we use for
+working with the library, s.a. `jupyter`.)
+
+After checking out the source code, create virtual environment.  Both
 `conda` and `venv` environments are supported, however, if you are on
-Windows, we reccomend using `conda`.
+Windows, we reccomend using `conda`. 
 
-0. Using python.org Python
 
-   ```sh
-   python3.8 -m venv .venv
-   . .venv/bin/activate
-   # Windows user need to run:
-   # .venv/bin/activate
-   python setup.py install_dev
-   ```
-
-   This will create a distributable package from the your source code,
-   then install it in the currently active environment.  This will
-   also install development tools we use s.a. `pytest` and
-   `codestyle`.  This will also install tools we use for working with
-   the library, s.a. `jupyter`.
 
 1. Using Anaconda Python
 
    ```sh
-   conda create -n resurfemg python=3.8
+   conda create -n resurfemg python=3.9
    conda activate resurfemg
    python setup.py anaconda_gen_meta
    python setup.py install_dev
@@ -193,6 +248,17 @@ Windows, we reccomend using `conda`.
    Note, you will need to run `anaconda_gen_meta`.  This generates
    `meta.yaml` which is necessary to create `conda` package.  In the
    future this will probably be called automatically by `install_dev`.
+
+2. Using PyPI Python
+
+   ```sh
+   python3.9 -m venv .venv3.9
+   # On Linux:
+   . .venv3.9/bin/activate
+   # On Windows:
+   .venv3.9/Scripts/activate
+   python setup.py install_dev
+   ```
 
 Now you should have everything necessary to start working on the
 source code.  Whenever you make any changes, re-run `install_dev` to
@@ -325,7 +391,11 @@ and certainly not a patient.
 It is possible to run tests in container created from this image.
 Alternatively, you may download the image and extract directory
 `/ReSurfEMG/tests/not_pushed` into `not_pushed` in the root of the
-project.
+project and run:
+
+``` sh
+python setup.py test
+```
 
 Below is a snippet that may help you to run the tests in a container:
 
@@ -340,6 +410,8 @@ docker run --rm -v $(pwd):/ci \
         mount --bind /ReSurfEMG/tests/not_pushed/ ./not_pushed/
         python setup.py test'
 ```
+
+
 
 ## Command-Line Interface
 
