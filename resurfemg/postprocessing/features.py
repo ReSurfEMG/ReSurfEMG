@@ -626,7 +626,7 @@ def snr_pseudo(
 
         baseline_w_emg = 5 * 2048  # window length
         for idx in range(len(src_signal)):
-            start_i = max([0,idx-int(baseline_w_emg/2)])
+            start_i = max([0, idx-int(baseline_w_emg/2)])
             end_i = min([len(src_signal), idx+int(baseline_w_emg/2)])
             baseline[idx] = np.percentile(src_signal[start_i:end_i], 33)
 
