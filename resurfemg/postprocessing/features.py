@@ -653,4 +653,3 @@ def snr_pseudo(
 
     snr_peaks = np.divide(peak_heights, noise_heights)
     return snr_peaks
-
