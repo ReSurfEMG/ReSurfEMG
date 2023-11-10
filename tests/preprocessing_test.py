@@ -14,7 +14,7 @@ from resurfemg.preprocessing.filtering import bad_end_cutter_for_samples
 from resurfemg.preprocessing.filtering import notch_filter
 from resurfemg.preprocessing.filtering import emg_lowpass_butter
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
-from resurfemg.multi_lead_type import compute_ICA_two_comp_selective
+from resurfemg.preprocessing.ecg_removal import compute_ICA_two_comp_selective
 # from resurfemg.multi_lead_type import compute_ICA_n_comp
 # from resurfemg.multi_lead_type import compute_ICA_n_comp_selective_zeroing
 from resurfemg.preprocessing.ecg_removal import compute_ica_two_comp
@@ -22,7 +22,7 @@ from resurfemg.preprocessing.ecg_removal import compute_ica_two_comp_multi
 from resurfemg.preprocessing.ecg_removal import pick_lowest_correlation_array
 from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
 from resurfemg.preprocessing.ecg_removal import gating
-from resurfemg.multi_lead_type import pick_highest_correlation_array_multi
+from resurfemg.preprocessing.ecg_removal import pick_highest_correlation_array_multi
 from resurfemg.preprocessing.envelope import naive_rolling_rms
 from resurfemg.preprocessing.envelope import vect_naive_rolling_rms
 from resurfemg.preprocessing.ecg_removal import find_peaks_in_ecg_signal

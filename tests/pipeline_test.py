@@ -3,8 +3,8 @@
 import os
 import unittest
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
-from resurfemg.multi_lead_type import working_pipe_multi
-from resurfemg.multi_lead_type import working_pipeline_pre_ml_multi
+from resurfemg.pipelines.pipelines import working_pipe_multi
+from resurfemg.pipelines.pipelines import working_pipeline_pre_ml_multi
 from resurfemg.preprocessing.filtering  import emg_bandpass_butter
 
 
