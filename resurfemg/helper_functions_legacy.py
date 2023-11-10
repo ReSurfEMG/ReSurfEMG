@@ -8,80 +8,82 @@ and other types of data arrays e.g. ventilator signals.
 """
 
 
-import collections
-from collections import namedtuple
-import math
-import warnings
-import time
-from math import log, e
-import copy
-import scipy
-from scipy import signal
+# import collections
+# from collections import namedtuple
+# import math
+# import warnings
+# import time
+# from math import log, e
+# import copy
+# import scipy
+# from scipy import signal
 # from scipy.fft import fft, fftfreq
 # from scipy.signal import find_peaks
-from scipy.signal import savgol_filter
+# from scipy.signal import savgol_filter
 # from scipy.signal import butter, lfilter
-from scipy.stats import entropy
+# from scipy.stats import entropy
 # import matplotlib.pyplot as plt
-import numpy as np
-from sklearn.decomposition import FastICA
-import textdistance
-import pandas as pd
-import logging
+# import numpy as np
+# from sklearn.decomposition import FastICA
+# import textdistance
+# import pandas as pd
+# import logging
 from .preprocessing.filtering import bad_end_cutter
 from .preprocessing.filtering import bad_end_cutter_for_samples
 from .preprocessing.filtering import emg_bandpass_butter_sample
 from .preprocessing.filtering import emg_highpass_butter
 from .preprocessing.ecg_removal import pick_more_peaks_array
-from .preprocessing.ecg_removal import pick_lowest_correlation_array
+from .preprocessing.ecg_removal import compute_ICA_two_comp
+from .preprocessing.envelope import naive_rolling_rms
+# from .preprocessing.ecg_removal import pick_lowest_correlation_array
 
 
-class Range(namedtuple('RangeBase', 'start,end')):
+# class Range(namedtuple('RangeBase', 'start,end')):
 
-    """Utility class for working with ranges (intervals).
+#     """Utility class for working with ranges (intervals).
 
-    :ivar start: Start of the range
-    :type start: ~number.Number
-    :ivar end: End of the range
-    :type end: ~number.Number
+#     :ivar start: Start of the range
+#     :type start: ~number.Number
+#     :ivar end: End of the range
+#     :type end: ~number.Number
 
-    """
+#     """
 
-    def intersects(self, other):
-        """Returns :code:`True` if this range intersects :code:`other` range.
+#     def intersects(self, other):
+#         """Returns :code:`True` if this range intersects :code:`other` range.
 
-        :param other: Another range to compare this one to
-        :type other: ~resurfemg.helper_functions.Range
+#         :param other: Another range to compare this one to
+#         :type other: ~resurfemg.helper_functions.Range
 
-        :returns: :code:`True` if this range intersects another range
-        :rtype: bool
-        """
-        return (
-            (self.end >= other.end) and (self.start < other.end) or
-            (self.end >= other.start) and (self.start < other.start) or
-            (self.end < other.end) and (self.start >= other.start)
-        )
+#         :returns: :code:`True` if this range intersects another range
+#         :rtype: bool
+#         """
+#         return (
+#             (self.end >= other.end) and (self.start < other.end) or
+#             (self.end >= other.start) and (self.start < other.start) or
+#             (self.end < other.end) and (self.start >= other.start)
+#         )
 
-    def precedes(self, other):
-        """Returns :code:`True` if this range precedes :code:`other` range.
+#     def precedes(self, other):
+#         """Returns :code:`True` if this range precedes :code:`other` range.
 
-        :param other: Another range to compare this one to
-        :type other: ~resurfemg.helper_functions.Range
+#         :param other: Another range to compare this one to
+#         :type other: ~resurfemg.helper_functions.Range
 
-        :returns: :code:`True` if this range strictly precedes another
-            range
-        :rtype: bool
-        """
-        return self.end < other.start
+#         :returns: :code:`True` if this range strictly precedes another
+#             range
+#         :rtype: bool
+#         """
+#         return self.end < other.start
 
-    def to_slice(self):
-        """Converts this range to a :class:`slice`.
+#     def to_slice(self):
+#         """Converts this range to a :class:`slice`.
 
-        :returns: A slice with its start set to this range's start and
-            end set to this range's end
-        :rtype: slice
-        """
-        return slice(*map(int, self))   # maps whole tuple set
+#         :returns: A slice with its start set to this range's start and
+#             end set to this range's end
+#         :rtype: slice
+#         """
+#         return slice(*map(int, self))   # maps whole tuple set
 
 
 # def emg_bandpass_butter(data_emg, low_pass, high_pass):
@@ -362,82 +364,82 @@ class Range(namedtuple('RangeBase', 'start,end')):
 #     return emg_filtered
 
 
-def naive_rolling_rms(x, N):
-    """This function computes a root mean squared envelope over an
-    array :code:`x`. To do this it uses number of sample values
-    :code:`N`.
+# def naive_rolling_rms(x, N):
+#     """This function computes a root mean squared envelope over an
+#     array :code:`x`. To do this it uses number of sample values
+#     :code:`N`.
 
-    :param x: Samples from the EMG
-    :type x: ~numpy.ndarray
-    :param N: Length of the sample use as window for function
-    :type N: int
+#     :param x: Samples from the EMG
+#     :type x: ~numpy.ndarray
+#     :param N: Length of the sample use as window for function
+#     :type N: int
 
-    :returns: The root-mean-squared EMG sample data
-    :rtype: ~numpy.ndarray
-    """
-    xc = np.cumsum(abs(x)**2)
-    emg_rms = np.sqrt((xc[N:] - xc[:-N])/N)
-    return emg_rms
-
-
-def vect_naive_rolling_rms(x, N):
-    """This function computes a root mean squared envelope over an
-    array :code:`x`.  To do this it uses number of sample values
-    :code:`N`. It differs from :func:`naive_rolling_rms` by the way
-    the signal is put in.
-
-    :param xc: Samples from the EMG
-    :type xc: ~numpy.ndarray
-
-    :param N: Legnth of the sample use as window for function
-    :type N: int
-
-    :return: The root-mean-squared EMG sample data
-    :rtype: ~numpy.ndarray
-    """
-    xc = np.cumsum(np.abs(x)**2)
-    emg_rms = np.sqrt((xc[N:] - xc[:-N])/N)
-    return emg_rms
+#     :returns: The root-mean-squared EMG sample data
+#     :rtype: ~numpy.ndarray
+#     """
+#     xc = np.cumsum(abs(x)**2)
+#     emg_rms = np.sqrt((xc[N:] - xc[:-N])/N)
+#     return emg_rms
 
 
-def zero_one_for_jumps_base(array, cut_off):
-    """This function takes an array and makes it binary (0, 1) based
-    on a cut-off value.
+# def vect_naive_rolling_rms(x, N):
+#     """This function computes a root mean squared envelope over an
+#     array :code:`x`.  To do this it uses number of sample values
+#     :code:`N`. It differs from :func:`naive_rolling_rms` by the way
+#     the signal is put in.
 
-    :param array: An array
-    :type array: ~numpy.ndarray
-    :param cut_off: The number defining a cut-off line for binarization
-    :type cut_off: float
+#     :param xc: Samples from the EMG
+#     :type xc: ~numpy.ndarray
 
-    :returns: Binarized list that can be turned into array
-    :rtype: list
-    """
-    array_list = []
-    for i in array:
-        if i < cut_off:
-            i = 0
-        else:
-            i = 1
-        array_list.append(i)
-    return array_list
+#     :param N: Legnth of the sample use as window for function
+#     :type N: int
+
+#     :return: The root-mean-squared EMG sample data
+#     :rtype: ~numpy.ndarray
+#     """
+#     xc = np.cumsum(np.abs(x)**2)
+#     emg_rms = np.sqrt((xc[N:] - xc[:-N])/N)
+#     return emg_rms
 
 
-def compute_ICA_two_comp(emg_samples):
-    """A function that performs an independent component analysis
-    (ICA) meant for EMG data that includes three stacked arrays.
+# def zero_one_for_jumps_base(array, cut_off):
+#     """This function takes an array and makes it binary (0, 1) based
+#     on a cut-off value.
 
-    :param emg_samples: Original signal array with three layers
-    :type emg_samples: ~numpy.ndarray
+#     :param array: An array
+#     :type array: ~numpy.ndarray
+#     :param cut_off: The number defining a cut-off line for binarization
+#     :type cut_off: float
 
-    :returns: Two arrays of independent components (ECG-like and EMG)
-    :rtype: ~numpy.ndarray
-    """
-    X = np.c_[emg_samples[0], emg_samples[2]]
-    ica = FastICA(n_components=2, random_state=1)
-    S = ica.fit_transform(X)
-    component_0 = S.T[0]
-    component_1 = S.T[1]
-    return component_0, component_1
+#     :returns: Binarized list that can be turned into array
+#     :rtype: list
+#     """
+#     array_list = []
+#     for i in array:
+#         if i < cut_off:
+#             i = 0
+#         else:
+#             i = 1
+#         array_list.append(i)
+#     return array_list
+
+
+# def compute_ICA_two_comp(emg_samples):
+#     """A function that performs an independent component analysis
+#     (ICA) meant for EMG data that includes three stacked arrays.
+
+#     :param emg_samples: Original signal array with three layers
+#     :type emg_samples: ~numpy.ndarray
+
+#     :returns: Two arrays of independent components (ECG-like and EMG)
+#     :rtype: ~numpy.ndarray
+#     """
+#     X = np.c_[emg_samples[0], emg_samples[2]]
+#     ica = FastICA(n_components=2, random_state=1)
+#     S = ica.fit_transform(X)
+#     component_0 = S.T[0]
+#     component_1 = S.T[1]
+#     return component_0, component_1
 
 
 # def pick_more_peaks_array(components_tuple):
@@ -607,135 +609,135 @@ def working_pipeline_exp(our_chosen_file):
     return final_envelope_a
 
 
-def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
-    """
-    This is a pipeline to pre-process
-    an array of specific fixed dimensions
-    i.e. a three lead array into an EMG singal,
-    the function is legacy code, and most
-    processsing should be done with
-    :code:`multi_lead_type.working_pipeline_pre_ml_multi`
-    or :code:`multi_lead_type.working_pipeline_pre_ml_multi`
+# def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
+#     """
+#     This is a pipeline to pre-process
+#     an array of specific fixed dimensions
+#     i.e. a three lead array into an EMG singal,
+#     the function is legacy code, and most
+#     processsing should be done with
+#     :code:`multi_lead_type.working_pipeline_pre_ml_multi`
+#     or :code:`multi_lead_type.working_pipeline_pre_ml_multi`
 
-    :param our_chosen_samples: the read EMG file arrays
-    :type our_chosen_samples: ~numpy.ndarray
-    :param picker: the picking strategy for independent components
-    :type picker: str
+#     :param our_chosen_samples: the read EMG file arrays
+#     :type our_chosen_samples: ~numpy.ndarray
+#     :param picker: the picking strategy for independent components
+#     :type picker: str
 
-    :returns: final_envelope_a
-    :rtype: ~numpy.ndarray
-    """
-    cut_file_data = bad_end_cutter_for_samples(
-        our_chosen_samples,
-        percent_to_cut=3,
-        tolerance_percent=5
-    )
-    bd_filtered_file_data = emg_bandpass_butter_sample(
-        cut_file_data,
-        5,
-        450,
-        2048,
-        output='sos'
-    )
-    # step for end-cutting again to get rid of filtering artifacts
-    re_cut_file_data = bad_end_cutter_for_samples(
-        bd_filtered_file_data,
-        percent_to_cut=3,
-        tolerance_percent=5
-    )
-    #  and do step for ICA
-    components = compute_ICA_two_comp(re_cut_file_data)
-    #     the picking step!
-    if picker == 'peaks':
-        emg = pick_more_peaks_array(components)
-    elif picker == 'heart':
-        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
-    else:
-        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
-        print("Please choose an exising picker i.e. peaks or hearts ")
-    # now process it in final steps
-    abs_values = abs(emg)
-    final_envelope_d = emg_highpass_butter(abs_values, 150, 2048)
+#     :returns: final_envelope_a
+#     :rtype: ~numpy.ndarray
+#     """
+#     cut_file_data = bad_end_cutter_for_samples(
+#         our_chosen_samples,
+#         percent_to_cut=3,
+#         tolerance_percent=5
+#     )
+#     bd_filtered_file_data = emg_bandpass_butter_sample(
+#         cut_file_data,
+#         5,
+#         450,
+#         2048,
+#         output='sos'
+#     )
+#     # step for end-cutting again to get rid of filtering artifacts
+#     re_cut_file_data = bad_end_cutter_for_samples(
+#         bd_filtered_file_data,
+#         percent_to_cut=3,
+#         tolerance_percent=5
+#     )
+#     #  and do step for ICA
+#     components = compute_ICA_two_comp(re_cut_file_data)
+#     #     the picking step!
+#     if picker == 'peaks':
+#         emg = pick_more_peaks_array(components)
+#     elif picker == 'heart':
+#         emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
+#     else:
+#         emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
+#         print("Please choose an exising picker i.e. peaks or hearts ")
+#     # now process it in final steps
+#     abs_values = abs(emg)
+#     final_envelope_d = emg_highpass_butter(abs_values, 150, 2048)
 
-    return final_envelope_d
-
-
-def slices_slider(array_sample, slice_len):
-    """This function produces continuous sequential slices over an
-    array of a certain length.  The inputs are the following -
-    :code:`array_sample`, the signal and :code:`slice_len` - the
-    window which you wish to slide with.  The function yields, does
-    not return these slices.
-
-    :param array_sample: array containing the signal
-    :type array_sample: ~numpy.ndarray
-    :param slice_len: the length of window on the array
-    :type slice_len: int
-
-    :returns: Actually yields, no return
-    :rtype: ~numpy.ndarray
-    """
-    for i in range(len(array_sample) - slice_len + 1):
-        yield array_sample[i:i + slice_len]
+#     return final_envelope_d
 
 
-def slices_jump_slider(array_sample, slice_len, jump):
-    """
-    This function produces continuous sequential slices over an
-    array of a certain length spaced out by a 'jump'.
-    The function yields, does
-    not return these slices.
+# def slices_slider(array_sample, slice_len):
+#     """This function produces continuous sequential slices over an
+#     array of a certain length.  The inputs are the following -
+#     :code:`array_sample`, the signal and :code:`slice_len` - the
+#     window which you wish to slide with.  The function yields, does
+#     not return these slices.
 
-    :param array_sample: array containing the signal
-    :type array_sample: ~numpy.ndarray
-    :param slice_len: the length of window on the array
-    :type slice_len: int
-    :param jump: the amount by which the window is moved at iteration
-    :type jump: int
+#     :param array_sample: array containing the signal
+#     :type array_sample: ~numpy.ndarray
+#     :param slice_len: the length of window on the array
+#     :type slice_len: int
 
-    :returns: Actually yields, no return
-    :rtype: ~numpy.ndarray
-
-    """
-    for i in range(len(array_sample) - (slice_len)):
-        yield array_sample[(jump*i):((jump*i) + slice_len)]
+#     :returns: Actually yields, no return
+#     :rtype: ~numpy.ndarray
+#     """
+#     for i in range(len(array_sample) - slice_len + 1):
+#         yield array_sample[i:i + slice_len]
 
 
-def entropical(sig):
-    """This function computes something close to certain type of entropy
-    of a series signal array.  Input is sig, the signal, and output is an
-    array of entropy measurements. The function can be used inside a generator
-    to read over slices. Note it is not a true entropy, and works best with
-    very small numbers.
+# def slices_jump_slider(array_sample, slice_len, jump):
+#     """
+#     This function produces continuous sequential slices over an
+#     array of a certain length spaced out by a 'jump'.
+#     The function yields, does
+#     not return these slices.
 
-    :param sig: array containin the signal
-    :type sig: ~numpy.ndarray
+#     :param array_sample: array containing the signal
+#     :type array_sample: ~numpy.ndarray
+#     :param slice_len: the length of window on the array
+#     :type slice_len: int
+#     :param jump: the amount by which the window is moved at iteration
+#     :type jump: int
 
-    :returns: number for an entropy-like signal using math.log w/base 2
-    :rtype: float
+#     :returns: Actually yields, no return
+#     :rtype: ~numpy.ndarray
 
-    """
-    probabilit = [n_x/len(sig) for x, n_x in collections.Counter(sig).items()]
-    e_x = [-p_x*math.log(p_x, 2) for p_x in probabilit]
-    return sum(e_x)
+#     """
+#     for i in range(len(array_sample) - (slice_len)):
+#         yield array_sample[(jump*i):((jump*i) + slice_len)]
 
 
-def entropy_scipy(sli, base=None):
-    """
-    This function wraps scipy.stats entropy  (which is a Shannon entropy)
-    for use in the resurfemg library, it can be used in a slice iterator
-    as a drop-in substitute for the hf.entropical but it is a true entropy.
+# def entropical(sig):
+#     """This function computes something close to certain type of entropy
+#     of a series signal array.  Input is sig, the signal, and output is an
+#     array of entropy measurements. The function can be used inside a generator
+#     to read over slices. Note it is not a true entropy, and works best with
+#     very small numbers.
 
-    :param sli: array
-    :type sli: ~numpy.ndarray
+#     :param sig: array containin the signal
+#     :type sig: ~numpy.ndarray
 
-    :returns: entropy_count
-    :rtype: float
-    """
+#     :returns: number for an entropy-like signal using math.log w/base 2
+#     :rtype: float
 
-    value, counts = np.unique(sli, return_counts=True)
-    entropy_count = entropy(counts/len(counts), base=base)
-    return entropy_count
+#     """
+#     probabilit = [n_x/len(sig) for x, n_x in collections.Counter(sig).items()]
+#     e_x = [-p_x*math.log(p_x, 2) for p_x in probabilit]
+#     return sum(e_x)
+
+
+# def entropy_scipy(sli, base=None):
+#     """
+#     This function wraps scipy.stats entropy  (which is a Shannon entropy)
+#     for use in the resurfemg library, it can be used in a slice iterator
+#     as a drop-in substitute for the hf.entropical but it is a true entropy.
+
+#     :param sli: array
+#     :type sli: ~numpy.ndarray
+
+#     :returns: entropy_count
+#     :rtype: float
+#     """
+
+#     value, counts = np.unique(sli, return_counts=True)
+#     entropy_count = entropy(counts/len(counts), base=base)
+#     return entropy_count
 
 
 # def compute_power_loss(
@@ -789,223 +791,223 @@ def entropy_scipy(sli, base=None):
 #     return power_loss
 
 
-def count_decision_array(decision_array):
-    """This is a function that, practically speaking, counts events
-    on a time series array that has been reduced down to a binary
-    (0, 1) output. It counts changes then divides by two.
+# def count_decision_array(decision_array):
+#     """This is a function that, practically speaking, counts events
+#     on a time series array that has been reduced down to a binary
+#     (0, 1) output. It counts changes then divides by two.
 
-    :param decision_array: Array.
-    :type decisions_array: ~numpy.ndarray
+#     :param decision_array: Array.
+#     :type decisions_array: ~numpy.ndarray
 
-    :returns: Number of events
-    :rtype: float
-    """
-    ups_and_downs = np.logical_xor(decision_array[1:], decision_array[:-1])
-    count = ups_and_downs.sum()/2
-    return count
-
-
-def smooth_for_baseline(
-    single_filtered_array, start=None, end=None, smooth=100
-):
-    """
-    This is an adaptive smoothing a series that overvalues closer numbers.
-
-    :param single_filtered_array: Array.
-    :type single_filtered_array: ~numpy.ndarray
-    :param start: The number of samples to work from
-    :type start: int
-    :param end: The number of samples to work until
-    :type end: int
-    :param smooth: The number of samples to work over
-    :type smooth: int
-
-    :return: tuple of arrays
-    :rtype: tuple
-    """
-    array = single_filtered_array[start:end]
-    dists = np.zeros(len(array))
-    wmax, wmin = 0, 0
-    nwmax, nwmin = 0, 0
-    tail = (smooth - 1) / smooth
-
-    for i, elt in enumerate(array[1:]):
-        if elt > 0:
-            nwmax = wmax * tail + elt / smooth
-        else:
-            nwmin = wmin * tail + elt / smooth
-        dist = nwmax - nwmin
-        dists[i] = dist
-        wmax, wmin = nwmax, nwmin
-    return array, dists
+#     :returns: Number of events
+#     :rtype: float
+#     """
+#     ups_and_downs = np.logical_xor(decision_array[1:], decision_array[:-1])
+#     count = ups_and_downs.sum()/2
+#     return count
 
 
-def smooth_for_baseline_with_overlay(
-    my_own_array, threshold=10, start=None, end=None, smooth=100
-):
-    """This is the same as smooth for baseline, but we also get an
-    overlay 0 or 1 mask tagging the baseline.
+# def smooth_for_baseline(
+#     single_filtered_array, start=None, end=None, smooth=100
+# ):
+#     """
+#     This is an adaptive smoothing a series that overvalues closer numbers.
 
-    :param my_own_array: Array
-    :type  my_own_array: ~numpy.ndarray
-    :param threshold: Number where to cut the mask for overlay
-    :type threshold: int
-    :param start: The number of samples to work from
-    :type start: int
-    :param end: The number of samples to work until
-    :type end: int
-    :param smooth: The number of samples to work over
-    :type smooth: int
+#     :param single_filtered_array: Array.
+#     :type single_filtered_array: ~numpy.ndarray
+#     :param start: The number of samples to work from
+#     :type start: int
+#     :param end: The number of samples to work until
+#     :type end: int
+#     :param smooth: The number of samples to work over
+#     :type smooth: int
 
-    :return: tuple of arrays
-    :rtype: tuple
-    """
-    array = my_own_array[start:end]
-    overlay = np.zeros(len(array)).astype('int8')
-    dists = np.zeros(len(array))
-    wmax, wmin = 0, 0
-    nwmax, nwmin = 0, 0
-    count, filler = 0, False
-    tail = (smooth - 1) / smooth
-    switched = 0
+#     :return: tuple of arrays
+#     :rtype: tuple
+#     """
+#     array = single_filtered_array[start:end]
+#     dists = np.zeros(len(array))
+#     wmax, wmin = 0, 0
+#     nwmax, nwmin = 0, 0
+#     tail = (smooth - 1) / smooth
 
-    for i, elt in enumerate(array[1:]):
-        if elt > 0:
-            nwmax = wmax * tail + elt / smooth
-        else:
-            nwmin = wmin * tail + elt / smooth
-        dist = nwmax - nwmin
-        if (i > smooth) and (i - switched > smooth):
-            vodist = dists[i - smooth]
-            if (vodist / dist > threshold) or (dist / vodist > threshold):
-                filler = not filler
-                # Now we need to go back and repaing the values in the overlay
-                # because the change was detected after `smooth' interval
-                overlay[i - smooth:i] = filler
-                count += 1
-                switched = i
-        overlay[i] = filler
-        dists[i] = dist
-        wmax, wmin = nwmax, nwmin
-    return array, overlay, dists
+#     for i, elt in enumerate(array[1:]):
+#         if elt > 0:
+#             nwmax = wmax * tail + elt / smooth
+#         else:
+#             nwmin = wmin * tail + elt / smooth
+#         dist = nwmax - nwmin
+#         dists[i] = dist
+#         wmax, wmin = nwmax, nwmin
+#     return array, dists
 
 
-def ranges_of(array):
-    """This function is made to work with :class:`Range` class objects, such
-    that is selects ranges and returns tuples of boundaries.
+# def smooth_for_baseline_with_overlay(
+#     my_own_array, threshold=10, start=None, end=None, smooth=100
+# ):
+#     """This is the same as smooth for baseline, but we also get an
+#     overlay 0 or 1 mask tagging the baseline.
 
-    :param my_own_array: array
-    :type  my_own_array: ~numpy.ndarray
+#     :param my_own_array: Array
+#     :type  my_own_array: ~numpy.ndarray
+#     :param threshold: Number where to cut the mask for overlay
+#     :type threshold: int
+#     :param start: The number of samples to work from
+#     :type start: int
+#     :param end: The number of samples to work until
+#     :type end: int
+#     :param smooth: The number of samples to work over
+#     :type smooth: int
 
-    :return: range_return
-    :rtype: tuple
-    """
-    marks = np.logical_xor(array[1:], array[:-1])
-    boundaries = np.hstack(
-        (np.zeros(1), np.where(marks != 0)[0], np.zeros(1) + len(array) - 1)
-    )
-    if not array[0]:
-        boundaries = boundaries[1:]
-    if len(boundaries) % 2 != 0:
-        boundaries = boundaries[:-1]
-    range_return = tuple(
-        Range(*boundaries[i:i+2]) for i in range(0, len(boundaries), 2)
-    )
-    return range_return
+#     :return: tuple of arrays
+#     :rtype: tuple
+#     """
+#     array = my_own_array[start:end]
+#     overlay = np.zeros(len(array)).astype('int8')
+#     dists = np.zeros(len(array))
+#     wmax, wmin = 0, 0
+#     nwmax, nwmin = 0, 0
+#     count, filler = 0, False
+#     tail = (smooth - 1) / smooth
+#     switched = 0
 
-
-def intersections(left, right):
-    """This function works over two arrays, :code:`left` and
-    :code:`right`, and allows a picking based on intersections.  It
-    only takes ranges on the left that intersect ranges on the right.
-
-    :param left: List of ranges
-    :type left: List[Range]
-    :param right: List of ranges
-    :type right: List[Range]
-
-    :returns: Ranges from the :code:`left` that intersect ranges from
-        the :code:`right`.
-    :rtype: List[Range]
-    """
-    i, j = 0, 0
-    result = []
-    while i < len(left) and j < len(right):
-        lelt, relt = left[i], right[j]
-        if lelt.intersects(relt):
-            result.append(lelt)
-            i += 1
-        elif relt.precedes(lelt):
-            j += 1
-        elif lelt.precedes(relt):
-            i += 1
-    return result
+#     for i, elt in enumerate(array[1:]):
+#         if elt > 0:
+#             nwmax = wmax * tail + elt / smooth
+#         else:
+#             nwmin = wmin * tail + elt / smooth
+#         dist = nwmax - nwmin
+#         if (i > smooth) and (i - switched > smooth):
+#             vodist = dists[i - smooth]
+#             if (vodist / dist > threshold) or (dist / vodist > threshold):
+#                 filler = not filler
+#                 # Now we need to go back and repaing the values in the overlay
+#                 # because the change was detected after `smooth' interval
+#                 overlay[i - smooth:i] = filler
+#                 count += 1
+#                 switched = i
+#         overlay[i] = filler
+#         dists[i] = dist
+#         wmax, wmin = nwmax, nwmin
+#     return array, overlay, dists
 
 
-def raw_overlap_percent(signal1, signal2):
-    """This function takes two binary 0 or 1 signal arrays and gives
-    the percentage of overlap.
+# def ranges_of(array):
+#     """This function is made to work with :class:`Range` class objects, such
+#     that is selects ranges and returns tuples of boundaries.
 
-    :param signal1: Binary signal 1
-    :type signal1: ~numpy.ndarray
-    :param rsignal2: Binary signal 2
-    :type rsignal2: ~numpy.ndarray
+#     :param my_own_array: array
+#     :type  my_own_array: ~numpy.ndarray
 
-    :returns: Raw overlap percent
-    :rtype: float
-    """
-    if len(signal1) != len(signal2):
-        print('Warning: length of arrays is not matched')
-        longer_signal_len = np.max([len(signal1), len(signal2)])
-    else:
-        longer_signal_len = len(signal1)
-
-    raw_overlap_percent = sum(
-        signal1.astype(int) & signal2.astype(int)
-    ) / longer_signal_len
-    return raw_overlap_percent
-
-
-def relative_levenshtein(signal1, signal2):
-    """
-    Here we take two arrays, and create an edit distance based on Levelshtien
-    edit distance The distance is then normalized between 0 and one regardless
-    of signal length
-
-    """
-    signal1_list = []
-    signal2_list = []
-    for element in signal1:
-        signal1_list.append(element)
-    for element in signal2:
-        signal2_list.append(element)
-    distance = textdistance.levenshtein.similarity(signal1_list, signal2_list)
-    if len(signal1) != len(signal2):
-        print('Warning: length of arrays is not matched')
-    longer_signal_len = np.max([len(signal1), len(signal2)])
-    normalized_distance = distance / longer_signal_len
-    return normalized_distance
+#     :return: range_return
+#     :rtype: tuple
+#     """
+#     marks = np.logical_xor(array[1:], array[:-1])
+#     boundaries = np.hstack(
+#         (np.zeros(1), np.where(marks != 0)[0], np.zeros(1) + len(array) - 1)
+#     )
+#     if not array[0]:
+#         boundaries = boundaries[1:]
+#     if len(boundaries) % 2 != 0:
+#         boundaries = boundaries[:-1]
+#     range_return = tuple(
+#         Range(*boundaries[i:i+2]) for i in range(0, len(boundaries), 2)
+#     )
+#     return range_return
 
 
-def full_rolling_rms(x, N):
-    """This function computes a root mean squared envelope over an
-    array :code:`x`.  To do this it uses number of sample values
-    :code:`N`. It differs from :func:`naive_rolling_rms` by that the
-    output is the same length as the input vector.
+# def intersections(left, right):
+#     """This function works over two arrays, :code:`left` and
+#     :code:`right`, and allows a picking based on intersections.  It
+#     only takes ranges on the left that intersect ranges on the right.
 
-    :param x: Samples from the EMG
-    :type x: ~numpy.ndarray
-    :param N: Length of the sample use as window for function
-    :type N: int
+#     :param left: List of ranges
+#     :type left: List[Range]
+#     :param right: List of ranges
+#     :type right: List[Range]
 
-    :returns: The root-mean-squared EMG sample data
-    :rtype: ~numpy.ndarray
-    """
-    x_pad = np.pad(x, (0, N-1), 'constant', constant_values=(0, 0))
-    x2 = np.power(x_pad, 2)
-    window = np.ones(N)/float(N)
-    emg_rms = np.sqrt(np.convolve(x2, window, 'valid'))
-    return emg_rms
+#     :returns: Ranges from the :code:`left` that intersect ranges from
+#         the :code:`right`.
+#     :rtype: List[Range]
+#     """
+#     i, j = 0, 0
+#     result = []
+#     while i < len(left) and j < len(right):
+#         lelt, relt = left[i], right[j]
+#         if lelt.intersects(relt):
+#             result.append(lelt)
+#             i += 1
+#         elif relt.precedes(lelt):
+#             j += 1
+#         elif lelt.precedes(relt):
+#             i += 1
+#     return result
+
+
+# def raw_overlap_percent(signal1, signal2):
+#     """This function takes two binary 0 or 1 signal arrays and gives
+#     the percentage of overlap.
+
+#     :param signal1: Binary signal 1
+#     :type signal1: ~numpy.ndarray
+#     :param rsignal2: Binary signal 2
+#     :type rsignal2: ~numpy.ndarray
+
+#     :returns: Raw overlap percent
+#     :rtype: float
+#     """
+#     if len(signal1) != len(signal2):
+#         print('Warning: length of arrays is not matched')
+#         longer_signal_len = np.max([len(signal1), len(signal2)])
+#     else:
+#         longer_signal_len = len(signal1)
+
+#     raw_overlap_percent = sum(
+#         signal1.astype(int) & signal2.astype(int)
+#     ) / longer_signal_len
+#     return raw_overlap_percent
+
+
+# def relative_levenshtein(signal1, signal2):
+#     """
+#     Here we take two arrays, and create an edit distance based on Levelshtien
+#     edit distance The distance is then normalized between 0 and one regardless
+#     of signal length
+
+#     """
+#     signal1_list = []
+#     signal2_list = []
+#     for element in signal1:
+#         signal1_list.append(element)
+#     for element in signal2:
+#         signal2_list.append(element)
+#     distance = textdistance.levenshtein.similarity(signal1_list, signal2_list)
+#     if len(signal1) != len(signal2):
+#         print('Warning: length of arrays is not matched')
+#     longer_signal_len = np.max([len(signal1), len(signal2)])
+#     normalized_distance = distance / longer_signal_len
+#     return normalized_distance
+
+
+# def full_rolling_rms(x, N):
+#     """This function computes a root mean squared envelope over an
+#     array :code:`x`.  To do this it uses number of sample values
+#     :code:`N`. It differs from :func:`naive_rolling_rms` by that the
+#     output is the same length as the input vector.
+
+#     :param x: Samples from the EMG
+#     :type x: ~numpy.ndarray
+#     :param N: Length of the sample use as window for function
+#     :type N: int
+
+#     :returns: The root-mean-squared EMG sample data
+#     :rtype: ~numpy.ndarray
+#     """
+#     x_pad = np.pad(x, (0, N-1), 'constant', constant_values=(0, 0))
+#     x2 = np.power(x_pad, 2)
+#     window = np.ones(N)/float(N)
+#     emg_rms = np.sqrt(np.convolve(x2, window, 'valid'))
+#     return emg_rms
 
 
 # def gating(
@@ -1120,63 +1122,63 @@ def full_rolling_rms(x, N):
 #     return src_signal_gated
 
 
-def merge(left, right):
-    """
-    Mergey function
-    """
-    # Initialize an empty list output that will be populated
-    # with sorted elements.
-    # Initialize two variables i and j which are used pointers when
-    # iterating through the lists.
-    output = []
-    i = j = 0
+# def merge(left, right):
+#     """
+#     Mergey function
+#     """
+#     # Initialize an empty list output that will be populated
+#     # with sorted elements.
+#     # Initialize two variables i and j which are used pointers when
+#     # iterating through the lists.
+#     output = []
+#     i = j = 0
 
-    # Executes the while loop if both pointers i and j are less than
-    # the length of the left and right lists
-    while i < len(left) and j < len(right):
-        # Compare the elements at every position of both
-        # lists during each iteration
-        if left[i] < right[j]:
-            # output is populated with the lesser value
-            output.append(left[i])
-            # 10. Move pointer to the right
-            i += 1
-        else:
-            output.append(right[j])
-            j += 1
-    # The remnant elements are picked from the current
-    # pointer value to the end of the respective list
-    output.extend(left[i:])
-    output.extend(right[j:])
+#     # Executes the while loop if both pointers i and j are less than
+#     # the length of the left and right lists
+#     while i < len(left) and j < len(right):
+#         # Compare the elements at every position of both
+#         # lists during each iteration
+#         if left[i] < right[j]:
+#             # output is populated with the lesser value
+#             output.append(left[i])
+#             # 10. Move pointer to the right
+#             i += 1
+#         else:
+#             output.append(right[j])
+#             j += 1
+#     # The remnant elements are picked from the current
+#     # pointer value to the end of the respective list
+#     output.extend(left[i:])
+#     output.extend(right[j:])
 
-    return output
+#     return output
 
 
-def hi_envelope(our_signal, dmax=24):
-    """
-    Takes a 1d signal array, and extracts 'high'envelope,
-    then makes high envelope, based on connecting peaks
-    dmax: int, size of chunks,
+# def hi_envelope(our_signal, dmax=24):
+#     """
+#     Takes a 1d signal array, and extracts 'high'envelope,
+#     then makes high envelope, based on connecting peaks
+#     dmax: int, size of chunks,
 
-    :param our_signal: 1d signal array usually of emg
-    :type our_signal: ~numpy.ndarray
-    :param dmax: length of chunk to look for local max in
-    :type dmax: int
+#     :param our_signal: 1d signal array usually of emg
+#     :type our_signal: ~numpy.ndarray
+#     :param dmax: length of chunk to look for local max in
+#     :type dmax: int
 
-    :returns: src_signal_gated, the gated result
-    :rtype: ~numpy.ndarray
-    """
-    # locals max is lmax
-    lmax = (np.diff(np.sign(np.diff(our_signal))) < 0).nonzero()[0] + 1
-    lmax = lmax[
-        [i+np.argmax(
-            our_signal[lmax[i:i+dmax]]
-        ) for i in range(0, len(lmax), dmax)]
-    ]
-    smoothed = savgol_filter(our_signal[lmax], int(0.8 * (len(lmax))), 3)
-    smoothed_interped = signal.resample(smoothed, len(our_signal))
+#     :returns: src_signal_gated, the gated result
+#     :rtype: ~numpy.ndarray
+#     """
+#     # locals max is lmax
+#     lmax = (np.diff(np.sign(np.diff(our_signal))) < 0).nonzero()[0] + 1
+#     lmax = lmax[
+#         [i+np.argmax(
+#             our_signal[lmax[i:i+dmax]]
+#         ) for i in range(0, len(lmax), dmax)]
+#     ]
+#     smoothed = savgol_filter(our_signal[lmax], int(0.8 * (len(lmax))), 3)
+#     smoothed_interped = signal.resample(smoothed, len(our_signal))
 
-    return smoothed_interped
+#     return smoothed_interped
 
 
 # def compute_ICA_two_comp_multi(emg_samples):
@@ -1202,290 +1204,290 @@ def hi_envelope(our_signal, dmax=24):
 #     return component_0, component_1
 
 
-def scale_arrays(array, maximumn, minimumn):
-    """
-    This function will scale all arrays along
-    the vertical axis to have an absolute maximum
-    value of the maximum parameter
+# def scale_arrays(array, maximumn, minimumn):
+#     """
+#     This function will scale all arrays along
+#     the vertical axis to have an absolute maximum
+#     value of the maximum parameter
 
-    :param array: Original signal array with any number iflayers
-    :type array: ~numpy.ndarray
-    :param maximumn: the absolute maximum below which the new array exists
-    :type maximumn: float
-    :param minimumn: the absolute maximum below which the new array exists
-    :type minimumn: float
+#     :param array: Original signal array with any number iflayers
+#     :type array: ~numpy.ndarray
+#     :param maximumn: the absolute maximum below which the new array exists
+#     :type maximumn: float
+#     :param minimumn: the absolute maximum below which the new array exists
+#     :type minimumn: float
 
-    :returns: reformed, a new array with absolute max of maximum
-    :rtype: ~numpy.ndarray
-    """
-    reformed = np.interp(
-        array,
-        (array.min(), array.max()),
-        (maximumn, minimumn)
-    )
-    return reformed
-
-
-def simple_area_under_curve(
-    array,
-    start_index,
-    end_index,
-):
-    """
-    This function is just a wrapper over np.sum written because it isn't
-    apparent to some clinically oriented people that an area under the curve
-    will be a sum of all the numbers
-
-    :param array: an array e.g. single lead EMG recording
-    :type array: np.array
-    :param start_index: which index number the breath starts on
-    :type start_index: int
-    :param end_index: which index number the breath ends on
-    :type end_index: int
-
-    :returns: area; area under the curve
-    :rtype: float
-    """
-    breath = array[start_index:end_index]
-    area = np.sum(abs(breath))
-    return area
+#     :returns: reformed, a new array with absolute max of maximum
+#     :rtype: ~numpy.ndarray
+#     """
+#     reformed = np.interp(
+#         array,
+#         (array.min(), array.max()),
+#         (maximumn, minimumn)
+#     )
+#     return reformed
 
 
-def running_smoother(array):
-    """
-    This is the smoother to use in time calculations
-    """
-    n = len(array) // 10
-    new_list = np.convolve(abs(array), np.ones(n), "valid") / n
-    zeros = np.zeros(n - 1)
-    smoothed_array = np.hstack((new_list, zeros))
-    return smoothed_array
+# def simple_area_under_curve(
+#     array,
+#     start_index,
+#     end_index,
+# ):
+#     """
+#     This function is just a wrapper over np.sum written because it isn't
+#     apparent to some clinically oriented people that an area under the curve
+#     will be a sum of all the numbers
+
+#     :param array: an array e.g. single lead EMG recording
+#     :type array: np.array
+#     :param start_index: which index number the breath starts on
+#     :type start_index: int
+#     :param end_index: which index number the breath ends on
+#     :type end_index: int
+
+#     :returns: area; area under the curve
+#     :rtype: float
+#     """
+#     breath = array[start_index:end_index]
+#     area = np.sum(abs(breath))
+#     return area
 
 
-def times_under_curve(
-    array,
-    start_index,
-    end_index,
-):
-    """
-    This function is meant to calculate the length of time to peak in
-    an absolute and relative sense
-
-    :param array: an array e.g. single lead EMG recording
-    :type array: np.array
-    :param start_index: which index number the breath starts on
-    :type start_index: int
-    :param end_index: which index number the breath ends on
-    :type end_index: int
-
-    :returns: times; a tuple of absolute and relative times
-    :rtype: tuple
-    """
-    breath_arc = array[start_index:end_index]
-    smoothed_breath = running_smoother(breath_arc)
-    abs_time = smoothed_breath.argmax()
-    percent_time = abs_time / len(breath_arc)
-    times = ((abs_time, percent_time))
-    return times
+# def running_smoother(array):
+#     """
+#     This is the smoother to use in time calculations
+#     """
+#     n = len(array) // 10
+#     new_list = np.convolve(abs(array), np.ones(n), "valid") / n
+#     zeros = np.zeros(n - 1)
+#     smoothed_array = np.hstack((new_list, zeros))
+#     return smoothed_array
 
 
-def pseudo_slope(
-    array,
-    start_index,
-    end_index,
-    smoothing=True,
-):
-    """
-    This is a function to get the shape/slope of the take-off angle
-    of the resp. surface EMG signal, however we are returning values of
-    mV divided by samples (in abs values), not a true slope
-    and the number will depend on sampling rate
-    and pre-processing, therefore it is recommended
-    only to compare across the same single sample run
+# def times_under_curve(
+#     array,
+#     start_index,
+#     end_index,
+# ):
+#     """
+#     This function is meant to calculate the length of time to peak in
+#     an absolute and relative sense
 
-    :param array: an array e.g. single lead EMG recording
-    :type array: np.array
-    :param start_index: which index number the breath starts on
-    :type start_index: int
-    :param end_index: which index number the breath ends on
-    :type end_index: int
-    :param smoothing: smoothing which can or can not run before calculations
-    :type smoothing: bool
+#     :param array: an array e.g. single lead EMG recording
+#     :type array: np.array
+#     :param start_index: which index number the breath starts on
+#     :type start_index: int
+#     :param end_index: which index number the breath ends on
+#     :type end_index: int
 
-    :returns: pseudoslope
-    :rtype: float
-    """
-    breath_arc = array[start_index:end_index]
-    pos_arc = abs(breath_arc)
-    if smoothing:
-        smoothed_breath = running_smoother(pos_arc)
-        abs_time = smoothed_breath.argmax()
-    else:
-        abs_time = pos_arc.argmax()
-    abs_height = pos_arc[abs_time]
-    pseudoslope = abs_height / abs_time
-    return pseudoslope
+#     :returns: times; a tuple of absolute and relative times
+#     :rtype: tuple
+#     """
+#     breath_arc = array[start_index:end_index]
+#     smoothed_breath = running_smoother(breath_arc)
+#     abs_time = smoothed_breath.argmax()
+#     percent_time = abs_time / len(breath_arc)
+#     times = ((abs_time, percent_time))
+#     return times
 
 
-def area_under_curve(
-    array,
-    start_index,
-    end_index,
-    end_curve=70,
-    smooth_algorithm='none',
-):
-    """
-    This algorithm should be applied to breaths longer than 60 values
-    on an index. The mid_savgol assumes a parabolic fit. It is
-    recommended to test a smoothing algorithm first, apply,
-    then run the area_under the curve with none for smooth_algortihm.
-    If a cutoff of the curve before it hits bottom is desired then a value
-    other than zero must be in end_curve variable. This variable
-    should be written from 0 to 100 for the percentage of the max value
-    at which to cut off after the peak.
-    :param array: an array e.g. single lead EMG recording
-    :type array: np.array
-    :param start_index: which index number the breath starts on
-    :type start_index: int
-    :param end_index: which index number the breath ends on
-    :type end_index: int
-    :param end_curve: percentage of peak value to stop summing at
-    :type end_curve: float
-    :param smooth_algorithm: algorithm for smoothing
-    :type smooth_algorithm: str
-    :returns: area; area under the curve
-    :rtype: float
-    """
-    if not (0 <= end_curve <= 100):
-        raise ValueError(
-            'end_curve must be between 0 and 100, '
-            'but {} given'.format(end_curve),
-        )
-    if smooth_algorithm not in ('none', 'mid_savgol'):
-        raise ValueError(
-            'Possible values for smooth_algorithm are none and mid_savgol, '
-            'but {} given'.format(smooth_algorithm),
-        )
+# def pseudo_slope(
+#     array,
+#     start_index,
+#     end_index,
+#     smoothing=True,
+# ):
+#     """
+#     This is a function to get the shape/slope of the take-off angle
+#     of the resp. surface EMG signal, however we are returning values of
+#     mV divided by samples (in abs values), not a true slope
+#     and the number will depend on sampling rate
+#     and pre-processing, therefore it is recommended
+#     only to compare across the same single sample run
 
-    if array[start_index] < array[end_index]:
-        logging.warning(
-            'You picked an end point above baseline, '
-            'as defined by the last value on the whole curve, '
-            'caution with end_curve variable!',
-        )
+#     :param array: an array e.g. single lead EMG recording
+#     :type array: np.array
+#     :param start_index: which index number the breath starts on
+#     :type start_index: int
+#     :param end_index: which index number the breath ends on
+#     :type end_index: int
+#     :param smoothing: smoothing which can or can not run before calculations
+#     :type smoothing: bool
 
-    new_array = array[start_index:end_index + 1]
-    max_ind = new_array.argmax()
-    end_curve = end_curve / 100
-
-    if smooth_algorithm == 'mid_savgol':
-        new_array = savgol_filter(
-            new_array,
-            len(new_array),
-            2,
-            deriv=0,
-            delta=1.0,
-            axis=- 1,
-            mode='interp',
-            cval=0.0,
-        )
-
-    tail = new_array[max_ind:] < new_array.max() * end_curve
-    nonzero = np.nonzero(tail)[0]
-    end = nonzero[0] if len(nonzero) else new_array.shape[0] - 1
-    return np.sum(new_array[:(max_ind + end)])
+#     :returns: pseudoslope
+#     :rtype: float
+#     """
+#     breath_arc = array[start_index:end_index]
+#     pos_arc = abs(breath_arc)
+#     if smoothing:
+#         smoothed_breath = running_smoother(pos_arc)
+#         abs_time = smoothed_breath.argmax()
+#     else:
+#         abs_time = pos_arc.argmax()
+#     abs_height = pos_arc[abs_time]
+#     pseudoslope = abs_height / abs_time
+#     return pseudoslope
 
 
-def find_peak_in_breath(
-    array,
-    start_index,
-    end_index,
-    smooth_algorithm='none'
-):
-    """
-    This algorithm locates peaks on a breath. It is assumed
-    an array of absolute values for electrophysiological signals
-    will be used as the array. The mid_savgol assumes a parabolic fit.
-    The convy option uses a convolution to essentially
-    smooth values with those around it as in function
-    running_smoother() in the same module.
-    It is recommended to test a smoothing
-    algorithm first, apply, then run the find peak algorithm.
+# def area_under_curve(
+#     array,
+#     start_index,
+#     end_index,
+#     end_curve=70,
+#     smooth_algorithm='none',
+# ):
+#     """
+#     This algorithm should be applied to breaths longer than 60 values
+#     on an index. The mid_savgol assumes a parabolic fit. It is
+#     recommended to test a smoothing algorithm first, apply,
+#     then run the area_under the curve with none for smooth_algortihm.
+#     If a cutoff of the curve before it hits bottom is desired then a value
+#     other than zero must be in end_curve variable. This variable
+#     should be written from 0 to 100 for the percentage of the max value
+#     at which to cut off after the peak.
+#     :param array: an array e.g. single lead EMG recording
+#     :type array: np.array
+#     :param start_index: which index number the breath starts on
+#     :type start_index: int
+#     :param end_index: which index number the breath ends on
+#     :type end_index: int
+#     :param end_curve: percentage of peak value to stop summing at
+#     :type end_curve: float
+#     :param smooth_algorithm: algorithm for smoothing
+#     :type smooth_algorithm: str
+#     :returns: area; area under the curve
+#     :rtype: float
+#     """
+#     if not (0 <= end_curve <= 100):
+#         raise ValueError(
+#             'end_curve must be between 0 and 100, '
+#             'but {} given'.format(end_curve),
+#         )
+#     if smooth_algorithm not in ('none', 'mid_savgol'):
+#         raise ValueError(
+#             'Possible values for smooth_algorithm are none and mid_savgol, '
+#             'but {} given'.format(smooth_algorithm),
+#         )
 
-    :param array: an array e.g. single lead EMG recording
-    :type array: np.array
-    :param start_index: which index number the breath starts on
-    :type start_index: int
-    :param end_index: which index number the breath ends on
-    :type end_index: int
-    :param smooth_algorithm: algorithm for smoothing (none or
-        'mid-savgol' or 'convy')
-    :type smooth_algorithm: str
+#     if array[start_index] < array[end_index]:
+#         logging.warning(
+#             'You picked an end point above baseline, '
+#             'as defined by the last value on the whole curve, '
+#             'caution with end_curve variable!',
+#         )
 
-    :returns: index of max point, value at max point, smoothed value
-    :rtype: tuple
-    """
-    new_array = array[start_index: (end_index+1)]
-    if smooth_algorithm == 'mid_savgol':
-        new_array2 = savgol_filter(
-            abs(new_array), int(len(new_array)),
-            2,
-            deriv=0,
-            delta=1.0,
-            axis=- 1,
-            mode='interp',
-            cval=0.0,
-        )
-        max_ind = (new_array2.argmax())
-        max_val = new_array[max_ind]
-        smooth_max = new_array2[max_ind]
-    elif smooth_algorithm == 'convy':
-        abs_new_array = abs(new_array)
-        new_array2 = running_smoother(abs_new_array)
-        max_ind = (new_array2.argmax())
-        max_val = new_array[max_ind]
-        smooth_max = new_array2[max_ind]
-    else:
-        abs_new_array = abs(new_array)
-        max_ind = (abs_new_array.argmax())
-        max_val = abs_new_array[max_ind]
-        smooth_max = max_val
-    return (max_ind, max_val, smooth_max)
+#     new_array = array[start_index:end_index + 1]
+#     max_ind = new_array.argmax()
+#     end_curve = end_curve / 100
+
+#     if smooth_algorithm == 'mid_savgol':
+#         new_array = savgol_filter(
+#             new_array,
+#             len(new_array),
+#             2,
+#             deriv=0,
+#             delta=1.0,
+#             axis=- 1,
+#             mode='interp',
+#             cval=0.0,
+#         )
+
+#     tail = new_array[max_ind:] < new_array.max() * end_curve
+#     nonzero = np.nonzero(tail)[0]
+#     end = nonzero[0] if len(nonzero) else new_array.shape[0] - 1
+#     return np.sum(new_array[:(max_ind + end)])
 
 
-def distance_matrix(array_a, array_b):
-    """
-    :param array_a: an array of same size as other parameter array
-    :type array_a: array or list
-    :param array_b: an array of same size as other parameter array
-    :type array_b: array or list
+# def find_peak_in_breath(
+#     array,
+#     start_index,
+#     end_index,
+#     smooth_algorithm='none'
+# ):
+#     """
+#     This algorithm locates peaks on a breath. It is assumed
+#     an array of absolute values for electrophysiological signals
+#     will be used as the array. The mid_savgol assumes a parabolic fit.
+#     The convy option uses a convolution to essentially
+#     smooth values with those around it as in function
+#     running_smoother() in the same module.
+#     It is recommended to test a smoothing
+#     algorithm first, apply, then run the find peak algorithm.
 
-    :returns: distances
-    :rtype: pd.DataFrame
-    """
-    if len(array_a) != len(array_b):
-        print('Your arrays do not match in length, caution!')
-    array_a_list = array_a.tolist()
-    array_b_list = array_b.tolist()
-    distance_earthmover = scipy.stats.wasserstein_distance(array_a, array_b)
-    distance_edit_distance = textdistance.levenshtein.similarity(
-        array_a_list,
-        array_b_list,
-    )
-    distance_euclidian = scipy.spatial.distance.euclidean(array_a, array_b)
-    distance_hamming = scipy.spatial.distance.hamming(array_a, array_b)
-    distance_chebyshev = scipy.spatial.distance.cityblock(array_a, array_b)
-    distance_cosine = scipy.spatial.distance.cosine(array_a, array_b)
-    data_made = {
-        'earthmover': distance_earthmover,
-        'edit_distance': distance_edit_distance,
-        'euclidean': distance_euclidian,
-        'hamming': distance_hamming,
-        'chebyshev': distance_chebyshev,
-        'cosine': distance_cosine,
-    }
-    distances = pd.DataFrame(data=data_made, index=[0])
-    return distances
+#     :param array: an array e.g. single lead EMG recording
+#     :type array: np.array
+#     :param start_index: which index number the breath starts on
+#     :type start_index: int
+#     :param end_index: which index number the breath ends on
+#     :type end_index: int
+#     :param smooth_algorithm: algorithm for smoothing (none or
+#         'mid-savgol' or 'convy')
+#     :type smooth_algorithm: str
+
+#     :returns: index of max point, value at max point, smoothed value
+#     :rtype: tuple
+#     """
+#     new_array = array[start_index: (end_index+1)]
+#     if smooth_algorithm == 'mid_savgol':
+#         new_array2 = savgol_filter(
+#             abs(new_array), int(len(new_array)),
+#             2,
+#             deriv=0,
+#             delta=1.0,
+#             axis=- 1,
+#             mode='interp',
+#             cval=0.0,
+#         )
+#         max_ind = (new_array2.argmax())
+#         max_val = new_array[max_ind]
+#         smooth_max = new_array2[max_ind]
+#     elif smooth_algorithm == 'convy':
+#         abs_new_array = abs(new_array)
+#         new_array2 = running_smoother(abs_new_array)
+#         max_ind = (new_array2.argmax())
+#         max_val = new_array[max_ind]
+#         smooth_max = new_array2[max_ind]
+#     else:
+#         abs_new_array = abs(new_array)
+#         max_ind = (abs_new_array.argmax())
+#         max_val = abs_new_array[max_ind]
+#         smooth_max = max_val
+#     return (max_ind, max_val, smooth_max)
+
+
+# def distance_matrix(array_a, array_b):
+#     """
+#     :param array_a: an array of same size as other parameter array
+#     :type array_a: array or list
+#     :param array_b: an array of same size as other parameter array
+#     :type array_b: array or list
+
+#     :returns: distances
+#     :rtype: pd.DataFrame
+#     """
+#     if len(array_a) != len(array_b):
+#         print('Your arrays do not match in length, caution!')
+#     array_a_list = array_a.tolist()
+#     array_b_list = array_b.tolist()
+#     distance_earthmover = scipy.stats.wasserstein_distance(array_a, array_b)
+#     distance_edit_distance = textdistance.levenshtein.similarity(
+#         array_a_list,
+#         array_b_list,
+#     )
+#     distance_euclidian = scipy.spatial.distance.euclidean(array_a, array_b)
+#     distance_hamming = scipy.spatial.distance.hamming(array_a, array_b)
+#     distance_chebyshev = scipy.spatial.distance.cityblock(array_a, array_b)
+#     distance_cosine = scipy.spatial.distance.cosine(array_a, array_b)
+#     data_made = {
+#         'earthmover': distance_earthmover,
+#         'edit_distance': distance_edit_distance,
+#         'euclidean': distance_euclidian,
+#         'hamming': distance_hamming,
+#         'chebyshev': distance_chebyshev,
+#         'cosine': distance_cosine,
+#     }
+#     distances = pd.DataFrame(data=data_made, index=[0])
+#     return distances
 
 
 # def helper_lowpass(cutoff, fs, order=5):
@@ -1543,360 +1545,360 @@ def distance_matrix(array_a, array_b):
 #     return set_ecg_peaks
 
 
-def variability_maker(
-        array,
-        segment_size,
-        method='variance',
-        fill_method='avg',
-):
-    """
-    Calculate variability of segments of an array according to a specific
-    method, then interpolate the values back to the original legnth of array
+# def variability_maker(
+#         array,
+#         segment_size,
+#         method='variance',
+#         fill_method='avg',
+# ):
+#     """
+#     Calculate variability of segments of an array according to a specific
+#     method, then interpolate the values back to the original legnth of array
 
 
-    :param array: the input array
-    :type array: ~numpy.ndarray
+#     :param array: the input array
+#     :type array: ~numpy.ndarray
 
-    :param segment_size: length over which variabilty calculated
-    :type segment_size: int
+#     :param segment_size: length over which variabilty calculated
+#     :type segment_size: int
 
-    :param method: method for calculation i.e. variance or standard deviation
-    :type method: str
+#     :param method: method for calculation i.e. variance or standard deviation
+#     :type method: str
 
-    :param fill_method: method to fill missing values at end result array,
-        'avg' will fill with average of last values, 'zeros' fills zeros, and
-        'resample' will resample (not fill) and strech array
-        to the full 'correct' length of the original signal
-    :type method: str
+#     :param fill_method: method to fill missing values at end result array,
+#         'avg' will fill with average of last values, 'zeros' fills zeros, and
+#         'resample' will resample (not fill) and strech array
+#         to the full 'correct' length of the original signal
+#     :type method: str
 
-    :returns: variability_values array showing variability over segments
-    :rtype: ~numpy.ndarray
+#     :returns: variability_values array showing variability over segments
+#     :rtype: ~numpy.ndarray
 
-    """
-    variability_values = []
-    if method == 'variance':
-        variability_values = [
-            np.var(array[i:i + segment_size])
-            for i in range(1, len(array) - segment_size)
-        ]
+#     """
+#     variability_values = []
+#     if method == 'variance':
+#         variability_values = [
+#             np.var(array[i:i + segment_size])
+#             for i in range(1, len(array) - segment_size)
+#         ]
 
-        values_out = np.array(variability_values)
+#         values_out = np.array(variability_values)
 
-    elif method == 'std':
-        # Calculate the standard deviation of each segment
-        variability_values = [
-            np.std(array[i:i+segment_size])
-            for i in range(0, len(array), segment_size)
-        ]
-        values_out = np.array(variability_values)
+#     elif method == 'std':
+#         # Calculate the standard deviation of each segment
+#         variability_values = [
+#             np.std(array[i:i+segment_size])
+#             for i in range(0, len(array), segment_size)
+#         ]
+#         values_out = np.array(variability_values)
 
-    else:
-        print("You did not choose an exisitng method")
-    num_missing_values = len(array) - len(values_out)
-    avg_values_end = np.sum(
-        values_out[(len(values_out) - num_missing_values):]
-        ) \
-        / num_missing_values
-    last_values_avg = np.full(num_missing_values, avg_values_end)
+#     else:
+#         print("You did not choose an exisitng method")
+#     num_missing_values = len(array) - len(values_out)
+#     avg_values_end = np.sum(
+#         values_out[(len(values_out) - num_missing_values):]
+#         ) \
+#         / num_missing_values
+#     last_values_avg = np.full(num_missing_values, avg_values_end)
 
-    if fill_method == 'avg':
-        variability_array = np.hstack((values_out, last_values_avg))
-    elif fill_method == 'zeros':
-        variability_array = np.hstack(
-            (values_out, np.zeros(num_missing_values))
-        )
-    elif fill_method == 'resample':
-        variability_array = scipy.signal.resample(values_out, len(array))
-    else:
-        print("You did not choose an exisitng method")
-        variability_array = np.hstack((values_out, last_values_avg))
+#     if fill_method == 'avg':
+#         variability_array = np.hstack((values_out, last_values_avg))
+#     elif fill_method == 'zeros':
+#         variability_array = np.hstack(
+#             (values_out, np.zeros(num_missing_values))
+#         )
+#     elif fill_method == 'resample':
+#         variability_array = scipy.signal.resample(values_out, len(array))
+#     else:
+#         print("You did not choose an exisitng method")
+#         variability_array = np.hstack((values_out, last_values_avg))
 
-    return variability_array
-
-
-def rowwise_chebyshev(x, y):
-    return np.max(np.abs(x - y), axis=1)
+#     return variability_array
 
 
-def delay_embedding(data, emb_dim, lag=1):
-    """
-    The following code is adapted from openly licensed code written by
-    Christopher Schölzel in his package nolds
-    (NOnLinear measures for Dynamical Systems).
-    It performs a time-delay embedding of a time series
-
-    :param data: array-like
-    :type data: array
-    :param emb_dim: the embedded dimension
-    :type emb_dim: int
-    :param lag: the lag between elements in the embedded vectors
-    :type lag: int
-
-    :returns: matrix_vectors
-    :rtype: ~nd.array
-    """
-    data = np.asarray(data)
-    min_len = (emb_dim - 1) * lag + 1
-    if len(data) < min_len:
-        msg = "cannot embed data of length {} with embedding dimension {} " \
-            + "and lag {}, minimum required length is {}"
-        raise ValueError(msg.format(len(data), emb_dim, lag, min_len))
-    m = len(data) - min_len + 1
-    indices = np.repeat([np.arange(emb_dim) * lag], m, axis=0)
-    indices += np.arange(m).reshape((m, 1))
-    matrix_vectors = data[indices]
-    return matrix_vectors
+# def rowwise_chebyshev(x, y):
+#     return np.max(np.abs(x - y), axis=1)
 
 
-def sampen(
-        data,
-        emb_dim=2,
-        tolerance=None,
-        dist=rowwise_chebyshev,
-        closed=False,
-):
-    """
-    The following code is adapted from openly licensed code written by
-    Christopher Schölzel in his package
-    nolds (NOnLinear measures for Dynamical Systems).
-    It computes the sample entropy of time sequence data.
-    Returns
-    the sample entropy of the data (negative logarithm of ratio between
-    similar template vectors of length emb_dim + 1 and emb_dim)
-    [c_m, c_m1]:
-    list of two floats: count of similar template vectors of length emb_dim
-    (c_m) and of length emb_dim + 1 (c_m1)
-    [float list, float list]:
-    Lists of lists of the form ``[dists_m, dists_m1]`` containing the
-    distances between template vectors for m (dists_m)
-    and for m + 1 (dists_m1).
-    Reference
-    .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
-    analysis using approximate entropy and sample entropy,”
-    American Journal of Physiology-Heart and Circulatory Physiology,
-    vol. 278, no. 6, pp. H2039-H2049, 2000.
+# def delay_embedding(data, emb_dim, lag=1):
+#     """
+#     The following code is adapted from openly licensed code written by
+#     Christopher Schölzel in his package nolds
+#     (NOnLinear measures for Dynamical Systems).
+#     It performs a time-delay embedding of a time series
 
-    Kwargs are
-    emb_dim (int):
-    the embedding dimension (length of vectors to compare)
-    tolerance (float):
-    distance threshold for two template vectors to be considered equal
-    (default: 0.2 * std(data) at emb_dim = 2, corrected for
-    dimension effect for other values of emb_dim)
-    dist (function (2d-array, 1d-array) -> 1d-array):
-    distance function used to calculate the distance between template
-    vectors. Sampen is defined using ``rowwise_chebyshev``. You should only
-    use something else, if you are sure that you need it.
-    closed (boolean):
-    if True, will check for vector pairs whose distance is in the closed
-    interval [0, r] (less or equal to r), otherwise the open interval
-    [0, r) (less than r) will be used
+#     :param data: array-like
+#     :type data: array
+#     :param emb_dim: the embedded dimension
+#     :type emb_dim: int
+#     :param lag: the lag between elements in the embedded vectors
+#     :type lag: int
 
-    :param data: array-like
-    :type data: array
-    :param emb_dim: the embedded dimension
-    :type emb_dim: int
-    :param tolerance: distance threshold for two template vectors
-    :type tolerance: float
-    :param distance: function to calculate distance
-    :type distance: function
-
-    :returns: saen
-    :rtype: float
-    """
-    data = np.asarray(data)
-
-    if tolerance is None:
-        lint_helper = (0.5627 * np.log(emb_dim) + 1.3334)
-        tolerance = np.std(data, ddof=1) * 0.1164 * lint_helper
-    n = len(data)
-
-    # build matrix of "template vectors"
-    # (all consecutive subsequences of length m)
-    # x0 x1 x2 x3 ... xm-1
-    # x1 x2 x3 x4 ... xm
-    # x2 x3 x4 x5 ... xm+1
-    # ...
-    # x_n-m-1     ... xn-1
-
-    # since we need two of these matrices for m = emb_dim and
-    #  m = emb_dim +1,
-    # we build one that is large enough => shape (emb_dim+1, n-emb_dim)
-
-    # note that we ignore the last possible template vector with
-    #  length emb_dim,
-    # because this vector has no corresponding vector of length m+
-    # 1 and thus does
-    # not count towards the conditional probability
-    # (otherwise first dimension would be n-emb_dim+1 and not n-emb_dim)
-    t_vecs = delay_embedding(np.asarray(data), emb_dim + 1, lag=1)
-    counts = []
-    for m in [emb_dim, emb_dim + 1]:
-        counts.append(0)
-        # get the matrix that we need for the current m
-        t_vecs_m = t_vecs[:n - m + 1, :m]
-        # successively calculate distances between each pair of templ vectrs
-        for i in range(len(t_vecs_m) - 1):
-            dsts = dist(t_vecs_m[i + 1:], t_vecs_m[i])
-            # count how many distances are smaller than the tolerance
-            if closed:
-                counts[-1] += np.sum(dsts <= tolerance)
-            else:
-                counts[-1] += np.sum(dsts < tolerance)
-    if counts[0] > 0 and counts[1] > 0:
-        saen = -np.log(1.0 * counts[1] / counts[0])
-    else:
-        # log would be infinite or undefined => cannot determine saen
-        zcounts = []
-        if counts[0] == 0:
-            zcounts.append("emb_dim")
-        if counts[1] == 0:
-            zcounts.append("emb_dim + 1")
-        print_message = (
-            "Zero vectors are within tolerance for {}. "
-            "Consider raising tolerance parameter to avoid {} result."
-        )
-        warnings.warn(
-            print_message.format(
-                " and ".join(zcounts),
-                "NaN" if len(zcounts) == 2 else "inf",
-            ),
-            RuntimeWarning
-        )
-        if counts[0] == 0 and counts[1] == 0:
-            saen = np.nan
-        elif counts[0] == 0:
-            saen = -np.inf
-        else:
-            saen = np.inf
-    return saen
+#     :returns: matrix_vectors
+#     :rtype: ~nd.array
+#     """
+#     data = np.asarray(data)
+#     min_len = (emb_dim - 1) * lag + 1
+#     if len(data) < min_len:
+#         msg = "cannot embed data of length {} with embedding dimension {} " \
+#             + "and lag {}, minimum required length is {}"
+#         raise ValueError(msg.format(len(data), emb_dim, lag, min_len))
+#     m = len(data) - min_len + 1
+#     indices = np.repeat([np.arange(emb_dim) * lag], m, axis=0)
+#     indices += np.arange(m).reshape((m, 1))
+#     matrix_vectors = data[indices]
+#     return matrix_vectors
 
 
-def sampen_optimized(
-        data,
-        tolerance=None,
-        closed=False,
-):
-    """
+# def sampen(
+#         data,
+#         emb_dim=2,
+#         tolerance=None,
+#         dist=rowwise_chebyshev,
+#         closed=False,
+# ):
+#     """
+#     The following code is adapted from openly licensed code written by
+#     Christopher Schölzel in his package
+#     nolds (NOnLinear measures for Dynamical Systems).
+#     It computes the sample entropy of time sequence data.
+#     Returns
+#     the sample entropy of the data (negative logarithm of ratio between
+#     similar template vectors of length emb_dim + 1 and emb_dim)
+#     [c_m, c_m1]:
+#     list of two floats: count of similar template vectors of length emb_dim
+#     (c_m) and of length emb_dim + 1 (c_m1)
+#     [float list, float list]:
+#     Lists of lists of the form ``[dists_m, dists_m1]`` containing the
+#     distances between template vectors for m (dists_m)
+#     and for m + 1 (dists_m1).
+#     Reference
+#     .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
+#     analysis using approximate entropy and sample entropy,”
+#     American Journal of Physiology-Heart and Circulatory Physiology,
+#     vol. 278, no. 6, pp. H2039-H2049, 2000.
 
-    The following code is adapted from openly licensed code written by
-    Christopher Schölzel in his package
-    nolds (NOnLinear measures for Dynamical Systems).
-    It computes the sample entropy of time sequence data.
-    emb_dim has been set to 1 (not parameterized)
-    Returns
-    the sample entropy of the data (negative logarithm of ratio between
-    similar template vectors of length emb_dim + 1 and emb_dim)
-    [c_m, c_m1]:
-    list of two floats: count of similar template vectors of length emb_dim
-    (c_m) and of length emb_dim + 1 (c_m1)
-    [float list, float list]:
-    Lists of lists of the form ``[dists_m, dists_m1]`` containing the
-    distances between template vectors for m (dists_m)
-    and for m + 1 (dists_m1).
-    Reference:
-    .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
-    analysis using approximate entropy and sample entropy,”
-    American Journal of Physiology-Heart and Circulatory Physiology,
-    vol. 278, no. 6, pp. H2039–H2049, 2000.
+#     Kwargs are
+#     emb_dim (int):
+#     the embedding dimension (length of vectors to compare)
+#     tolerance (float):
+#     distance threshold for two template vectors to be considered equal
+#     (default: 0.2 * std(data) at emb_dim = 2, corrected for
+#     dimension effect for other values of emb_dim)
+#     dist (function (2d-array, 1d-array) -> 1d-array):
+#     distance function used to calculate the distance between template
+#     vectors. Sampen is defined using ``rowwise_chebyshev``. You should only
+#     use something else, if you are sure that you need it.
+#     closed (boolean):
+#     if True, will check for vector pairs whose distance is in the closed
+#     interval [0, r] (less or equal to r), otherwise the open interval
+#     [0, r) (less than r) will be used
 
-    Kwargs are pre-set and not available. For more extensive
-    you should use the sampen function.
+#     :param data: array-like
+#     :type data: array
+#     :param emb_dim: the embedded dimension
+#     :type emb_dim: int
+#     :param tolerance: distance threshold for two template vectors
+#     :type tolerance: float
+#     :param distance: function to calculate distance
+#     :type distance: function
 
-    :param data: array-like
-    :type data: array
-    :param tolerance: distance threshold for two template vectors
-    :type tolerance: float
-    :param distance: function to calculate distance
-    :type distance: function
+#     :returns: saen
+#     :rtype: float
+#     """
+#     data = np.asarray(data)
 
-    :returns: saen
-    :rtype: float
-    """
-    # TODO: this function can still be further optimized
-    data = np.asarray(data)
-    if tolerance is None:
-        lint_helper = (0.5627 * np.log(1) + 1.3334)
-        tolerance = np.std(data, ddof=1) * 0.1164 * lint_helper
-    n = len(data)
+#     if tolerance is None:
+#         lint_helper = (0.5627 * np.log(emb_dim) + 1.3334)
+#         tolerance = np.std(data, ddof=1) * 0.1164 * lint_helper
+#     n = len(data)
 
-    # TODO(): This can be done with just using NumPy
-    t_vecs = delay_embedding(np.asarray(data), 3, lag=1)
+#     # build matrix of "template vectors"
+#     # (all consecutive subsequences of length m)
+#     # x0 x1 x2 x3 ... xm-1
+#     # x1 x2 x3 x4 ... xm
+#     # x2 x3 x4 x5 ... xm+1
+#     # ...
+#     # x_n-m-1     ... xn-1
 
-    if closed:
-        counts = calc_closed_sampent(t_vecs, n, tolerance)
-    else:
-        counts = calc_open_sampent(t_vecs, n, tolerance)
+#     # since we need two of these matrices for m = emb_dim and
+#     #  m = emb_dim +1,
+#     # we build one that is large enough => shape (emb_dim+1, n-emb_dim)
 
-    if counts[0] > 0 and counts[1] > 0:
-        saen = -np.log(1.0 * counts[1] / counts[0])
-    else:
-        # log would be infinite or undefined => cannot determine saen
-        zcounts = []
-        if counts[0] == 0:
-            zcounts.append("1")
-        if counts[1] == 0:
-            zcounts.append("2")
-        print_message = (
-            "Zero vectors are within tolerance for {}. "
-            "Consider raising tolerance parameter to avoid {} result."
-        )
-        warnings.warn(
-            print_message.format(
-                " and ".join(zcounts),
-                "NaN" if len(zcounts) == 2 else "inf",
-            ),
-            RuntimeWarning
-        )
-        if counts[0] == 0 and counts[1] == 0:
-            saen = np.nan
-        elif counts[0] == 0:
-            saen = -np.inf
-        else:
-            saen = np.inf
-    return saen
-
-
-def calc_closed_sampent(t_vecs, n, tolerance):
-    # TODO(someone?): Analogous to calc_open_sampent
-    return np.nan, np.nan
-
-
-def calc_open_sampent(t_vecs, n, tolerance):
-    triplets = t_vecs[:n - 2, :3]
-
-    raw_dsts = tuple(
-        triplets[i + 1:] - triplets[i]
-        for i in range(len(triplets) - 1)
-    )
-    dsts = np.concatenate(raw_dsts)
-    dsts_abs = np.abs(dsts)
-    dsts_gt = dsts_abs < tolerance
-    dsts_max_a = np.logical_and(dsts_gt[:, 0], dsts_gt[:, 1])
-    dsts_max = np.logical_and(dsts_max_a, dsts_gt[:, 2])
-    return np.sum(dsts_max_a), np.sum(dsts_max)
+#     # note that we ignore the last possible template vector with
+#     #  length emb_dim,
+#     # because this vector has no corresponding vector of length m+
+#     # 1 and thus does
+#     # not count towards the conditional probability
+#     # (otherwise first dimension would be n-emb_dim+1 and not n-emb_dim)
+#     t_vecs = delay_embedding(np.asarray(data), emb_dim + 1, lag=1)
+#     counts = []
+#     for m in [emb_dim, emb_dim + 1]:
+#         counts.append(0)
+#         # get the matrix that we need for the current m
+#         t_vecs_m = t_vecs[:n - m + 1, :m]
+#         # successively calculate distances between each pair of templ vectrs
+#         for i in range(len(t_vecs_m) - 1):
+#             dsts = dist(t_vecs_m[i + 1:], t_vecs_m[i])
+#             # count how many distances are smaller than the tolerance
+#             if closed:
+#                 counts[-1] += np.sum(dsts <= tolerance)
+#             else:
+#                 counts[-1] += np.sum(dsts < tolerance)
+#     if counts[0] > 0 and counts[1] > 0:
+#         saen = -np.log(1.0 * counts[1] / counts[0])
+#     else:
+#         # log would be infinite or undefined => cannot determine saen
+#         zcounts = []
+#         if counts[0] == 0:
+#             zcounts.append("emb_dim")
+#         if counts[1] == 0:
+#             zcounts.append("emb_dim + 1")
+#         print_message = (
+#             "Zero vectors are within tolerance for {}. "
+#             "Consider raising tolerance parameter to avoid {} result."
+#         )
+#         warnings.warn(
+#             print_message.format(
+#                 " and ".join(zcounts),
+#                 "NaN" if len(zcounts) == 2 else "inf",
+#             ),
+#             RuntimeWarning
+#         )
+#         if counts[0] == 0 and counts[1] == 0:
+#             saen = np.nan
+#         elif counts[0] == 0:
+#             saen = -np.inf
+#         else:
+#             saen = np.inf
+#     return saen
 
 
-def entropy_maker(
-        array,
-        method='sample_entropy',
-        base=None,
-):
-    """
-    The following code allows a user to input an array and calculate either
-    a time-series specific entropy i.e. the nolds or a more general
-    Shannon entropy as calculated in scipy.
-    It calls entropy functions in the file.
+# def sampen_optimized(
+#         data,
+#         tolerance=None,
+#         closed=False,
+# ):
+#     """
 
-    """
-    if method == 'scipy':
-        output = entropy_scipy(array, base=base)
-    elif method == 'nolds':
-        output = sampen(array)
-    elif method == 'sample_entropy':
-        output = sampen_optimized(array)
-    else:
-        print('your method is not an option,')
-        print('we defaulted to a slow unoptimized sample entropy')
-        output = sampen(array)
-    return output
+#     The following code is adapted from openly licensed code written by
+#     Christopher Schölzel in his package
+#     nolds (NOnLinear measures for Dynamical Systems).
+#     It computes the sample entropy of time sequence data.
+#     emb_dim has been set to 1 (not parameterized)
+#     Returns
+#     the sample entropy of the data (negative logarithm of ratio between
+#     similar template vectors of length emb_dim + 1 and emb_dim)
+#     [c_m, c_m1]:
+#     list of two floats: count of similar template vectors of length emb_dim
+#     (c_m) and of length emb_dim + 1 (c_m1)
+#     [float list, float list]:
+#     Lists of lists of the form ``[dists_m, dists_m1]`` containing the
+#     distances between template vectors for m (dists_m)
+#     and for m + 1 (dists_m1).
+#     Reference:
+#     .. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
+#     analysis using approximate entropy and sample entropy,”
+#     American Journal of Physiology-Heart and Circulatory Physiology,
+#     vol. 278, no. 6, pp. H2039–H2049, 2000.
+
+#     Kwargs are pre-set and not available. For more extensive
+#     you should use the sampen function.
+
+#     :param data: array-like
+#     :type data: array
+#     :param tolerance: distance threshold for two template vectors
+#     :type tolerance: float
+#     :param distance: function to calculate distance
+#     :type distance: function
+
+#     :returns: saen
+#     :rtype: float
+#     """
+#     # TODO: this function can still be further optimized
+#     data = np.asarray(data)
+#     if tolerance is None:
+#         lint_helper = (0.5627 * np.log(1) + 1.3334)
+#         tolerance = np.std(data, ddof=1) * 0.1164 * lint_helper
+#     n = len(data)
+
+#     # TODO(): This can be done with just using NumPy
+#     t_vecs = delay_embedding(np.asarray(data), 3, lag=1)
+
+#     if closed:
+#         counts = calc_closed_sampent(t_vecs, n, tolerance)
+#     else:
+#         counts = calc_open_sampent(t_vecs, n, tolerance)
+
+#     if counts[0] > 0 and counts[1] > 0:
+#         saen = -np.log(1.0 * counts[1] / counts[0])
+#     else:
+#         # log would be infinite or undefined => cannot determine saen
+#         zcounts = []
+#         if counts[0] == 0:
+#             zcounts.append("1")
+#         if counts[1] == 0:
+#             zcounts.append("2")
+#         print_message = (
+#             "Zero vectors are within tolerance for {}. "
+#             "Consider raising tolerance parameter to avoid {} result."
+#         )
+#         warnings.warn(
+#             print_message.format(
+#                 " and ".join(zcounts),
+#                 "NaN" if len(zcounts) == 2 else "inf",
+#             ),
+#             RuntimeWarning
+#         )
+#         if counts[0] == 0 and counts[1] == 0:
+#             saen = np.nan
+#         elif counts[0] == 0:
+#             saen = -np.inf
+#         else:
+#             saen = np.inf
+#     return saen
+
+
+# def calc_closed_sampent(t_vecs, n, tolerance):
+#     # TODO(someone?): Analogous to calc_open_sampent
+#     return np.nan, np.nan
+
+
+# def calc_open_sampent(t_vecs, n, tolerance):
+#     triplets = t_vecs[:n - 2, :3]
+
+#     raw_dsts = tuple(
+#         triplets[i + 1:] - triplets[i]
+#         for i in range(len(triplets) - 1)
+#     )
+#     dsts = np.concatenate(raw_dsts)
+#     dsts_abs = np.abs(dsts)
+#     dsts_gt = dsts_abs < tolerance
+#     dsts_max_a = np.logical_and(dsts_gt[:, 0], dsts_gt[:, 1])
+#     dsts_max = np.logical_and(dsts_max_a, dsts_gt[:, 2])
+#     return np.sum(dsts_max_a), np.sum(dsts_max)
+
+
+# def entropy_maker(
+#         array,
+#         method='sample_entropy',
+#         base=None,
+# ):
+#     """
+#     The following code allows a user to input an array and calculate either
+#     a time-series specific entropy i.e. the nolds or a more general
+#     Shannon entropy as calculated in scipy.
+#     It calls entropy functions in the file.
+
+#     """
+#     if method == 'scipy':
+#         output = entropy_scipy(array, base=base)
+#     elif method == 'nolds':
+#         output = sampen(array)
+#     elif method == 'sample_entropy':
+#         output = sampen_optimized(array)
+#     else:
+#         print('your method is not an option,')
+#         print('we defaulted to a slow unoptimized sample entropy')
+#         output = sampen(array)
+#     return output
