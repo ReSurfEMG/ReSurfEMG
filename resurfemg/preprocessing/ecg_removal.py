@@ -55,6 +55,91 @@ def compute_ica_two_comp_multi(emg_samples):
     return component_0, component_1
 
 
+def compute_ICA_two_comp_selective(
+    emg_samples,
+    use_all_leads=True,
+    desired_leads=(0, 2),
+):
+    """A function that performs an independant component analysis
+    (ICA) meant for EMG data that includes stacked arrays,
+    there should be at least two arrays but there can be more.
+
+    :param emg_samples: Original signal array with three or more layers
+    :type emg_samples: ~numpy.ndarray
+    :param use_all_leads: True if all leads used, otherwise specify leads
+    :type use_all_leads: bool
+    :param desired_leads: tuple of leads to use starting from 0
+    :type desired_leads: tuple
+
+    :returns: Two arrays of independent components (ECG-like and EMG)
+    :rtype: ~numpy.ndarray
+    """
+    if use_all_leads:
+        all_component_numbers = list(range(emg_samples.shape[0]))
+    else:
+        all_component_numbers = desired_leads
+        diff = set(all_component_numbers) - set(range(emg_samples.shape[0]))
+        if diff:
+            raise IndexError(
+                "You picked nonexistant leads {}, "
+                "please see documentation".format(diff)
+            )
+    list_to_c = []
+    # TODO (makeda): change to list comprehension on refactoring
+    for i in all_component_numbers:
+        list_to_c.append(emg_samples[i])
+    X = np.column_stack(list_to_c)
+    ica = FastICA(n_components=2, random_state=1)
+    S = ica.fit_transform(X)
+    component_0 = S.T[0]
+    component_1 = S.T[1]
+    return component_0, component_1
+
+
+def compute_ICA_n_comp(
+    emg_samples,
+    use_all_leads=True,
+    desired_leads=(0, 2),
+):
+    """A function that performs an independant component analysis
+    (ICA) meant for EMG data that includes stacked arrays,
+    there should be at least two arrays but there can be more.
+    This differs from helper_functions.compute_ICA_two_comp_multi
+    because you can get n leads back instead of only two.
+
+    :param emg_samples: Original signal array with three or more layers
+    :type emg_samples: ~numpy.ndarray
+    :param use_all_leads: True if all leads used, otherwise specify leads
+    :type use_all_leads: bool
+    :param desired_leads: tuple of leads to use starting from 0
+    :type desired_leads: tuple
+
+    :returns: Arrays of independent components (ECG-like and EMG)
+    :rtype: ~numpy.ndarray
+    """
+    if use_all_leads:
+        all_component_numbers = list(range(emg_samples.shape[0]))
+        n_components = len(all_component_numbers)
+    else:
+        all_component_numbers = desired_leads
+        n_components = len(all_component_numbers)
+        diff = set(all_component_numbers) - set(range(emg_samples.shape[0]))
+        if diff:
+            raise IndexError(
+                "You picked nonexistant leads {}, "
+                "please see documentation".format(diff)
+            )
+    list_to_c = []
+    # TODO (makeda): change to list comprehension on refactoring
+    for i in all_component_numbers:
+        list_to_c.append(emg_samples[i])
+    X = np.column_stack(list_to_c)
+    ica = FastICA(n_components, random_state=1)
+    S = ica.fit_transform(X)
+    answer = S.T
+    return answer
+
+
 def pick_more_peaks_array(components_tuple):
     """Here we have a function that takes a tuple with the two parts
     of ICA, and finds the one with more peaks and anti-peaks.  The EMG
@@ -96,6 +181,93 @@ def pick_more_peaks_array(components_tuple):
     else:
         print("this is very strange data, please examine by hand")
     return emg_component
+
+
+def pick_highest_correlation_array_multi(components, ecg_lead):
+    """Here we have a function that takes a tuple with n parts
+    of ICA and the array defined by the user as the ECG recording,
+    and finds the ICA component with the highest similarity to the ECG.
+    Data should not have been finally filtered to envelope level
+
+    :param components: n-dimensional array representing different components.
+        Each row is a component.
+    :type components: ~numpy.ndarray
+    :param ecg_lead: array containing the ECG recording
+    :type ecg_lead: numpy.ndarray
+
+    :returns: Index of the array with the highest correlation coefficient
+     to the ECG lead (should usually be the  ECG)
+    :rtype: int
+    """
+
+    corr_tuple = np.row_stack((ecg_lead, components))
+    corr_matrix = abs(np.corrcoef(corr_tuple))
+
+    # get the component with the highest correlation to ECG
+    # the matriz is symmetric, so we can check just the first row
+    # the first coefficient is the autocorrelation of the ECG lead,
+    # so we can check the other rows
+
+    hi_index = np.argmax(corr_matrix[0][1:])
+    return hi_index
+
+
+def compute_ICA_n_comp_selective_zeroing(
+    emg_samples,
+    ecg_lead_to_remove,
+    use_all_leads=True,
+    desired_leads=(0, 2),
+):
+    """A function that performs an independant component analysis
+    (ICA) meant for EMG data that includes stacked arrays,
+    there should be at least two arrays but there can be more.
+    In this ICA one lead is put to zero before reconstruction.
+    This should probably be the ECG lead.
+
+    :param emg_samples: Original signal array with three or more layers
+    :type emg_samples: ~numpy.ndarray
+    :param ecg_lead_to_remove: Lead number counting from zero to get rid of
+    :type ecg_lead_to_remove: int
+    :param use_all_leads: True if all leads used, otherwise specify leads
+    :type use_all_leads: bool
+    :param desired_leads: tuple of leads to use starting from 0
+    :type desired_leads: tuple
+
+    :returns: Arrays of independent components (ECG-like and EMG)
+    :rtype: ~numpy.ndarray
+    """
+    if use_all_leads:
+        all_component_numbers = list(range(emg_samples.shape[0]))
+        n_components = len(all_component_numbers)
+    else:
+        all_component_numbers = desired_leads
+        n_components = len(all_component_numbers)
+        diff = set(all_component_numbers) - set(range(emg_samples.shape[0]))
+        if diff:
+            raise IndexError(
+                "You picked nonexistant leads {}, "
+                "please see documentation".format(diff)
+            )
+    list_to_c = []
+    # TODO (makeda): change to list comprehension on refactoring
+    for i in all_component_numbers:
+        list_to_c.append(emg_samples[i])
+
+    X = np.column_stack(list_to_c)
+    ica = FastICA(n_components, random_state=1)
+    S = ica.fit_transform(X)
+    S_copy = copy(S)
+
+    hi_index = pick_highest_correlation_array_multi(
+        S_copy.transpose(),
+        emg_samples[ecg_lead_to_remove])
+
+    S_copy.T[hi_index] = np.zeros(len(S_copy.T[hi_index]))
+
+    reconstructed = ica.inverse_transform(S_copy)
+    reconstructed = reconstructed.T
+
+    return reconstructed
 
 
 def pick_lowest_correlation_array(components_tuple, ecg_lead):
