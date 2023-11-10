@@ -13,22 +13,42 @@
 [![status](https://joss.theoj.org/papers/5f08d1f2bb717b7d05762296e37ded3d/status.svg)](https://joss.theoj.org/papers/5f08d1f2bb717b7d05762296e37ded3d)
 
 **ReSurfEMG** is an open source collaborative python library for analysis
-of respiratory electromyography (EMG).  On the same site as 
+of respiratory electromyography (EMG). On the same site as 
 the repository for this library we keep [related resources](https://github.com/ReSurfEMG?tab=repositories). 
 
-Most important to know before using ReSurfEMG is that we have a [main code library](https://github.com/ReSurfEMG/ReSurfEMG) where the user can access the code to change various filter and analysis settings directly and/or in our [researcher interface notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/researcher_interface), and a [dashboard interface](https://github.com/ReSurfEMG/ReSurfEMG-dashboard) which contains default settings for preprocessing and analysis which can be changed through a graphical (no code) interface. We have some functionality available through a [command line interface](#command-line-interface) as well.
+ReSurfEMG includes a [main code library](https://github.com/ReSurfEMG/ReSurfEMG) where the user can access the code to change various filter and analysis settings directly and/or in our [researcher interface notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/researcher_interface).
+In addition, ReSurfEMG has a [dashboard interface](https://github.com/ReSurfEMG/ReSurfEMG-dashboard) which contains default settings for preprocessing and analysis which can be changed through a graphical (no code) interface. We have some functionality available through a [command line interface](#command-line-interface) as well.
 
 The library was initially
 built for surface EMG, however many functions will also work for
-respiratory EMG directly acquired (trans-esophageal).  This library
+invasively measured respiratory EMG.  This library
 supports the ongoing research at University of Twente on respiratory
 EMG.
 
 
 ### Program files
 
-The main program in this repository (made of the modules in the resurfemg folder) contains functions for analysis of EMG and other electrophysiological signals. This analysis often includes
-analysis of signals from machines i.e. ventilators as well.
+The core functions of ReSurfEMG are in the folder [resurfemg](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/resurfemg):
+
+-   **cli:** Scripts for the command line interface
+-   **config:** Configure all paths for data analysis
+-   **data_connector:**  Converter functions for various hardware/software and the TMSisdk lite module
+-   **helper_functions:** General functions to support the functions in this repository
+-   **machine_learning:** Run machine learning algorithms on arrays
+-   **post-processing:** Calculate features from the respiratory data:
+      - entropy
+      - area under curve
+      - time under curve
+      - slope
+      - peak in breath
+      - variability
+      - SampEn adapted from nolds package
+-   **pre_processing:** Process the raw EMG signal
+      - ecg-removal: ICA and gating
+      - envelope: RMS and smoothers
+      - filtering: cutters, low-, high- and bandpass, notchfilter, computer power loss
+-   **visualization:** Show powerspectrum
+
 
 ### Folders and Notebooks
 
