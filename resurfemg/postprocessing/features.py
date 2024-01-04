@@ -1,14 +1,13 @@
 import collections
 import math
 import warnings
+import logging
 import scipy
 from scipy.signal import savgol_filter
 from scipy.stats import entropy
-import matplotlib.pyplot as plt
 import numpy as np
-import logging
-from ..preprocessing.envelope import running_smoother
 from resurfemg.helper_functions.helper_functions import delay_embedding
+from ..preprocessing.envelope import running_smoother
 
 
 def entropical(sig):
