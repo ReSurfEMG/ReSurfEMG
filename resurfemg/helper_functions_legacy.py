@@ -28,13 +28,13 @@ and other types of data arrays e.g. ventilator signals.
 # import textdistance
 # import pandas as pd
 # import logging
-#from .preprocessing.filtering import bad_end_cutter
-#from .preprocessing.filtering import bad_end_cutter_for_samples
-#from .preprocessing.filtering import emg_bandpass_butter_sample
-#from .preprocessing.filtering import emg_highpass_butter
-#from .preprocessing.ecg_removal import pick_more_peaks_array
-#from .preprocessing.ecg_removal import compute_ICA_two_comp
-#from .preprocessing.envelope import naive_rolling_rms
+# from .preprocessing.filtering import bad_end_cutter
+# from .preprocessing.filtering import bad_end_cutter_for_samples
+# from .preprocessing.filtering import emg_bandpass_butter_sample
+# from .preprocessing.filtering import emg_highpass_butter
+# from .preprocessing.ecg_removal import pick_more_peaks_array
+# from .preprocessing.ecg_removal import compute_ICA_two_comp
+# from .preprocessing.envelope import naive_rolling_rms
 # from .preprocessing.ecg_removal import pick_lowest_correlation_array
 
 
@@ -706,8 +706,8 @@ and other types of data arrays e.g. ventilator signals.
 # def entropical(sig):
 #     """This function computes something close to certain type of entropy
 #     of a series signal array.  Input is sig, the signal, and output is an
-#     array of entropy measurements. The function can be used inside a 
-#     generator to read over slices. Note it is not a true entropy, 
+#     array of entropy measurements. The function can be used inside a
+#     generator to read over slices. Note it is not a true entropy,
 #     and works best with very small numbers.
 
 #     :param sig: array containin the signal
@@ -717,7 +717,7 @@ and other types of data arrays e.g. ventilator signals.
 #     :rtype: float
 
 #     """
-#     probabilit = [n_x/len(sig) for x, n_x in 
+#     probabilit = [n_x/len(sig) for x, n_x in
 #     collections.Counter(sig).items()]
 #     e_x = [-p_x*math.log(p_x, 2) for p_x in probabilit]
 #     return sum(e_x)
@@ -882,7 +882,7 @@ and other types of data arrays e.g. ventilator signals.
 #             vodist = dists[i - smooth]
 #             if (vodist / dist > threshold) or (dist / vodist > threshold):
 #                 filler = not filler
-#                 # Now we need to go back and repaing the values in the 
+#                 # Now we need to go back and repaing the values in the
 #                 # overlay
 #                 # because the change was detected after `smooth' interval
 #                 overlay[i - smooth:i] = filler
@@ -973,7 +973,7 @@ and other types of data arrays e.g. ventilator signals.
 # def relative_levenshtein(signal1, signal2):
 #     """
 #     Here we take two arrays, and create an edit distance based on Levelshtien
-#     edit distance The distance is then normalized between 0 and one 
+#     edit distance The distance is then normalized between 0 and one
 #     regardless of signal length
 
 #     """
@@ -983,7 +983,7 @@ and other types of data arrays e.g. ventilator signals.
 #         signal1_list.append(element)
 #     for element in signal2:
 #         signal2_list.append(element)
-#     distance = textdistance.levenshtein.similarity(signal1_list, 
+#     distance = textdistance.levenshtein.similarity(signal1_list,
 #         signal2_list)
 #     if len(signal1) != len(signal2):
 #         print('Warning: length of arrays is not matched')
