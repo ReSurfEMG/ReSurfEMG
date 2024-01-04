@@ -6,9 +6,9 @@ from resurfemg.preprocessing.ecg_removal import compute_ICA_two_comp_selective
 from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
 from resurfemg.preprocessing.ecg_removal import pick_lowest_correlation_array
 from resurfemg.preprocessing.filtering import emg_highpass_butter
-from resurfemg.preprocessing.ecg_removal import compute_ICA_two_comp
 from resurfemg.preprocessing.filtering import bad_end_cutter
 from resurfemg.preprocessing.envelope import naive_rolling_rms
+from ..preprocessing.ecg_removal import compute_ica_two_comp
 
 # from ..data_connector.tmsisdk_lite import Poly5Reader
 # from ..helper_functions.helper_functions import save_preprocessed
@@ -296,7 +296,7 @@ def working_pipeline_exp(our_chosen_file):
         tolerance_percent=5,
     )
     # do ICA
-    components = compute_ICA_two_comp(re_cut_file_data)
+    components = compute_ica_two_comp(re_cut_file_data)
     #  pick components with more peak
     emg = pick_more_peaks_array(components)
     # now process it in final steps
