@@ -17,11 +17,11 @@ import textwrap
 import hashlib
 import glob
 import math
+import random
 import pandas as pd
 import numpy as np
-import scipy
 from scipy import signal
-import random
+from ..preprocessing import filtering as filt
 
 
 class Config:
@@ -189,8 +189,8 @@ def make_synth_emg(long, max_abs_volt, humps):
     synth_emg1 = raised_sin * np.random.randn(
         (len(x))) + 0.1 * np.random.randn(len(x))
     volt_multiplier = max_abs_volt / abs(synth_emg1).max()
-    signal = synth_emg1*volt_multiplier
-    return signal
+    synthetic_signal = synth_emg1*volt_multiplier
+    return synthetic_signal
 
 def simulate_ventilator_with_occlusions(
     occs_times_vals,     # Timing of occlusions (s)
@@ -223,7 +223,7 @@ def simulate_ventilator_with_occlusions(
     t_occs = np.floor(occs_times*rr/60)*60/rr
     p_mus_block = (signal.square(t_vent*rr/60*2*np.pi + 0.1, ie_fraction)+1)/2
     for i, t_occ in enumerate(t_occs):
-        i_occ = int(t_occ*fs_vent)    
+        i_occ = int(t_occ*fs_vent)
         p_mus_block[i_occ:i_occ+ int(fs_vent*60/rr)+1] = \
             np.zeros((int(fs_vent *60/rr)+1,))   # Add occlusion manouevres
 
@@ -231,7 +231,7 @@ def simulate_ventilator_with_occlusions(
     pattern_gen_mus = np.zeros((len(t_vent),))
     for i in range(1, len(t_vent)):
         if (p_mus_block[i-1]-pattern_gen_mus[i-1]) > 0:
-            pattern_gen_mus[i] = (pattern_gen_mus[i-1] 
+            pattern_gen_mus[i] = (pattern_gen_mus[i-1]
                 + (p_mus_block[i-1]-pattern_gen_mus[i-1])
                 / (tau_mus_up * fs_vent))
         else:
@@ -247,23 +247,31 @@ def simulate_ventilator_with_occlusions(
     tau_dp_down = 5
     p_dp = -p_mus
     for i in range(1, len(t_vent)):
+        dp_step = p_block[i-1]-p_dp[i-1]
         if np.any((((t_occs*fs_vent)-i)<=0)
                   & ((((t_occs+60/rr)*fs_vent+1)-i)>0)):
             # Occlusion pressure results into negative airway pressure:
-            p_dp[i] = p_dp[i-1]+(-p_block[i-1]-p_dp[i-1])/tau_dp_up
+            dp_step = (-np.mean(p_block[i-int(2*fs_vent/3):int(i-1)])
+                       -p_dp[i-1])
+            p_dp[i] = p_dp[i-1]+dp_step/(tau_dp_up)
         elif (p_block[i-1]-p_dp[i-1]) > 0:
-            p_dp[i] = p_dp[i-1]+(p_block[i-1]-p_dp[i-1])/tau_dp_up
+            p_dp[i] = p_dp[i-1]+dp_step/tau_dp_up
         else:
-            p_dp[i] = p_dp[i-1]+(p_block[i-1]-p_dp[i-1])/tau_dp_down
+            p_dp[i] = p_dp[i-1]+dp_step/tau_dp_down
 
-    p_vent = peep + p_dp
+    p_noise = np.random.normal(0, 2, size=(len(t_vent), ))
+    p_noise_series = pd.Series(p_noise)
+    p_noise_ma = p_noise_series.rolling(fs_vent,
+                                 min_periods=1,
+                                 center=True).mean().values
+    p_vent = peep + p_dp + p_noise_ma
 
     # Calculate flows and volumes from equation of motion:
     v_dot_vent = np.zeros((len(t_vent),))
     v_vent = np.zeros((len(t_vent),))
     for i in range(len(t_vent)-1):
-        if np.any((((t_occs*fs_vent)-i)<=0) 
-                  &  ((((t_occs+60/rr)*fs_vent+1)-i)>0)):
+        if np.any((((t_occs*fs_vent)-i-1)<=0)
+                  &  ((((t_occs+60/rr)*fs_vent)-i)>0)):
             # During occlusion manoeuvre: flow and volume are zero
             v_dot_vent[i+1] = 0
             v_vent[i+1] = 0
@@ -274,6 +282,7 @@ def simulate_ventilator_with_occlusions(
     y_vent = np.vstack((p_vent, v_dot_vent, v_vent))
     return y_vent
 
+
 def simulate_emg_with_occlusions(
     occs_times_vals,
     t_start=0,
@@ -283,7 +292,6 @@ def simulate_emg_with_occlusions(
     ie_ratio=1/2,  # ratio between inspiratory and expiratory time
     tau_mus_up=0.3,
     tau_mus_down=0.3,
-    
     emg_amp=5,     # Approximate EMG-RMS amplitude (uV)
     drift_amp=100, # Approximate drift RMS amplitude (uV)
     noise_amp=2    # Approximate baseline noise RMS amplitude (uV)
@@ -327,17 +335,22 @@ def simulate_emg_with_occlusions(
             pattern_gen_emg[i] = pat + (emg_block[i-1]-pat)/(tau_mus_down*fs_emg)
 
     # make respiratory EMG component
-    part_emg = pattern_gen_emg * np.random.normal(0, 0.5, size=(len(t_emg), ))
+    part_emg = pattern_gen_emg * np.random.normal(0, 2, size=(len(t_emg), ))
 
     # make noise and drift components
-    part_noise = np.random.normal(0, 0.5, size=(len(t_emg), ))
+    part_noise = np.random.normal(0, 2*noise_amp, size=(len(t_emg), ))
     part_drift = np.zeros((len(t_emg),))
 
-    # mix channels, could be remixed with an ecg
-    y_emg = np.zeros(t_emg.shape)
-    y_emg[:] = (emg_amp * part_emg + drift_amp * part_drift
-                   + noise_amp * part_noise)
+    f_high = 0.05
+    white_noise = np.random.normal(0,
+                                   drift_amp,
+                                   size=(len(t_emg)+int(1/f_high)*fs_emg, ))
+    part_drift_tmp = filt.emg_lowpass_butter_sample(
+        white_noise, f_high, fs_emg, order=3)
+    part_drift = part_drift_tmp[int(1/f_high)*fs_emg:] / f_high
 
+    # mix channels, could be remixed with an ecg
+    y_emg = emg_amp * part_emg + part_drift + part_noise
     return y_emg
 
 
@@ -352,7 +365,7 @@ def make_realistic_syn_emg(loaded_ecg, number):
     """
     list_emg = []
     number = int(number)  # added for cli
-    for i in list(range(number)):
+    for _ in list(range(number)):
         emg = simulate_emg_with_occlusions(
             t_start=0,
             t_end=7*60,
@@ -402,7 +415,7 @@ def make_realistic_syn_emg_cli(file_directory, number, made):
     number_end = 0
     for single_synth in synthetics:
         out_fname = os.path.join(made, str(number_end))
-        if not (os.path.exists(made)):
+        if not os.path.exists(made):
             os.mkdir(made)
         np.save(out_fname, single_synth)
         number_end += 1
