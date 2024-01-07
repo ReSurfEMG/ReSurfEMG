@@ -192,6 +192,7 @@ def make_synth_emg(long, max_abs_volt, humps):
     synthetic_signal = synth_emg1*volt_multiplier
     return synthetic_signal
 
+
 def simulate_ventilator_with_occlusions(
     occs_times_vals,     # Timing of occlusions (s)
     t_start=0,
@@ -224,20 +225,20 @@ def simulate_ventilator_with_occlusions(
     p_mus_block = (signal.square(t_vent*rr/60*2*np.pi + 0.1, ie_fraction)+1)/2
     for i, t_occ in enumerate(t_occs):
         i_occ = int(t_occ*fs_vent)
-        p_mus_block[i_occ:i_occ+ int(fs_vent*60/rr)+1] = \
-            np.zeros((int(fs_vent *60/rr)+1,))   # Add occlusion manouevres
+        p_mus_block[i_occ : i_occ + int(fs_vent*60/rr)+1] = \
+            np.zeros((int(fs_vent *60/rr)+1, ))   # Add occlusion manouevres
 
     # Simulate up- and downslope dynamics of respiratory muscle pressure
     pattern_gen_mus = np.zeros((len(t_vent),))
     for i in range(1, len(t_vent)):
         if (p_mus_block[i-1]-pattern_gen_mus[i-1]) > 0:
             pattern_gen_mus[i] = (pattern_gen_mus[i-1]
-                + (p_mus_block[i-1]-pattern_gen_mus[i-1])
-                / (tau_mus_up * fs_vent))
+                                  + (p_mus_block[i-1]-pattern_gen_mus[i-1])
+                                  / (tau_mus_up * fs_vent))
         else:
             pattern_gen_mus[i] = (pattern_gen_mus[i-1]
-                + (p_mus_block[i-1] - pattern_gen_mus[i-1])
-                / (tau_mus_down * fs_vent))
+                                  + (p_mus_block[i-1] - pattern_gen_mus[i-1])
+                                  / (tau_mus_down * fs_vent))
 
     p_mus = p_mus_max * pattern_gen_mus
 
@@ -248,8 +249,8 @@ def simulate_ventilator_with_occlusions(
     p_dp = -p_mus
     for i in range(1, len(t_vent)):
         dp_step = p_block[i-1]-p_dp[i-1]
-        if np.any((((t_occs*fs_vent)-i)<=0)
-                  & ((((t_occs+60/rr)*fs_vent+1)-i)>0)):
+        if np.any((((t_occs*fs_vent)-i) <= 0)
+                  & ((((t_occs+60/rr)*fs_vent+1)-i) > 0)):
             # Occlusion pressure results into negative airway pressure:
             dp_step = (-np.mean(p_block[i-int(2*fs_vent/3):int(i-1)])
                        -p_dp[i-1])
@@ -270,8 +271,8 @@ def simulate_ventilator_with_occlusions(
     v_dot_vent = np.zeros((len(t_vent),))
     v_vent = np.zeros((len(t_vent),))
     for i in range(len(t_vent)-1):
-        if np.any((((t_occs*fs_vent)-i-1)<=0)
-                  &  ((((t_occs+60/rr)*fs_vent)-i)>0)):
+        if np.any((((t_occs*fs_vent)-i-1) <= 0)
+                  & ((((t_occs+60/rr)*fs_vent)-i) > 0)):
             # During occlusion manoeuvre: flow and volume are zero
             v_dot_vent[i+1] = 0
             v_vent[i+1] = 0
@@ -288,13 +289,13 @@ def simulate_emg_with_occlusions(
     t_start=0,
     t_end=7*60,
     emg_sample_rate=2048,   # hertz
-    rr=22,         # respiratory rate /min
-    ie_ratio=1/2,  # ratio between inspiratory and expiratory time
+    rr=22,          # respiratory rate /min
+    ie_ratio=1/2,   # ratio between inspiratory and expiratory time
     tau_mus_up=0.3,
     tau_mus_down=0.3,
-    emg_amp=5,     # Approximate EMG-RMS amplitude (uV)
-    drift_amp=100, # Approximate drift RMS amplitude (uV)
-    noise_amp=2    # Approximate baseline noise RMS amplitude (uV)
+    emg_amp=5,      # Approximate EMG-RMS amplitude (uV)
+    drift_amp=100,  # Approximate drift RMS amplitude (uV)
+    noise_amp=2     # Approximate baseline noise RMS amplitude (uV)
 ):
     """
     This function simulates an surface respiratory emg with no ecg
@@ -330,9 +331,11 @@ def simulate_emg_with_occlusions(
         pat = pattern_gen_emg[i-1]
         fs_emg = emg_sample_rate
         if (emg_block[i-1]-pat) > 0:
-            pattern_gen_emg[i] = pat + (emg_block[i-1]-pat)/(tau_mus_up*fs_emg)
+            pattern_gen_emg[i] = pat + ((emg_block[i-1] - pat)/
+                                        (tau_mus_up*fs_emg))
         else:
-            pattern_gen_emg[i] = pat + (emg_block[i-1]-pat)/(tau_mus_down*fs_emg)
+            pattern_gen_emg[i] = pat + ((emg_block[i-1] - pat)/
+                                        (tau_mus_down*fs_emg))
 
     # make respiratory EMG component
     part_emg = pattern_gen_emg * np.random.normal(0, 2, size=(len(t_emg), ))
@@ -376,9 +379,9 @@ def make_realistic_syn_emg(loaded_ecg, number):
             tau_mus_down=0.3,
             occs_times_vals=[365, 381, 395]
         )
-        emg1 = emg[0][:307200]
-        emg2 = emg[1][:307200]
-        emg3 = emg[2][:307200]
+        emg1 = emg[:307200]
+        emg2 = emg[:307200]
+        emg3 = emg[:307200]
         emg_stack = np.vstack((emg1, emg2))
         emg_stack = np.vstack((emg_stack, emg3))
         heart_line = random.randint(0, 9)

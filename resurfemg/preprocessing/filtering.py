@@ -102,13 +102,14 @@ def emg_lowpass_butter_sample(
     emg_filtered = signal.sosfiltfilt(sos, data_emg_samp)
     return emg_filtered
 
+
 def emg_highpass_butter_sample(
     data_emg_samp,
     high_pass,
     sample_rate,
     order=3,
 ):
-                               
+
     """Output is the EMG after a bandpass as made here.
 
     :param data_emg_samp: The array in the sample
