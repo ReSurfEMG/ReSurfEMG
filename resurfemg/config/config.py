@@ -225,8 +225,8 @@ def simulate_ventilator_with_occlusions(
     p_mus_block = (signal.square(t_vent*rr/60*2*np.pi + 0.1, ie_fraction)+1)/2
     for i, t_occ in enumerate(t_occs):
         i_occ = int(t_occ*fs_vent)
-        p_mus_block[i_occ : i_occ + int(fs_vent*60/rr)+1] = \
-            np.zeros((int(fs_vent *60/rr)+1, ))   # Add occlusion manouevres
+        p_mus_block[i_occ:i_occ + int(fs_vent*60/rr)+1] = \
+            np.zeros((int(fs_vent * 60/rr)+1, ))   # Add occlusion manouevres
 
     # Simulate up- and downslope dynamics of respiratory muscle pressure
     pattern_gen_mus = np.zeros((len(t_vent),))
@@ -253,7 +253,7 @@ def simulate_ventilator_with_occlusions(
                   & ((((t_occs+60/rr)*fs_vent+1)-i) > 0)):
             # Occlusion pressure results into negative airway pressure:
             dp_step = (-np.mean(p_block[i-int(2*fs_vent/3):int(i-1)])
-                       -p_dp[i-1])
+                       - p_dp[i-1])
             p_dp[i] = p_dp[i-1]+dp_step/(tau_dp_up)
         elif (p_block[i-1]-p_dp[i-1]) > 0:
             p_dp[i] = p_dp[i-1]+dp_step/tau_dp_up
@@ -262,9 +262,8 @@ def simulate_ventilator_with_occlusions(
 
     p_noise = np.random.normal(0, 2, size=(len(t_vent), ))
     p_noise_series = pd.Series(p_noise)
-    p_noise_ma = p_noise_series.rolling(fs_vent,
-                                 min_periods=1,
-                                 center=True).mean().values
+    p_noise_ma = p_noise_series.rolling(fs_vent, min_periods=1,
+                                        center=True).mean().values
     p_vent = peep + p_dp + p_noise_ma
 
     # Calculate flows and volumes from equation of motion:
@@ -331,11 +330,11 @@ def simulate_emg_with_occlusions(
         pat = pattern_gen_emg[i-1]
         fs_emg = emg_sample_rate
         if (emg_block[i-1]-pat) > 0:
-            pattern_gen_emg[i] = pat + ((emg_block[i-1] - pat)/
-                                        (tau_mus_up*fs_emg))
+            pattern_gen_emg[i] = pat + ((emg_block[i-1] - pat) /
+                                        (tau_mus_up * fs_emg))
         else:
-            pattern_gen_emg[i] = pat + ((emg_block[i-1] - pat)/
-                                        (tau_mus_down*fs_emg))
+            pattern_gen_emg[i] = pat + ((emg_block[i-1] - pat) /
+                                        (tau_mus_down * fs_emg))
 
     # make respiratory EMG component
     part_emg = pattern_gen_emg * np.random.normal(0, 2, size=(len(t_emg), ))
