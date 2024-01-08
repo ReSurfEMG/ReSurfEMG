@@ -115,4 +115,17 @@
 * Identical to tenth version, first major revision/version:
 
 	- created due to technical problems with pypi
-	
+
+## Release 0.2.0
+
+
+* Eleventh version, second major revision
+
+	- Refactoring of helper_functions in submodules organized per function
+		-   config
+		-   data_connector
+		-   helper_functions
+		-   machine_learning
+		-   postprocessing
+		-   preprocessing
+	- Refactor tests accordingly
