@@ -1,3 +1,10 @@
+"""
+Copyright 2022 Netherlands eScience Center and University of Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.
+
+This file contains functions to extract features from preprocessed EMG arrays.
+"""
+
 import collections
 import math
 import warnings
@@ -6,8 +13,9 @@ import scipy
 from scipy.signal import savgol_filter
 from scipy.stats import entropy
 import numpy as np
-from resurfemg.helper_functions.helper_functions import delay_embedding
+
 from ..preprocessing.envelope import running_smoother
+from ..helper_functions.helper_functions import delay_embedding
 
 
 def entropical(sig):
@@ -590,3 +598,47 @@ def entropy_maker(
         print('we defaulted to a slow unoptimized sample entropy')
         output = sampen(array)
     return output
+
+
+def snr_pseudo(
+        src_signal,
+        peaks,
+        baseline=np.array([]),
+):
+    """
+    Approximate the signal-to-noise ratio (SNR) of the signal based
+    on the peak height relative to the baseline.
+
+    :param signal: Signal to evaluate
+    :type signal: ~numpy.ndarray
+    :param peaks: list of individual peak indices
+    :type gate_peaks: ~list
+    :param signal: Signal to evaluate
+    :type baseline: ~numpy.ndarray
+
+
+    :returns: snr_peaks, the SNR per peak
+    :rtype: ~numpy.ndarray
+    """
+
+    if len(baseline) != len(src_signal):
+        baseline = np.zeros(
+            (len(src_signal), ))
+
+        baseline_w_emg = 5 * 2048  # window length
+        for idx in range(len(src_signal)):
+            start_i = max([0, idx-int(baseline_w_emg/2)])
+            end_i = min([len(src_signal), idx+int(baseline_w_emg/2)])
+            baseline[idx] = np.percentile(src_signal[start_i:end_i], 33)
+
+    peak_heights = np.zeros((len(peaks),))
+    noise_heights = np.zeros((len(peaks),))
+
+    for peak_nr, idx in enumerate(peaks):
+        peak_heights[peak_nr] = src_signal[idx]
+        start_i = max([0, idx-2048])
+        end_i = min([len(src_signal), idx+2048])
+        noise_heights[peak_nr] = np.median(baseline[start_i:end_i])
+
+    snr_peaks = np.divide(peak_heights, noise_heights)
+    return snr_peaks
