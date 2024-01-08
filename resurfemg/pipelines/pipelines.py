@@ -342,7 +342,7 @@ def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
         tolerance_percent=5
     )
     #  and do step for ICA
-    components = compute_ICA_two_comp(re_cut_file_data)
+    components = compute_ica_two_comp(re_cut_file_data)
     #     the picking step!
     if picker == 'peaks':
         emg = pick_more_peaks_array(components)
