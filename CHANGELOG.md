@@ -123,3 +123,16 @@
 	- changes in setup.py to accomodate conda package version format
 	- changes to getting started notebook and instructions
 	- required release now (11 October 2023) for JOSS paper 
+
+## Release 0.2.0
+
+* Eleventh version, second major revision
+
+	- Refactoring of helper_functions in submodules organized per function
+		-   config
+		-   data_connector
+		-   helper_functions
+		-   machine_learning
+		-   postprocessing
+		-   preprocessing
+	- Refactor tests accordingly

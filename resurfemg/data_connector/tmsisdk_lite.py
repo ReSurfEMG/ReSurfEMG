@@ -220,9 +220,9 @@ class Poly5Reader:
         # self.storage_rate=header_data[4]
         self.num_channels = header_data[6]//2
         self.num_samples = header_data[7]
-        self.start_time = datetime.datetime(header_data[8], header_data[9],
-                                            header_data[10], header_data[12],
-                                            header_data[13], header_data[14])
+        # self.start_time = datetime.datetime(header_data[8], header_data[9],
+        #                                     header_data[10], header_data[12],
+        #                                     header_data[13], header_data[14])
         self.num_data_blocks = header_data[15]
         self.num_samples_per_block = header_data[16]
         if magic_number != "b'POLY SAMPLE FILEversion 2.03\\r\\n\\x1a'":
