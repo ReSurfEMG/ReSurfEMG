@@ -305,3 +305,54 @@ def working_pipeline_exp(our_chosen_file):
     final_envelope_a = naive_rolling_rms(final_envelope_d, 300)
 
     return final_envelope_a
+
+
+def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
+    """
+    This is a pipeline to pre-process
+    an array of specific fixed dimensions
+    i.e. a three lead array into an EMG singal,
+    the function is legacy code, and most
+    processsing should be done with
+    :code:`multi_lead_type.working_pipeline_pre_ml_multi`
+    or :code:`multi_lead_type.working_pipeline_pre_ml_multi`
+    :param our_chosen_samples: the read EMG file arrays
+    :type our_chosen_samples: ~numpy.ndarray
+    :param picker: the picking strategy for independent components
+    :type picker: str
+    :returns: final_envelope_a
+    :rtype: ~numpy.ndarray
+    """
+    cut_file_data = bad_end_cutter_for_samples(
+        our_chosen_samples,
+        percent_to_cut=3,
+        tolerance_percent=5
+    )
+    bd_filtered_file_data = emg_bandpass_butter_sample(
+        cut_file_data,
+        5,
+        450,
+        2048,
+        output='sos'
+    )
+    # step for end-cutting again to get rid of filtering artifacts
+    re_cut_file_data = bad_end_cutter_for_samples(
+        bd_filtered_file_data,
+        percent_to_cut=3,
+        tolerance_percent=5
+    )
+    #  and do step for ICA
+    components = compute_ICA_two_comp(re_cut_file_data)
+    #     the picking step!
+    if picker == 'peaks':
+        emg = pick_more_peaks_array(components)
+    elif picker == 'heart':
+        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
+    else:
+        emg = pick_lowest_correlation_array(components, re_cut_file_data[0])
+        print("Please choose an exising picker i.e. peaks or hearts ")
+    # now process it in final steps
+    abs_values = abs(emg)
+    final_envelope_d = emg_highpass_butter(abs_values, 150, 2048)
+
+    return final_envelope_d
