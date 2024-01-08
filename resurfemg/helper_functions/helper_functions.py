@@ -5,11 +5,17 @@ This file contains general functions to support the functions in this
 repository
 """
 
-import numpy as np
+import os
 from collections import namedtuple
+import glob
+import numpy as np
 import textdistance
 import pandas as pd
 import scipy
+from ..data_connector.tmsisdk_lite import Poly5Reader
+from ..pipelines.pipelines import alternative_a_pipeline_multi
+from ..pipelines.pipelines import alternative_b_pipeline_multi
+from ..pipelines.pipelines import working_pipeline_pre_ml_multi
 
 
 class Range(namedtuple('RangeBase', 'start,end')):
@@ -327,3 +333,69 @@ def delay_embedding(data, emb_dim, lag=1):
     indices += np.arange(m).reshape((m, 1))
     matrix_vectors = data[indices]
     return matrix_vectors
+
+
+def save_preprocessed(array, out_fname, force):
+    """
+    This function is written to be called by the cli module.
+    It stores arrays in a directory.
+    """
+    if not force:
+        if os.path.isfile(out_fname):
+            return
+    try:
+        os.makedirs(os.path.dirname(out_fname))
+    except FileExistsError:
+        pass
+    np.save(out_fname, array, allow_pickle=False)
+
+
+def preprocess(
+    file_directory,
+    our_chosen_leads,
+    algorithm,
+    processed,
+    force=False
+):
+    """
+    This function is written to be called by the cli module.
+    The cli module supports command line pre-processing.
+    This function is currently written to accomodate Poly5 files types.
+    It can be refactored later.
+
+    :param file_directory: the directory with EMG files
+    :type file_directory: str
+    :param processed: the output directory
+    :type processed: str
+    :param our_chosen_leads: the leads selected for the pipeline to run over
+    :type our_chosen_leads: list
+
+    """
+    file_directory_list = glob.glob(
+        os.path.join(file_directory, '**/*.Poly5'),
+        recursive=True,
+    )
+    for file in file_directory_list:
+        reader = Poly5Reader(file)
+        if algorithm == 'alternative_a_pipeline_multi':
+            array = alternative_a_pipeline_multi(
+                reader.samples,
+                our_chosen_leads,
+                picker='heart',
+            )
+        elif algorithm == 'alternative_b_pipeline_multi':
+            array = alternative_b_pipeline_multi(
+                reader.samples,
+                our_chosen_leads,
+                picker='heart',
+            )
+
+        else:
+            array = working_pipeline_pre_ml_multi(
+                reader.samples,
+                our_chosen_leads,
+                picker='heart',
+            )
+        rel_fname = os.path.relpath(file, file_directory)
+        out_fname = os.path.join(processed, rel_fname)
+        save_preprocessed(array, out_fname, force)
