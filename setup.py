@@ -51,7 +51,7 @@ def run_and_log(cmd, **kwargs):
     return subprocess.call(cmd, **kwargs)
 
 
-def translate_reqs(packages):
+def translate_reqs(packages, double_equals=False):
     re = importlib.import_module('re')
     tr = {
         'codestyle': 'pycodestyle',
@@ -62,7 +62,8 @@ def translate_reqs(packages):
 
     for p in packages:
         p = re.sub(r'\s+', '', p)
-        p = re.sub('=+', '=', p)
+        if not double_equals:
+            p = re.sub('=+', '=', p)
         parts = re.split(r'[ <>=]', p, maxsplit=1)
         name = parts[0]
         version = p[len(name):]
@@ -340,7 +341,7 @@ class InstallDev(InstallCommand):
                 name,
                 'python=={}'.format('.'.join(map(str, sys.version_info[:2]))),
                 'conda=={}'.format(find_conda()),
-            ] + translate_reqs(self.distribution.extras_require['dev'])
+            ] + translate_reqs(self.distribution.extras_require['dev'], True)
             if run_and_log(cmd):
                 sys.stderr.write('Couldn\'t install {} package\n'.format(name))
                 raise SystemExit(6)
@@ -382,6 +383,7 @@ class GenerateCondaYaml(Command):
                 'build': ['setuptools'],
                 'run': [python] + translate_reqs(
                     self.distribution.install_requires,
+                    True,
                 )
             },
             'test': {
@@ -464,9 +466,11 @@ class SdistConda(Command):
 
         self.distribution.install_requires = translate_reqs(
             self.distribution.install_requires,
+            True,
         )
         self.distribution.tests_require = translate_reqs(
             self.distribution.tests_require,
+            True,
         )
         bdist_egg = BDistEgg(self.distribution)
         bdist_egg.initialize_options()
