@@ -44,8 +44,7 @@ class Range(namedtuple('RangeBase', 'start,end')):
         """Returns :code:`True` if this range precedes :code:`other` range.
         :param other: Another range to compare this one to
         :type other: ~resurfemg.helper_functions.Range
-        :returns: :code:`True` if this range strictly precedes another
-            range
+        :returns: :code:`True` if this range strictly precedes another range
         :rtype: bool
         """
         return self.end < other.start
