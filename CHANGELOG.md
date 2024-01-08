@@ -115,9 +115,16 @@
 * Identical to tenth version, first major revision/version:
 
 	- created due to technical problems with pypi
+	
+## Release 0.1.3
+
+* Version 0.1.3
+
+	- changes in setup.py to accomodate conda package version format
+	- changes to getting started notebook and instructions
+	- required release now (11 October 2023) for JOSS paper 
 
 ## Release 0.2.0
-
 
 * Eleventh version, second major revision
 
