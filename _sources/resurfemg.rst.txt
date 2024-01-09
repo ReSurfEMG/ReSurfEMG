@@ -1,19 +1,20 @@
 resurfemg package
 =================
 
-Submodules
-----------
+Subpackages
+-----------
 
 .. toctree::
    :maxdepth: 4
 
    resurfemg.cli
    resurfemg.config
-   resurfemg.converter_functions
+   resurfemg.data_connector
    resurfemg.helper_functions
-   resurfemg.ml
-   resurfemg.multi_lead_type
-   resurfemg.tmsisdk_lite
+   resurfemg.pipelines
+   resurfemg.postprocessing
+   resurfemg.preprocessing
+   resurfemg.visualization
 
 Module contents
 ---------------

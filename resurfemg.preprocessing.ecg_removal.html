@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>resurfemg.preprocessing.ecg_removal module &#8212; resurfemg 0.1.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=601dbdee" />
+    <script src="_static/documentation_options.js?v=360bc84d"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="resurfemg.preprocessing.envelope module" href="resurfemg.preprocessing.envelope.html" />
+    <link rel="prev" title="resurfemg.preprocessing package" href="resurfemg.preprocessing.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.preprocessing.envelope.html" title="resurfemg.preprocessing.envelope module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.preprocessing.html" title="resurfemg.preprocessing package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.1.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.preprocessing.html" accesskey="U">resurfemg.preprocessing package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.preprocessing.ecg_removal module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-resurfemg.preprocessing.ecg_removal">
+<span id="resurfemg-preprocessing-ecg-removal-module"></span><h1>resurfemg.preprocessing.ecg_removal module<a class="headerlink" href="#module-resurfemg.preprocessing.ecg_removal" title="Link to this heading">¶</a></h1>
+<p>Copyright 2022 Netherlands eScience Center and University of Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
+<dl class="simple">
+<dt>This file contains functions to eliminate ECG artifacts from</dt><dd><p>with various EMG arrays.</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.preprocessing.ecg_removal.compute_ICA_n_comp">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.ecg_removal.</span></span><span class="sig-name descname"><span class="pre">compute_ICA_n_comp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_all_leads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired_leads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">2)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.ecg_removal.compute_ICA_n_comp" title="Link to this definition">¶</a></dt>
+<dd><p>A function that performs an independant component analysis
+(ICA) meant for EMG data that includes stacked arrays,
+there should be at least two arrays but there can be more.
+This differs from helper_functions.compute_ICA_two_comp_multi
+because you can get n leads back instead of only two.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emg_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – Original signal array with three or more layers</p></li>
+<li><p><strong>use_all_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – True if all leads used, otherwise specify leads</p></li>
+<li><p><strong>desired_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a>) – tuple of leads to use starting from 0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Arrays of independent components (ECG-like and EMG)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.preprocessing.ecg_removal.compute_ICA_n_comp_selective_zeroing">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.ecg_removal.</span></span><span class="sig-name descname"><span class="pre">compute_ICA_n_comp_selective_zeroing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_lead_to_remove</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_all_leads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired_leads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">2)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.ecg_removal.compute_ICA_n_comp_selective_zeroing" title="Link to this definition">¶</a></dt>
+<dd><p>A function that performs an independant component analysis
+(ICA) meant for EMG data that includes stacked arrays,
+there should be at least two arrays but there can be more.
+In this ICA one lead is put to zero before reconstruction.
+This should probably be the ECG lead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emg_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – Original signal array with three or more layers</p></li>
+<li><p><strong>ecg_lead_to_remove</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Lead number counting from zero to get rid of</p></li>
+<li><p><strong>use_all_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – True if all leads used, otherwise specify leads</p></li>
+<li><p><strong>desired_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a>) – tuple of leads to use starting from 0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Arrays of independent components (ECG-like and EMG)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.preprocessing.ecg_removal.compute_ICA_two_comp_selective">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.ecg_removal.</span></span><span class="sig-name descname"><span class="pre">compute_ICA_two_comp_selective</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_all_leads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired_leads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">2)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.ecg_removal.compute_ICA_two_comp_selective" title="Link to this definition">¶</a></dt>
+<dd><p>A function that performs an independant component analysis
+(ICA) meant for EMG data that includes stacked arrays,
+there should be at least two arrays but there can be more.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emg_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – Original signal array with three or more layers</p></li>
+<li><p><strong>use_all_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – True if all leads used, otherwise specify leads</p></li>
+<li><p><strong>desired_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a>) – tuple of leads to use starting from 0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Two arrays of independent components (ECG-like and EMG)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.preprocessing.ecg_removal.compute_ica_two_comp">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.ecg_removal.</span></span><span class="sig-name descname"><span class="pre">compute_ica_two_comp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_samples</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.ecg_removal.compute_ica_two_comp" title="Link to this definition">¶</a></dt>
+<dd><p>A function that performs an independent component analysis
+(ICA) meant for EMG data that includes three stacked arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>emg_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – Original signal array with three layers</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Two arrays of independent components (ECG-like and EMG)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.preprocessing.ecg_removal.compute_ica_two_comp_multi">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.ecg_removal.</span></span><span class="sig-name descname"><span class="pre">compute_ica_two_comp_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_samples</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.ecg_removal.compute_ica_two_comp_multi" title="Link to this definition">¶</a></dt>
+<dd><p>A function that performs an independant component analysis
+(ICA) meant for EMG data that includes stacked arrays,
+there should be at least two arrays but there can be more.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>emg_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – Original signal array with three or more layers</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Two arrays of independent components (ECG-like and EMG)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.preprocessing.ecg_removal.find_peaks_in_ecg_signal">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.ecg_removal.</span></span><span class="sig-name descname"><span class="pre">find_peaks_in_ecg_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ecg_signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_border_percent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.ecg_removal.find_peaks_in_ecg_signal" title="Link to this definition">¶</a></dt>
+<dd><p>This function assumes you have isolated an ecg-like signal with
+QRS peaks “higher” (or lower) than ST waves.
+In this case it can be applied to return an array of
+ECG peak locations. NB: This function assumes that the ECG
+signal has already been through a bandpass or low-pass filter
+or has little baseline drift.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ecg_signal</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – frequency array sampled at in Hertz</p></li>
+<li><p><strong>low_border_percent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – percentage max below which no peaks expected</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple first element peak locations, next a dictionary of info</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.preprocessing.ecg_removal.gating">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.ecg_removal.</span></span><span class="sig-name descname"><span class="pre">gating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate_peaks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">205</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.ecg_removal.gating" title="Link to this definition">¶</a></dt>
+<dd><p>Eliminate peaks (e.g. QRS) from src_signal using gates
+of width gate_width. The gate either filled by zeros or interpolation.
+The filling method for the gate is encoded as follows:
+0: Filled with zeros
+1: Interpolation samples before and after
+2: Fill with average of prior segment if exists
+otherwise fill with post segment
+3: Fill with running average of RMS (default)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_signal</strong> – Signal to process</p></li>
+<li><p><strong>gate_peaks</strong> (<em>~list</em>) – list of individual peak index places to be gated</p></li>
+<li><p><strong>gate_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – width of the gate</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – filling method of gate</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>src_signal_gated, the gated result</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.preprocessing.ecg_removal.pick_highest_correlation_array">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.ecg_removal.</span></span><span class="sig-name descname"><span class="pre">pick_highest_correlation_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_lead</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.ecg_removal.pick_highest_correlation_array" title="Link to this definition">¶</a></dt>
+<dd><p>Here we have a function that takes a tuple with the two parts
+of ICA and the array containing the ECG recording, and finds the
+ICA component with the highest similarity to the ECG.
+Data should not have been finally filtered to envelope level</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>components_tuple</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a><em>, </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a><em>]</em>) – tuple of two arrays representing different signals</p></li>
+<li><p><strong>ecg_lead</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>numpy.ndarray</em></a>) – array containing the ECG recording</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array with the highest correlation coefficient
+to the ECG lead (should usually be the  ECG)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.preprocessing.ecg_removal.pick_highest_correlation_array_multi">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.ecg_removal.</span></span><span class="sig-name descname"><span class="pre">pick_highest_correlation_array_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_lead</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.ecg_removal.pick_highest_correlation_array_multi" title="Link to this definition">¶</a></dt>
+<dd><p>Here we have a function that takes a tuple with n parts
+of ICA and the array defined by the user as the ECG recording,
+and finds the ICA component with the highest similarity to the ECG.
+Data should not have been finally filtered to envelope level</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>components</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – n-dimensional array representing different components.
+Each row is a component.</p></li>
+<li><p><strong>ecg_lead</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>numpy.ndarray</em></a>) – array containing the ECG recording</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Index of the array with the highest correlation coefficient
+to the ECG lead (should usually be the  ECG)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.preprocessing.ecg_removal.pick_lowest_correlation_array">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.ecg_removal.</span></span><span class="sig-name descname"><span class="pre">pick_lowest_correlation_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_lead</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.ecg_removal.pick_lowest_correlation_array" title="Link to this definition">¶</a></dt>
+<dd><p>Here we have a function that takes a tuple with the two parts
+of ICA and the array containing the ECG recording, and finds the
+ICA component with the lowest similarity to the ECG.
+Data should not have been finally filtered to envelope level</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>components_tuple</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a><em>, </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a><em>]</em>) – tuple of two arrays representing different signals</p></li>
+<li><p><strong>ecg_lead</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>numpy.ndarray</em></a>) – array containing the ECG recording</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array with the lowest correlation coefficient
+to the ECG lead (should usually be the EMG as opposed to ECG)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.preprocessing.ecg_removal.pick_more_peaks_array">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.ecg_removal.</span></span><span class="sig-name descname"><span class="pre">pick_more_peaks_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.ecg_removal.pick_more_peaks_array" title="Link to this definition">¶</a></dt>
+<dd><p>Here we have a function that takes a tuple with the two parts
+of ICA, and finds the one with more peaks and anti-peaks.  The EMG
+if without a final envelope will have more peaks</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Data should not have been finally filtered to envelope level</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>components_tuple</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a><em>, </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a><em>]</em>) – tuple of two arrays representing different signals</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array with more peaks (should usually be the EMG as
+opposed to ECG)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">resurfemg.preprocessing.ecg_removal module</a><ul>
+<li><a class="reference internal" href="#resurfemg.preprocessing.ecg_removal.compute_ICA_n_comp"><code class="docutils literal notranslate"><span class="pre">compute_ICA_n_comp()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.preprocessing.ecg_removal.compute_ICA_n_comp_selective_zeroing"><code class="docutils literal notranslate"><span class="pre">compute_ICA_n_comp_selective_zeroing()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.preprocessing.ecg_removal.compute_ICA_two_comp_selective"><code class="docutils literal notranslate"><span class="pre">compute_ICA_two_comp_selective()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.preprocessing.ecg_removal.compute_ica_two_comp"><code class="docutils literal notranslate"><span class="pre">compute_ica_two_comp()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.preprocessing.ecg_removal.compute_ica_two_comp_multi"><code class="docutils literal notranslate"><span class="pre">compute_ica_two_comp_multi()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.preprocessing.ecg_removal.find_peaks_in_ecg_signal"><code class="docutils literal notranslate"><span class="pre">find_peaks_in_ecg_signal()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.preprocessing.ecg_removal.gating"><code class="docutils literal notranslate"><span class="pre">gating()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.preprocessing.ecg_removal.pick_highest_correlation_array"><code class="docutils literal notranslate"><span class="pre">pick_highest_correlation_array()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.preprocessing.ecg_removal.pick_highest_correlation_array_multi"><code class="docutils literal notranslate"><span class="pre">pick_highest_correlation_array_multi()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.preprocessing.ecg_removal.pick_lowest_correlation_array"><code class="docutils literal notranslate"><span class="pre">pick_lowest_correlation_array()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.preprocessing.ecg_removal.pick_more_peaks_array"><code class="docutils literal notranslate"><span class="pre">pick_more_peaks_array()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="resurfemg.preprocessing.html"
+                          title="previous chapter">resurfemg.preprocessing package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="resurfemg.preprocessing.envelope.html"
+                          title="next chapter">resurfemg.preprocessing.envelope module</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/resurfemg.preprocessing.ecg_removal.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.preprocessing.envelope.html" title="resurfemg.preprocessing.envelope module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.preprocessing.html" title="resurfemg.preprocessing package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.1.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.preprocessing.html" >resurfemg.preprocessing package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.preprocessing.ecg_removal module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2022, c.moore@esciencecenter.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

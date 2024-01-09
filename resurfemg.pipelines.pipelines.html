@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>resurfemg.pipelines.pipelines module &#8212; resurfemg 0.1.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=601dbdee" />
+    <script src="_static/documentation_options.js?v=360bc84d"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="resurfemg.postprocessing package" href="resurfemg.postprocessing.html" />
+    <link rel="prev" title="resurfemg.pipelines package" href="resurfemg.pipelines.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.postprocessing.html" title="resurfemg.postprocessing package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.pipelines.html" title="resurfemg.pipelines package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.1.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.pipelines.html" accesskey="U">resurfemg.pipelines package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.pipelines.pipelines module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-resurfemg.pipelines.pipelines">
+<span id="resurfemg-pipelines-pipelines-module"></span><h1>resurfemg.pipelines.pipelines module<a class="headerlink" href="#module-resurfemg.pipelines.pipelines" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.pipelines.pipelines.alternative_a_pipeline_multi">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.pipelines.pipelines.</span></span><span class="sig-name descname"><span class="pre">alternative_a_pipeline_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">our_chosen_leads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'heart'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.pipelines.pipelines.alternative_a_pipeline_multi" title="Link to this definition">¶</a></dt>
+<dd><p>This is a pipeline to pre-process
+an array of non-specific dimensions
+e.g. a five lead array into an EMG singal,
+of which we want leads 0 to 2 included.
+Note it only differs in the bandpass values
+from working_pipeline_pre_ml_multi</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
+<li><p><strong>our_chosen_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a>) – the read EMG file arrays that should be included</p></li>
+<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the picking strategy for independant components</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>final_envelope_a</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.pipelines.pipelines.alternative_b_pipeline_multi">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.pipelines.pipelines.</span></span><span class="sig-name descname"><span class="pre">alternative_b_pipeline_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">our_chosen_leads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'heart'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.pipelines.pipelines.alternative_b_pipeline_multi" title="Link to this definition">¶</a></dt>
+<dd><p>This is a pipeline to pre-process
+an array of non-specific dimensions
+e.g. a five lead array into an EMG singal,
+of which we want leads 0 to 2 included.
+Note it only differs in the bandpass values
+from working_pipeline_pre_ml_multi or
+alternative_a_pipeline_multi</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
+<li><p><strong>our_chosen_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a>) – the read EMG file arrays that should be included</p></li>
+<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the picking strategy for independant components</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>final_envelope_a</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.pipelines.pipelines.working_pipe_multi">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.pipelines.pipelines.</span></span><span class="sig-name descname"><span class="pre">working_pipe_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'heart'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">2)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.pipelines.pipelines.working_pipe_multi" title="Link to this definition">¶</a></dt>
+<dd><p>This is a pipeline to pre-process
+an array of any dimenstions (number of leads)
+into an EMG singal, you need to pick the leads</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
+<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the picking strategy for independant components</p></li>
+<li><p><strong>selected</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a>) – the leads selected for the pipeline to run over</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>final_envelope_a</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.pipelines.pipelines.working_pipeline_exp">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.pipelines.pipelines.</span></span><span class="sig-name descname"><span class="pre">working_pipeline_exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.pipelines.pipelines.working_pipeline_exp" title="Link to this definition">¶</a></dt>
+<dd><p>This function is legacy.
+It produces a filtered respiratory EMG signal from a
+3 lead sEMG file. A better
+option is a corresponding function in multi_lead_type
+The inputs are <code class="code docutils literal notranslate"><span class="pre">our_chosen_file</span></code> which we
+give the function as a string of filename.  The output is the
+processed EMG signal filtered and seperated from ECG components.
+The algorithm to pick out the EMG here is by having
+more peaks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>our_chosen_file</strong> (<em>Poly5Reader</em>) – Poly5 file</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>final_envelope_a</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.pipelines.pipelines.working_pipeline_pre_ml">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.pipelines.pipelines.</span></span><span class="sig-name descname"><span class="pre">working_pipeline_pre_ml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'heart'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.pipelines.pipelines.working_pipeline_pre_ml" title="Link to this definition">¶</a></dt>
+<dd><p>This is a pipeline to pre-process
+an array of specific fixed dimensions
+i.e. a three lead array into an EMG singal,
+the function is legacy code, and most
+processsing should be done with
+<code class="code docutils literal notranslate"><span class="pre">multi_lead_type.working_pipeline_pre_ml_multi</span></code>
+or <code class="code docutils literal notranslate"><span class="pre">multi_lead_type.working_pipeline_pre_ml_multi</span></code>
+:param our_chosen_samples: the read EMG file arrays
+:type our_chosen_samples: ~numpy.ndarray
+:param picker: the picking strategy for independent components
+:type picker: str
+:returns: final_envelope_a
+:rtype: ~numpy.ndarray</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.pipelines.pipelines.working_pipeline_pre_ml_multi">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.pipelines.pipelines.</span></span><span class="sig-name descname"><span class="pre">working_pipeline_pre_ml_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_chosen_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">our_chosen_leads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'heart'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.pipelines.pipelines.working_pipeline_pre_ml_multi" title="Link to this definition">¶</a></dt>
+<dd><p>This is a pipeline to pre-process
+an array of non-specific dimensions
+e.g. a five lead array into an EMG singal,
+of which we want leads 0 to 2 included</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>our_chosen_samples</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – the read EMG file arrays</p></li>
+<li><p><strong>our_chosen_leads</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a>) – the read EMG file arrays that should be included</p></li>
+<li><p><strong>picker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the picking strategy for independant components</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>final_envelope_a</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">resurfemg.pipelines.pipelines module</a><ul>
+<li><a class="reference internal" href="#resurfemg.pipelines.pipelines.alternative_a_pipeline_multi"><code class="docutils literal notranslate"><span class="pre">alternative_a_pipeline_multi()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.pipelines.pipelines.alternative_b_pipeline_multi"><code class="docutils literal notranslate"><span class="pre">alternative_b_pipeline_multi()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.pipelines.pipelines.working_pipe_multi"><code class="docutils literal notranslate"><span class="pre">working_pipe_multi()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.pipelines.pipelines.working_pipeline_exp"><code class="docutils literal notranslate"><span class="pre">working_pipeline_exp()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.pipelines.pipelines.working_pipeline_pre_ml"><code class="docutils literal notranslate"><span class="pre">working_pipeline_pre_ml()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.pipelines.pipelines.working_pipeline_pre_ml_multi"><code class="docutils literal notranslate"><span class="pre">working_pipeline_pre_ml_multi()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="resurfemg.pipelines.html"
+                          title="previous chapter">resurfemg.pipelines package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="resurfemg.postprocessing.html"
+                          title="next chapter">resurfemg.postprocessing package</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/resurfemg.pipelines.pipelines.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.postprocessing.html" title="resurfemg.postprocessing package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.pipelines.html" title="resurfemg.pipelines package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.1.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.pipelines.html" >resurfemg.pipelines package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.pipelines.pipelines module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2022, c.moore@esciencecenter.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

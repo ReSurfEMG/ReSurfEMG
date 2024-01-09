@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>resurfemg.converter_functions module &#8212; resurfemg 0.1.3 documentation</title>
+    <title>resurfemg.data_connector.converter_functions module &#8212; resurfemg 0.1.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=601dbdee" />
     <script src="_static/documentation_options.js?v=360bc84d"></script>
@@ -13,8 +13,8 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="resurfemg.helper_functions module" href="resurfemg.helper_functions.html" />
-    <link rel="prev" title="resurfemg.config module" href="resurfemg.config.html" /> 
+    <link rel="next" title="resurfemg.data_connector.tmsisdk_lite module" href="resurfemg.data_connector.tmsisdk_lite.html" />
+    <link rel="prev" title="resurfemg.data_connector package" href="resurfemg.data_connector.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -26,15 +26,16 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="resurfemg.helper_functions.html" title="resurfemg.helper_functions module"
+          <a href="resurfemg.data_connector.tmsisdk_lite.html" title="resurfemg.data_connector.tmsisdk_lite module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="resurfemg.config.html" title="resurfemg.config module"
+          <a href="resurfemg.data_connector.html" title="resurfemg.data_connector package"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.1.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="resurfemg.html" accesskey="U">resurfemg package</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">resurfemg.converter_functions module</a></li> 
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.data_connector.html" accesskey="U">resurfemg.data_connector package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.data_connector.converter_functions module</a></li> 
       </ul>
     </div>  
 
@@ -43,16 +44,16 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="module-resurfemg.converter_functions">
-<span id="resurfemg-converter-functions-module"></span><h1>resurfemg.converter_functions module<a class="headerlink" href="#module-resurfemg.converter_functions" title="Link to this heading">¶</a></h1>
+  <section id="module-resurfemg.data_connector.converter_functions">
+<span id="resurfemg-data-connector-converter-functions-module"></span><h1>resurfemg.data_connector.converter_functions module<a class="headerlink" href="#module-resurfemg.data_connector.converter_functions" title="Link to this heading">¶</a></h1>
 <p>Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
 <p>This file contains functions to work with various EMG file types
 from various hardware/software combinations, and convert them down to
 an array that can be further processed with helper_functions or other modules.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.converter_functions.csv_from_jkmn_to_array">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">csv_from_jkmn_to_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.csv_from_jkmn_to_array" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="resurfemg.data_connector.converter_functions.csv_from_jkmn_to_array">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.converter_functions.</span></span><span class="sig-name descname"><span class="pre">csv_from_jkmn_to_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.converter_functions.csv_from_jkmn_to_array" title="Link to this definition">¶</a></dt>
 <dd><p>This function takes a file from the Jonkman
 lab in csv format and changes it
 into the shape the library functions work on.</p>
@@ -70,8 +71,8 @@ into the shape the library functions work on.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.converter_functions.dvrmn_csv_freq_find">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">dvrmn_csv_freq_find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.dvrmn_csv_freq_find" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="resurfemg.data_connector.converter_functions.dvrmn_csv_freq_find">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.converter_functions.</span></span><span class="sig-name descname"><span class="pre">dvrmn_csv_freq_find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.converter_functions.dvrmn_csv_freq_find" title="Link to this definition">¶</a></dt>
 <dd><p>This is means to extract the frequency of a Duiverman
 type csv of EMG. Note this data may be resampled down by a
 factor of 10.</p>
@@ -89,8 +90,8 @@ factor of 10.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.converter_functions.dvrmn_csv_to_array">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">dvrmn_csv_to_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.dvrmn_csv_to_array" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="resurfemg.data_connector.converter_functions.dvrmn_csv_to_array">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.converter_functions.</span></span><span class="sig-name descname"><span class="pre">dvrmn_csv_to_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.converter_functions.dvrmn_csv_to_array" title="Link to this definition">¶</a></dt>
 <dd><p>This transformed an already preprocessed csv from the Duiverman lab
 into an EMG in the format our other functions can work on it. Note that
 some preprocessing steps are already applied so pipelines may
@@ -109,8 +110,8 @@ need adjusting.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.converter_functions.matlab5_jkmn_to_array">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">matlab5_jkmn_to_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.matlab5_jkmn_to_array" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="resurfemg.data_connector.converter_functions.matlab5_jkmn_to_array">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.converter_functions.</span></span><span class="sig-name descname"><span class="pre">matlab5_jkmn_to_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.converter_functions.matlab5_jkmn_to_array" title="Link to this definition">¶</a></dt>
 <dd><p>This file reads matlab5 files as produced in the Jonkman
 laboratory, on the Biopac system
 and returns arrays in the format and shape
@@ -129,8 +130,8 @@ our functions, those in helper_functions work on.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.converter_functions.poly5unpad">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">poly5unpad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_be_read</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.poly5unpad" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="resurfemg.data_connector.converter_functions.poly5unpad">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.converter_functions.</span></span><span class="sig-name descname"><span class="pre">poly5unpad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">to_be_read</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.converter_functions.poly5unpad" title="Link to this definition">¶</a></dt>
 <dd><p>This function converts a Poly5 read into an array without
 padding. Note there is a quirk in the python Poly5 interface that
 pads with zeros on the end.</p>
@@ -148,8 +149,8 @@ pads with zeros on the end.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.converter_functions.poly_dvrman">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">poly_dvrman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.poly_dvrman" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="resurfemg.data_connector.converter_functions.poly_dvrman">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.converter_functions.</span></span><span class="sig-name descname"><span class="pre">poly_dvrman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.converter_functions.poly_dvrman" title="Link to this definition">¶</a></dt>
 <dd><p>This is a function to read in Duiverman type Poly5 files,
 which has 18 layers/pseudo-leads,
 and return an array of the twelve  unprocessed leads
@@ -177,8 +178,8 @@ EMG data, then the following leads
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.converter_functions.save_j_as_np">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">save_j_as_np</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">made</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.save_j_as_np" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="resurfemg.data_connector.converter_functions.save_j_as_np">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.converter_functions.</span></span><span class="sig-name descname"><span class="pre">save_j_as_np</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">made</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.converter_functions.save_j_as_np" title="Link to this definition">¶</a></dt>
 <dd><p>This is an implementation of the save_j_as_np_single function in the
 same module which can be run from the commmand-line cli module.</p>
 <dl class="field-list simple">
@@ -193,8 +194,8 @@ same module which can be run from the commmand-line cli module.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.converter_functions.save_j_as_np_single">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.converter_functions.</span></span><span class="sig-name descname"><span class="pre">save_j_as_np_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.converter_functions.save_j_as_np_single" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="resurfemg.data_connector.converter_functions.save_j_as_np_single">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.converter_functions.</span></span><span class="sig-name descname"><span class="pre">save_j_as_np_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.converter_functions.save_j_as_np_single" title="Link to this definition">¶</a></dt>
 <dd><p>This function takes a file in csv format
 where teh sequence is top to bottom
 and changes it
@@ -225,15 +226,15 @@ then saves it as a numpy file</p>
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">resurfemg.converter_functions module</a><ul>
-<li><a class="reference internal" href="#resurfemg.converter_functions.csv_from_jkmn_to_array"><code class="docutils literal notranslate"><span class="pre">csv_from_jkmn_to_array()</span></code></a></li>
-<li><a class="reference internal" href="#resurfemg.converter_functions.dvrmn_csv_freq_find"><code class="docutils literal notranslate"><span class="pre">dvrmn_csv_freq_find()</span></code></a></li>
-<li><a class="reference internal" href="#resurfemg.converter_functions.dvrmn_csv_to_array"><code class="docutils literal notranslate"><span class="pre">dvrmn_csv_to_array()</span></code></a></li>
-<li><a class="reference internal" href="#resurfemg.converter_functions.matlab5_jkmn_to_array"><code class="docutils literal notranslate"><span class="pre">matlab5_jkmn_to_array()</span></code></a></li>
-<li><a class="reference internal" href="#resurfemg.converter_functions.poly5unpad"><code class="docutils literal notranslate"><span class="pre">poly5unpad()</span></code></a></li>
-<li><a class="reference internal" href="#resurfemg.converter_functions.poly_dvrman"><code class="docutils literal notranslate"><span class="pre">poly_dvrman()</span></code></a></li>
-<li><a class="reference internal" href="#resurfemg.converter_functions.save_j_as_np"><code class="docutils literal notranslate"><span class="pre">save_j_as_np()</span></code></a></li>
-<li><a class="reference internal" href="#resurfemg.converter_functions.save_j_as_np_single"><code class="docutils literal notranslate"><span class="pre">save_j_as_np_single()</span></code></a></li>
+<li><a class="reference internal" href="#">resurfemg.data_connector.converter_functions module</a><ul>
+<li><a class="reference internal" href="#resurfemg.data_connector.converter_functions.csv_from_jkmn_to_array"><code class="docutils literal notranslate"><span class="pre">csv_from_jkmn_to_array()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.converter_functions.dvrmn_csv_freq_find"><code class="docutils literal notranslate"><span class="pre">dvrmn_csv_freq_find()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.converter_functions.dvrmn_csv_to_array"><code class="docutils literal notranslate"><span class="pre">dvrmn_csv_to_array()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.converter_functions.matlab5_jkmn_to_array"><code class="docutils literal notranslate"><span class="pre">matlab5_jkmn_to_array()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.converter_functions.poly5unpad"><code class="docutils literal notranslate"><span class="pre">poly5unpad()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.converter_functions.poly_dvrman"><code class="docutils literal notranslate"><span class="pre">poly_dvrman()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.converter_functions.save_j_as_np"><code class="docutils literal notranslate"><span class="pre">save_j_as_np()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.converter_functions.save_j_as_np_single"><code class="docutils literal notranslate"><span class="pre">save_j_as_np_single()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -241,18 +242,18 @@ then saves it as a numpy file</p>
   </div>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="resurfemg.config.html"
-                          title="previous chapter">resurfemg.config module</a></p>
+    <p class="topless"><a href="resurfemg.data_connector.html"
+                          title="previous chapter">resurfemg.data_connector package</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="resurfemg.helper_functions.html"
-                          title="next chapter">resurfemg.helper_functions module</a></p>
+    <p class="topless"><a href="resurfemg.data_connector.tmsisdk_lite.html"
+                          title="next chapter">resurfemg.data_connector.tmsisdk_lite module</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/resurfemg.converter_functions.rst.txt"
+      <li><a href="_sources/resurfemg.data_connector.converter_functions.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -280,15 +281,16 @@ then saves it as a numpy file</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="resurfemg.helper_functions.html" title="resurfemg.helper_functions module"
+          <a href="resurfemg.data_connector.tmsisdk_lite.html" title="resurfemg.data_connector.tmsisdk_lite module"
              >next</a> |</li>
         <li class="right" >
-          <a href="resurfemg.config.html" title="resurfemg.config module"
+          <a href="resurfemg.data_connector.html" title="resurfemg.data_connector package"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.1.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">resurfemg.converter_functions module</a></li> 
+          <li class="nav-item nav-item-3"><a href="resurfemg.data_connector.html" >resurfemg.data_connector package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.data_connector.converter_functions module</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

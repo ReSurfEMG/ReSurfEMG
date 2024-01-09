@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>resurfemg.postprocessing.features module &#8212; resurfemg 0.1.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=601dbdee" />
+    <script src="_static/documentation_options.js?v=360bc84d"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="resurfemg.preprocessing package" href="resurfemg.preprocessing.html" />
+    <link rel="prev" title="resurfemg.postprocessing package" href="resurfemg.postprocessing.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.preprocessing.html" title="resurfemg.preprocessing package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.postprocessing.html" title="resurfemg.postprocessing package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.1.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.postprocessing.html" accesskey="U">resurfemg.postprocessing package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.postprocessing.features module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-resurfemg.postprocessing.features">
+<span id="resurfemg-postprocessing-features-module"></span><h1>resurfemg.postprocessing.features module<a class="headerlink" href="#module-resurfemg.postprocessing.features" title="Link to this heading">¶</a></h1>
+<p>Copyright 2022 Netherlands eScience Center and University of Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
+<p>This file contains functions to extract features from preprocessed EMG arrays.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.area_under_curve">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">area_under_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_curve</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">70</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.area_under_curve" title="Link to this definition">¶</a></dt>
+<dd><p>This algorithm should be applied to breaths longer than 60 values
+on an index. The mid_savgol assumes a parabolic fit. It is
+recommended to test a smoothing algorithm first, apply,
+then run the area_under the curve with none for smooth_algortihm.
+If a cutoff of the curve before it hits bottom is desired then a value
+other than zero must be in end_curve variable. This variable
+should be written from 0 to 100 for the percentage of the max value
+at which to cut off after the peak.
+:param array: an array e.g. single lead EMG recording
+:type array: np.array
+:param start_index: which index number the breath starts on
+:type start_index: int
+:param end_index: which index number the breath ends on
+:type end_index: int
+:param end_curve: percentage of peak value to stop summing at
+:type end_curve: float
+:param smooth_algorithm: algorithm for smoothing
+:type smooth_algorithm: str
+:returns: area; area under the curve
+:rtype: float</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.calc_closed_sampent">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">calc_closed_sampent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_vecs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.calc_closed_sampent" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.calc_open_sampent">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">calc_open_sampent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_vecs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.calc_open_sampent" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.entropical">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">entropical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.entropical" title="Link to this definition">¶</a></dt>
+<dd><p>This function computes something close to certain type of entropy
+of a series signal array.  Input is sig, the signal, and output is an
+array of entropy measurements. The function can be used inside a generator
+to read over slices. Note it is not a true entropy, and works best with
+very small numbers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sig</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – array containin the signal</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>number for an entropy-like signal using math.log w/base 2</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.entropy_maker">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">entropy_maker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sample_entropy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.entropy_maker" title="Link to this definition">¶</a></dt>
+<dd><p>The following code allows a user to input an array and calculate either
+a time-series specific entropy i.e. the nolds or a more general
+Shannon entropy as calculated in scipy.
+It calls entropy functions in the file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.entropy_scipy">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">entropy_scipy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sli</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.entropy_scipy" title="Link to this definition">¶</a></dt>
+<dd><p>This function wraps scipy.stats entropy  (which is a Shannon entropy)
+for use in the resurfemg library, it can be used in a slice iterator
+as a drop-in substitute for the hf.entropical but it is a true entropy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sli</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – array</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>entropy_count</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.find_peak_in_breath">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">find_peak_in_breath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.find_peak_in_breath" title="Link to this definition">¶</a></dt>
+<dd><p>This algorithm locates peaks on a breath. It is assumed
+an array of absolute values for electrophysiological signals
+will be used as the array. The mid_savgol assumes a parabolic fit.
+The convy option uses a convolution to essentially
+smooth values with those around it as in function
+running_smoother() in the same module.
+It is recommended to test a smoothing
+algorithm first, apply, then run the find peak algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>np.array</em>) – an array e.g. single lead EMG recording</p></li>
+<li><p><strong>start_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – which index number the breath starts on</p></li>
+<li><p><strong>end_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – which index number the breath ends on</p></li>
+<li><p><strong>smooth_algorithm</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – algorithm for smoothing (none or
+‘mid-savgol’ or ‘convy’)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>index of max point, value at max point, smoothed value</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.pseudo_slope">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">pseudo_slope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoothing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.pseudo_slope" title="Link to this definition">¶</a></dt>
+<dd><p>This is a function to get the shape/slope of the take-off angle
+of the resp. surface EMG signal, however we are returning values of
+mV divided by samples (in abs values), not a true slope
+and the number will depend on sampling rate
+and pre-processing, therefore it is recommended
+only to compare across the same single sample run</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>np.array</em>) – an array e.g. single lead EMG recording</p></li>
+<li><p><strong>start_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – which index number the breath starts on</p></li>
+<li><p><strong>end_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – which index number the breath ends on</p></li>
+<li><p><strong>smoothing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – smoothing which can or can not run before calculations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pseudoslope</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.rowwise_chebyshev">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">rowwise_chebyshev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.rowwise_chebyshev" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.sampen">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">sampen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim=2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist=&lt;function</span> <span class="pre">rowwise_chebyshev&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.sampen" title="Link to this definition">¶</a></dt>
+<dd><p>The following code is adapted from openly licensed code written by
+Christopher Schölzel in his package
+nolds (NOnLinear measures for Dynamical Systems).
+It computes the sample entropy of time sequence data.
+Returns
+the sample entropy of the data (negative logarithm of ratio between
+similar template vectors of length emb_dim + 1 and emb_dim)
+[c_m, c_m1]:
+list of two floats: count of similar template vectors of length emb_dim
+(c_m) and of length emb_dim + 1 (c_m1)
+[float list, float list]:
+Lists of lists of the form <code class="docutils literal notranslate"><span class="pre">[dists_m,</span> <span class="pre">dists_m1]</span></code> containing the
+distances between template vectors for m (dists_m)
+and for m + 1 (dists_m1).
+Reference
+.. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
+analysis using approximate entropy and sample entropy,”
+American Journal of Physiology-Heart and Circulatory Physiology,
+vol. 278, no. 6, pp. H2039-H2049, 2000.</p>
+<p>Kwargs are
+emb_dim (int):
+the embedding dimension (length of vectors to compare)
+tolerance (float):
+distance threshold for two template vectors to be considered equal
+(default: 0.2 * std(data) at emb_dim = 2, corrected for
+dimension effect for other values of emb_dim)
+dist (function (2d-array, 1d-array) -&gt; 1d-array):
+distance function used to calculate the distance between template
+vectors. Sampen is defined using <code class="docutils literal notranslate"><span class="pre">rowwise_chebyshev</span></code>. You should only
+use something else, if you are sure that you need it.
+closed (boolean):
+if True, will check for vector pairs whose distance is in the closed
+interval [0, r] (less or equal to r), otherwise the open interval
+[0, r) (less than r) will be used</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array</em>) – array-like</p></li>
+<li><p><strong>emb_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the embedded dimension</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – distance threshold for two template vectors</p></li>
+<li><p><strong>distance</strong> (<em>function</em>) – function to calculate distance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>saen</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.sampen_optimized">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">sampen_optimized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.sampen_optimized" title="Link to this definition">¶</a></dt>
+<dd><p>The following code is adapted from openly licensed code written by
+Christopher Schölzel in his package
+nolds (NOnLinear measures for Dynamical Systems).
+It computes the sample entropy of time sequence data.
+emb_dim has been set to 1 (not parameterized)
+Returns
+the sample entropy of the data (negative logarithm of ratio between
+similar template vectors of length emb_dim + 1 and emb_dim)
+[c_m, c_m1]:
+list of two floats: count of similar template vectors of length emb_dim
+(c_m) and of length emb_dim + 1 (c_m1)
+[float list, float list]:
+Lists of lists of the form <code class="docutils literal notranslate"><span class="pre">[dists_m,</span> <span class="pre">dists_m1]</span></code> containing the
+distances between template vectors for m (dists_m)
+and for m + 1 (dists_m1).
+Reference:
+.. [se_1] J. S. Richman and J. R. Moorman, “Physiological time-series
+analysis using approximate entropy and sample entropy,”
+American Journal of Physiology-Heart and Circulatory Physiology,
+vol. 278, no. 6, pp. H2039–H2049, 2000.</p>
+<p>Kwargs are pre-set and not available. For more extensive
+you should use the sampen function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array</em>) – array-like</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – distance threshold for two template vectors</p></li>
+<li><p><strong>distance</strong> (<em>function</em>) – function to calculate distance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>saen</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.simple_area_under_curve">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">simple_area_under_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.simple_area_under_curve" title="Link to this definition">¶</a></dt>
+<dd><p>This function is just a wrapper over np.sum written because it isn’t
+apparent to some clinically oriented people that an area under the curve
+will be a sum of all the numbers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>np.array</em>) – an array e.g. single lead EMG recording</p></li>
+<li><p><strong>start_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – which index number the breath starts on</p></li>
+<li><p><strong>end_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – which index number the breath ends on</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>area; area under the curve</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.snr_pseudo">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">snr_pseudo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peaks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([],</span> <span class="pre">dtype=float64)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.snr_pseudo" title="Link to this definition">¶</a></dt>
+<dd><p>Approximate the signal-to-noise ratio (SNR) of the signal based
+on the peak height relative to the baseline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – Signal to evaluate</p></li>
+<li><p><strong>peaks</strong> – list of individual peak indices</p></li>
+<li><p><strong>signal</strong> – Signal to evaluate</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>snr_peaks, the SNR per peak</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.times_under_curve">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">times_under_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.times_under_curve" title="Link to this definition">¶</a></dt>
+<dd><p>This function is meant to calculate the length of time to peak in
+an absolute and relative sense</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>np.array</em>) – an array e.g. single lead EMG recording</p></li>
+<li><p><strong>start_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – which index number the breath starts on</p></li>
+<li><p><strong>end_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – which index number the breath ends on</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>times; a tuple of absolute and relative times</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.features.variability_maker">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.features.</span></span><span class="sig-name descname"><span class="pre">variability_maker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'variance'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'avg'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.features.variability_maker" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate variability of segments of an array according to a specific
+method, then interpolate the values back to the original legnth of array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – the input array</p></li>
+<li><p><strong>segment_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – length over which variabilty calculated</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – method for calculation i.e. variance or standard deviation</p></li>
+<li><p><strong>fill_method</strong> – method to fill missing values at end result array,
+‘avg’ will fill with average of last values, ‘zeros’ fills zeros, and
+‘resample’ will resample (not fill) and strech array
+to the full ‘correct’ length of the original signal</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>variability_values array showing variability over segments</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">resurfemg.postprocessing.features module</a><ul>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.area_under_curve"><code class="docutils literal notranslate"><span class="pre">area_under_curve()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.calc_closed_sampent"><code class="docutils literal notranslate"><span class="pre">calc_closed_sampent()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.calc_open_sampent"><code class="docutils literal notranslate"><span class="pre">calc_open_sampent()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.entropical"><code class="docutils literal notranslate"><span class="pre">entropical()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.entropy_maker"><code class="docutils literal notranslate"><span class="pre">entropy_maker()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.entropy_scipy"><code class="docutils literal notranslate"><span class="pre">entropy_scipy()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.find_peak_in_breath"><code class="docutils literal notranslate"><span class="pre">find_peak_in_breath()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.pseudo_slope"><code class="docutils literal notranslate"><span class="pre">pseudo_slope()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.rowwise_chebyshev"><code class="docutils literal notranslate"><span class="pre">rowwise_chebyshev()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.sampen"><code class="docutils literal notranslate"><span class="pre">sampen()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.sampen_optimized"><code class="docutils literal notranslate"><span class="pre">sampen_optimized()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.simple_area_under_curve"><code class="docutils literal notranslate"><span class="pre">simple_area_under_curve()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.snr_pseudo"><code class="docutils literal notranslate"><span class="pre">snr_pseudo()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.times_under_curve"><code class="docutils literal notranslate"><span class="pre">times_under_curve()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.features.variability_maker"><code class="docutils literal notranslate"><span class="pre">variability_maker()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="resurfemg.postprocessing.html"
+                          title="previous chapter">resurfemg.postprocessing package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="resurfemg.preprocessing.html"
+                          title="next chapter">resurfemg.preprocessing package</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/resurfemg.postprocessing.features.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.preprocessing.html" title="resurfemg.preprocessing package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.postprocessing.html" title="resurfemg.postprocessing package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.1.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.postprocessing.html" >resurfemg.postprocessing package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.postprocessing.features module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2022, c.moore@esciencecenter.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

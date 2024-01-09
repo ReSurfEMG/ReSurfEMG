@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>resurfemg.ml module &#8212; resurfemg 0.1.3 documentation</title>
+    <title>resurfemg.visualization package &#8212; resurfemg 0.1.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=601dbdee" />
     <script src="_static/documentation_options.js?v=360bc84d"></script>
@@ -13,8 +13,8 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="resurfemg.multi_lead_type module" href="resurfemg.multi_lead_type.html" />
-    <link rel="prev" title="resurfemg.helper_functions module" href="resurfemg.helper_functions.html" /> 
+    <link rel="next" title="resurfemg.visualization.visualization module" href="resurfemg.visualization.visualization.html" />
+    <link rel="prev" title="resurfemg.preprocessing.filtering module" href="resurfemg.preprocessing.filtering.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -26,15 +26,15 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="resurfemg.multi_lead_type.html" title="resurfemg.multi_lead_type module"
+          <a href="resurfemg.visualization.visualization.html" title="resurfemg.visualization.visualization module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="resurfemg.helper_functions.html" title="resurfemg.helper_functions module"
+          <a href="resurfemg.preprocessing.filtering.html" title="resurfemg.preprocessing.filtering module"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.1.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" accesskey="U">resurfemg package</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">resurfemg.ml module</a></li> 
+        <li class="nav-item nav-item-this"><a href="">resurfemg.visualization package</a></li> 
       </ul>
     </div>  
 
@@ -43,26 +43,22 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="module-resurfemg.ml">
-<span id="resurfemg-ml-module"></span><h1>resurfemg.ml module<a class="headerlink" href="#module-resurfemg.ml" title="Link to this heading">¶</a></h1>
-<p>Copyright 2022 Netherlands eScience Center and University of Twente
-Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
-<p>This file contains functions run machine learning algorithms on arrays
-over them.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.ml.applu_model">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.ml.</span></span><span class="sig-name descname"><span class="pre">applu_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrays_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['mean',</span> <span class="pre">'entropy']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.ml.applu_model" title="Link to this definition">¶</a></dt>
-<dd><p>This function applies an ML model over a bunch of arrays.
-It is meant to be used by the command line interface.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.ml.save_ml_output">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.ml.</span></span><span class="sig-name descname"><span class="pre">save_ml_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.ml.save_ml_output" title="Link to this definition">¶</a></dt>
-<dd><p>This function is written to be called by the cli module.
-It stores arrays in a directory.</p>
-</dd></dl>
-
+  <section id="resurfemg-visualization-package">
+<h1>resurfemg.visualization package<a class="headerlink" href="#resurfemg-visualization-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="resurfemg.visualization.visualization.html">resurfemg.visualization.visualization module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.visualization.visualization.html#resurfemg.visualization.visualization.show_my_power_spectrum"><code class="docutils literal notranslate"><span class="pre">show_my_power_spectrum()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-resurfemg.visualization">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-resurfemg.visualization" title="Link to this heading">¶</a></h2>
+</section>
 </section>
 
 
@@ -75,9 +71,9 @@ It stores arrays in a directory.</p>
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">resurfemg.ml module</a><ul>
-<li><a class="reference internal" href="#resurfemg.ml.applu_model"><code class="docutils literal notranslate"><span class="pre">applu_model()</span></code></a></li>
-<li><a class="reference internal" href="#resurfemg.ml.save_ml_output"><code class="docutils literal notranslate"><span class="pre">save_ml_output()</span></code></a></li>
+<li><a class="reference internal" href="#">resurfemg.visualization package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-resurfemg.visualization">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -85,18 +81,18 @@ It stores arrays in a directory.</p>
   </div>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="resurfemg.helper_functions.html"
-                          title="previous chapter">resurfemg.helper_functions module</a></p>
+    <p class="topless"><a href="resurfemg.preprocessing.filtering.html"
+                          title="previous chapter">resurfemg.preprocessing.filtering module</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="resurfemg.multi_lead_type.html"
-                          title="next chapter">resurfemg.multi_lead_type module</a></p>
+    <p class="topless"><a href="resurfemg.visualization.visualization.html"
+                          title="next chapter">resurfemg.visualization.visualization module</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/resurfemg.ml.rst.txt"
+      <li><a href="_sources/resurfemg.visualization.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -124,15 +120,15 @@ It stores arrays in a directory.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="resurfemg.multi_lead_type.html" title="resurfemg.multi_lead_type module"
+          <a href="resurfemg.visualization.visualization.html" title="resurfemg.visualization.visualization module"
              >next</a> |</li>
         <li class="right" >
-          <a href="resurfemg.helper_functions.html" title="resurfemg.helper_functions module"
+          <a href="resurfemg.preprocessing.filtering.html" title="resurfemg.preprocessing.filtering module"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.1.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">resurfemg.ml module</a></li> 
+        <li class="nav-item nav-item-this"><a href="">resurfemg.visualization package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
