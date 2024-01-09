@@ -51,7 +51,7 @@ class Range(namedtuple('RangeBase', 'start,end')):
 
     def to_slice(self):
         """Converts this range to a :class:`slice`.
-        :returns: A slice with its start set to this range's start and end set 
+        :returns: A slice with its start set to this range's start and end set
         to this range's end
         :rtype: slice
         """
