@@ -60,15 +60,21 @@ ReSurfEMG contains various notebooks you can use and adapt alongside our package
 
 > These notebooks are:
 
+>> * [additional ML work](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/additional_ml_work.ipynb)
 >> * [amplitude exploration](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/amplitude_exploration.ipynb)
 >> * [area under curve work](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/area_under_curve_work.ipynb)
+>> * [basic preprocessing](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/basic_preprocessing.ipynb)
 >> * [breath detection variability](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/breath_detection_variability.ipynb)
 >> * [another breath detection variability](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/breath_detection_variability_nb.ipynb)
+>> * [check versions mne](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/check_versions_mne.ipynb)
+>> * [diagnose_emg_vent_relationship](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/diagnose_emg_vent_relationship.ipynb)
 >> * [distances](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/distances.ipynb)
 >> * [ECG puller](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ecg_puller.ipynb)
+>> * [edit distance emg vent](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/edit_distance_emg_vent.ipynb)
 >> * [entropy cycler](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/entropy_cycler.ipynb)
 >> * [entropy testing](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/entropy_tests.ipynb)
 >> * [file reading](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/file_reading.ipynb)
+>> * [gating example](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/gating_example.ipynb)
 >> * [ica comparison](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ica_comparison-Copy1.ipynb)
 >> * [ica remix function](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ica_remix_function.ipynb)
 >> * [ml inf loop](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ml_inf_loop.ipynb)
