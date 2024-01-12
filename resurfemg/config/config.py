@@ -225,8 +225,8 @@ def simulate_ventilator_with_occlusions(
     p_mus_block = (signal.square(t_vent*rr/60*2*np.pi + 0.1, ie_fraction)+1)/2
     for i, t_occ in enumerate(t_occs):
         i_occ = int(t_occ*fs_vent)
-        p_mus_block[i_occ:i_occ + int(fs_vent*60/rr)+1] = \
-            np.zeros((int(fs_vent * 60/rr)+1, ))   # Add occlusion manouevres
+        # p_mus_block[i_occ:i_occ + int(fs_vent*60/rr)+1] = \
+        #     np.zeros((int(fs_vent * 60/rr)+1, ))   # Add occlusion manouevres
 
     # Simulate up- and downslope dynamics of respiratory muscle pressure
     pattern_gen_mus = np.zeros((len(t_vent),))
@@ -252,7 +252,7 @@ def simulate_ventilator_with_occlusions(
         if np.any((((t_occs*fs_vent)-i) <= 0)
                   & ((((t_occs+60/rr)*fs_vent+1)-i) > 0)):
             # Occlusion pressure results into negative airway pressure:
-            dp_step = (-np.mean(p_block[i-int(2*fs_vent/3):int(i-1)])
+            dp_step = (-np.mean(p_mus[i-int(1*fs_vent/3):int(i-1)])
                        - p_dp[i-1])
             p_dp[i] = p_dp[i-1]+dp_step/(tau_dp_up)
         elif (p_block[i-1]-p_dp[i-1]) > 0:
