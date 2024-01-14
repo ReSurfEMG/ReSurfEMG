@@ -539,6 +539,11 @@ class BdistConda(BDistEgg):
             'o',
             'Optimize for low memory environment (Github Actions CI)',
         ),
+        (
+            'use-boa',
+            'b',
+            'Use boa (mamba-based alternative to conda-build)'
+        ),
     ]
     boolean_options = [
         'optimize-low-memory',
@@ -546,6 +551,7 @@ class BdistConda(BDistEgg):
 
     def initialize_options(self):
         self.optimize_low_memory = False
+        self.use_boa = False
 
     def finalize_options(self):
         pass
@@ -586,7 +592,7 @@ class BdistConda(BDistEgg):
             '--override-channels',
             '-c', 'conda-forge',
             '-c', 'anaconda',
-            'conda-build',
+            'boa' if self.use_boa else 'conda-build',
             'conda-verify',
             'anaconda-client',
             'python=={}'.format(frozen),
@@ -603,8 +609,6 @@ class BdistConda(BDistEgg):
             ignore_errors=True,
         )
 
-        conda_build = importlib.import_module('conda_build.cli.main_build')
-
         cmd = [
             '--no-anaconda-upload',
             '--override-channels',
@@ -614,11 +618,20 @@ class BdistConda(BDistEgg):
             os.path.join(project_dir, 'conda-pkg'),
         ]
 
-        if self.optimize_low_memory:
-            cmd.insert(0, '--no-test')
-            self.patch_conda_build()
+        if not self.use_boa:
+            conda_build = importlib.import_module('conda_build.cli.main_build')
 
-        rc = conda_build.execute(cmd)
+            if self.optimize_low_memory:
+                cmd.insert(0, '--no-test')
+                self.patch_conda_build()
+
+                rc = conda_build.execute(cmd)
+        else:
+            cmd = ['conda', 'mambabuild'] + cmd
+            if run_and_log(cmd):
+                sys.stderr.write('Failed to build resurfemg package\n')
+                raise SystemExit(4)
+            rc = ['resurfemg']
         sys.stderr.write('Built package: {}'.format(rc[0]))
 
 

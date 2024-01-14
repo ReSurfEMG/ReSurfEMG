@@ -55,10 +55,8 @@ jobs:
       - run: conda config --remove channels defaults
       - name: Generate conda meta.yaml (Python 3.9)
         run: python -u setup.py anaconda_gen_meta
-      - if: ${{ matrix.os == 'macos-latest' }}
-        run: python -u setup.py bdist_conda -o
-      - if: ${{ matrix.os != 'macos-latest' }}
-        run: python -u setup.py bdist_conda
+      - name: Generate package archive
+        run: python -u setup.py bdist_conda -b
       - name: Upload Anaconda package
         run: >-
           python setup.py anaconda_upload
