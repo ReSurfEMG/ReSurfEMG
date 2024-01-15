@@ -246,13 +246,19 @@ def simulate_ventilator_with_occlusions(
     p_block = dp * (signal.square(t_vent*rr/60*2*np.pi, ie_fraction)+1)/2
     tau_dp_up = 10
     tau_dp_down = 5
+
+    p_noise = np.random.normal(0, 2, size=(len(t_vent), ))
+    p_noise_series = pd.Series(p_noise)
+    p_noise_ma = p_noise_series.rolling(fs_vent, min_periods=1,
+                                        center=True).mean().values
+
     p_dp = -p_mus
     for i in range(1, len(t_vent)):
-        dp_step = p_block[i-1]-p_dp[i-1]
+        dp_step = p_block[i-1]-(p_dp[i-1] + p_noise_ma[i-1])
         if np.any((((t_occs*fs_vent)-i) <= 0)
                   & ((((t_occs+60/rr)*fs_vent+1)-i) > 0)):
             # Occlusion pressure results into negative airway pressure:
-            dp_step = (-np.mean(p_mus[i-int(1*fs_vent/3):int(i-1)])
+            dp_step = (-np.mean(p_mus[i-int(1*fs_vent/2):int(i-1)])
                        - p_dp[i-1])
             p_dp[i] = p_dp[i-1]+dp_step/(tau_dp_up)
         elif (p_block[i-1]-p_dp[i-1]) > 0:
@@ -260,11 +266,7 @@ def simulate_ventilator_with_occlusions(
         else:
             p_dp[i] = p_dp[i-1]+dp_step/tau_dp_down
 
-    p_noise = np.random.normal(0, 2, size=(len(t_vent), ))
-    p_noise_series = pd.Series(p_noise)
-    p_noise_ma = p_noise_series.rolling(fs_vent, min_periods=1,
-                                        center=True).mean().values
-    p_vent = peep + p_dp + p_noise_ma
+    p_vent = peep + p_dp
 
     # Calculate flows and volumes from equation of motion:
     v_dot_vent = np.zeros((len(t_vent),))
