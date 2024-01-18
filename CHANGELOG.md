@@ -136,3 +136,13 @@
 		-   postprocessing
 		-   preprocessing
 	- Refactor tests accordingly
+
+
+## Release 0.2.1
+
+* Fix release 0.2.0
+
+	- Release 0.2.0 was a refactoring of the code base, but the newly
+	created submodules were not included in the builds. This is now fixed.
+	- Small adaptations to config.simulate_ventilator_with_occlusions to
+	simulate more realistic Pocc manoeuvres.
