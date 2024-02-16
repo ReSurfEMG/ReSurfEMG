@@ -639,8 +639,8 @@ if __name__ == '__main__':
     setup(
         name=name,
         version=version,
-        author='A team including the NLeSC and the U. of Twente',
-        author_email='c.moore@esciencecenter.nl',
+        author='A team including the NLeSC and the Utwente',
+        author_email='e.mos-oppersma@utwente.nl',
         packages=['resurfemg',
                   'resurfemg.cli',
                   'resurfemg.config',
