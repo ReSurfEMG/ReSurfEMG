@@ -1,4 +1,4 @@
-resurfemg
+ReSurfEMG
 =========
 
 .. toctree::

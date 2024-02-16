@@ -1,7 +1,7 @@
-resurfemg.tmsisdk\_lite module
+resurfemg.config.config module
 ==============================
 
-.. automodule:: resurfemg.tmsisdk_lite
+.. automodule:: resurfemg.config.config
    :members:
    :undoc-members:
    :show-inheritance:
