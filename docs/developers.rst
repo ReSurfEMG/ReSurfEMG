@@ -2,8 +2,8 @@
 Developer's Guide
 =================
 
-Sending Your Work
-=================
+Contributing
+============
 
 We accept pull requests made through GitHub. As is usual,
 we request that the changes be rebased
@@ -22,11 +22,11 @@ compatible license for us to be able to use it.
    submission.
 
 
-Setting Up Development Environment
+Setting up development environment
 ==================================
 
 
-The Way We Do It
+The way we do it
 ^^^^^^^^^^^^^^^^
 
 If you want to develop using Anaconda Python, you would:
@@ -38,7 +38,7 @@ it and then add development dependencies to what was installed.
 
 
 
-The Traditional Ways
+The traditional ways
 ^^^^^^^^^^^^^^^^^^^^
 
 Regardless of the downsides of this approach, we try to support more
@@ -71,26 +71,59 @@ version of Python, rarely multiple Python distributions or operating
 systems. We are working to support multiple Pythons. Pending. But for
 now we are doing what is simple and fast.
 
+Run requirements
+^^^^^^^^^^^^^^^^
+
+The ReSurfEMG package has the following dependencies:
+
+Data handling packages
+
+- pyxdf: XDF-file format importer (tmsidk_lite dependency)
+- h5py: H5PY-file format importer
 
 
-Testing
-=======
+Signal analysis packages
 
-You may run:
+- mne: Exploring, visualizing, and analyzing human neurophysiological data such as MEG, EEG, sEEG, ECoG
+- pandas: data analysis and statistics library
+- scipy: Advanced signal analysis library
+- textdistance: Algorithm for comparing signal/text similarity
 
-.. code-block:: bash
+Visualization packages
 
-  python ./tests/test.py 
+- matplotlib: Plotting library
 
-Under the hood, this runs unittest.
+Machine learning packages
 
-Alternatively,
-you can run tests from the setup.py file
-i.e. 
-.. code-block:: bash
+- scikit-learn: Machine learning and data mining library
 
-   python setup.py test
 
+Development requirements
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ReSurfEMG package has the following dependencies for developing:
+
+Coding style conventions: 
+
+- codestyle: Code style checker
+- isort: Sorting imports
+
+Running Jupyter Notebooks:
+
+- jupyter
+- ipympl: matplotlib extension for Jupyter
+
+Testing:
+
+- pytest: Running tests
+
+Releases:
+
+- wheel: Building distributions
+
+
+Developing
+==========
 
 
 Style Guide for Python Code
@@ -107,12 +140,12 @@ We have linting!
 Continuous Integration
 ^^^^^^^^^^^^^^^^^^^^^^
 
-This project has CI setup that uses GitHub Actions
+This project has `GitHub repo`_ that uses `GitHub Actions`_
 platform.  
 
 
 .. _GitHub repo: https://github.com/ReSurfEMG/ReSurfEMG
-.. _GitHub Actions dashboard: https://github.com/ReSurfEMG/ReSurfEMG/actions
+.. _GitHub Actions: https://github.com/ReSurfEMG/ReSurfEMG/actions
 
 
 Style
@@ -121,3 +154,39 @@ Style
 When it comes to style, beyond linting we are trying
 to conform, more or less, to the Google Python style
 https://google.github.io/styleguide/pyguide.html
+
+
+Releases
+^^^^^^^^
+
+Releases to PyPI and Conda are automatically managed by Github actions when 
+versions are tagged in the main ReSurfEMG branch. The required steps:
+
+1. Update the 'changelog.md' and 'CITATION.cff'
+2. Tag the main branch with the newest version number:
+
+.. code-block:: bash
+
+  git tag v0.x.x
+
+3. Push the tags to main:
+
+.. code-block:: bash
+
+  git push --tags
+
+4. Check in `Github`_ whether the release was successful:
+
+.. _GitHub: https://github.com/ReSurfEMG/ReSurfEMG/releases
+
+
+Testing
+=======
+
+You can run tests from the setup.py file
+i.e. 
+
+.. code-block:: bash
+
+  python setup.py test
+
