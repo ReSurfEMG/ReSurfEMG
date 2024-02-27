@@ -1,6 +1,6 @@
 #  environment document
 
-name: julytry5
+name: resurfemg-package_py39
 channels:
   - conda-forge
 dependencies:

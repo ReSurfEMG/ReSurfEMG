@@ -252,7 +252,7 @@ working with the library, s.a. `jupyter`.)
 
 After checking out the source code, create virtual environment.  Both
 `conda` and `venv` environments are supported, however, if you are on
-Windows, we reccomend using `conda`. 
+Windows, we recommend using `conda`. 
 
 
 
@@ -297,12 +297,12 @@ Up to date documentation can be generated in command-line as follows
 (in bash terminal):
 
 ``` sh
-python3 -m venv .venv
+python3.9 -m venv .venv
 . ./.venv/bin/activate
 pip install wheel sphinx
-./setup.py install
-./setup.py apidoc
-./setup.py build_sphinx
+python ./setup.py install
+python ./setup.py apidoc
+python ./setup.py build_sphinx
 ```
 
 If you are working in a VScode command line interface (terminal cmd)
