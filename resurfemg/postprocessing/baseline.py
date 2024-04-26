@@ -32,7 +32,7 @@ def moving_baseline(
         :type emg_sample_rate: int
         :param: set_percentile
         :type: numpy percentile
-        
+
         :returns: The rolling baseline for the filtered EMG data
         :rtype: ~numpy.ndarray
         """
@@ -50,7 +50,7 @@ def moving_baseline(
 
         for i in range(idx,
                     min([idx+int(emg_sample_rate/5), int(end_s)-int(start_s)])
-            ):
+                ):
             rolling_baseline[i] = baseline_value_emg_di
 
     return rolling_baseline
@@ -66,7 +66,7 @@ def slopesum_baseline(
 ):
     """This function calculates the augmented version of the moving baseline
         from a filtered EMG, using a slope sum
-        
+
         :param emg_env: filtered envelope signal of EMG data
         :type emg_env: ~numpy.ndarray
         :param window_s: window length in seconds
@@ -79,12 +79,12 @@ def slopesum_baseline(
         :type emg_sample_rate: int
         :param: set_percentile
         :type: numpy percentile
-        
+
         :returns: The slopesum baseline for the filtered EMG data
         :rtype: ~numpy.ndarray
         """
     # 1. call the Graßhoff version function for moving baseline
-    rolling_baseline = moving_baseline(emg_env,window_s, 0*emg_sample_rate,
+    rolling_baseline = moving_baseline(emg_env,window_s, 0*emg_sample_rate, 
                                        50*emg_sample_rate, emg_sample_rate)
 
     # 2. Calculate the augmented moving baseline for the sEAdi data
@@ -93,11 +93,11 @@ def slopesum_baseline(
 
     di_baseline_series = pd.Series(rolling_baseline)
     di_baseline_std = di_baseline_series.rolling(baseline_w_emg,
-                                 min_periods=1,
-                                 center=True).std().values
+                                    min_periods=1,
+                                    center=True).std().values
     di_baseline_mean = di_baseline_series.rolling(baseline_w_emg,
-                                 min_periods=1,
-                                 center=True).mean().values
+                                    min_periods=1,
+                                    center=True).mean().values
 
     # 2.b. Augmented signal: EMG + abs([dEMG/dt]_smoothed)
     ma_window = emg_sample_rate//2
@@ -107,7 +107,7 @@ def slopesum_baseline(
     y_di_rms = emg_env[int(start_s):int(end_s)]
     s_di = pd.Series(y_di_rms - rolling_baseline)
     seadi_MA = s_di.rolling(window=ma_window, center=True).mean().values
-    dseadi_dt = (seadi_MA[1:] - seadi_MA[:-1] ) * emg_sample_rate
+    dseadi_dt = (seadi_MA[1:] - seadi_MA[:-1]) * emg_sample_rate
     seadi_aug = y_di_rms[:-1] + np.abs(dseadi_dt)
 
     # 2.c. Run the moving median filter over the augmented signal to obtain
@@ -123,9 +123,9 @@ def slopesum_baseline(
             seadi_aug[start_i:end_i], augmented_perc)
         for i in range(idx,
                     min([idx+int(perc_window), int(end_s-1)-int(start_s)])
-        ):
+                ):
             slopesum_baseline[i] = 1.2 * baseline_value_emg_di
 
     return (slopesum_baseline, di_baseline_mean, di_baseline_std,
-    di_baseline_series,
-    )
+        di_baseline_series,
+        )
