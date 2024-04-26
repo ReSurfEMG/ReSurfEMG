@@ -49,8 +49,8 @@ def moving_baseline(
             emg_env[start_i:end_i], set_percentile)
 
         for i in range(idx,
-                    min([idx+int(emg_sample_rate/5), int(end_s)-int(start_s)])
-                ):
+                    min([idx+int(emg_sample_rate/5), int(end_s)-
+                         int(start_s)])):
             rolling_baseline[i] = baseline_value_emg_di
 
     return rolling_baseline
@@ -84,7 +84,8 @@ def slopesum_baseline(
         :rtype: ~numpy.ndarray
         """
     # 1. call the Graßhoff version function for moving baseline
-    rolling_baseline = moving_baseline(emg_env,window_s, 0*emg_sample_rate, 
+    rolling_baseline = moving_baseline(emg_env,window_s,
+                                       0*emg_sample_rate,
                                        50*emg_sample_rate, emg_sample_rate)
 
     # 2. Calculate the augmented moving baseline for the sEAdi data
@@ -93,11 +94,11 @@ def slopesum_baseline(
 
     di_baseline_series = pd.Series(rolling_baseline)
     di_baseline_std = di_baseline_series.rolling(baseline_w_emg,
-                                    min_periods=1,
-                                    center=True).std().values
+                                                 min_periods=1,
+                                                 center=True).std().values
     di_baseline_mean = di_baseline_series.rolling(baseline_w_emg,
-                                    min_periods=1,
-                                    center=True).mean().values
+                                                  min_periods=1,
+                                                  center=True).mean().values
 
     # 2.b. Augmented signal: EMG + abs([dEMG/dt]_smoothed)
     ma_window = emg_sample_rate//2
@@ -121,11 +122,9 @@ def slopesum_baseline(
 
         baseline_value_emg_di = np.nanpercentile(
             seadi_aug[start_i:end_i], augmented_perc)
-        for i in range(idx,
-                    min([idx+int(perc_window), int(end_s-1)-int(start_s)])
-                ):
+        for i in range(idx, min([idx+int(perc_window),
+                                 int(end_s-1)-int(start_s)])):
             slopesum_baseline[i] = 1.2 * baseline_value_emg_di
 
-    return (slopesum_baseline, di_baseline_mean, di_baseline_std,
-        di_baseline_series,
-        )
+    return (slopesum_baseline, di_baseline_mean,
+            di_baseline_std, di_baseline_series)
