@@ -65,7 +65,7 @@ class SphinxDoc(Command):
         from sphinx.util.docutils import docutils_namespace, patch_docutils
         from sphinx.application import Sphinx
         from sphinx.cmd.build import handle_exception
-        
+
         name = 'resurfemg'
         try:
             tag = subprocess.check_output(
