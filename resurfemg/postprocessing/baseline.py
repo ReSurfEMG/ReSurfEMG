@@ -48,9 +48,8 @@ def moving_baseline(
         baseline_value_emg_di = np.percentile(
             emg_env[start_i:end_i], set_percentile)
 
-        for i in range(idx,
-                    min([idx+int(emg_sample_rate/5), int(end_s)-
-                         int(start_s)])):
+        for i in range(idx, min([idx+int(emg_sample_rate/5),
+                                 int(end_s) - int(start_s)])):
             rolling_baseline[i] = baseline_value_emg_di
 
     return rolling_baseline
@@ -84,8 +83,7 @@ def slopesum_baseline(
         :rtype: ~numpy.ndarray
         """
     # 1. call the Graßhoff version function for moving baseline
-    rolling_baseline = moving_baseline(emg_env,window_s,
-                                       0*emg_sample_rate,
+    rolling_baseline = moving_baseline(emg_env, window_s, 0*emg_sample_rate,
                                        50*emg_sample_rate, emg_sample_rate)
 
     # 2. Calculate the augmented moving baseline for the sEAdi data
