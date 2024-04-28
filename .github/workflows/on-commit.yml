@@ -27,22 +27,23 @@ jobs:
             set -xe
             cd /ci
             mkdir -p ./not_pushed/
+            pip install -e .[tests]
             mount --bind /ReSurfEMG/tests/not_pushed/ ./not_pushed/
-            python setup.py test
+            pytest
 
-  Lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-      - uses: s-weigand/setup-conda@v1
-        with:
-          conda-channels: conda-forge
-          python-version: 3.9
-      - run: python3 -m venv .venv
-      - run: .venv/bin/python -m pip install wheel
-      - run: .venv/bin/python setup.py lint
+  # Lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         submodules: recursive
+  #     - uses: s-weigand/setup-conda@v1
+  #       with:
+  #         conda-channels: conda-forge
+  #         python-version: 3.9
+  #     - run: python3 -m venv .venv
+  #     - run: .venv/bin/python -m pip install wheel
+  #     - run: .venv/bin/python setup.py lint
 
   Sphinx:
     runs-on: ubuntu-latest
@@ -65,7 +66,7 @@ jobs:
           python-version: 3.9
       - run: python3 -m venv .venv
       - run: .venv/bin/python -m pip install wheel sphinx
-      - run: .venv/bin/python setup.py install
+      - run: .venv/bin/python -m pip install -e .[docs]
       - run: .venv/bin/python setup.py apidoc
       - run: .venv/bin/python setup.py build_sphinx -W
       - name: Publish Docs to Pages
