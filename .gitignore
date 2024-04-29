@@ -20,6 +20,8 @@ __pycache__/
 # var/
 # wheels/
 # share/python-wheels/
+resurfemg/__version__.py
+.coverage
 
 
 # Jupyter Notebook
@@ -58,7 +60,7 @@ celerybeat.pid
 
 # Environments
 .env
-.venv
+.venv*
 env/
 venv/
 ENV/

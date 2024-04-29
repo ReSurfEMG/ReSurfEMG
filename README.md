@@ -4,7 +4,6 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6811554.svg)](https://doi.org/10.5281/zenodo.6811554)
 [![PyPI](https://img.shields.io/pypi/v/resurfemg.svg)](https://pypi.python.org/pypi/resurfemg/)
-[![Anaconda-Server Badge](https://anaconda.org/resurfemg/resurfemg/badges/version.svg)](https://anaconda.org/resurfemg/resurfemg)
 [![Sanity](https://github.com/resurfemg/resurfemg/actions/workflows/on-commit.yml/badge.svg)](https://github.com/resurfemg/resurfemg/actions/workflows/on-commit.yml)
 [![Sanity](https://github.com/resurfemg/resurfemg/actions/workflows/on-tag.yml/badge.svg)](https://github.com/resurfemg/resurfemg/actions/workflows/on-tag.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -73,7 +72,7 @@ The notebooks are configured to run on various datasets.  Contact
 Dr. Eline Mos-Oppersma( 📫 e.mos-oppersma@utwente.nl) to discuss any
 questions on data configuration for your datasets.
 
-If you want to use a standardized dataset for any purpose we reccomend
+If you want to use a standardized dataset for any purpose we recommend
 the data in the ReSurfEMG/synthetic_data repository
 
 [![DOI](https://zenodo.org/badge/635680008.svg)](https://zenodo.org/badge/latestdoi/635680008)
@@ -134,8 +133,8 @@ docker rm -f test-data
 ReSurfEMG is a pure Python package. Below is the list of
 platforms that should work. Other platforms may work, but have had less extensive testing.
 Please note that where
-python.org Python or Anaconda Python stated as supported, it means
-that versions 3.8 or 3.9 (depending on the release) are supported.
+python.org Python stated as supported, it means
+that versions 3.9 are supported.
 
 #### AMD64 (x86)
 
@@ -155,7 +154,7 @@ If you wish to install with pip:
 
 
 ## Getting Started
-#### with the reccomended Conda setup
+#### with the recommended Conda setup
 
 How to get the notebooks running?  Assuming the raw data set and
 metadata is available. Note for non-conda installations see next sections.
@@ -197,7 +196,7 @@ Option B: To work with the most current versions with the possibility for develo
      ```
 
    * Linux users can create their own environment by hand (use
-     install_dev as in setup).
+     .[dev] as in setup).
     
   Make sure to enter your newly created environment.
 
@@ -240,10 +239,10 @@ modify the library code (and possibly contribute their changes back or eventuall
 a 'developer's setup' but we feel this setup will make advanced contributions easier.
 
 We have transitioned to a fully Python 3.9 environment.  The
-instructions below are for our newer versions above 0.1.0:
-(For older instructions with `venv` please see versions below 0.1.0, and
+instructions below are for our newer versions above 3.0.0:
+(For older instructions with `venv` please see versions below 0.2.0, and
 adapt them if using Windows and/or a different Python version than
-Python.org Python e.g. you may need to use `.venv/Scripts/activate` in
+Python.org Python e.g. you may need to use `.venv\Scripts\activate.bat` in
 place of `.venv/bin/activate`.  This will create a distributable
 package from the source code, then install it in the currently active
 environment.  This will also install development tools we use
@@ -261,32 +260,27 @@ Windows, we reccomend using `conda`.
    ```sh
    conda create -n resurfemg python=3.9
    conda activate resurfemg
-   python setup.py anaconda_gen_meta
-   python setup.py install_dev
+   pip install -e .[dev]
    ```
-
-   Note, you will need to run `anaconda_gen_meta`.  This generates
-   `meta.yaml` which is necessary to create `conda` package.  In the
-   future this will probably be called automatically by `install_dev`.
 
 2. Using PyPI Python
 
-   ```sh
-   python3.9 -m venv .venv3.9
-   # On Linux:
-   . .venv3.9/bin/activate
-   # On Windows:
-   .venv3.9/Scripts/activate
-   python setup.py install_dev
-   ```
+# On Linux:
+``` sh
+python3.9 -m venv .venv39
+source .venv39/bin/activate
+``` 
+  
+# On Windows:
+``` sh
+python3.9 -m venv .venv39
+.venv39\Scripts\activate.bat
+pip install -e .[dev]
+```
 
 Now you should have everything necessary to start working on the
-source code.  Whenever you make any changes, re-run `install_dev` to
-see them applied in your environment.  It's possible to find a
-shortcut sometimes to running the entire cycle (`install_dev` takes a
-long time to run).  Look at the source of `bdist_conda` and
-`sdist_conda` commands in `setup.py` for more info.
-
+source code.  Whenever you make any changes, re-run `pip install -e .[dev]` to
+see them applied in your environment.
 
 ## Generating documentation
 
@@ -298,11 +292,10 @@ Up to date documentation can be generated in command-line as follows
 
 ``` sh
 python3 -m venv .venv
-. ./.venv/bin/activate
-pip install wheel sphinx
-./setup.py install
-./setup.py apidoc
-./setup.py build_sphinx
+source .venv/bin/activate
+pip install -e .[docs]
+python setup.py apidoc
+python setup.py build_sphinx
 ```
 
 If you are working in a VScode command line interface (terminal cmd)
@@ -312,9 +305,8 @@ This is given with `cmd.exe` in mind:
 
 ``` sh
 python3 -m venv .venv
-.venv/bin/activate
-pip install wheel sphinx
-python setup.py install
+.venv\Scripts\activate.bat
+pip install -e .[docs]
 python setup.py apidoc
 python setup.py build_sphinx
 ```
@@ -329,8 +321,7 @@ At the moment, the support for Anaconda Python is lacking.  The
 instructions and the commands listed below will work in Anaconda
 installation but due to the difference in management of installed
 packages, the project will be installed into base environment
-regardless of the currently active one.  We are planning to integrate
-with Anaconda in near future.
+regardless of the currently active one.
 
 The project has a sub-project of a related dashboard.  Dashboard is a GUI that
 exposes some of the project's functionality. In the past we kept a a legacy dashboard
@@ -341,13 +332,6 @@ https://github.com/ReSurfEMG/ReSurfEMG-dashboard
 
 ### New commands
 
-Commands that perform repeating tasks have a `--fast` option.  Use
-this if you ran `setup.py install_dev`, and you are sure the
-dependencies are up to date.  Otherwise, these commands will create a
-new virtual environment and install necessary dependencies there
-before execution.  This is primarily intended for use in CI to create
-controlled environment.
-
 Please note that documentation is built using `sphinx` command
 for `setuptools`: `setup.py build_sphinx`, but `sphinx` is not
 installed as part of development dependencies, rather it is declared
@@ -355,51 +339,10 @@ as a dependency of `setup.py` itself.  There are cases when `setup.py`
 will not install its own dependencies.  You are advised to install
 them manually.
 
-* `setup.py lint` checks that the source code is formatted according to
-  PEP-8 recommendations.
 * `setup.py isort` checks that the imports are properly formatted and
   sorted.
 * `setup.py apidoc` generates RST outlines necessary to generate
   documentation.
-* `setup.py install_dev` installs dependencies necessary for
-  development.
-  
-### Modified commands
-
-* `setup.py test` the original command is overloaded with a new one.
-  Similarly to most of the new commands, this command takes `--fast`
-  as an option with the same meaning.  Unlike its predecessor, this
-  command will create a clean environment and install all necessary
-  dependencies before running the test (the original did install
-  dependencies, but ran the test in the source directory, this made it
-  impossible to test code that relied on being installed).
-  
-  
-### Installing from source
-
-The traditional way to install from source is to run `setup.py
-install` or `setup.py develop`.  Both of these will
-work... sort of.  This is because of the default behavior inherited from
-`setuptools`.  The problem here is that instead of creating a
-distributable package and installing that, `setuptools` does it
-in the other order: it installs the package in order to create a distributable
-one.
-
-As was already mentioned earlier, Anaconda Python will need better
-support, at which point, `setup.py install` will have to change to
-enable that.
-
-We are not planning on patching `setup.py develop` as we don't believe
-it is a good practice to use this command.  It is not removed,
-however, and should work in the same way it would work with a typical
-`setuptools` project.  
-
-Note that `pip install -e .` and `pip install -e '.[dev]'` are
-discouraged by association (since that is just a wrapper around
-`setup.py develop`.)  Similarly to `setup.py develop` they might work,
-but you have to be careful with interpreting the results.  If those
-don't work, it's on you.
-
 
 ### Testing
 
@@ -414,7 +357,10 @@ Alternatively, you may download the image and extract directory
 project and run:
 
 ``` sh
-python setup.py test
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .[tests]
+pytest
 ```
 
 Below is a snippet that may help you to run the tests in a container:
@@ -428,7 +374,7 @@ docker run --rm -v $(pwd):/ci \
         cd /ci
         mkdir -p ./not_pushed/
         mount --bind /ReSurfEMG/tests/not_pushed/ ./not_pushed/
-        python setup.py test'
+        pytest'
 ```
 
 
@@ -465,7 +411,7 @@ You can also make synthetic data. To explore this start with
 You can also make from horizontally formated csv files 
 that can be read by the dashboard. To explore this start with
     `python -m resurfemg save_np --help`
-The help commandis also available for ml and acquire.
+The help command is also available for ml and acquire.
 
 All long options have short aliases.
 

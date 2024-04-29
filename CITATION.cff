@@ -32,6 +32,7 @@ repository-code: 'https://github.com/ReSurfEMG/ReSurfEMG'
 repository-artifact: 'https://pypi.org/project/resurfemg/'
 
 keywords:
+  - electromyography
   - EMG
   - respiratory
   - Python
