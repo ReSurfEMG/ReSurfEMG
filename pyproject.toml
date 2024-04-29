@@ -48,12 +48,12 @@ docs = ['wheel',
         'sphinx']
 dev = ['pytest', 
        'pytest-cov',
-       'codestyle', 
+       'pycodestyle', 
        'isort', 
        'wheel', 
        'jupyter', 
        'ipympl',
-       'sphynx',
+       'sphinx',
        'twine']
 
 [tool.setuptools]
