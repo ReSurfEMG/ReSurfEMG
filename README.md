@@ -353,6 +353,9 @@ Alternatively, you may download the image and extract directory
 project and run:
 
 ``` sh
+python3 -m venv .venv
+source ./.venv/bin/activate
+pip install -e .[tests]
 pytest
 ```
 
