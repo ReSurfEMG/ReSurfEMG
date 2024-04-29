@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Index &#8212; resurfemg 0.2.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=601dbdee" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
     <script src="_static/documentation_options.js?v=37f418d5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -275,6 +275,8 @@
 </li>
         <li><a href="resurfemg.postprocessing.html#module-resurfemg.postprocessing">resurfemg.postprocessing</a>
 </li>
+        <li><a href="resurfemg.postprocessing.baseline.html#module-resurfemg.postprocessing.baseline">resurfemg.postprocessing.baseline</a>
+</li>
         <li><a href="resurfemg.postprocessing.features.html#module-resurfemg.postprocessing.features">resurfemg.postprocessing.features</a>
 </li>
         <li><a href="resurfemg.preprocessing.html#module-resurfemg.preprocessing">resurfemg.preprocessing</a>
@@ -290,6 +292,10 @@
         <li><a href="resurfemg.visualization.visualization.html#module-resurfemg.visualization.visualization">resurfemg.visualization.visualization</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="resurfemg.postprocessing.baseline.html#resurfemg.postprocessing.baseline.moving_baseline">moving_baseline() (in module resurfemg.postprocessing.baseline)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -444,6 +450,13 @@
 </li>
       </ul></li>
       <li>
+    resurfemg.postprocessing.baseline
+
+      <ul>
+        <li><a href="resurfemg.postprocessing.baseline.html#module-resurfemg.postprocessing.baseline">module</a>
+</li>
+      </ul></li>
+      <li>
     resurfemg.postprocessing.features
 
       <ul>
@@ -516,10 +529,10 @@
 </li>
       <li><a href="resurfemg.visualization.visualization.html#resurfemg.visualization.visualization.show_my_power_spectrum">show_my_power_spectrum() (in module resurfemg.visualization.visualization)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.simple_area_under_curve">simple_area_under_curve() (in module resurfemg.postprocessing.features)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="resurfemg.config.config.html#resurfemg.config.config.simulate_emg_with_occlusions">simulate_emg_with_occlusions() (in module resurfemg.config.config)</a>
 </li>
       <li><a href="resurfemg.config.config.html#resurfemg.config.config.simulate_ventilator_with_occlusions">simulate_ventilator_with_occlusions() (in module resurfemg.config.config)</a>
@@ -527,6 +540,8 @@
       <li><a href="resurfemg.helper_functions.helper_functions.html#resurfemg.helper_functions.helper_functions.slices_jump_slider">slices_jump_slider() (in module resurfemg.helper_functions.helper_functions)</a>
 </li>
       <li><a href="resurfemg.helper_functions.helper_functions.html#resurfemg.helper_functions.helper_functions.slices_slider">slices_slider() (in module resurfemg.helper_functions.helper_functions)</a>
+</li>
+      <li><a href="resurfemg.postprocessing.baseline.html#resurfemg.postprocessing.baseline.slopesum_baseline">slopesum_baseline() (in module resurfemg.postprocessing.baseline)</a>
 </li>
       <li><a href="resurfemg.preprocessing.envelope.html#resurfemg.preprocessing.envelope.smooth_for_baseline">smooth_for_baseline() (in module resurfemg.preprocessing.envelope)</a>
 </li>
@@ -603,7 +618,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
@@ -611,7 +626,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -632,7 +647,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2022, c.moore@esciencecenter.nl.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
 </html>
