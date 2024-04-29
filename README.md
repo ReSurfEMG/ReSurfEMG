@@ -242,7 +242,7 @@ We have transitioned to a fully Python 3.9 environment.  The
 instructions below are for our newer versions above 3.0.0:
 (For older instructions with `venv` please see versions below 0.2.0, and
 adapt them if using Windows and/or a different Python version than
-Python.org Python e.g. you may need to use `.venv/Scripts/activate` in
+Python.org Python e.g. you may need to use `.venv\Scripts\activate.bat` in
 place of `.venv/bin/activate`.  This will create a distributable
 package from the source code, then install it in the currently active
 environment.  This will also install development tools we use
@@ -265,14 +265,18 @@ Windows, we reccomend using `conda`.
 
 2. Using PyPI Python
 
-   ```sh
-   python3.9 -m venv .venv3.9
-   # On Linux:
-   . .venv3.9/bin/activate
-   # On Windows:
-   .venv3.9/Scripts/activate
-   pip install -e .[dev]
-   ```
+# On Linux:
+``` sh
+python3.9 -m venv .venv39
+source .venv39/bin/activate
+``` 
+  
+# On Windows:
+``` sh
+python3.9 -m venv .venv39
+.venv39\Scripts\activate.bat
+pip install -e .[dev]
+```
 
 Now you should have everything necessary to start working on the
 source code.  Whenever you make any changes, re-run `pip install -e .[dev]` to
@@ -288,7 +292,7 @@ Up to date documentation can be generated in command-line as follows
 
 ``` sh
 python3 -m venv .venv
-source ./.venv/bin/activate
+source .venv/bin/activate
 pip install -e .[docs]
 python setup.py apidoc
 python setup.py build_sphinx
@@ -301,7 +305,7 @@ This is given with `cmd.exe` in mind:
 
 ``` sh
 python3 -m venv .venv
-.venv/bin/activate
+.venv\Scripts\activate.bat
 pip install -e .[docs]
 python setup.py apidoc
 python setup.py build_sphinx
@@ -354,7 +358,7 @@ project and run:
 
 ``` sh
 python3 -m venv .venv
-source ./.venv/bin/activate
+source .venv/bin/activate
 pip install -e .[tests]
 pytest
 ```
