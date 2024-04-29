@@ -25,8 +25,8 @@ jobs:
           python-version: 3.9
       - run: python3.9 -m venv .venv
       - run: .venv/bin/python -m pip install wheel twine
-      - run: .venv/bin/python setup.py bdist_wheel
-      - run: .venv/bin/python setup.py bdist_egg
+      - run: .venv/bin/python -m build
+      # - run: .venv/bin/python setup.py bdist_egg
       - run: >-
           TWINE_USERNAME=__token__
           TWINE_PASSWORD=${{ secrets.PYPI_TOKEN }}
