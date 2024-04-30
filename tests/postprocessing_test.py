@@ -12,7 +12,9 @@ from resurfemg.postprocessing.features import simple_area_under_curve
 from resurfemg.postprocessing.features import times_under_curve
 from resurfemg.postprocessing.features import find_peak_in_breath
 from resurfemg.postprocessing.features import variability_maker
-
+from resurfemg.postprocessing.baseline import moving_baseline
+from resurfemg.postprocessing.baseline import slopesum_baseline
+from resurfemg.postprocessing.baseline import onoffpeak_baseline
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -119,6 +121,43 @@ class TestArrayMath(unittest.TestCase):
             peak,
             (8,10, 11.5)
         )     
-      
+
+
+class TestBaseline(unittest.TestCase):
+
+    def test_movingbaseline(self):
+        t = np.arange(0, 10, 1/1000)
+        slow_component = np.sin(2 * np.pi * 0.1 * t)
+        fast_component = 0.5 * np.sin(2 * np.pi * 0.5 * t)
+        breathing_signal = np.abs(slow_component + fast_component)
+        sinusbase =moving_baseline(breathing_signal,1,1,3,1000)
+        self.assertNotEqual(
+            (len(breathing_signal)),
+            len(sinusbase),
+    )
+
+    def test_slopesum(self):
+        t = np.arange(0,10, 1/1000)
+        slow_component = np.sin(2 * np.pi * 0.1 * t)
+        fast_component = 0.5 * np.sin(2 * np.pi * 0.5 * t)
+        breathing_signal = np.abs(slow_component + fast_component)
+        sinusbase =slopesum_baseline(breathing_signal,1,1,3,1000)
+        self.assertNotEqual(
+            (len(breathing_signal)),
+            len(sinusbase),
+    )  
+   
+    def test_onoffpeak(self):
+        t = np.arange(0, 20, 1/1000)
+        slow_component = np.sin(2 * np.pi * 0.1 * t)
+        fast_component = 0.5 * np.sin(2 * np.pi * 0.5 * t)
+        breathing_signal = np.abs(slow_component + fast_component)
+        env_test = 0.5+np.zeros((len(breathing_signal), ))
+        sinusbase =onoffpeak_baseline(breathing_signal, env_test,1000,8000,1000)
+        self.assertNotEqual(
+            (len(breathing_signal)),
+            len(sinusbase) ,
+    )  
+
 if __name__ == '__main__':
     unittest.main()
