@@ -4,6 +4,7 @@
 import unittest
 import os
 import numpy as np
+import scipy
 # helper_functions
 from resurfemg.postprocessing.features import entropy_scipy
 from resurfemg.postprocessing.features import pseudo_slope
@@ -60,7 +61,6 @@ class TestVariabilityMethods(unittest.TestCase):
         )
 
 class TestArrayMath(unittest.TestCase):
-   
 
     def test_simple_area_under_curve(self):
         sample_array= np.array(
@@ -81,7 +81,7 @@ class TestArrayMath(unittest.TestCase):
             counted,
             28,
         )
-   
+
     def test_times_under_curve(self):
         sample_array= np.array(
             [0,1,2,3,1,5,6,-5,8,9,20,11,12,13,4,5,6,1,1,1,0]
@@ -120,44 +120,83 @@ class TestArrayMath(unittest.TestCase):
         self.assertEqual(
             peak,
             (8,10, 11.5)
-        )     
+        )
 
 
 class TestBaseline(unittest.TestCase):
+    fs = 1000
+    t = np.arange(0, 10, 1/fs)
+    slow_component = np.sin(2 * np.pi * 0.1 * t)
+    fast_component = 0.5 * np.sin(2 * np.pi * 0.5 * t)
+    breathing_signal = np.abs(slow_component + fast_component)
 
     def test_movingbaseline(self):
-        t = np.arange(0, 10, 1/1000)
-        slow_component = np.sin(2 * np.pi * 0.1 * t)
-        fast_component = 0.5 * np.sin(2 * np.pi * 0.5 * t)
-        breathing_signal = np.abs(slow_component + fast_component)
-        sinusbase =moving_baseline(breathing_signal,1,1,3,1000)
-        self.assertNotEqual(
-            (len(breathing_signal)),
+        sinusbase = moving_baseline(self.breathing_signal,
+                                    self.fs,
+                                    self.fs//5,
+                                    33)
+        self.assertEqual(
+            (len(self.breathing_signal)),
             len(sinusbase),
     )
 
     def test_slopesum(self):
-        t = np.arange(0,10, 1/1000)
-        slow_component = np.sin(2 * np.pi * 0.1 * t)
-        fast_component = 0.5 * np.sin(2 * np.pi * 0.5 * t)
-        breathing_signal = np.abs(slow_component + fast_component)
-        sinusbase =slopesum_baseline(breathing_signal,1,1,3,1000)
-        self.assertNotEqual(
-            (len(breathing_signal)),
+        sinusbase, _, _, _ = slopesum_baseline(
+            self.breathing_signal,
+            self.fs,
+            self.fs//5,
+            self.fs,
+            set_percentile=33,
+            augm_percentile=25)
+
+        self.assertEqual(
+            (len(self.breathing_signal)),
             len(sinusbase),
-    )  
-   
-    def test_onoffpeak(self):
-        t = np.arange(0, 20, 1/1000)
-        slow_component = np.sin(2 * np.pi * 0.1 * t)
-        fast_component = 0.5 * np.sin(2 * np.pi * 0.5 * t)
-        breathing_signal = np.abs(slow_component + fast_component)
-        env_test = 0.5+np.zeros((len(breathing_signal), ))
-        sinusbase =onoffpeak_baseline(breathing_signal, env_test,1000,8000,1000)
-        self.assertNotEqual(
-            (len(breathing_signal)),
-            len(sinusbase) ,
-    )  
+            )
+
+    def test_onoffpeak_starts(self):
+        baseline = 0.5 * np.ones((len(self.breathing_signal), ))
+        treshold = 0
+        width = self.fs // 2
+        prominence = 0.5 * \
+            (np.nanpercentile(self.breathing_signal - baseline, 75)
+             + np.nanpercentile(self.breathing_signal - baseline, 50))
+
+        peak_idxs, _ = scipy.signal.find_peaks(
+            self.breathing_signal,
+            height=treshold,
+            prominence=prominence,
+            width=width)
+
+        _, peak_start_idxs, _ = onoffpeak_baseline(
+             self.breathing_signal, baseline, peak_idxs)
+
+        self.assertEqual(
+            len(peak_idxs),
+            len(peak_start_idxs),
+            )
+
+    def test_onoffpeak_ends(self):
+        baseline = 0.5 * np.ones((len(self.breathing_signal), ))
+        treshold = 0
+        width = self.fs // 2
+        prominence = 0.5 * \
+            (np.nanpercentile(self.breathing_signal - baseline, 75)
+             + np.nanpercentile(self.breathing_signal - baseline, 50))
+
+        peak_idxs, _ = scipy.signal.find_peaks(
+            self.breathing_signal,
+            height=treshold,
+            prominence=prominence,
+            width=width)
+
+        _, _, peak_end_idxs = onoffpeak_baseline(
+             self.breathing_signal, baseline, peak_idxs)
+
+        self.assertEqual(
+            len(peak_idxs),
+            len(peak_end_idxs),
+            )
 
 if __name__ == '__main__':
     unittest.main()
