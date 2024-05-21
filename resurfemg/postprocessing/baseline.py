@@ -8,16 +8,13 @@ This file contains functions to calculate moving baselines from a filtered
 """
 import numpy as np
 import pandas as pd
-import scipy
 
 
 def moving_baseline(
-       emg_env,
-       window_s,
-       start_s,
-       end_s,
-       emg_sample_rate,
-       set_percentile=33,
+    emg_env,
+    window_s,
+    step_s,
+    set_percentile=33,
 ):
     """This function calculates a moving baseline from a filtered EMG
         envelope in accordance with Graßhoff et al. (2021)
@@ -25,44 +22,37 @@ def moving_baseline(
         :type emg_env: ~numpy.ndarray
         :param window_s: window length in samples
         :type window_s: int
-        :param start_s: start sample of selected window
-        :type start_s: int
-        :param end_s: end sample of selected window
-        :type end_s: int
-        :param emg_sample_rate: sample rate from recording
-        :type emg_sample_rate: int
+        :param step_s: number of consecutive samples with the same baseline
+        value
+        :type step_s: int
         :param: set_percentile
         :type: numpy percentile
-
         :returns: The rolling baseline for the filtered EMG data
         :rtype: ~numpy.ndarray
         """
 
-    baseline_w_emg = int(window_s*emg_sample_rate)  # window length
+    rolling_baseline = np.zeros((len(emg_env), ))
 
-    rolling_baseline = np.zeros(
-        (len(emg_env[int(start_s):int(end_s)]), ))
-
-    for idx in range(0, int(end_s)-int(start_s), int(emg_sample_rate/5)):
-        start_i = max([int(start_s), int(start_s)+idx-int(baseline_w_emg/2)])
-        end_i = min([int(end_s), int(start_s)+idx+int(baseline_w_emg/2)])
-        baseline_value_emg_di = np.percentile(
+    for idx in range(0, len(emg_env), step_s):
+        start_i = max([0, idx-int(window_s/2)])
+        end_i = min([len(emg_env), idx + int(window_s/2)])
+        baseline_value_y = np.percentile(
             emg_env[start_i:end_i], set_percentile)
 
-        for i in range(idx, min([idx+int(emg_sample_rate/5),
-                                 int(end_s) - int(start_s)])):
-            rolling_baseline[i] = baseline_value_emg_di
+        for i in range(idx, min([idx + step_s, len(emg_env)])):
+            rolling_baseline[i] = baseline_value_y
     return rolling_baseline
 
 
 def slopesum_baseline(
-       emg_env,
-       window_s,
-       start_s,
-       end_s,
-       emg_sample_rate,
-       set_percentile=33,
-       augm_percentile=25
+    emg_env,
+    window_s,
+    step_s,
+    emg_sample_rate,
+    set_percentile=33,
+    augm_percentile=25,
+    ma_window=None,
+    perc_window=None,
 ):
     """This function calculates the augmented version of the moving baseline
         from a filtered EMG, using a slope sum
@@ -71,134 +61,111 @@ def slopesum_baseline(
         :type emg_env: ~numpy.ndarray
         :param window_s: window length in seconds
         :type window_s: int
-        :param start_s: start sample of selected window
-        :type start_s: int
-        :param end_s: end sample of selected window
-        :type end_s: int
+        :param step_s: number of consecutive samples with the same baseline
+        value
+        :type step_s: int
         :param emg_sample_rate: sample rate from recording
         :type emg_sample_rate: int
-        :param: set_percentile
-        :type: numpy percentile
-
+        :param set_percentile
+        :type set_percentile: float (0-100)
+        :param ma_window: moving average window in samples for average dy/dt
+        :type ma_window: int
+        :param perc_window: number of consecutive samples with the same
+        baseline value
+        :type perc_window: int
         :returns: The slopesum baseline for the filtered EMG data
         :rtype: ~numpy.ndarray
         """
+
+    if ma_window is None:
+        ma_window = emg_sample_rate//2
+        print(ma_window)
+
+    if perc_window is None:
+        perc_window = emg_sample_rate
+        print(perc_window)
+
     # 1. call the Graßhoff version function for moving baseline
     rolling_baseline = moving_baseline(
-        emg_env, window_s, start_s, end_s, emg_sample_rate, set_percentile)
+        emg_env,
+        window_s,
+        step_s,
+        set_percentile)
 
     # 2. Calculate the augmented moving baseline for the sEAdi data
     # 2.a. Rolling standard deviation and mean over provided window length
-    baseline_w_emg = int(window_s * emg_sample_rate)  # window length
+    # baseline_w_emg = int(window_s * emg_sample_rate)  # window length
 
-    di_baseline_series = pd.Series(rolling_baseline)
-    di_baseline_std = di_baseline_series.rolling(baseline_w_emg,
-                                                 min_periods=1,
-                                                 center=True).std().values
-    di_baseline_mean = di_baseline_series.rolling(baseline_w_emg,
-                                                  min_periods=1,
-                                                  center=True).mean().values
+    y_baseline_series = pd.Series(rolling_baseline)
+    y_baseline_std = y_baseline_series.rolling(window_s,
+                                               min_periods=1,
+                                               center=True).std().values
+    y_baseline_mean = y_baseline_series.rolling(window_s,
+                                                min_periods=1,
+                                                center=True).mean().values
 
     # 2.b. Augmented signal: EMG + abs([dEMG/dt]_smoothed)
-    ma_window = emg_sample_rate//2
-    perc_window = emg_sample_rate
-
-    y_di_rms = emg_env[int(start_s):int(end_s)]
-    s_di = pd.Series(y_di_rms - rolling_baseline)
-    seadi_MA = s_di.rolling(window=ma_window, center=True).mean().values
-    dseadi_dt = (seadi_MA[1:] - seadi_MA[:-1]) * emg_sample_rate
-    seadi_aug = y_di_rms[:-1] + np.abs(dseadi_dt)
+    s_di = pd.Series(emg_env - rolling_baseline)
+    y_ma = s_di.rolling(window=ma_window, center=True).mean().values
+    dy_dt = (y_ma[1:] - y_ma[:-1]) * emg_sample_rate
+    y_aug = emg_env[:-1] + np.abs(dy_dt)
 
     # 2.c. Run the moving median filter over the augmented signal to obtain
     #       the baseline
-    slopesum_baseline = np.zeros(
-        (len(emg_env[int(start_s):int(end_s)]), ))
+    _slopesum_baseline = np.zeros((len(emg_env), ))
 
-    for idx in range(0, int(end_s-1)-int(start_s), perc_window):
-        start_i = max([0, idx-int(baseline_w_emg)])
-        end_i = min([int(end_s-start_s-1), idx+int(baseline_w_emg)])
+    for idx in range(0, len(emg_env), perc_window):
+        start_i = max([0, idx-int(window_s)])
+        end_i = min([len(emg_env)-1, idx + int(window_s)])
 
-        baseline_value_emg_di = np.nanpercentile(
-            seadi_aug[start_i:end_i], augm_percentile)
-        for i in range(idx, min([idx+int(perc_window),
-                                 int(end_s-1)-int(start_s)])):
-            slopesum_baseline[i] = 1.2 * baseline_value_emg_di
+        baseline_value_y = np.nanpercentile(
+            y_aug[start_i:end_i], augm_percentile)
+        for i in range(idx, min([idx+int(perc_window), len(emg_env)-1])):
+            _slopesum_baseline[i] = 1.2 * baseline_value_y
 
-    return (slopesum_baseline, di_baseline_mean,
-            di_baseline_std, di_baseline_series)
+    _slopesum_baseline[i+1] = _slopesum_baseline[i]
+    return (_slopesum_baseline, y_baseline_mean,
+            y_baseline_std, y_baseline_series)
 
 
 def onoffpeak_baseline(
-        emg_env,
-        slopesum_baseline,
-        start_s,
-        end_s,
-        emg_sample_rate,
-        prominence_f=0.5
+    emg_env,
+    baseline,
+    peak_idxs
 ):
     """This function calculates the peaks of each breath using the
     slopesum baseline from a filtered EMG
 
     :param emg_env: filtered envelope signal of EMG data
     :type emg_env: ~numpy.ndarray
-    :param slopesum_baseline: baseline signal of EMG data
-    :type slopesum_baseline: ~numpy.ndarray
-    :param start_sec: start sample of selected window
-    :type start_sec: int
-    :param end_sec: end sample of selected window
-    :type end_sec: int
-    :param emg_sample_rate: sample rate from recording
-    :type emg_sample_rate: int
-    :param: prominence_default
-    :type: int
-
-        :returns: eadi_peak, eadi_start, eadi_end
-        :rtype: list
-        """
-    # EMG peak detection parameters:
-    # sEAdi_prominence_factor_default = 0.5
-    # Threshold peak height as fraction of max peak height
-    # prominence_factor = 0.5 (default value)
-    # prominence_factor = prominence_default
-    emg_peak_width = 0.2
-
-    # Find diaphragm sEAdi peaks and baseline crossings using the new baseline
-
-    y_di_RMS = emg_env[int(start_s):(int(end_s))]
-    slopesum_baseline = slopesum_baseline[int(start_s):(int(end_s))]
-    treshold = 0
-    width = int(emg_peak_width * emg_sample_rate)
-    prominence = prominence_f * \
-        (np.nanpercentile(y_di_RMS - slopesum_baseline, 75)
-            + np.nanpercentile(y_di_RMS - slopesum_baseline, 50))
-    EMG_peaks_di, properties = scipy.signal.find_peaks(
-        y_di_RMS, height=treshold, prominence=prominence, width=width)
+    :param baseline: baseline signal of EMG data for baseline detection
+    :type baseline: ~numpy.ndarray
+    :param peak_idxs: list of peak indices for which to find on- and offset
+    :type peak_idxs: ~numpy.ndarray
+    :returns: peak_idxs, peak_start_idxs, peak_end_idxs
+    :rtype: list
+    """
 
     # Detect the sEAdi on- and offsets
-    baseline_crossings_idx = np.argwhere(
-        np.diff(np.sign(y_di_RMS - slopesum_baseline)) != 0)
+    baseline_crossings_idx = np.nonzero(
+        np.diff(np.sign(emg_env - baseline)) != 0)[0]
 
-    eadi_start = []
-    eadi_end = []
-    for idx in range(len(baseline_crossings_idx)-1):
-        if emg_env[(baseline_crossings_idx[idx])+1
-                   ] > emg_env[baseline_crossings_idx[idx]]:
-            eadi_start.append(int(baseline_crossings_idx[idx]))
+    peak_start_idxs = np.zeros((len(peak_idxs),), dtype=int)
+    peak_end_idxs = np.zeros((len(peak_idxs),), dtype=int)
+    for peak_nr, peak_idx in enumerate(peak_idxs):
+        delta_samples = peak_idx - baseline_crossings_idx[
+            baseline_crossings_idx < peak_idx]
+        if len(delta_samples) < 1:
+            peak_start_idxs[peak_nr] = 0
+            peak_end_idxs[peak_nr] = baseline_crossings_idx[
+                baseline_crossings_idx > peak_idx][0]
         else:
-            eadi_end.append(int(baseline_crossings_idx[idx]))
+            a = np.argmin(delta_samples)
 
-    eadi_peak = []
+            peak_start_idxs[peak_nr] = int(baseline_crossings_idx[a])
+            if a < len(baseline_crossings_idx) - 1:
+                peak_end_idxs[peak_nr] = int(baseline_crossings_idx[a+1])
+            else:
+                peak_end_idxs[peak_nr] = len(emg_env) - 1
 
-    if eadi_end[0] < eadi_start[0]:
-        del eadi_end[0]
-
-    for start_index, end_index in zip(eadi_start, eadi_end):
-        # Extract section between start and end indices
-        section = emg_env[start_index:end_index + 1]
-        # Find the index of the peak value within the section
-        peak_index_relative = np.argmax(section)
-        # Calculate the absolute index of the peak value
-        peak_index_absolute = start_index + peak_index_relative
-        # Append the peak index to EAdi_peak list
-        eadi_peak.append(peak_index_absolute)
-    return (eadi_peak, eadi_start, eadi_end)
+    return (peak_idxs, peak_start_idxs, peak_end_idxs)
