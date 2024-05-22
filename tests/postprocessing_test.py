@@ -15,7 +15,7 @@ from resurfemg.postprocessing.features import find_peak_in_breath
 from resurfemg.postprocessing.features import variability_maker
 from resurfemg.postprocessing.baseline import moving_baseline
 from resurfemg.postprocessing.baseline import slopesum_baseline
-from resurfemg.postprocessing.baseline import onoffpeak_baseline
+from resurfemg.postprocessing.event_detection import onoffpeak_baseline_crossing
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -154,6 +154,14 @@ class TestBaseline(unittest.TestCase):
             len(sinusbase),
             )
 
+
+class TestEventDetection(unittest.TestCase):
+    fs = 1000
+    t = np.arange(0, 10, 1/fs)
+    slow_component = np.sin(2 * np.pi * 0.1 * t)
+    fast_component = 0.5 * np.sin(2 * np.pi * 0.5 * t)
+    breathing_signal = np.abs(slow_component + fast_component)
+
     def test_onoffpeak_starts(self):
         baseline = 0.5 * np.ones((len(self.breathing_signal), ))
         treshold = 0
@@ -168,13 +176,14 @@ class TestBaseline(unittest.TestCase):
             prominence=prominence,
             width=width)
 
-        _, peak_start_idxs, _ = onoffpeak_baseline(
+        _, peak_start_idxs, _ = onoffpeak_baseline_crossing(
              self.breathing_signal, baseline, peak_idxs)
 
         self.assertEqual(
             len(peak_idxs),
             len(peak_start_idxs),
             )
+
 
     def test_onoffpeak_ends(self):
         baseline = 0.5 * np.ones((len(self.breathing_signal), ))
@@ -190,7 +199,7 @@ class TestBaseline(unittest.TestCase):
             prominence=prominence,
             width=width)
 
-        _, _, peak_end_idxs = onoffpeak_baseline(
+        _, _, peak_end_idxs = onoffpeak_baseline_crossing(
              self.breathing_signal, baseline, peak_idxs)
 
         self.assertEqual(
