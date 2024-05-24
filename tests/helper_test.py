@@ -1,9 +1,10 @@
-#sanity tests for the preprocessing functions, including filtering,
-#ecg removal and envelope calculation
+"""sanity tests for the preprocessing functions, including filtering,
+ecg removal and envelope calculation"""
 
 import unittest
-import numpy as np
 import os
+from math import pi
+import numpy as np
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 from resurfemg.preprocessing.filtering  import emg_bandpass_butter
 from resurfemg.helper_functions.helper_functions import scale_arrays
@@ -11,6 +12,7 @@ from resurfemg.helper_functions.helper_functions import zero_one_for_jumps_base
 from resurfemg.helper_functions.helper_functions import count_decision_array
 from resurfemg.helper_functions.helper_functions import distance_matrix
 from resurfemg.helper_functions.helper_functions import relative_levenshtein
+from resurfemg.helper_functions.helper_functions import derivative
 
 
 sample_emg = os.path.join(
@@ -73,7 +75,22 @@ class TestVentCompareMethods(unittest.TestCase):
         array1 = np.array([1,0,1,0,1,0])
         array2 = np.array([1,0,1,0,1,0])
         array3 = np.array([1,0,1,0,1,0])
-        our_result12 = (relative_levenshtein(array1,array2))
-        our_result13 = (relative_levenshtein(array1,array3))
+        our_result12 = relative_levenshtein(array1,array2)
+        our_result13 = relative_levenshtein(array1,array3)
         self.assertEqual(our_result12, our_result13)
 
+
+class TestDerivative(unittest.TestCase):
+    def test_derivative(self):
+        fs = 100
+        t = np.array([i/fs for i in range(fs*1)])
+        y_t = np.sin(t*2*pi)
+        dy_dt_ref = 2*pi*np.cos(t*2*pi)[:-1]
+        dy_dt_fun = derivative(y_t, fs)
+        error = np.sum(np.abs((dy_dt_ref-dy_dt_fun)))/(
+            np.max(np.abs(dy_dt_ref))*len(t)-1)
+
+        self.assertLess(error, 0.05)
+
+if __name__ == '__main__':
+    unittest.main()

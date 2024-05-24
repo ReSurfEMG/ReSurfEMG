@@ -1,4 +1,4 @@
-#sanity tests for the resurfemg library
+"""sanity tests for the postprocessing module of the resurfemg library"""
 
 
 import unittest

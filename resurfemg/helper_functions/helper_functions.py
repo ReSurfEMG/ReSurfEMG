@@ -192,10 +192,10 @@ def raw_overlap_percent(signal1, signal2):
     else:
         longer_signal_len = len(signal1)
 
-    raw_overlap_percent = sum(
+    _raw_overlap_percent = sum(
         signal1.astype(int) & signal2.astype(int)
     ) / longer_signal_len
-    return raw_overlap_percent
+    return _raw_overlap_percent
 
 
 def relative_levenshtein(signal1, signal2):
@@ -398,3 +398,29 @@ def preprocess(
         rel_fname = os.path.relpath(file, file_directory)
         out_fname = os.path.join(processed, rel_fname)
         save_preprocessed(array, out_fname, force)
+
+
+def derivative(signal, fs, window_s=None):
+    """This function calculates the first derivative of a signal. If
+    window_s is given, the signal is smoothed before derivative calculation.
+    :param signal: signal to calculate the derivate over
+    :type signal: ~numpy.ndarray
+    :param fs: sample rate
+    :type fs: int
+    :param window_s: centralised averaging window length in samples
+    :type window_s: int
+    :returns: The first derivative of the signal length len(signal)-1.
+    :rtype: ~numpy.ndarray
+    """
+
+    if window_s is not None:
+        # Moving average over signal
+        signal_series = pd.Series(signal)
+        signal_moving_average = signal_series.rolling(
+            window=window_s, center=True).mean().values
+        dsignal_dt = (signal_moving_average[1:]
+                      - signal_moving_average[:-1]) * fs
+    else:
+        dsignal_dt = (signal[1:] - signal[:-1]) * fs
+
+    return dsignal_dt
