@@ -192,10 +192,10 @@ def raw_overlap_percent(signal1, signal2):
     else:
         longer_signal_len = len(signal1)
 
-    raw_overlap_percent = sum(
+    _raw_overlap_percent = sum(
         signal1.astype(int) & signal2.astype(int)
     ) / longer_signal_len
-    return raw_overlap_percent
+    return _raw_overlap_percent
 
 
 def relative_levenshtein(signal1, signal2):

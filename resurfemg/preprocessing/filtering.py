@@ -162,7 +162,13 @@ def bad_end_cutter(data_emg, percent_to_cut=7, tolerance_percent=10):
     for i in range(0, leads):
         last_half_means = last_half[i].mean()
         last_part_means = last_part[i].mean()
-        difference = abs(last_half_means - last_part_means)/last_half_means
+        if last_half_means != 0:
+            difference = abs(last_half_means - last_part_means)/last_half_means
+        elif last_part_means == 0:
+            difference = 0
+        else:
+            difference = 1
+
         percent_off_list.append(difference)
     tolerance_list = []
     for element in percent_off_list:
@@ -216,7 +222,13 @@ def bad_end_cutter_for_samples(
     for i in range(leads):
         last_half_means = last_half[i].mean()
         last_part_means = last_part[i].mean()
-        difference = abs(last_half_means - last_part_means)/last_half_means
+        if last_half_means != 0:
+            difference = abs(last_half_means - last_part_means)/last_half_means
+        elif last_part_means == 0:
+            difference = 0
+        else:
+            difference = 1
+
         percent_off_list.append(difference)
     tolerance = tolerance_percent / 100
     if any(elt >= tolerance for elt in percent_off_list):
@@ -256,7 +268,13 @@ def bad_end_cutter_better(data_emg, percent_to_cut=7, tolerance_percent=10):
     for i in range(leads):
         last_half_means = last_half[i].mean()
         last_part_means = last_part[i].mean()
-        difference = abs(last_half_means - last_part_means)/last_half_means
+        if last_half_means != 0:
+            difference = abs(last_half_means - last_part_means)/last_half_means
+        elif last_part_means == 0:
+            difference = 0
+        else:
+            difference = 1
+
         percent_off_list.append(difference)
     tolerance = tolerance_percent / 100
     if any(elt >= tolerance for elt in percent_off_list):

@@ -73,7 +73,7 @@ class TestVentCompareMethods(unittest.TestCase):
         array1 = np.array([1,0,1,0,1,0])
         array2 = np.array([1,0,1,0,1,0])
         array3 = np.array([1,0,1,0,1,0])
-        our_result12 = (relative_levenshtein(array1,array2))
-        our_result13 = (relative_levenshtein(array1,array3))
+        our_result12 = relative_levenshtein(array1,array2)
+        our_result13 = relative_levenshtein(array1,array3)
         self.assertEqual(our_result12, our_result13)
 
