@@ -1,10 +1,10 @@
 #  environment document
 
-name: resurfemg_py310
+name: resurfemg_env
 channels:
   - conda-forge
 dependencies:
-  - python=3.10
+  - python>=3.9
   - ipympl
   - ipywidgets>=7.7.0
   - jupyter>=1.0.0
@@ -21,10 +21,10 @@ dependencies:
   - scipy>=1.7.1
   - sphinx>=4.5.0
   - textdistance>=4.2.1
-  - tk>=8.6.12 
+  - tk>=8.6.12
   - neurokit2>=0.2.7
-  - pip:
-    - resurfemg
+  # - pip:
+  #   - resurfemg
 
 
 
