@@ -204,8 +204,10 @@ class TestPickingMethods(unittest.TestCase):
     def test_compute_ICA_two_comp_multi(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        t = np.array([x/2048 for x in range(len(sample_emg_filtered[0]))])
         sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
-        sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
+        sample_emg_filtered[2]= sample_emg_filtered[0]*1.7+np.sin(
+            t * 2 * np.pi)
         components = compute_ica_two_comp_multi(sample_emg_filtered)
         self.assertEqual(
             (len(components)),
@@ -264,13 +266,18 @@ class TestGating(unittest.TestCase):
         )
 
     def test_gating_method_2_no_prior_segment(self):
-        ecg_gated_2 = gating(self.sample_emg_filtered[0, :], [100], gate_width=205, method=2)
+        ecg_gated_2 = gating(
+            self.sample_emg_filtered[0, :], [100], gate_width=205, method=2)
 
         self.assertFalse(
             np.isnan(np.sum(ecg_gated_2))
         )
     def test_gating_method_3(self):
-        ecg_peaks, _  = scipy.signal.find_peaks(self.sample_emg_filtered[0, :10*2048-1])
+        height_threshold = np.max(self.sample_emg_filtered)/2
+        ecg_peaks, _  = scipy.signal.find_peaks(
+            self.sample_emg_filtered[0, :10*2048-1], 
+            height=height_threshold)
+
         ecg_gated_3 = gating(self.sample_emg_filtered[0, :10*2048], ecg_peaks,
                              gate_width=205, method=3)
 
