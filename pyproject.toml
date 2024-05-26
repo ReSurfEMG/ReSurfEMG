@@ -59,18 +59,10 @@ dev = ['pytest',
        'twine']
 
 [tool.setuptools]
-packages = ['resurfemg',
-            'resurfemg.cli',
-            'resurfemg.config',
-            'resurfemg.data_connector',
-            'resurfemg.helper_functions',
-            'resurfemg.machine_learning',
-            'resurfemg.pipelines',
-            'resurfemg.postprocessing',
-            'resurfemg.preprocessing',
-            'resurfemg.visualization']
 license-files = ["LICENSE"]
 
+[tool.setuptools.packages.find]
+include = ["resurfemg*"]
 
 [tool.setuptools_scm]
 version_file = "resurfemg/__version__.py"
