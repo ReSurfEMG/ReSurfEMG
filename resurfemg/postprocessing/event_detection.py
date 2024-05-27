@@ -72,7 +72,7 @@ def onoffpeak_slope_extrapolation(
     :param peak_idxs: list of peak indices for which to find on- and offset
     :type peak_idxs: ~numpy.ndarray
     :slope_window_s: how many samples on each side to use for the comparison
-        to consider for detecting the local maximum slope
+    to consider for detecting the local maximum slope
     :type fs: int
     :returns: peak_start_idxs, peak_end_idxs, valid_starts_bools,
     valid_ends_bools, valid_peaks
