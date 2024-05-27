@@ -146,3 +146,15 @@
 	created submodules were not included in the builds. This is now fixed.
 	- Small adaptations to config.simulate_ventilator_with_occlusions to
 	simulate more realistic Pocc manoeuvres.
+
+## Release 0.3.0
+
+* Major revision
+
+	- Conversion from setup.py build to pyproject.toml build
+	- Discontinue Conda package releases
+	- Include Python 3.10 and 3.11 support
+	- Introduction of new functions:
+		- postprocessing.baseline: Moving baseline, Slopesum baseline
+		- postprocessing.event_detection: On-/Offset detection using baseline crossing, and maximum slope extrapolation.
+

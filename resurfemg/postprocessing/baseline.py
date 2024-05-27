@@ -55,28 +55,27 @@ def slopesum_baseline(
     ma_window=None,
     perc_window=None,
 ):
-    """This function calculates the augmented version of the moving baseline
-        from a filtered EMG, using a slope sum
-
-        :param emg_env: filtered envelope signal of EMG data
-        :type emg_env: ~numpy.ndarray
-        :param window_s: window length in seconds
-        :type window_s: int
-        :param step_s: number of consecutive samples with the same baseline
-        value
-        :type step_s: int
-        :param fs: sample rate from recording
-        :type fs: int
-        :param set_percentile
-        :type set_percentile: float (0-100)
-        :param ma_window: moving average window in samples for average dy/dt
-        :type ma_window: int
-        :param perc_window: number of consecutive samples with the same
-        baseline value
-        :type perc_window: int
-        :returns: The slopesum baseline for the filtered EMG data
-        :rtype: ~numpy.ndarray
-        """
+    """
+    This function calculates the augmented version of the moving baseline from
+    a filtered EMG, using a slope sum.
+    :param emg_env: filtered envelope signal of EMG data
+    :type emg_env: ~numpy.ndarray
+    :param window_s: window length in seconds
+    :type window_s: int
+    :param step_s: number of consecutive samples with the same baseline value
+    :type step_s: int
+    :param emg_sample_rate: sample rate from recording
+    :type emg_sample_rate: int
+    :param set_percentile
+    :type set_percentile: float (0-100)
+    :param ma_window: moving average window in samples for average dy/dt
+    :type ma_window: int
+    :param perc_window: number of consecutive samples with the same
+    baseline value
+    :type perc_window: int
+    :returns: The slopesum baseline for the filtered EMG data
+    :rtype: ~numpy.ndarray
+    """
 
     if ma_window is None:
 
