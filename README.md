@@ -134,13 +134,13 @@ ReSurfEMG is a pure Python package. Below is the list of
 platforms that should work. Other platforms may work, but have had less extensive testing.
 Please note that where
 python.org Python stated as supported, it means
-that versions 3.9 are supported.
+that versions 3.9 and 3.10 are supported.
 
 #### AMD64 (x86)
 
 |                             | Linux     | Win       | OSX       |
 |:---------------------------:|:---------:|:---------:|:---------:|
-| ![p](etc/python-logo.png)   | Supported | Unknown   | Unknown   |
+| ![p](etc/python-logo.png)   | Supported | Supported   | Unknown   |
 | ![a](etc/anaconda-logo.png) | Supported | Supported | Supported |
 
 ### Installation for all supported platforms
@@ -238,16 +238,17 @@ from one of the package indexes to which we publish released versions
 modify the library code (and possibly contribute their changes back or eventually publish thier own modified fork). NB: you can accomplish modifications of the code, submit PRs and soforth without 
 a 'developer's setup' but we feel this setup will make advanced contributions easier.
 
-We have transitioned to a fully Python 3.9 environment.  The
-instructions below are for our newer versions above 3.0.0:
+We have transitioned to a fully Python 3.9+ environment. 
 (For older instructions with `venv` please see versions below 0.2.0, and
 adapt them if using Windows and/or a different Python version than
-Python.org Python e.g. you may need to use `.venv\Scripts\activate.bat` in
-place of `.venv/bin/activate`.  This will create a distributable
-package from the source code, then install it in the currently active
-environment.  This will also install development tools we use
+Python.org Python. e.g. you may need to use `.venv\Scripts\activate.bat` in
+place of `.venv/bin/activate`) 
+The instructions below are for our newer versions above 3.0.0. This will create 
+a distributable package from the source code, then install it in the currently
+active environment.  This will also install development tools we use
 s.a. `pytest` and `codestyle` and will also install tools we use for
-working with the library, s.a. `jupyter`.)
+working with the library, s.a. `jupyter`:
+
 
 After checking out the source code, create virtual environment.  Both
 `conda` and `venv` environments are supported, however, if you are on
@@ -267,14 +268,14 @@ Windows, we reccomend using `conda`.
 
 # On Linux:
 ``` sh
-python3.9 -m venv .venv39
-source .venv39/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 ``` 
   
 # On Windows:
 ``` sh
-python3.9 -m venv .venv39
-.venv39\Scripts\activate.bat
+python -m venv .venv
+.venv\Scripts\activate.bat
 pip install -e .[dev]
 ```
 

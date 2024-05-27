@@ -79,6 +79,7 @@ def slopesum_baseline(
         """
 
     if ma_window is None:
+
         ma_window = fs//2
 
     if perc_window is None:
@@ -93,7 +94,6 @@ def slopesum_baseline(
 
     # 2. Calculate the augmented moving baseline for the sEAdi data
     # 2.a. Rolling standard deviation and mean over provided window length
-
     y_baseline_series = pd.Series(rolling_baseline)
     y_baseline_std = y_baseline_series.rolling(window_s,
                                                min_periods=1,

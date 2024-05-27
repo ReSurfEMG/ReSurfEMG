@@ -1,0 +1,9 @@
+prune *
+exclude *
+include pyproject.toml
+include setup.py
+include README.md
+include LICENSE
+include citation.cff
+graft resurfemg
+global-exclude *.py[cod]

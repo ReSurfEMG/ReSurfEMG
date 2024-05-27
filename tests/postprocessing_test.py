@@ -5,7 +5,7 @@ import unittest
 import os
 import numpy as np
 import scipy
-# helper_functions
+
 from resurfemg.postprocessing.features import (
     entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve, 
     times_under_curve, find_peak_in_breath,variability_maker)
@@ -13,7 +13,6 @@ from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
 from resurfemg.postprocessing.event_detection import (
     onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation)
-
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -151,7 +150,6 @@ class TestBaseline(unittest.TestCase):
             (len(self.breathing_signal)),
             len(sinusbase),
             )
-
 
 class TestEventDetection(unittest.TestCase):
     fs = 1000
