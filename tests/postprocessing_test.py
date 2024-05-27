@@ -1,21 +1,18 @@
-#sanity tests for the resurfemg library
+"""sanity tests for the postprocessing module of the resurfemg library"""
 
 
 import unittest
 import os
 import numpy as np
 import scipy
-# helper_functions
-from resurfemg.postprocessing.features import entropy_scipy
-from resurfemg.postprocessing.features import pseudo_slope
-from resurfemg.postprocessing.features import area_under_curve
-from resurfemg.postprocessing.features import simple_area_under_curve
-from resurfemg.postprocessing.features import times_under_curve
-from resurfemg.postprocessing.features import find_peak_in_breath
-from resurfemg.postprocessing.features import variability_maker
-from resurfemg.postprocessing.baseline import moving_baseline
-from resurfemg.postprocessing.baseline import slopesum_baseline
-from resurfemg.postprocessing.baseline import onoffpeak_baseline
+
+from resurfemg.postprocessing.features import (
+    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve, 
+    times_under_curve, find_peak_in_breath,variability_maker)
+from resurfemg.postprocessing.baseline import (
+    moving_baseline, slopesum_baseline)
+from resurfemg.postprocessing.event_detection import (
+    onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation)
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -154,47 +151,58 @@ class TestBaseline(unittest.TestCase):
             len(sinusbase),
             )
 
-    def test_onoffpeak_starts(self):
-        baseline = 0.5 * np.ones((len(self.breathing_signal), ))
-        treshold = 0
-        width = self.fs // 2
-        prominence = 0.5 * \
-            (np.nanpercentile(self.breathing_signal - baseline, 75)
-             + np.nanpercentile(self.breathing_signal - baseline, 50))
+class TestEventDetection(unittest.TestCase):
+    fs = 1000
+    t = np.arange(0, 10, 1/fs)
+    slow_component = np.sin(2 * np.pi * 0.1 * t)
+    fast_component = 0.5 * np.sin(2 * np.pi * 0.5 * t)
+    breathing_signal = np.abs(slow_component + fast_component)
 
-        peak_idxs, _ = scipy.signal.find_peaks(
-            self.breathing_signal,
-            height=treshold,
-            prominence=prominence,
-            width=width)
+    baseline = 0.5 * np.ones((len(breathing_signal), ))
+    treshold = 0
+    width = fs // 2
+    prominence = 0.5 * (np.nanpercentile(breathing_signal - baseline, 75)
+                        + np.nanpercentile(breathing_signal - baseline, 50))
 
-        _, peak_start_idxs, _ = onoffpeak_baseline(
-             self.breathing_signal, baseline, peak_idxs)
+    peak_idxs, _ = scipy.signal.find_peaks(
+        breathing_signal,
+        height=treshold,
+        prominence=prominence,
+        width=width)
+
+    def test_baseline_crossing_starts(self):
+        _, peak_start_idxs, _ = onoffpeak_baseline_crossing(
+             self.breathing_signal, self.baseline, self.peak_idxs)
 
         self.assertEqual(
-            len(peak_idxs),
+            len(self.peak_idxs),
             len(peak_start_idxs),
             )
 
-    def test_onoffpeak_ends(self):
-        baseline = 0.5 * np.ones((len(self.breathing_signal), ))
-        treshold = 0
-        width = self.fs // 2
-        prominence = 0.5 * \
-            (np.nanpercentile(self.breathing_signal - baseline, 75)
-             + np.nanpercentile(self.breathing_signal - baseline, 50))
-
-        peak_idxs, _ = scipy.signal.find_peaks(
-            self.breathing_signal,
-            height=treshold,
-            prominence=prominence,
-            width=width)
-
-        _, _, peak_end_idxs = onoffpeak_baseline(
-             self.breathing_signal, baseline, peak_idxs)
+    def test_baseline_crossing_ends(self):
+        _, _, peak_end_idxs = onoffpeak_baseline_crossing(
+             self.breathing_signal, self.baseline, self.peak_idxs)
 
         self.assertEqual(
-            len(peak_idxs),
+            len(self.peak_idxs),
+            len(peak_end_idxs),
+            )
+    
+    def test_slope_extrapolate_starts(self):
+        peak_start_idxs, _, _, _, _ = onoffpeak_slope_extrapolation(
+             self.breathing_signal, self.fs, self.peak_idxs, self.fs//4)
+
+        self.assertEqual(
+            len(self.peak_idxs),
+            len(peak_start_idxs),
+            )
+
+    def test_slope_extrapolate_ends(self):
+        _, peak_end_idxs, _, _, _ = onoffpeak_slope_extrapolation(
+             self.breathing_signal, self.fs, self.peak_idxs, self.fs//4)
+
+        self.assertEqual(
+            len(self.peak_idxs),
             len(peak_end_idxs),
             )
 

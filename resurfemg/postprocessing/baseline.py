@@ -8,6 +8,7 @@ This file contains functions to calculate moving baselines from a filtered
 """
 import numpy as np
 import pandas as pd
+from ..helper_functions.helper_functions import derivative
 
 
 def moving_baseline(
@@ -48,7 +49,7 @@ def slopesum_baseline(
     emg_env,
     window_s,
     step_s,
-    emg_sample_rate,
+    fs,
     set_percentile=33,
     augm_percentile=25,
     ma_window=None,
@@ -64,8 +65,8 @@ def slopesum_baseline(
         :param step_s: number of consecutive samples with the same baseline
         value
         :type step_s: int
-        :param emg_sample_rate: sample rate from recording
-        :type emg_sample_rate: int
+        :param fs: sample rate from recording
+        :type fs: int
         :param set_percentile
         :type set_percentile: float (0-100)
         :param ma_window: moving average window in samples for average dy/dt
@@ -78,12 +79,11 @@ def slopesum_baseline(
         """
 
     if ma_window is None:
-        ma_window = emg_sample_rate//2
-        print(ma_window)
+
+        ma_window = fs//2
 
     if perc_window is None:
-        perc_window = emg_sample_rate
-        print(perc_window)
+        perc_window = fs
 
     # 1. call the Graßhoff version function for moving baseline
     rolling_baseline = moving_baseline(
@@ -94,8 +94,6 @@ def slopesum_baseline(
 
     # 2. Calculate the augmented moving baseline for the sEAdi data
     # 2.a. Rolling standard deviation and mean over provided window length
-    # baseline_w_emg = int(window_s * emg_sample_rate)  # window length
-
     y_baseline_series = pd.Series(rolling_baseline)
     y_baseline_std = y_baseline_series.rolling(window_s,
                                                min_periods=1,
@@ -105,9 +103,7 @@ def slopesum_baseline(
                                                 center=True).mean().values
 
     # 2.b. Augmented signal: EMG + abs([dEMG/dt]_smoothed)
-    s_di = pd.Series(emg_env - rolling_baseline)
-    y_ma = s_di.rolling(window=ma_window, center=True).mean().values
-    dy_dt = (y_ma[1:] - y_ma[:-1]) * emg_sample_rate
+    dy_dt = derivative(emg_env - rolling_baseline, fs, ma_window)
     y_aug = emg_env[:-1] + np.abs(dy_dt)
 
     # 2.c. Run the moving median filter over the augmented signal to obtain
@@ -126,46 +122,3 @@ def slopesum_baseline(
     _slopesum_baseline[i+1] = _slopesum_baseline[i]
     return (_slopesum_baseline, y_baseline_mean,
             y_baseline_std, y_baseline_series)
-
-
-def onoffpeak_baseline(
-    emg_env,
-    baseline,
-    peak_idxs
-):
-    """This function calculates the peaks of each breath using the
-    slopesum baseline from a filtered EMG
-
-    :param emg_env: filtered envelope signal of EMG data
-    :type emg_env: ~numpy.ndarray
-    :param baseline: baseline signal of EMG data for baseline detection
-    :type baseline: ~numpy.ndarray
-    :param peak_idxs: list of peak indices for which to find on- and offset
-    :type peak_idxs: ~numpy.ndarray
-    :returns: peak_idxs, peak_start_idxs, peak_end_idxs
-    :rtype: list
-    """
-
-    # Detect the sEAdi on- and offsets
-    baseline_crossings_idx = np.nonzero(
-        np.diff(np.sign(emg_env - baseline)) != 0)[0]
-
-    peak_start_idxs = np.zeros((len(peak_idxs),), dtype=int)
-    peak_end_idxs = np.zeros((len(peak_idxs),), dtype=int)
-    for peak_nr, peak_idx in enumerate(peak_idxs):
-        delta_samples = peak_idx - baseline_crossings_idx[
-            baseline_crossings_idx < peak_idx]
-        if len(delta_samples) < 1:
-            peak_start_idxs[peak_nr] = 0
-            peak_end_idxs[peak_nr] = baseline_crossings_idx[
-                baseline_crossings_idx > peak_idx][0]
-        else:
-            a = np.argmin(delta_samples)
-
-            peak_start_idxs[peak_nr] = int(baseline_crossings_idx[a])
-            if a < len(baseline_crossings_idx) - 1:
-                peak_end_idxs[peak_nr] = int(baseline_crossings_idx[a+1])
-            else:
-                peak_end_idxs[peak_nr] = len(emg_env) - 1
-
-    return (peak_idxs, peak_start_idxs, peak_end_idxs)
