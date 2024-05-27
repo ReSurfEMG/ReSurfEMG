@@ -120,6 +120,21 @@ It performs a time-delay embedding of a time series
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.helper_functions.derivative">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.helper_functions.</span></span><span class="sig-name descname"><span class="pre">derivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.helper_functions.derivative" title="Link to this definition">¶</a></dt>
+<dd><p>This function calculates the first derivative of a signal. If
+window_s is given, the signal is smoothed before derivative calculation.
+:param signal: signal to calculate the derivate over
+:type signal: ~numpy.ndarray
+:param fs: sample rate
+:type fs: int
+:param window_s: centralised averaging window length in samples
+:type window_s: int
+:returns: The first derivative of the signal length len(signal)-1.
+:rtype: ~numpy.ndarray</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.helper_functions.distance_matrix">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.helper_functions.</span></span><span class="sig-name descname"><span class="pre">distance_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array_b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.helper_functions.distance_matrix" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
@@ -299,6 +314,7 @@ on a cut-off value.
 </li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.helper_functions.count_decision_array"><code class="docutils literal notranslate"><span class="pre">count_decision_array()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.helper_functions.delay_embedding"><code class="docutils literal notranslate"><span class="pre">delay_embedding()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.helper_functions.derivative"><code class="docutils literal notranslate"><span class="pre">derivative()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.helper_functions.distance_matrix"><code class="docutils literal notranslate"><span class="pre">distance_matrix()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.helper_functions.intersections"><code class="docutils literal notranslate"><span class="pre">intersections()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.helper_functions.merge"><code class="docutils literal notranslate"><span class="pre">merge()</span></code></a></li>

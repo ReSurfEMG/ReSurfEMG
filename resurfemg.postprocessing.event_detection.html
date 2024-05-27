@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>resurfemg.postprocessing.event_detection module &#8212; resurfemg 0.2.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
+    <script src="_static/documentation_options.js?v=37f418d5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="resurfemg.postprocessing.features module" href="resurfemg.postprocessing.features.html" />
+    <link rel="prev" title="resurfemg.postprocessing.baseline module" href="resurfemg.postprocessing.baseline.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.postprocessing.features.html" title="resurfemg.postprocessing.features module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.postprocessing.baseline.html" title="resurfemg.postprocessing.baseline module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.postprocessing.html" accesskey="U">resurfemg.postprocessing package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.postprocessing.event_detection module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-resurfemg.postprocessing.event_detection">
+<span id="resurfemg-postprocessing-event-detection-module"></span><h1>resurfemg.postprocessing.event_detection module<a class="headerlink" href="#module-resurfemg.postprocessing.event_detection" title="Link to this heading">¶</a></h1>
+<p>Copyright 2022 Netherlands eScience Center and University of Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
+<p>This file contains functions to extract detect peak, on- and offset samples.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.event_detection.onoffpeak_baseline_crossing">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.event_detection.</span></span><span class="sig-name descname"><span class="pre">onoffpeak_baseline_crossing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_idxs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.event_detection.onoffpeak_baseline_crossing" title="Link to this definition">¶</a></dt>
+<dd><p>This function calculates the peaks of each breath using the
+slopesum baseline from a filtered EMG</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emg_env</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – filtered envelope signal of EMG data</p></li>
+<li><p><strong>baseline</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – baseline signal of EMG data for baseline detection</p></li>
+<li><p><strong>peak_idxs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – list of peak indices for which to find on- and offset</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>peak_idxs, peak_start_idxs, peak_end_idxs</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.postprocessing.event_detection.onoffpeak_slope_extrapolation">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.event_detection.</span></span><span class="sig-name descname"><span class="pre">onoffpeak_slope_extrapolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slope_window_s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.event_detection.onoffpeak_slope_extrapolation" title="Link to this definition">¶</a></dt>
+<dd><p>This function calculates the peak on- and offsets of a signal by extra-
+polating the maximum slopes in de slope_window_s to the zero crossings.
+The validity arrays provide feedback on the validity of the detected on-
+and offsets, aiming to prevent onsets after peak indices, offsets before
+peak.
+indices, and overlapping peaks.
+:param signal: signal to identify on- and offsets in
+:type signal: ~numpy.ndarray
+:param fs: sample rate
+:type fs: int
+:param peak_idxs: list of peak indices for which to find on- and offset
+:type peak_idxs: ~numpy.ndarray
+:slope_window_s: how many samples on each side to use for the comparison
+to consider for detecting the local maximum slope
+:type fs: int
+:returns: peak_start_idxs, peak_end_idxs, valid_starts_bools,
+valid_ends_bools, valid_peaks
+:rtype: (list, list, list, list, list)</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">resurfemg.postprocessing.event_detection module</a><ul>
+<li><a class="reference internal" href="#resurfemg.postprocessing.event_detection.onoffpeak_baseline_crossing"><code class="docutils literal notranslate"><span class="pre">onoffpeak_baseline_crossing()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.postprocessing.event_detection.onoffpeak_slope_extrapolation"><code class="docutils literal notranslate"><span class="pre">onoffpeak_slope_extrapolation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="resurfemg.postprocessing.baseline.html"
+                          title="previous chapter">resurfemg.postprocessing.baseline module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="resurfemg.postprocessing.features.html"
+                          title="next chapter">resurfemg.postprocessing.features module</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/resurfemg.postprocessing.event_detection.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.postprocessing.features.html" title="resurfemg.postprocessing.features module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.postprocessing.baseline.html" title="resurfemg.postprocessing.baseline module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.postprocessing.html" >resurfemg.postprocessing package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.postprocessing.event_detection module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2022, c.moore@esciencecenter.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+  </body>
+</html>
