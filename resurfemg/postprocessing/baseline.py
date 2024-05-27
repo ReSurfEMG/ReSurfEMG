@@ -77,7 +77,6 @@ def slopesum_baseline(
     :rtype: ~numpy.ndarray
     """
 
-
     if ma_window is None:
 
         ma_window = fs//2
