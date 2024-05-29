@@ -158,3 +158,8 @@
 		- postprocessing.baseline: Moving baseline, Slopesum baseline
 		- postprocessing.event_detection: On-/Offset detection using baseline crossing, and maximum slope extrapolation.
 
+## Release 0.3.1
+
+* Minor revision
+	- Bug fixes in:
+		- postprocessing.event_detection: On-/Offset detection using baseline crossing, and maximum slope extrapolation.
