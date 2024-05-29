@@ -34,6 +34,8 @@ def onoffpeak_baseline_crossing(
 
     peak_start_idxs = np.zeros((len(peak_idxs),), dtype=int)
     peak_end_idxs = np.zeros((len(peak_idxs),), dtype=int)
+    valid_starts_bools = np.array([True for _ in range(len(peak_idxs))])
+    valid_ends_bools = np.array([True for _ in range(len(peak_idxs))])
     for peak_nr, peak_idx in enumerate(peak_idxs):
         delta_samples = peak_idx - baseline_crossings_idx[
             baseline_crossings_idx < peak_idx]
@@ -50,7 +52,40 @@ def onoffpeak_baseline_crossing(
             else:
                 peak_end_idxs[peak_nr] = len(emg_env) - 1
 
-    return (peak_idxs, peak_start_idxs, peak_end_idxs)
+        # Evaluate start validity
+        if (peak_nr > 0) and (peak_start_idxs[peak_nr] > peak_idxs[peak_nr]):
+            valid_starts_bools[peak_nr] = False
+
+        # Evaluate end validity
+        if ((peak_nr < (len(peak_idxs)-2))
+                and (valid_ends_bools[peak_nr] > peak_idxs[peak_nr+1])):
+            valid_ends_bools[peak_nr] = False
+
+        # Evaluate conflicts
+        if ((peak_nr > 0)
+                and (peak_start_idxs[peak_nr] <= peak_end_idxs[peak_nr-1])):
+            if valid_starts_bools[peak_nr] is False:
+                # The current start is already labelled as incorrect
+                pass
+            elif valid_ends_bools[peak_nr-1] is False:
+                # The previous end is already labelled as incorrect
+                pass
+            elif ((peak_idx - peak_start_idxs[peak_nr])
+                    > (peak_end_idxs[peak_nr-1] - peak_idxs[peak_nr-1])):
+                # New start is further apart from peak idx than previous end
+                # New start is probably invalid
+                valid_starts_bools[peak_nr] = False
+            else:
+                # Previous end is further apart from peak idx than new start
+                # Previous end is probably invalid
+                valid_ends_bools[peak_nr-1] = False
+
+    valid_peaks = [valid_detections[0] and valid_detections[1]
+                   for valid_detections
+                   in zip(valid_starts_bools, valid_ends_bools)]
+
+    return (peak_idxs, peak_start_idxs, peak_end_idxs,
+            valid_starts_bools, valid_ends_bools, valid_peaks)
 
 
 def onoffpeak_slope_extrapolation(
@@ -109,7 +144,7 @@ def onoffpeak_slope_extrapolation(
         peak_start_idxs[peak_nr] = start_s
 
         if len(max_downslope_idxs[max_downslope_idxs > peak_idx]) < 1:
-            end_s = len(signal)
+            end_s = len(signal)-1
         else:
             if peak_nr > 0:
                 prev_downslope = dsignal_dt[max_downslope_idx]
@@ -122,7 +157,7 @@ def onoffpeak_slope_extrapolation(
             downslope_idx_ds = np.array(
                 y_val * fs // (dy_dt_val), dtype=int).astype(np.int64)
 
-            end_s = min([len(signal), max_downslope_idx - downslope_idx_ds])
+            end_s = min([len(signal)-1, max_downslope_idx - downslope_idx_ds])
 
         peak_end_idxs[peak_nr] = end_s
 
@@ -142,7 +177,7 @@ def onoffpeak_slope_extrapolation(
             if valid_ends_bools[peak_nr-1] is False:
                 # The previous end is already labelled as incorrect
                 pass
-            elif -new_upslope > prev_downslope:
+            elif new_upslope > -prev_downslope:
                 # New upslope is steeper than previous downslope
                 # Previous downslope is probably invalid
                 valid_ends_bools[peak_nr-1] = False

@@ -171,7 +171,7 @@ class TestEventDetection(unittest.TestCase):
         width=width)
 
     def test_baseline_crossing_starts(self):
-        _, peak_start_idxs, _ = onoffpeak_baseline_crossing(
+        _, peak_start_idxs, _, _, _, _ = onoffpeak_baseline_crossing(
              self.breathing_signal, self.baseline, self.peak_idxs)
 
         self.assertEqual(
@@ -180,7 +180,7 @@ class TestEventDetection(unittest.TestCase):
             )
 
     def test_baseline_crossing_ends(self):
-        _, _, peak_end_idxs = onoffpeak_baseline_crossing(
+        _, _, peak_end_idxs, _, _, _ = onoffpeak_baseline_crossing(
              self.breathing_signal, self.baseline, self.peak_idxs)
 
         self.assertEqual(
