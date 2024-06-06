@@ -5,6 +5,7 @@
 import unittest
 import os
 import scipy
+from scipy.signal import find_peaks
 import numpy as np
 from resurfemg.preprocessing.filtering import emg_bandpass_butter
 from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
@@ -25,6 +26,7 @@ from resurfemg.preprocessing.ecg_removal import gating
 from resurfemg.preprocessing.ecg_removal import pick_highest_correlation_array_multi
 from resurfemg.preprocessing.envelope import naive_rolling_rms
 from resurfemg.preprocessing.envelope import vect_naive_rolling_rms
+from resurfemg.preprocessing.envelope import full_rolling_rms
 from resurfemg.preprocessing.ecg_removal import find_peaks_in_ecg_signal
 
 sample_emg = os.path.join(
@@ -37,7 +39,6 @@ sample_emg = os.path.join(
 )
 
 class TestFilteringMethods(unittest.TestCase):
-
     def test_emg_band_pass_butter(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
@@ -67,6 +68,16 @@ class TestFilteringMethods(unittest.TestCase):
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,
         )
+
+class TestRmsMethods(unittest.TestCase):
+    fs_emg = 2048
+    t_emg = np.array(range(3*fs_emg))/fs_emg
+    x_sin = np.sin(t_emg * 2 * np.pi)
+    x_sin[x_sin < 0] = 0
+    print(x_sin, x_sin.shape)
+    x_rand = np.random.normal(0, 1, size=len(x_sin))
+    x_t = x_sin * x_rand
+    peaks_source, _ = find_peaks(x_sin, prominence=0.1)
     def test_naive_rolling_rms(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = naive_rolling_rms(sample_read.samples[0], 10)
@@ -81,7 +92,21 @@ class TestFilteringMethods(unittest.TestCase):
             (len(sample_emg_filtered)),
             len(sample_read.samples[0]) ,
         )
+    def test_full_rolling_rms_length(self):
+        x_rms = full_rolling_rms(self.x_t, self.fs_emg//5)
+        self.assertEqual(
+            (len(self.x_t)),
+            len(x_rms) ,
+        )
+    def test_full_rolling_rms_time_shift(self):
+        x_rms = full_rolling_rms(self.x_t, self.fs_emg//5)
+        peaks_rms, _ = find_peaks(x_rms, prominence=0.1)
+        peak_errors = np.abs(
+            (self.t_emg[peaks_rms] - self.t_emg[self.peaks_source]))
 
+        self.assertFalse(
+            np.any(peak_errors > 0.05)
+        )
 
 class TestCuttingingMethods(unittest.TestCase):
 
