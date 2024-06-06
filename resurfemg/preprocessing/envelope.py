@@ -24,16 +24,12 @@ def full_rolling_rms(data_emg, window_length):
     :returns: The root-mean-squared EMG sample data
     :rtype: ~numpy.ndarray
     """
-    x_pad = np.pad(
-        data_emg,
-        (0, window_length-1),
-        'constant',
-        constant_values=(0, 0)
-    )
-
-    x_2 = np.power(x_pad, 2)
+    padded_samples = int(np.floor(window_length/2))
     window = np.ones(window_length)/float(window_length)
-    emg_rms = np.sqrt(np.convolve(x_2, window, 'valid'))
+    emg_rms_padded = np.sqrt(
+        np.convolve(np.power(data_emg, 2), window, 'full'))
+    emg_rms = emg_rms_padded[padded_samples:-padded_samples]
+
     return emg_rms
 
 
