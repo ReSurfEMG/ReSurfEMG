@@ -74,7 +74,6 @@ class TestRmsMethods(unittest.TestCase):
     t_emg = np.array(range(3*fs_emg))/fs_emg
     x_sin = np.sin(t_emg * 2 * np.pi)
     x_sin[x_sin < 0] = 0
-    print(x_sin, x_sin.shape)
     x_rand = np.random.normal(0, 1, size=len(x_sin))
     x_t = x_sin * x_rand
     peaks_source, _ = find_peaks(x_sin, prominence=0.1)
