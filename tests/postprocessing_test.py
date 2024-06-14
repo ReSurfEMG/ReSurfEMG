@@ -6,11 +6,12 @@ import os
 import numpy as np
 import scipy
 
-from resurfemg.postprocessing.features import (
-    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve, 
-    times_under_curve, find_peak_in_breath,variability_maker)
+from resurfemg.preprocessing import envelope as evl
 from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
+from resurfemg.postprocessing.features import (
+    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve, 
+    times_under_curve, find_peak_in_breath,variability_maker, snr_pseudo)
 from resurfemg.postprocessing.event_detection import (
     onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation)
 
@@ -22,6 +23,19 @@ sample_emg = os.path.join(
     '002',
     'EMG_recording.Poly5',
 )
+fs_emg = 2048
+t_emg = np.array([s_t/fs_emg for s_t in range(10*fs_emg)])
+y_sin = np.cos((0.5* t_emg - 0.5)* 2 * np.pi)
+y_sin[y_sin < 0] = 0
+y_rand = np.random.normal(0, 1, size=len(y_sin))
+y_rand_baseline = np.random.normal(0, 1, size=len(y_sin)) / 10
+y_t = y_sin * y_rand + y_rand_baseline
+
+# Get RMS signal
+y_env = evl.full_rolling_rms(y_t, fs_emg // 5)
+y_baseline = moving_baseline(y_env, 5*fs_emg, fs_emg//2)
+
+peaks_env, _ = scipy.signal.find_peaks(y_env, prominence=0.1)
 
 class TestEntropyMethods(unittest.TestCase):
 
@@ -204,6 +218,21 @@ class TestEventDetection(unittest.TestCase):
         self.assertEqual(
             len(self.peak_idxs),
             len(peak_end_idxs),
+            )
+
+class TestSnrPseudo(unittest.TestCase):
+    snr_values = snr_pseudo(y_env, peaks_env, y_baseline)
+    def test_snr_length(self):
+        self.assertEqual(
+            len(self.snr_values),
+            len(peaks_env),
+            )
+
+    def test_snr_values(self):
+        median_snr = np.median(self.snr_values)
+        self.assertEqual(
+            np.round(median_snr),
+            10.0,
             )
 
 if __name__ == '__main__':
