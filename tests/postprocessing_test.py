@@ -11,7 +11,8 @@ from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
 from resurfemg.postprocessing.features import (
     entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve, 
-    times_under_curve, find_peak_in_breath,variability_maker, snr_pseudo)
+    times_under_curve, find_peak_in_breath,variability_maker)
+from resurfemg.postprocessing.quality_assessment import (snr_pseudo)
 from resurfemg.postprocessing.event_detection import (
     onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation)
 
