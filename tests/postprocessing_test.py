@@ -12,7 +12,8 @@ from resurfemg.postprocessing.baseline import (
 from resurfemg.postprocessing.features import (
     entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve, 
     times_under_curve, find_peak_in_breath,variability_maker)
-from resurfemg.postprocessing.quality_assessment import (snr_pseudo)
+from resurfemg.postprocessing.quality_assessment import (
+    snr_pseudo, pocc_quality)
 from resurfemg.postprocessing.event_detection import (
     onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation)
 
@@ -24,19 +25,42 @@ sample_emg = os.path.join(
     '002',
     'EMG_recording.Poly5',
 )
+
+# Dummy EMG signal
 fs_emg = 2048
 t_emg = np.array([s_t/fs_emg for s_t in range(10*fs_emg)])
 y_sin = np.cos((0.5* t_emg - 0.5)* 2 * np.pi)
 y_sin[y_sin < 0] = 0
 y_rand = np.random.normal(0, 1, size=len(y_sin))
 y_rand_baseline = np.random.normal(0, 1, size=len(y_sin)) / 10
-y_t = y_sin * y_rand + y_rand_baseline
+y_t_emg = y_sin * y_rand + y_rand_baseline
 
-# Get RMS signal
-y_env = evl.full_rolling_rms(y_t, fs_emg // 5)
-y_baseline = moving_baseline(y_env, 5*fs_emg, fs_emg//2)
+y_env_emg = evl.full_rolling_rms(y_t_emg, fs_emg // 5)
+y_emg_baseline = moving_baseline(y_env_emg, 5*fs_emg, fs_emg//2)
 
-peaks_env, _ = scipy.signal.find_peaks(y_env, prominence=0.1)
+peaks_env, _ = scipy.signal.find_peaks(y_env_emg, prominence=0.1)
+
+# Dummy Pocc signal
+fs_vent = 100
+s_vent = np.array([(s_t) for s_t in range(10*fs_vent)])
+t_vent = (s_vent + 1)/fs_vent
+rr = 12
+t_r = 60/rr
+f_r = 1/t_r
+y_sin = np.sin((f_r* t_vent)* 2 * np.pi)
+y_sin[y_sin > 0] = 0
+y_t_paw = 5 * y_sin
+
+pocc_peaks_valid, _ = scipy.signal.find_peaks(-y_t_paw, prominence=0.1)
+pocc_starts = s_vent[((t_vent+t_r/2)%t_r == 0)]
+pocc_ends = s_vent[(t_vent%t_r == 0)]
+
+PTP_occs = np.zeros(pocc_peaks_valid.shape)
+for _idx, _ in enumerate(pocc_peaks_valid):
+    PTP_occs[_idx] = np.trapz(
+        -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
+        dx=1/fs_vent
+    )
 
 class TestEntropyMethods(unittest.TestCase):
 
@@ -222,7 +246,7 @@ class TestEventDetection(unittest.TestCase):
             )
 
 class TestSnrPseudo(unittest.TestCase):
-    snr_values = snr_pseudo(y_env, peaks_env, y_baseline)
+    snr_values = snr_pseudo(y_env_emg, peaks_env, y_emg_baseline)
     def test_snr_length(self):
         self.assertEqual(
             len(self.snr_values),
@@ -234,6 +258,54 @@ class TestSnrPseudo(unittest.TestCase):
         self.assertEqual(
             np.round(median_snr),
             10.0,
+            )
+
+
+class TestPoccQuality(unittest.TestCase):
+    valid_poccs, _ = pocc_quality(
+        y_t_paw, pocc_peaks_valid, pocc_ends, PTP_occs)
+    def test_valid_pocc(self):
+        self.assertFalse(
+            np.any(~self.valid_poccs)
+            )
+
+    def test_negative_upslope(self):
+        y_sin_shifted = np.sin(((f_r-0.025)* t_vent - 0.11)* 2 * np.pi)
+        y_sin_shifted[y_sin_shifted > 0] = 0
+        y_sin_shifted[t_vent < 7.0] = 0
+        y_t_shifted = 5 * y_sin + 4 * y_sin_shifted
+
+        invalid_upslope, _ = pocc_quality(
+            y_t_shifted, pocc_peaks_valid, pocc_ends, PTP_occs)
+
+        self.assertFalse(
+            invalid_upslope[-1]
+            )
+
+    def test_steep_upslope(self):
+        y_sin_shifted = np.sin((f_r* t_vent - 0.4)* 2 * np.pi) 
+        y_sin_shifted[y_sin_shifted > 0] = 0
+        y_sin_shifted = y_sin_shifted ** 4
+        y_t_steeper = 1000 * y_sin * y_sin_shifted
+
+        peaks_steeper, _ = scipy.signal.find_peaks(-y_t_steeper, prominence=0.1)
+        y_baseline = moving_baseline(-y_t_steeper, 7.5*fs_vent, fs_vent//5)
+
+        _, peak_starts_steep, peak_ends_steep, _, _, _ = \
+            onoffpeak_baseline_crossing(y_t_steeper, y_baseline, peaks_steeper)
+
+        PTP_occs_steep = np.zeros(peaks_steeper.shape)
+        for idx, _ in enumerate(peaks_steeper):
+            PTP_occs_steep[idx] = np.trapz(
+                -y_t_steeper[peak_starts_steep[idx]:peak_ends_steep[idx]],
+                dx=1/fs_vent
+            )
+
+        steep_upslope, _ = pocc_quality(
+            y_t_steeper, peaks_steeper, peak_ends_steep, PTP_occs_steep)
+
+        self.assertFalse(
+            steep_upslope[-1]
             )
 
 if __name__ == '__main__':
