@@ -51,11 +51,11 @@ def pocc_quality(
     dp_up_90_norm_threshold=0.8,
 ):
     """
-    Evaluation of occlusion pressure (Pocc) quality. Poccs are labelled invalid
-    if too many negative deflections happen in the upslope (first decile < 0),
-    or if the upslope is to steep (high absolute or relative 9th decile),
-    indicating occlusion release before the patient's inspiriratory effort has
-    ended.
+    Evaluation of occlusion pressure (Pocc) quality, in accordance with Warnaar
+    et al. (2024). Poccs are labelled invalid if too many negative deflections
+    happen in the upslope (first decile < 0), or if the upslope is to steep
+    (high absolute or relative 9th decile), indicating occlusion release before
+    the patient's inspiriratory effort has ended.
     :param signal: Airway pressure signal
     :type signal: ~numpy.ndarray
     :param pocc_peaks: list of individual peak indices
@@ -94,5 +94,5 @@ def pocc_quality(
         dp_up_90 > dp_up_90_threshold,
         dp_up_90_norm > dp_up_90_norm_threshold
     ])
-    valid_poccs = ~np.any(~criteria_bool_matrix is False, axis=0)
+    valid_poccs = ~np.any(criteria_bool_matrix, axis=0)
     return valid_poccs, criteria_matrix
