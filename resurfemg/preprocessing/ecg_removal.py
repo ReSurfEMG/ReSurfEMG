@@ -436,7 +436,7 @@ def gating(
                 gate_samples.append(k)
 
         src_signal_gated_base = copy.deepcopy(src_signal_gated)
-        src_signal_gated_base[gate_samples] = np.NaN
+        src_signal_gated_base[gate_samples] = np.nan
         src_signal_gated_rms = evl.full_rolling_rms(
             src_signal_gated_base,
             gate_width,)
