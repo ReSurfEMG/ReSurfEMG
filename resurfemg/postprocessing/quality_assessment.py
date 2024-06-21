@@ -42,10 +42,10 @@ def snr_pseudo(
 
 
 def pocc_quality(
-    Paw_signal,
+    p_vent_signal,
     pocc_peaks,
     pocc_ends,
-    PTP_occs,
+    ptp_occs,
     dp_up_10_threshold=0.0,
     dp_up_90_threshold=2.0,
     dp_up_90_norm_threshold=0.8,
@@ -79,10 +79,10 @@ def pocc_quality(
     dp_up_90_norm = np.zeros((len(pocc_peaks),))
     for idx, pocc_peak in enumerate(pocc_peaks):
         end_i = pocc_ends[idx]
-        dp = Paw_signal[pocc_peak+1:end_i]-Paw_signal[pocc_peak:end_i-1]
+        dp = p_vent_signal[pocc_peak+1:end_i]-p_vent_signal[pocc_peak:end_i-1]
         dp_up_10[idx] = np.percentile(dp, 10)
         dp_up_90[idx] = np.percentile(dp, 90)
-        dp_up_90_norm[idx] = dp_up_90[idx] / np.sqrt(PTP_occs[idx])
+        dp_up_90_norm[idx] = dp_up_90[idx] / np.sqrt(ptp_occs[idx])
 
     criteria_matrix = np.array([
         dp_up_10,
