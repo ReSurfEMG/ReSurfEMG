@@ -598,3 +598,68 @@ def entropy_maker(
         print('we defaulted to a slow unoptimized sample entropy')
         output = sampen(array)
     return output
+
+
+def time_product(
+    signal,
+    fs,
+    starts_s,
+    ends_s,
+    baseline=None
+    ):
+    """
+    
+    """
+    if baseline is None:
+        baseline = np.zeros(signal.shape)
+
+    time_products = np.zeros(starts_s.shape)
+    for idx, (start_s, end_s) in enumerate(zip(starts_s, ends_s)):
+        y_delta = signal[start_s:end_s+1]-baseline[start_s:end_s+1]
+        if (not np.all(np.sign(y_delta[1:]) >= 0) 
+            and not np.all(np.sign(y_delta[1:]) <= 0)):
+            warnings.warn("Warning: Curve for peak idx" + str(idx)
+                          + " not entirely above or below baseline. The "
+                          + "calculated integrals will cancel out.")
+
+        time_products[idx] = np.abs(np.trapz(y_delta, dx=1/fs))
+
+    return time_products
+
+def area_under_baseline(
+    signal,
+    fs,
+    peaks_s,
+    starts_s,
+    ends_s,
+    aub_window_s,
+    baseline,
+    ref_signal
+    ):
+    """
+    
+    """
+
+    aubs = np.zeros(peaks_s.shape)
+    for idx, (start_s, peak_s, end_s) in enumerate(zip(starts_s, peaks_s, ends_s)):
+        y_delta_curve = signal[start_s:end_s+1]-baseline[start_s:end_s+1]
+        ref_start_s = max([0, peak_s - aub_window_s])
+        ref_end_s = min([len(signal) - 1, peak_s + aub_window_s])
+        if (not np.all(np.sign(y_delta_curve[1:]) >= 0) 
+            and not np.all(np.sign(y_delta_curve[1:]) <= 0)):
+            warnings.warn("Warning: Curve for peak idx" + str(idx)
+                          + " not entirely above or below baseline. The "
+                          + "calculated integrals will cancel out.")
+
+        if np.median(np.sign(y_delta_curve[1:]) >= 0):
+            # Positively deflected signal: Baseline below peak
+            y_ref = min(ref_signal[ref_start_s:ref_end_s])
+            y_delta = baseline[start_s:end_s+1] - y_ref
+        elif np.median(np.sign(y_delta_curve[1:]) <= 0):
+            # Negatively deflected signal: Baseline above peak
+            y_ref = max(ref_signal[ref_start_s:ref_end_s])
+            y_delta = y_ref - baseline[start_s:end_s+1]
+
+        aubs[idx] = np.abs(np.trapz(y_delta, dx=1/fs))
+
+    return aubs
