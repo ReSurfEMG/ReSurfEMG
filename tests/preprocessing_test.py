@@ -173,7 +173,7 @@ class TestComponentPickingMethods(unittest.TestCase):
         sample_emg_filtered[2,21] = 100
         sample_emg_filtered[2,42] = 100
         sample_emg_filtered[2,81] = 100
-        components = np.row_stack((sample_emg_filtered[1], sample_emg_filtered[2]))
+        components = np.vstack((sample_emg_filtered[1], sample_emg_filtered[2]))
         emg = pick_highest_correlation_array_multi(components, sample_emg_filtered[0])
         self.assertEqual(
             sum(components[emg]),
@@ -299,7 +299,7 @@ class TestGating(unittest.TestCase):
     def test_gating_method_3(self):
         height_threshold = np.max(self.sample_emg_filtered)/2
         ecg_peaks, _  = scipy.signal.find_peaks(
-            self.sample_emg_filtered[0, :10*2048-1], 
+            self.sample_emg_filtered[0, :10*2048-1],
             height=height_threshold)
 
         ecg_gated_3 = gating(self.sample_emg_filtered[0, :10*2048], ecg_peaks,
