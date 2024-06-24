@@ -5,6 +5,7 @@ import numpy as np
 from scipy.signal import welch, periodogram
 from scipy.fft import fft, fftfreq
 import matplotlib.pyplot as plt
+from unittest.mock import patch
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 from resurfemg.preprocessing.filtering import emg_bandpass_butter
 from resurfemg.visualization.visualization import show_psd_welch
@@ -20,6 +21,7 @@ sample_emg = os.path.join(
     'EMG_recording.Poly5',
 )
 
+
 class TestVisualizationMethods(unittest.TestCase):
 
     def setUp(self):
@@ -28,28 +30,34 @@ class TestVisualizationMethods(unittest.TestCase):
         self.sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
         self.sample_emg_filtered = self.sample_emg_filtered[:30*2048]
 
-    def test_show_my_power_spectrum(self):
+
+    @patch('matplotlib.pyplot.show')
+    def test_show_my_power_spectrum(self, mock_show):
         f,Pxx_den = show_my_power_spectrum(self.sample_emg_filtered[0, :],
-                                           2048, 1024, show_plot=False)
+                                           2048, 1024)
         self.assertEqual(len(f),
                          len(self.sample_emg_filtered[0, :]))
         self.assertEqual(len(Pxx_den),
                          len(self.sample_emg_filtered[0, :]))
+        mock_show.assert_called_once()
 
-
-    def test_show_psd_welch(self):
+    @patch('matplotlib.pyplot.show')
+    def test_show_psd_welch(self, mock_show):
         f, Pxx_den = show_psd_welch(self.sample_emg_filtered[0, :],
-                                    2048, 256, axis_spec=0, show_plot=False)
+                                    2048, 256, axis_spec=0)
         expected_length = 256 // 2 + 1
         self.assertEqual((len(f)),
                          expected_length)
         self.assertEqual(len(Pxx_den),
                          expected_length)
+        mock_show.assert_called_once()
 
 
-    def test_show_periodogram(self):
+    @patch('matplotlib.pyplot.show')
+    def test_show_periodogram(self, mock_show):
         f,Pxx_den = show_periodogram(self.sample_emg_filtered[0, :],
-                                     2048, 0, show_plot=False)
+                                     2048, 0)
         expected_length = len(self.sample_emg_filtered[0, :]) // 2 + 1
         self.assertEqual(len(f), expected_length)
         self.assertEqual(len(Pxx_den), expected_length)
+        mock_show.assert_called_once()
