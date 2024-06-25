@@ -43,10 +43,8 @@ def show_my_power_spectrum(signal, fs_emg, t_window_s, axis_spec=1,
 
     if axis_spec == 1:
         plt.semilogy(x_f[idx], y_f[idx])
-        plt.title('Power Spectral Density (Logarithmic Scale)')
     elif axis_spec == 0:
         plt.plot(x_f[idx], y_f[idx])
-        plt.title('Power Spectral Density (Linear Scale)')
     else:
         raise ValueError("Invalid axis_spec value. Please use 1 "
                          "for logarithmic axis or 0 for linear axis.")
@@ -85,10 +83,8 @@ def show_psd_welch(signal, fs_emg, t_window_s, axis_spec=1, signal_unit='uV'):
 
     if axis_spec == 1:
         plt.semilogy(f, Pxx_den)
-        plt.title('Power Spectral Density (Logarithmic Scale)')
     elif axis_spec == 0:
         plt.plot(f, Pxx_den)
-        plt.title('Power Spectral Density (Linear Scale)')
     else:
         raise ValueError("Invalid axis_spec value. Please use 1 "
                          "for logarithmic axis or 0 for linear axis.")
@@ -120,10 +116,8 @@ def show_periodogram(signal, fs_emg, axis_spec=1,
 
     if axis_spec == 1:
         plt.semilogy(f, Pxx_den)
-        plt.title('Periodogram (Logarithmic Scale)')
     elif axis_spec == 0:
         plt.plot(f, Pxx_den)
-        plt.title('Periodogram (Linear Scale)')
     else:
         raise ValueError("Invalid axis_spec value. Please use 1 for "
                          "logarithmic axis or 0 for linear axis.")
