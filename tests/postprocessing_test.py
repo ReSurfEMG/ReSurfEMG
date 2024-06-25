@@ -10,10 +10,10 @@ from resurfemg.preprocessing import envelope as evl
 from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
 from resurfemg.postprocessing.features import (
-    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve, 
+    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve,
     times_under_curve, find_peak_in_breath,variability_maker)
 from resurfemg.postprocessing.quality_assessment import (
-    snr_pseudo, pocc_quality)
+    snr_pseudo, pocc_quality, interpeak_dist)
 from resurfemg.postprocessing.event_detection import (
     onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation)
 
@@ -226,7 +226,7 @@ class TestEventDetection(unittest.TestCase):
             len(self.peak_idxs),
             len(peak_end_idxs),
             )
-    
+
     def test_slope_extrapolate_starts(self):
         peak_start_idxs, _, _, _, _ = onoffpeak_slope_extrapolation(
              self.breathing_signal, self.fs, self.peak_idxs, self.fs//4)
@@ -283,7 +283,7 @@ class TestPoccQuality(unittest.TestCase):
             )
 
     def test_steep_upslope(self):
-        y_sin_shifted = np.sin((f_r* t_vent - 0.4)* 2 * np.pi) 
+        y_sin_shifted = np.sin((f_r* t_vent - 0.4)* 2 * np.pi)
         y_sin_shifted[y_sin_shifted > 0] = 0
         y_sin_shifted = y_sin_shifted ** 4
         y_t_steeper = 1000 * y_sin * y_sin_shifted
@@ -307,6 +307,15 @@ class TestPoccQuality(unittest.TestCase):
         self.assertFalse(
             steep_upslope[-1]
             )
+
+class TestInterpeakMethods(unittest.TestCase):
+    def test_interpeak_dist(self):
+        sim_ECG=np.arange(1, 11)
+        sim_EMG=np.linspace(1, 10, 4)
+        valid_interpeak = interpeak_dist(sim_ECG, sim_EMG, threshold=1.1)
+
+        self.assertTrue(valid_interpeak, "The interpeak_dist function"
+                        "did not return True as expected.")
 
 if __name__ == '__main__':
     unittest.main()
