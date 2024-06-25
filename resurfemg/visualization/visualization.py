@@ -51,6 +51,7 @@ def show_my_power_spectrum(signal, fs_emg, t_window_s, axis_spec=1,
 
     plt.xlabel('Frequency [Hz]')
     plt.ylabel(psd_label)
+    plt.title('Power Spectral Density')
     plt.show()
 
     return y_f, x_f
@@ -91,6 +92,7 @@ def show_psd_welch(signal, fs_emg, t_window_s, axis_spec=1, signal_unit='uV'):
 
     plt.xlabel('Frequency [Hz]')
     plt.ylabel(psd_label)
+    plt.title('Power Spectral Density')
     plt.show()
 
     return f, Pxx_den
@@ -123,6 +125,7 @@ def show_periodogram(signal, fs_emg, axis_spec=1,
                          "logarithmic axis or 0 for linear axis.")
     plt.xlabel('Frequency [Hz]')
     plt.ylabel(psd_label)
+    plt.title('Periodogram')
     plt.show()
 
     return f, Pxx_den
