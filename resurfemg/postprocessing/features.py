@@ -605,10 +605,23 @@ def time_product(
     fs,
     starts_s,
     ends_s,
-    baseline=None
-    ):
+    baseline=None,
+):
     """
-    
+    Calculate the time product between the signal and the baseline for the
+    windows defined by the start_s and end_s sample pairs.
+    :param signal: signal to calculate the time product over
+    :type signal: ~numpy.ndarray
+    :param fs: sampling frequency
+    :type fs: ~int
+    :param starts_s: list of individual peak start indices
+    :type starts_s: ~list
+    :param ends_s: list of individual peak end indices
+    :type ends_s: ~list
+    :param baseline: running Baseline of the signal
+    :type baseline: ~numpy.ndarray
+    :returns: time_products
+    :rtype: list
     """
     if baseline is None:
         baseline = np.zeros(signal.shape)
@@ -616,8 +629,8 @@ def time_product(
     time_products = np.zeros(starts_s.shape)
     for idx, (start_s, end_s) in enumerate(zip(starts_s, ends_s)):
         y_delta = signal[start_s:end_s+1]-baseline[start_s:end_s+1]
-        if (not np.all(np.sign(y_delta[1:]) >= 0) 
-            and not np.all(np.sign(y_delta[1:]) <= 0)):
+        if (not np.all(np.sign(y_delta[1:]) >= 0)
+                and not np.all(np.sign(y_delta[1:]) <= 0)):
             warnings.warn("Warning: Curve for peak idx" + str(idx)
                           + " not entirely above or below baseline. The "
                           + "calculated integrals will cancel out.")
@@ -625,6 +638,7 @@ def time_product(
         time_products[idx] = np.abs(np.trapz(y_delta, dx=1/fs))
 
     return time_products
+
 
 def area_under_baseline(
     signal,
@@ -634,19 +648,41 @@ def area_under_baseline(
     ends_s,
     aub_window_s,
     baseline,
-    ref_signal
-    ):
+    ref_signal,
+):
     """
-    
+    Calculate the time product between the baseline and the nadir of the
+    reference signal in the aub_window_s for the windows defined by the start_s
+    and end_s sample pairs.
+    :param signal: signal to calculate the time product over
+    :type signal: ~numpy.ndarray
+    :param fs: sampling frequency
+    :type fs: ~int
+    :param peaks_s: list of individual peak indices
+    :type peaks_s: ~list
+    :param starts_s: list of individual peak start indices
+    :type starts_s: ~list
+    :param ends_s: list of individual peak end indices
+    :type ends_s: ~list
+    :param aub_window_s: number of samples before and after peaks_s to look for
+    the nadir
+    :type aub_window_s: ~int
+    :param baseline: running baseline of the signal
+    :type baseline: ~numpy.ndarray
+    :param ref_signal: signal in which the nadir is searched
+    :type ref_signal: ~numpy.ndarray
+    :returns: aubs
+    :rtype: list
     """
 
     aubs = np.zeros(peaks_s.shape)
-    for idx, (start_s, peak_s, end_s) in enumerate(zip(starts_s, peaks_s, ends_s)):
+    for idx, (start_s, peak_s, end_s) in enumerate(
+            zip(starts_s, peaks_s, ends_s)):
         y_delta_curve = signal[start_s:end_s+1]-baseline[start_s:end_s+1]
         ref_start_s = max([0, peak_s - aub_window_s])
         ref_end_s = min([len(signal) - 1, peak_s + aub_window_s])
-        if (not np.all(np.sign(y_delta_curve[1:]) >= 0) 
-            and not np.all(np.sign(y_delta_curve[1:]) <= 0)):
+        if (not np.all(np.sign(y_delta_curve[1:]) >= 0)
+                and not np.all(np.sign(y_delta_curve[1:]) <= 0)):
             warnings.warn("Warning: Curve for peak idx" + str(idx)
                           + " not entirely above or below baseline. The "
                           + "calculated integrals will cancel out.")
