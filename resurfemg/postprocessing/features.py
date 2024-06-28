@@ -626,7 +626,7 @@ def time_product(
     if baseline is None:
         baseline = np.zeros(signal.shape)
 
-    time_products = np.zeros(starts_s.shape)
+    time_products = np.zeros(np.asarray(starts_s).shape)
     for idx, (start_s, end_s) in enumerate(zip(starts_s, ends_s)):
         y_delta = signal[start_s:end_s+1]-baseline[start_s:end_s+1]
         if (not np.all(np.sign(y_delta[1:]) >= 0)
@@ -648,7 +648,7 @@ def area_under_baseline(
     ends_s,
     aub_window_s,
     baseline,
-    ref_signal,
+    ref_signal=None,
 ):
     """
     Calculate the time product between the baseline and the nadir of the
@@ -674,8 +674,10 @@ def area_under_baseline(
     :returns: aubs
     :rtype: list
     """
+    if ref_signal is None:
+        ref_signal = signal
 
-    aubs = np.zeros(peaks_s.shape)
+    aubs = np.zeros(np.asarray(peaks_s).shape)
     for idx, (start_s, peak_s, end_s) in enumerate(
             zip(starts_s, peaks_s, ends_s)):
         y_delta_curve = signal[start_s:end_s+1]-baseline[start_s:end_s+1]
