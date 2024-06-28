@@ -149,7 +149,7 @@ class TestComponentPickingMethods(unittest.TestCase):
         sample_emg_filtered[2,21] = 100
         sample_emg_filtered[2,42] = 100
         sample_emg_filtered[2,81] = 100
-        components = np.row_stack((sample_emg_filtered[1], sample_emg_filtered[2]))
+        components = np.vstack((sample_emg_filtered[1], sample_emg_filtered[2]))
         emg = pick_highest_correlation_array_multi(components, sample_emg_filtered[0])
         self.assertEqual(
             sum(components[emg]),
