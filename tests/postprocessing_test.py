@@ -5,16 +5,17 @@ import unittest
 import os
 import numpy as np
 import scipy
+from scipy.integrate import trapezoid
 
 from resurfemg.preprocessing import envelope as evl
 from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
 from resurfemg.postprocessing.features import (
-    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve, 
+    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve,
     times_under_curve, find_peak_in_breath,variability_maker, time_product,
     area_under_baseline)
 from resurfemg.postprocessing.quality_assessment import (
-    snr_pseudo, pocc_quality, percentage_under_baseline)
+    snr_pseudo, pocc_quality, interpeak_dist, percentage_under_baseline)
 from resurfemg.postprocessing.event_detection import (
     onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation)
 
@@ -58,7 +59,7 @@ pocc_ends = s_vent[(t_vent%t_r == 0)]
 
 PTP_occs = np.zeros(pocc_peaks_valid.shape)
 for _idx, _ in enumerate(pocc_peaks_valid):
-    PTP_occs[_idx] = np.trapezoid(
+    PTP_occs[_idx] = trapezoid(
         -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
         dx=1/fs_vent
     )
@@ -227,7 +228,7 @@ class TestEventDetection(unittest.TestCase):
             len(self.peak_idxs),
             len(peak_end_idxs),
             )
-    
+
     def test_slope_extrapolate_starts(self):
         peak_start_idxs, _, _, _, _ = onoffpeak_slope_extrapolation(
              self.breathing_signal, self.fs, self.peak_idxs, self.fs//4)
@@ -292,7 +293,7 @@ class TestPoccQuality(unittest.TestCase):
             )
 
     def test_steep_upslope(self):
-        y_sin_shifted = np.sin((f_r* t_vent - 0.4)* 2 * np.pi) 
+        y_sin_shifted = np.sin((f_r* t_vent - 0.4)* 2 * np.pi)
         y_sin_shifted[y_sin_shifted > 0] = 0
         y_sin_shifted = y_sin_shifted ** 4
         y_t_steeper = 1000 * y_sin * y_sin_shifted
@@ -305,7 +306,7 @@ class TestPoccQuality(unittest.TestCase):
 
         ptp_occs_steep = np.zeros(peaks_steeper.shape)
         for idx, _ in enumerate(peaks_steeper):
-            ptp_occs_steep[idx] = np.trapezoid(
+            ptp_occs_steep[idx] = trapezoid(
                 -y_t_steeper[peak_starts_steep[idx]:peak_ends_steep[idx]],
                 dx=1/fs_vent
             )
@@ -316,6 +317,17 @@ class TestPoccQuality(unittest.TestCase):
         self.assertFalse(
             steep_upslope[-1]
             )
+
+
+class TestInterpeakMethods(unittest.TestCase):
+    def test_interpeak_dist(self):
+        sim_ECG=np.arange(1, 11)
+        sim_EMG=np.linspace(1, 10, 4)
+        valid_interpeak = interpeak_dist(sim_ECG, sim_EMG, threshold=1.1)
+
+        self.assertTrue(valid_interpeak, "The interpeak_dist function"
+                        "did not return True as expected.")
+
 
 class TestTimeProduct(unittest.TestCase):
     # Define signal
@@ -403,6 +415,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
         self.assertFalse(
             np.all(valid_timeproducts)
             )
+
 
 if __name__ == '__main__':
     unittest.main()

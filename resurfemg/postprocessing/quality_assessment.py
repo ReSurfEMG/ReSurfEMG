@@ -99,6 +99,38 @@ def pocc_quality(
     return valid_poccs, criteria_matrix
 
 
+def interpeak_dist(ECG_peaks, EMG_peaks, threshold=1.1):
+    """
+    Calculate the median interpeak distances for ECG and EMG and
+    check if their ratio is above the given threshold, i.e. if cardiac
+    frequency is higher than respiratory frequency (TRUE)
+
+    :param t_emg: Time points array
+    :type t_emg: ~list
+    :param ECG_peaks: Indices of ECG peaks
+    :type ECG_peaks: ~numpy.ndarray
+    :param EMG_peaks: Indices of EMG peaks
+    :type EMG_peaks: ~numpy.ndarray
+    :param threshold: The threshold value to compare against. Default is 1.1
+    :type threshold: ~float
+    :returns: valid_interpeak
+    :rtype: bool
+    """
+
+    # Calculate median interpeak distance for ECG
+    t_delta_ecg_med = np.median(np.array(ECG_peaks[1:])
+                                - np.array(ECG_peaks[:-1]))
+    # # Calculate median interpeak distance for EMG
+    t_delta_emg_med = np.median(np.array(EMG_peaks[1:])
+                                - np.array(EMG_peaks[:-1]))
+    # Check if each median interpeak distance is above the threshold
+    t_delta_relative = t_delta_emg_med / t_delta_ecg_med
+
+    valid_interpeak = t_delta_relative > threshold
+
+    return valid_interpeak
+
+
 def percentage_under_baseline(
     signal,
     fs,
