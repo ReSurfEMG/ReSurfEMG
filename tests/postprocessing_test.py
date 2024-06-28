@@ -347,6 +347,54 @@ class TestTimeProduct(unittest.TestCase):
         )
         self.assertAlmostEqual(np.median(aub), 2.5, 2)
 
+class TestAreaUnderBaselineQuality(unittest.TestCase):
+    # Define signal
+    fs_emg = 2048
+    t_emg = np.array([s_t/fs_emg for s_t in range(15*fs_emg)])
+
+    y_block = np.array(
+        3*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
+    y_block[y_block < 0] = 0
+
+    peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
+    starts_s = [(5 + x*5*4) * 2048 //4 for x in range(3)]
+    ends_s = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
+
+    def test_percentage_aub_good(self):
+        y_baseline = np.ones(self.y_block.shape)
+        valid_timeproducts, _ = percentage_under_baseline(
+            self.y_block,
+            self.fs_emg,
+            self.peaks_s,
+            self.starts_s,
+            self.ends_s,
+            y_baseline,
+            aub_window_s=None,
+            ref_signal=None,
+            aub_threshold=40,
+        )
+
+        self.assertTrue(
+            np.all(valid_timeproducts)
+            )
+        
+    def test_percentage_aub_wrong(self):
+        y_baseline = 2*np.ones(self.y_block.shape)
+        valid_timeproducts, _ = percentage_under_baseline(
+            self.y_block,
+            self.fs_emg,
+            self.peaks_s,
+            self.starts_s,
+            self.ends_s,
+            y_baseline,
+            aub_window_s=None,
+            ref_signal=None,
+            aub_threshold=40,
+        )
+
+        self.assertFalse(
+            np.all(valid_timeproducts)
+            )
 
 if __name__ == '__main__':
     unittest.main()
