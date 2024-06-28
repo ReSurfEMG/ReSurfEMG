@@ -292,7 +292,7 @@ def pick_lowest_correlation_array(components_tuple, ecg_lead):
     # create a tuple containing the data, each row is a variable,
     # each column is an observation
 
-    corr_tuple = np.row_stack((ecg_lead, component_0, component_1))
+    corr_tuple = np.vstack((ecg_lead, component_0, component_1))
 
     # compute the correlation matrix
     # the absolute value is used, because the ICA decomposition might
