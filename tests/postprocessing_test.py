@@ -14,9 +14,7 @@ from resurfemg.postprocessing.features import (
     times_under_curve, find_peak_in_breath,variability_maker, time_product,
     area_under_baseline)
 from resurfemg.postprocessing.quality_assessment import (
-    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve, 
-    times_under_curve, find_peak_in_breath,variability_maker, time_product,
-    area_under_baseline)
+    snr_pseudo, pocc_quality, interpeak_dist, percentage_under_baseline)
 from resurfemg.postprocessing.event_detection import (
     onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation)
 
@@ -416,6 +414,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
         self.assertFalse(
             np.all(valid_timeproducts)
             )
+
 
 if __name__ == '__main__':
     unittest.main()
