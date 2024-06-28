@@ -12,6 +12,7 @@ import logging
 import scipy
 from scipy.signal import savgol_filter
 from scipy.stats import entropy
+from scipy.integrate import trapezoid
 import numpy as np
 
 from ..preprocessing.envelope import running_smoother
@@ -635,7 +636,7 @@ def time_product(
                           + " not entirely above or below baseline. The "
                           + "calculated integrals will cancel out.")
 
-        time_products[idx] = np.abs(np.trapezoid(y_delta, dx=1/fs))
+        time_products[idx] = np.abs(trapezoid(y_delta, dx=1/fs))
 
     return time_products
 
@@ -698,6 +699,6 @@ def area_under_baseline(
             y_ref = max(ref_signal[ref_start_s:ref_end_s])
             y_delta = y_ref - baseline[start_s:end_s+1]
 
-        aubs[idx] = np.abs(np.trapezoid(y_delta, dx=1/fs))
+        aubs[idx] = np.abs(trapezoid(y_delta, dx=1/fs))
 
     return aubs

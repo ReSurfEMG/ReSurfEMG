@@ -99,7 +99,6 @@ def pocc_quality(
     return valid_poccs, criteria_matrix
 
 
-
 def interpeak_dist(ECG_peaks, EMG_peaks, threshold=1.1):
     """
     Calculate the median interpeak distances for ECG and EMG and
@@ -194,4 +193,3 @@ def percentage_under_baseline(
     valid_timeproducts = percentages_aub < aub_threshold
 
     return valid_timeproducts, percentages_aub
-

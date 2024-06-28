@@ -5,6 +5,7 @@ import unittest
 import os
 import numpy as np
 import scipy
+from scipy.integrate import trapezoid
 
 from resurfemg.preprocessing import envelope as evl
 from resurfemg.postprocessing.baseline import (
@@ -58,7 +59,7 @@ pocc_ends = s_vent[(t_vent%t_r == 0)]
 
 PTP_occs = np.zeros(pocc_peaks_valid.shape)
 for _idx, _ in enumerate(pocc_peaks_valid):
-    PTP_occs[_idx] = np.trapezoid(
+    PTP_occs[_idx] = trapezoid(
         -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
         dx=1/fs_vent
     )
@@ -305,7 +306,7 @@ class TestPoccQuality(unittest.TestCase):
 
         ptp_occs_steep = np.zeros(peaks_steeper.shape)
         for idx, _ in enumerate(peaks_steeper):
-            ptp_occs_steep[idx] = np.trapezoid(
+            ptp_occs_steep[idx] = trapezoid(
                 -y_t_steeper[peak_starts_steep[idx]:peak_ends_steep[idx]],
                 dx=1/fs_vent
             )
