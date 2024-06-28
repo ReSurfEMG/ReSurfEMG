@@ -247,20 +247,28 @@ class TestEventDetection(unittest.TestCase):
             )
 
 class TestSnrPseudo(unittest.TestCase):
-    snr_values = snr_pseudo(y_env_emg, peaks_env, y_emg_baseline)
+    fs_emg = 2048
+    t_emg = np.array([s_t/fs_emg for s_t in range(15*fs_emg)])
+
+    y_block = np.array(
+        10*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
+    y_block[y_block < 0] = 0
+    y_baseline = np.ones(y_block.shape)
+    peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
+
+    snr_values = snr_pseudo(y_block, peaks_s, y_baseline)
+    
     def test_snr_length(self):
         self.assertEqual(
             len(self.snr_values),
-            len(peaks_env),
+            len(self.peaks_s),
             )
 
     def test_snr_values(self):
         median_snr = np.median(self.snr_values)
-        self.assertEqual(
-            np.round(median_snr),
-            10.0,
+        self.assertAlmostEqual(
+            median_snr, 10.0, 3
             )
-
 
 class TestPoccQuality(unittest.TestCase):
     valid_poccs, _ = pocc_quality(
@@ -295,15 +303,15 @@ class TestPoccQuality(unittest.TestCase):
         _, peak_starts_steep, peak_ends_steep, _, _, _ = \
             onoffpeak_baseline_crossing(y_t_steeper, y_baseline, peaks_steeper)
 
-        PTP_occs_steep = np.zeros(peaks_steeper.shape)
+        ptp_occs_steep = np.zeros(peaks_steeper.shape)
         for idx, _ in enumerate(peaks_steeper):
-            PTP_occs_steep[idx] = np.trapz(
+            ptp_occs_steep[idx] = np.trapezoid(
                 -y_t_steeper[peak_starts_steep[idx]:peak_ends_steep[idx]],
                 dx=1/fs_vent
             )
 
         steep_upslope, _ = pocc_quality(
-            y_t_steeper, peaks_steeper, peak_ends_steep, PTP_occs_steep)
+            y_t_steeper, peaks_steeper, peak_ends_steep, ptp_occs_steep)
 
         self.assertFalse(
             steep_upslope[-1]
