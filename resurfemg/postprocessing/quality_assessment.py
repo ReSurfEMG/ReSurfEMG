@@ -7,6 +7,7 @@ preprocessed EMG arrays.
 """
 
 import numpy as np
+from ..postprocessing.features import time_product, area_under_baseline
 
 
 def snr_pseudo(
@@ -96,3 +97,67 @@ def pocc_quality(
     ])
     valid_poccs = ~np.any(criteria_bool_matrix, axis=0)
     return valid_poccs, criteria_matrix
+
+
+def percentage_under_baseline(
+    signal,
+    fs,
+    peaks_s,
+    starts_s,
+    ends_s,
+    baseline,
+    aub_window_s=None,
+    ref_signal=None,
+    aub_threshold=40,
+):
+    """
+    Calculate the percentage area under the baseline, in accordance with
+    Warnaar et al. (2024).
+    :param signal: signal in which the peaks are detected
+    :type signal: ~numpy.ndarray
+    :param fs: sampling frequency
+    :type fs: ~int
+    :param peaks_s: list of individual peak indices
+    :type peaks_s: ~list
+    :param starts_s: list of individual peak start indices
+    :type starts_s: ~list
+    :param ends_s: list of individual peak end indices
+    :type ends_s: ~list
+    :param baseline: running baseline of the signal
+    :type baseline: ~numpy.ndarray
+    :param aub_window_s: number of samples before and after peaks_s to look for
+    the nadir
+    :type aub_window_s: ~int
+    :param ref_signal: signal in which the nadir is searched
+    :type ref_signal: ~numpy.ndarray
+    :returns: valid_timeproducts, percentages_aub
+    :rtype: list, list
+    """
+    if aub_window_s is None:
+        aub_window_s = 5*fs
+
+    if ref_signal is None:
+        ref_signal = signal
+
+    time_products = time_product(
+        signal,
+        fs,
+        starts_s,
+        ends_s,
+        baseline,
+    )
+    aubs = area_under_baseline(
+        signal,
+        fs,
+        peaks_s,
+        starts_s,
+        ends_s,
+        aub_window_s,
+        baseline,
+        ref_signal=signal,
+    )
+
+    percentages_aub = aubs / (time_products + aubs) * 100
+    valid_timeproducts = percentages_aub < aub_threshold
+
+    return valid_timeproducts, percentages_aub

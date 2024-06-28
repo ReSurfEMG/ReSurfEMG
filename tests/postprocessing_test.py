@@ -11,9 +11,10 @@ from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
 from resurfemg.postprocessing.features import (
     entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve, 
-    times_under_curve, find_peak_in_breath,variability_maker)
+    times_under_curve, find_peak_in_breath,variability_maker, time_product,
+    area_under_baseline)
 from resurfemg.postprocessing.quality_assessment import (
-    snr_pseudo, pocc_quality)
+    snr_pseudo, pocc_quality, percentage_under_baseline)
 from resurfemg.postprocessing.event_detection import (
     onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation)
 
@@ -307,6 +308,45 @@ class TestPoccQuality(unittest.TestCase):
         self.assertFalse(
             steep_upslope[-1]
             )
+
+class TestTimeProduct(unittest.TestCase):
+    # Define signal
+    fs_emg = 2048
+    t_emg = np.array([s_t/fs_emg for s_t in range(15*fs_emg)])
+
+    y_block = np.array(
+        3*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
+    y_block[y_block < 0] = 0
+
+    peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
+    starts_s = [(5 + x*5*4) * 2048 //4 for x in range(3)]
+    ends_s = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
+
+    y_baseline = np.ones(y_block.shape)
+
+    def test_timeproduct(self):
+        aob = time_product(
+            self.y_block,
+            self.fs_emg,
+            self.starts_s,
+            self.ends_s,
+            self.y_baseline,
+        )
+        self.assertAlmostEqual(np.median(aob), 5.0, 2)
+
+    def test_area_under_baseline(self):
+        aub = area_under_baseline(
+            self.y_block,
+            self.fs_emg,
+            self.peaks_s,
+            self.starts_s,
+            self.ends_s,
+            aub_window_s=self.fs_emg*5,
+            baseline=self.y_baseline,
+            ref_signal=self.y_block,
+        )
+        self.assertAlmostEqual(np.median(aub), 2.5, 2)
+
 
 if __name__ == '__main__':
     unittest.main()
