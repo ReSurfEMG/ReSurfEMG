@@ -200,7 +200,7 @@ def pick_highest_correlation_array_multi(components, ecg_lead):
     :rtype: int
     """
 
-    corr_tuple = np.row_stack((ecg_lead, components))
+    corr_tuple = np.vstack((ecg_lead, components))
     corr_matrix = abs(np.corrcoef(corr_tuple))
 
     # get the component with the highest correlation to ECG
@@ -330,7 +330,7 @@ def pick_highest_correlation_array(components_tuple, ecg_lead):
     """
     component_0 = components_tuple[0]
     component_1 = components_tuple[1]
-    corr_tuple = np.row_stack((ecg_lead, component_0, component_1))
+    corr_tuple = np.vstack((ecg_lead, component_0, component_1))
     corr_matrix = abs(np.corrcoef(corr_tuple))
 
     # get the component with the highest correlation to ECG
