@@ -11,6 +11,53 @@ from scipy.fft import fft, fftfreq
 import matplotlib.pyplot as plt
 
 
+def show_time_plots(
+    plot_data,
+    fs_data=None,
+    markers=None,
+    link_x_axes=True,
+    link_y_axes=False,
+    aub_bool=False,
+    curve_fit_bool=False,
+    figure=None,
+    axis=None,
+    fig_size=(10, 6),
+)   
+    """This function plots time series data provided in y_data over >1
+    subplots, arranged alike the structure in numpy array y_data.
+
+    :param y_data: The sample array
+    :type y_data: ~numpy.ndarray
+    :param t_data: Number of samples per second
+    :type t_data: int
+
+    :return: :code:`yf, xf` tuple of fourier transformed array and
+        frequencies (the values for plotting the power spectrum)
+    :rtype: figure, axes
+    """
+    y_shape = y_data.shape
+    n_rows = [0]
+    if len(y_shape) > 1:
+        n_cols = y_data.shape[1]
+    else:
+        n_cols = 1
+
+    if axis is None:
+        figure, axis = plt.subplots(
+            nrows=n_rows, ncols=n_cols, figsize=fig_size,
+            sharex=link_x_axes, sharey=link_y_axes)
+    
+    for _, row in enumerate(n_rows):
+        for _, col in enumerate(n_cols):
+            if t_data is None and fs_data is None:
+                t_axis = np.arange(y_data)
+            elif t_data is not None:
+                t_axis = np.arange(y_data)
+    
+    return figure, axis
+
+
+
 def show_my_power_spectrum(sample, sample_rate, upper_window):
     """This function plots a power spectrum of the frequencies
     comtained in an EMG based on a Fourier transform.  It does not
