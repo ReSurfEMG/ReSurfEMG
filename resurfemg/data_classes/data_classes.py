@@ -103,7 +103,7 @@ class TimeSeriesData:
 
         y_data = self.signal_type_data(channel_idxs=channel_idxs,
                                        signal_type=signal_type)
-        self.y_env = np.zeros((self.n_channel, self.n_samp)) * np.NaN
+        self.y_env = np.zeros((self.n_channel, self.n_samp)) * np.nan
         for it_idx, channel_idx in enumerate(channel_idxs):
             self.y_env[channel_idx, :] = full_rolling_rms(
                 y_data[it_idx, :],
@@ -142,7 +142,7 @@ class TimeSeriesData:
 
         y_baseline_data = self.signal_type_data(
             channel_idxs=channel_idxs, signal_type=signal_type)
-        self.y_baseline = np.zeros((self.n_channel, self.n_samp)) * np.NaN
+        self.y_baseline = np.zeros((self.n_channel, self.n_samp)) * np.nan
         for it_idx, channel_idx in enumerate(channel_idxs):
             if method == 'default' or method == 'moving_baseline':
                 self.y_baseline[channel_idx, :] = moving_baseline(
