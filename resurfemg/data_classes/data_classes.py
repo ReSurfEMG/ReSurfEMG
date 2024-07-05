@@ -9,7 +9,23 @@ from resurfemg.preprocessing.envelope import full_rolling_rms
 
 
 class TimeSeriesData:
+    """
+    Data class to store, process, and plot time series data
+    """
     def __init__(self, y_raw, t_data=None, fs=None, labels=None, units=None):
+        """
+        Initialize the main data characteristics: 
+        :param y_raw: raw signal data
+        :type y_raw: ~numpy.ndarray
+        :param t_data: time axis data, if None, generated from fs
+        :type t_data: ~numpy.ndarray
+        :param fs: sampling rate, if None, calculated from t_data
+        :type fs: ~int
+        :param labels: list of labels, one per provided channel
+        :type labels: ~list of str
+        :param units: list of signal units, one per provided channel
+        :type units: ~list of str
+        """
         self.fs = fs
         data_shape = list(np.array(y_raw).shape)
         data_dims = len(data_shape)
@@ -51,13 +67,25 @@ class TimeSeriesData:
             self.labels = labels
 
         if units is None:
-            self.units = self.n_channel * ['']
+            self.units = self.n_channel * ['?']
         else:
             if len(labels) != self.n_channel:
                 raise ValueError
             self.units = units
 
     def signal_type_data(self, channel_idxs=None, signal_type=None):
+        """
+        Automatically select the most advanced data type eligible for a
+        subprocess ('envelope' > 'clean' > 'raw')
+        :param channel_idxs: list of which channels indices to plot. If none
+        provided, all channels are returned.
+        :type channel_idxs: list
+        :param signal_type: one of 'envelope', 'clean', or 'raw'
+        :type signal_type: str
+
+        :returns: y_data
+        :rtype: ~numpy.ndarray
+        """
         if channel_idxs is None:
             channel_idxs = np.arange(self.n_channel)
 
@@ -90,7 +118,11 @@ class TimeSeriesData:
         rms_window=None,
         signal_type='clean',
         channel_idxs=None,
-    ):
+    ):  
+        """
+        Derive the moving envelope of the provided signal. See
+        envelope submodule in preprocessing.
+        """
         if rms_window is None:
             if self.fs is None:
                 raise ValueError(
@@ -120,7 +152,11 @@ class TimeSeriesData:
         augm_percentile=25,
         ma_window=None,
         perc_window=None,
-    ):
+    ):  
+        """
+        Derive the moving baseline of the provided signal. See
+        baseline submodule in postprocessing.
+        """
         if window_s is None:
             if self.fs is None:
                 raise ValueError(
@@ -168,12 +204,29 @@ class TimeSeriesData:
             else:
                 raise ValueError('Invalid method')
 
-    def plot_full(self, axes=None, channel_idxs=None, colors=None,
-                  signal_type=None, baseline_bool=True):
+    def plot_full(self, axes=None, channel_idxs=None, signal_type=None,
+                  colors=None, baseline_bool=True):
         """
         Plot the indicated signals in the provided axes. By default the most
         advanced signal type (envelope > clean > raw) is plotted in the
         provided colours.
+        axes
+
+        :param axes: matplotlib Axes object. If none provided, a new figure is
+        created.
+        :type axes: ~numpy.ndarray
+        :param channel_idxs: list of which channels indices to plot. If none
+        provided, all channels are plot.
+        :type channel_idxs: list
+        :param signal_type: the signal ('envelope', 'clean', 'raw') to plot
+        :type signal_type: str
+        :param colors: list of colors to plot the 1) signal, 2) the baseline
+        :type colors: list
+        :param baseline_bool: plot the baseline
+        :type baseline_bool: bool
+
+        :returns: None
+        :rtype: None
         """
 
         if channel_idxs is None:
