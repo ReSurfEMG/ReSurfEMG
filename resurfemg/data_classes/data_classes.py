@@ -14,7 +14,7 @@ class TimeSeriesData:
     """
     def __init__(self, y_raw, t_data=None, fs=None, labels=None, units=None):
         """
-        Initialize the main data characteristics: 
+        Initialize the main data characteristics:
         :param y_raw: raw signal data
         :type y_raw: ~numpy.ndarray
         :param t_data: time axis data, if None, generated from fs
@@ -118,7 +118,7 @@ class TimeSeriesData:
         rms_window=None,
         signal_type='clean',
         channel_idxs=None,
-    ):  
+    ):
         """
         Derive the moving envelope of the provided signal. See
         envelope submodule in preprocessing.
@@ -152,7 +152,7 @@ class TimeSeriesData:
         augm_percentile=25,
         ma_window=None,
         perc_window=None,
-    ):  
+    ):
         """
         Derive the moving baseline of the provided signal. See
         baseline submodule in postprocessing.
