@@ -1,21 +1,99 @@
+"""
+Copyright 2022 Netherlands eScience Center and University of Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.
+This file contains data classes for standardized data storage and method
+automation.
+"""
+
 import warnings
 
 import numpy as np
+import scipy
 import matplotlib.pyplot as plt
 
+from resurfemg.preprocessing.envelope import full_rolling_rms
 from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
-from resurfemg.preprocessing.envelope import full_rolling_rms
+from resurfemg.postprocessing.event_detection import (
+    onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation
+)
 
 
-class TimeSeriesData:
+class TimeSeries:
     """
-    Data class to store, process, and plot time series data
+    Data class to store, process, and plot single channel time series data
     """
-    def __init__(self, y_raw, t_data=None, fs=None, labels=None, units=None):
+    class PeaksData:
+        """
+        Data class to store, and process peak information.
+        """
+        def __init__(self, signal, peaks_s=None):
+            if signal is None:
+                raise ValueError("Invalid signal type: 'signal_type'.")
+            else:
+                self.signal = signal
+
+            if peaks_s is None:
+                self.peaks_s = np.array([])
+            elif (isinstance(peaks_s, np.ndarray)
+                    and len(np.array(peaks_s).shape) == 1):
+                self.peaks_s = peaks_s
+            elif isinstance(peaks_s, list):
+                self.peaks_s = np.array(peaks_s)
+            else:
+                raise ValueError("Invalid peak indices: 'peak_s'.")
+            self.starts_s = None
+            self.ends_s = None
+            self.valid = None
+
+        def detect_on_offset(
+            self, baseline=None,
+            method='default',
+            fs=None,
+            slope_window_s=None
+        ):
+            """
+            Detect the peak on- and offsets. See the documentation in the
+            event_detection module on the 'onoffpeak_baseline_crossing' and
+            the 'slope_extrapolation' methods for a detailed description.
+            """
+            if baseline is None:
+                baseline = np.zeros(self.signal.shape)
+
+            if method == 'default' or method == 'baseline_crossing':
+                (self.peaks_s, self.starts_s, self.ends_s,
+                 _, _, self.valid) = onoffpeak_baseline_crossing(
+                    self.signal,
+                    baseline,
+                    self.peaks_s)
+
+            elif method == 'slope_extrapolation':
+                if fs is None:
+                    raise ValueError('Sampling rate is not defined.')
+
+                if slope_window_s is None:
+                    # TODO Insert valid default slope window
+                    slope_window_s = 0.2 * fs
+
+                (self.starts_s, self.ends_s, _, _,
+                 self.valid) = onoffpeak_slope_extrapolation(
+                    self.signal, fs, self.peaks_s, slope_window_s)
+
+        def sanitize(self):
+            """
+            Delete invalid peak entries from the lists.
+            """
+            invalid_idxs = np.argwhere(self.valid)
+
+            self.peaks_s = np.delete(self.peaks_s, invalid_idxs)
+            self.starts_s = np.array(self.starts_s, invalid_idxs)
+            self.ends_s = np.array(self.ends_s, invalid_idxs)
+            self.valid = np.array(self.valid, invalid_idxs)
+
+    def __init__(self, y_raw, t_data=None, fs=None, label=None, units=None):
         """
         Initialize the main data characteristics:
-        :param y_raw: raw signal data
+        :param y_raw: 1-dimensional raw signal data
         :type y_raw: ~numpy.ndarray
         :param t_data: time axis data, if None, generated from fs
         :type t_data: ~numpy.ndarray
@@ -32,26 +110,25 @@ class TimeSeriesData:
         if data_dims == 1:
             self.n_samp = len(y_raw)
             self.n_channel = 1
-            self.y_raw = np.array(y_raw).reshape((1, self.n_samp))
+            self.y_raw = np.array(y_raw)
         elif data_dims == 2:
             self.n_samp = data_shape[np.argmax(data_shape)]
-            self.n_channel = data_shape[np.argmin(data_shape)]
             if np.argmin(data_shape) == 0:
-                self.y_raw = np.array(y_raw)
+                self.y_raw = np.array(y_raw).reshape(self.n_samp)
             else:
-                self.y_raw = np.array(y_raw).T
+                self.y_raw = np.array(y_raw)
         else:
-            raise ValueError
+            raise ValueError("Invalid y_raw dimensions")
 
-        none_array = np.array([self.n_channel*[None]]).T
-        self.y_clean = none_array
-        self.y_env = none_array
-        self.y_baseline = none_array
+        self.peaks = dict()
+        self.y_clean = None
+        self.y_env = None
+        self.y_baseline = None
 
         if t_data is None and fs is None:
             self.t_data = np.arange(self.n_samp)
         elif t_data is not None:
-            if len(np.array(t_data)) > 1:
+            if len(np.array(t_data).shape) > 1:
                 raise ValueError
             self.t_data = np.array(t_data)
             if fs is None:
@@ -59,65 +136,53 @@ class TimeSeriesData:
         else:
             self.t_data = np.array([x_i/fs for x_i in range(self.n_samp)])
 
-        if labels is None:
-            self.labels = self.n_channel * ['']
+        if label is None:
+            self.label = ''
         else:
-            if len(labels) != self.n_channel:
-                raise ValueError
-            self.labels = labels
+            self.label = label
 
         if units is None:
-            self.units = self.n_channel * ['?']
+            self.units = '?'
         else:
-            if len(labels) != self.n_channel:
-                raise ValueError
             self.units = units
 
-    def signal_type_data(self, channel_idxs=None, signal_type=None):
+    def signal_type_data(self, signal_type=None):
         """
         Automatically select the most advanced data type eligible for a
         subprocess ('envelope' > 'clean' > 'raw')
-        :param channel_idxs: list of which channels indices to plot. If none
-        provided, all channels are returned.
-        :type channel_idxs: list
         :param signal_type: one of 'envelope', 'clean', or 'raw'
         :type signal_type: str
 
         :returns: y_data
         :rtype: ~numpy.ndarray
         """
-        if channel_idxs is None:
-            channel_idxs = np.arange(self.n_channel)
-
-        y_data = np.zeros((len(channel_idxs), self.n_samp))
-        for it_idx, channel_idx in enumerate(channel_idxs):
-            if signal_type is None:
-                if not self.y_env[channel_idx, 0] is None:
-                    y_data[it_idx, :] = self.y_env[channel_idx, :]
-                elif not self.y_clean[channel_idx, 0] is None:
-                    y_data[it_idx, :] = self.y_clean[channel_idx, :]
-                else:
-                    y_data[it_idx, :] = self.y_raw[channel_idx, :]
-            elif signal_type == 'env':
-                if self.y_env[channel_idx, 0] is None:
-                    raise IndexError('No evelope defined for this signal.')
-                y_data[it_idx, :] = self.y_env[channel_idx, :]
-            elif signal_type == 'clean':
-                if self.y_clean[channel_idx, 0] is None:
-                    warnings.warn("Warning: No clean data availabe, " +
-                                  "using raw data instead.")
-                    y_data[it_idx, :] = self.y_raw[channel_idx, :]
-                else:
-                    y_data[it_idx, :] = self.y_clean[channel_idx, :]
+        y_data = np.zeros(self.y_raw.shape)
+        if signal_type is None:
+            if self.y_env is not None:
+                y_data = self.y_env
+            elif self.y_clean is not None:
+                y_data = self.y_clean
             else:
-                y_data[it_idx, :] = self.y_raw[channel_idx, :]
+                y_data = self.y_raw
+        elif signal_type == 'env':
+            if self.y_env is None:
+                raise IndexError('No evelope defined for this signal.')
+            y_data = self.y_env
+        elif signal_type == 'clean':
+            if self.y_clean is None:
+                warnings.warn("Warning: No clean data availabe, using raw data"
+                              + " instead.")
+                y_data = self.y_raw
+            else:
+                y_data = self.y_clean
+        else:
+            y_data = self.y_raw
         return y_data
 
     def envelope(
         self,
         rms_window=None,
         signal_type='clean',
-        channel_idxs=None,
     ):
         """
         Derive the moving envelope of the provided signal. See
@@ -130,23 +195,15 @@ class TimeSeriesData:
             else:
                 rms_window = int(0.2 * self.fs)
 
-        if channel_idxs is None:
-            channel_idxs = np.arange(self.n_channel)
+        y_data = self.signal_type_data(signal_type=signal_type)
 
-        y_data = self.signal_type_data(channel_idxs=channel_idxs,
-                                       signal_type=signal_type)
-        self.y_env = np.zeros((self.n_channel, self.n_samp)) * np.nan
-        for it_idx, channel_idx in enumerate(channel_idxs):
-            self.y_env[channel_idx, :] = full_rolling_rms(
-                y_data[it_idx, :],
-                rms_window)
+        self.y_env = full_rolling_rms(y_data, rms_window)
 
     def baseline(
         self,
         percentile=33,
         window_s=None,
         step_s=None,
-        channel_idxs=None,
         method='default',
         signal_type=None,
         augm_percentile=25,
@@ -170,39 +227,210 @@ class TimeSeriesData:
             else:
                 step_s = self.fs // 5
 
-        if channel_idxs is None:
-            channel_idxs = np.arange(self.n_channel)
-
         if signal_type is None:
             signal_type = 'env'
 
-        y_baseline_data = self.signal_type_data(
-            channel_idxs=channel_idxs, signal_type=signal_type)
-        self.y_baseline = np.zeros((self.n_channel, self.n_samp)) * np.nan
-        for it_idx, channel_idx in enumerate(channel_idxs):
-            if method == 'default' or method == 'moving_baseline':
-                self.y_baseline[channel_idx, :] = moving_baseline(
-                    y_baseline_data[it_idx, :],
+        y_baseline_data = self.signal_type_data(signal_type=signal_type)
+        if method == 'default' or method == 'moving_baseline':
+            self.y_baseline = moving_baseline(
+                y_baseline_data,
+                window_s=window_s,
+                step_s=step_s,
+                set_percentile=percentile,
+            )
+        elif method == 'slopesum_baseline':
+            if self.fs is None:
+                raise ValueError(
+                    'Sampling rate is not defined.')
+            self.y_baseline, _, _, _ = slopesum_baseline(
+                    y_baseline_data,
                     window_s=window_s,
                     step_s=step_s,
+                    fs=self.fs,
                     set_percentile=percentile,
+                    augm_percentile=augm_percentile,
+                    ma_window=ma_window,
+                    perc_window=perc_window,
                 )
-            elif method == 'slopesum_baseline':
-                if self.fs is None:
-                    raise ValueError(
-                        'Sampling rate is not defined.')
-                self.y_baseline[channel_idx, :], _, _, _ = slopesum_baseline(
-                        y_baseline_data[it_idx, :],
-                        window_s=window_s,
-                        step_s=step_s,
-                        fs=self.fs,
-                        set_percentile=percentile,
-                        augm_percentile=augm_percentile,
-                        ma_window=ma_window,
-                        perc_window=perc_window,
-                    )
+        else:
+            raise ValueError('Invalid method')
+
+    def set_peaks(
+        self,
+        peaks_s,
+        signal,
+        peak_set_name,
+    ):
+        """
+        Derive the moving envelope of the provided signal. See
+        envelope submodule in preprocessing.
+        """
+        self.peaks[peak_set_name] = self.PeaksData(
+            peaks_s=peaks_s,
+            signal=signal)
+
+    def plot_full(self, axis=None, signal_type=None,
+                  colors=None, baseline_bool=True):
+        """
+        Plot the indicated signals in the provided axes. By default the most
+        advanced signal type (envelope > clean > raw) is plotted in the
+        provided colours.
+        axes
+
+        :param axis: matplotlib Axis object. If none provided, a new figure is
+        created.
+        :type axis: matplotlib.Axis
+        :type channel_idxs: list
+        :param signal_type: the signal ('envelope', 'clean', 'raw') to plot
+        :type signal_type: str
+        :param colors: list of colors to plot the 1) signal, 2) the baseline
+        :type colors: list
+        :param baseline_bool: plot the baseline
+        :type baseline_bool: bool
+
+        :returns: None
+        :rtype: None
+        """
+
+        if axis is None:
+            _, axis = plt.subplots()
+
+        if colors is None:
+            colors = ['tab:blue', 'tab:orange', 'tab:cyan', 'tab:green']
+
+        y_data = self.signal_type_data(signal_type=signal_type)
+        axis.grid(True)
+        axis.plot(self.t_data, y_data, color=colors[0])
+        axis.set_ylabel(self.label + ' (' + self.units + ')')
+
+        if (baseline_bool is True
+                and self.y_baseline is not None
+                and np.any(~np.isnan(self.y_baseline), axis=0)):
+            axis.plot(self.t_data, self.y_baseline, color=colors[1])
+
+
+class TimeSeriesGroup:
+    """
+    Data class to store, process, and plot time series data
+    """
+
+    def __init__(self, y_raw, t_data=None, fs=None, labels=None, units=None):
+        """
+        Initialize the main data characteristics:
+        :param y_raw: raw signal data
+        :type y_raw: ~numpy.ndarray
+        :param t_data: time axis data, if None, generated from fs
+        :type t_data: ~numpy.ndarray
+        :param fs: sampling rate, if None, calculated from t_data
+        :type fs: ~int
+        :param labels: list of labels, one per provided channel
+        :type labels: ~list of str
+        :param units: list of signal units, one per provided channel
+        :type units: ~list of str
+        """
+        self.channels = []
+        self.fs = fs
+        data_shape = list(np.array(y_raw).shape)
+        data_dims = len(data_shape)
+        if data_dims == 1:
+            self.n_samp = len(y_raw)
+            self.n_channel = 1
+            y_raw = np.array(y_raw).reshape((1, self.n_samp))
+        elif data_dims == 2:
+            self.n_samp = data_shape[np.argmax(data_shape)]
+            self.n_channel = data_shape[np.argmin(data_shape)]
+            if np.argmin(data_shape) == 0:
+                y_raw = np.array(y_raw)
             else:
-                raise ValueError('Invalid method')
+                y_raw = np.array(y_raw).T
+        else:
+            raise ValueError
+
+        if t_data is None and fs is None:
+            t_data = np.arange(self.n_samp)
+        elif t_data is not None:
+            if len(np.array(t_data).shape) > 1:
+                raise ValueError
+            t_data = np.array(t_data)
+            if fs is None:
+                fs = int(1/(t_data[1:]-t_data[:-1]))
+        else:
+            t_data = np.array([x_i/fs for x_i in range(self.n_samp)])
+
+        if labels is None:
+            self.labels = self.n_channel * [None]
+        else:
+            if len(labels) != self.n_channel:
+                raise ValueError
+            self.labels = labels
+
+        if units is None:
+            self.units = self.n_channel * ['N/A']
+        else:
+            if len(labels) != self.n_channel:
+                raise ValueError
+            self.units = units
+
+        for idx in range(self.n_channel):
+            new_timeseries = TimeSeries(
+                y_raw=y_raw[idx, :],
+                t_data=t_data,
+                fs=fs,
+                label=self.labels[idx],
+                units=self.units[idx]
+            )
+            self.channels.append(new_timeseries)
+
+    def envelope(
+        self,
+        rms_window=None,
+        signal_type='clean',
+        channel_idxs=None,
+    ):
+        """
+        Derive the moving envelope of the provided signal. See
+        envelope submodule in preprocessing.
+        """
+
+        if channel_idxs is None:
+            channel_idxs = np.arange(self.n_channel)
+
+        for _, channel_idx in enumerate(channel_idxs):
+            self.channels[channel_idx].envelope(
+                rms_window=rms_window,
+                signal_type=signal_type,
+            )
+
+    def baseline(
+        self,
+        percentile=33,
+        window_s=None,
+        step_s=None,
+        method='default',
+        signal_type=None,
+        augm_percentile=25,
+        ma_window=None,
+        perc_window=None,
+        channel_idxs=None,
+    ):
+        """
+        Derive the moving baseline of the provided signal. See
+        baseline submodule in postprocessing.
+        """
+        if channel_idxs is None:
+            channel_idxs = np.arange(self.n_channel)
+
+        for _, channel_idx in enumerate(channel_idxs):
+            self.channels[channel_idx].baseline(
+                percentile=percentile,
+                window_s=window_s,
+                step_s=step_s,
+                method=method,
+                signal_type=signal_type,
+                augm_percentile=augm_percentile,
+                ma_window=ma_window,
+                perc_window=perc_window,
+            )
 
     def plot_full(self, axes=None, channel_idxs=None, signal_type=None,
                   colors=None, baseline_bool=True):
@@ -239,22 +467,100 @@ class TimeSeriesData:
         if len(channel_idxs) != len(axes):
             raise ValueError
 
-        if colors is None:
-            colors = ['tab:blue', 'tab:orange', 'tab:cyan', 'tab:green']
+        for _, (channel_idx, axis) in enumerate(zip(channel_idxs, axes)):
+            self.channels[channel_idx].plot_full(
+                axis=axis,
+                signal_type=signal_type,
+                colors=colors,
+                baseline_bool=baseline_bool)
 
-        y_data = self.signal_type_data(channel_idxs=channel_idxs,
-                                       signal_type=signal_type)
-        for plot_idx, (signal_idx, axis) in enumerate(zip(channel_idxs, axes)):
-            y_plot_data = y_data[plot_idx, :]
 
-            axis.grid(True)
-            axis.plot(self.t_data,
-                      y_plot_data, color=colors[0])
-            axis.set_ylabel(self.labels[signal_idx]
-                            + ' (' + self.units[signal_idx] + ')')
+class VentilatorDataGroup(TimeSeriesGroup):
+    """
+    Child-class of TimeSeriesGroup to store and handle ventilator data in.
+    """
+    def __init__(self, y_raw, t_data=None, fs=None, labels=None, units=None):
+        super().__init__(
+            y_raw, t_data=t_data, fs=fs, labels=labels, units=units)
 
-            y_baseline_sub = self.y_baseline[signal_idx, :]
-            if (baseline_bool is True
-                    and y_baseline_sub[0] is not None
-                    and np.any(~np.isnan(y_baseline_sub), axis=0)):
-                axis.plot(self.t_data, y_baseline_sub, color=colors[1])
+        if 'Paw' in labels:
+            self.p_aw_idx = labels.index('Paw')
+        else:
+            self.p_aw_idx = None
+        if 'F' in labels:
+            self.f_idx = labels.index('F')
+        else:
+            self.f_idx = None
+        if 'Vvent' in labels:
+            self.v_vent_idx = labels.index('Vvent')
+        else:
+            self.v_vent_idx = None
+
+        if self.p_aw_idx is not None and self.v_vent_idx is not None:
+            self.find_peep(self.p_aw_idx, self.v_vent_idx)
+        else:
+            self.peep = None
+
+    def find_peep(self, pressure_idx, volume_idx):
+        """
+        Calculate PEEP as the median value of Paw at end-expiration
+        """
+        v_ee_pks, _ = scipy.signal.find_peaks(-self.channels[volume_idx].y_raw)
+        self.peep = np.round(np.median(
+            self.channels[pressure_idx].y_raw[v_ee_pks]))
+
+    def find_occluded_breaths(
+        self,
+        pressure_idx,
+        start_s=0,
+        end_s=None,
+        prominence_factor=0.8,
+        min_width_s=None,
+        distance_s=None,
+    ):
+        """
+        Find end-expiratory occlusion manoeuvres in ventilator pressure
+        timeseries data. start_s and end_s specify the samples to look into.
+        The prominence_factor, min_width_s, and distance_s specify the minimal
+        peak prominence relative to the PEEP level, peak width in samples, and
+        distance to other peaks.
+        """
+        if end_s is None:
+            end_s = len(self.channels[pressure_idx].y_raw) - 1
+
+        if min_width_s is None:
+            if self.fs is None:
+                raise ValueError('Minimmal peak min_width_s and ventilator '
+                                 + 'sampling rate are not defined.')
+            min_width_s = int(0.1 * self.fs)
+
+        if distance_s is None:
+            if self.fs is None:
+                raise ValueError('Minimmal peak distance and ventilator '
+                                 + 'sampling rate are not defined.')
+            distance_s = int(0.5 * self.fs)
+
+        if self.peep is None:
+            raise ValueError('PEEP is not defined.')
+
+        prominence = prominence_factor * np.abs(
+            self.peep - min(self.channels[pressure_idx].y_raw))
+        height = prominence_factor - self.peep
+
+        peaks_s, _ = scipy.signal.find_peaks(
+            -self.channels[pressure_idx].y_raw[start_s:end_s],
+            height=height,
+            prominence=prominence,
+            width=min_width_s,
+            distance=distance_s
+        )
+        self.channels[pressure_idx].set_peaks(
+            signal=self.channels[pressure_idx].y_raw,
+            peaks_s=peaks_s,
+            peak_set_name='Pocc',
+        )
+
+    def find_tidal_volume_peaks(self, threshold):
+        """
+        Find tidal-volume peaks in ventilator volume signal.
+        """

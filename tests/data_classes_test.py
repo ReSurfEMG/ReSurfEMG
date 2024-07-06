@@ -4,7 +4,7 @@
 import unittest
 import numpy as np
 import matplotlib.pyplot as plt
-from resurfemg.data_classes.data_classes import TimeSeriesData
+from resurfemg.data_classes.data_classes import TimeSeriesGroup
 
 # Define EMG signal
 fs_emg = 2048
@@ -19,28 +19,28 @@ for idx, y_amp in enumerate(y_amps):
     y_t = y_amp * y_sin * y_rand + y_rand_baseline
     y_emg[idx, :] = y_t
 
-class TestTimeSeriesData(unittest.TestCase):
-    emg_timeseries = TimeSeriesData(
+class TestTimeSeriesGroup(unittest.TestCase):
+    emg_timeseries = TimeSeriesGroup(
         y_emg, fs=fs_emg, labels=['ECG', 'EMGdi', 'EMGpara'], units=3*['uV'])
     emg_timeseries.envelope(signal_type='raw')
     emg_timeseries.baseline()
 
     def test_raw_data(self):
         self.assertEqual(
-            self.emg_timeseries.y_raw.shape,
-            y_emg.shape
+            len(self.emg_timeseries.channels[0].y_raw),
+            len(y_emg[0, :])
         )
 
     def test_time_data(self):
         self.assertEqual(
-            self.emg_timeseries.t_data.shape,
+            self.emg_timeseries.channels[0].t_data.shape,
             t_emg.shape
         )
 
     def test_env_data(self):
         self.assertEqual(
-            self.emg_timeseries.y_env.shape,
-            y_emg.shape
+            len(self.emg_timeseries.channels[0].y_env),
+            len(y_emg[0, :])
         )
 
     def test_plot_full(self):
@@ -51,4 +51,4 @@ class TestTimeSeriesData(unittest.TestCase):
         _, y_plot_data = axes[-1].lines[0].get_xydata().T
 
         np.testing.assert_array_equal(
-            self.emg_timeseries.y_env[-1, :],y_plot_data)
+            self.emg_timeseries.channels[-1].y_env, y_plot_data)
