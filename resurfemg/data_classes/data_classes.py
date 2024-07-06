@@ -23,15 +23,20 @@ class TimeSeries:
     """
     Data class to store, process, and plot single channel time series data
     """
-    class PeaksData:
+    class PeaksSet:
         """
         Data class to store, and process peak information.
         """
-        def __init__(self, signal, peaks_s=None):
-            if signal is None:
-                raise ValueError("Invalid signal type: 'signal_type'.")
-            else:
+        def __init__(self, signal, t_data, peaks_s=None):
+            if isinstance(signal, np.ndarray):
                 self.signal = signal
+            else:
+                raise ValueError("Invalid signal type: 'signal_type'.")
+
+            if isinstance(t_data, np.ndarray):
+                self.t_data = t_data
+            else:
+                raise ValueError("Invalid t_data type: 't_data'.")
 
             if peaks_s is None:
                 self.peaks_s = np.array([])
@@ -42,6 +47,7 @@ class TimeSeries:
                 self.peaks_s = np.array(peaks_s)
             else:
                 raise ValueError("Invalid peak indices: 'peak_s'.")
+
             self.starts_s = None
             self.ends_s = None
             self.valid = None
@@ -265,8 +271,9 @@ class TimeSeries:
         Derive the moving envelope of the provided signal. See
         envelope submodule in preprocessing.
         """
-        self.peaks[peak_set_name] = self.PeaksData(
+        self.peaks[peak_set_name] = self.PeaksSet(
             peaks_s=peaks_s,
+            t_data=self.t_data,
             signal=signal)
 
     def plot_full(self, axis=None, signal_type=None,
@@ -296,7 +303,8 @@ class TimeSeries:
             _, axis = plt.subplots()
 
         if colors is None:
-            colors = ['tab:blue', 'tab:orange', 'tab:cyan', 'tab:green']
+            colors = ['tab:blue', 'tab:orange', 'tab:red', 'tab:cyan',
+                      'tab:green']
 
         y_data = self.signal_type_data(signal_type=signal_type)
         axis.grid(True)
@@ -307,6 +315,88 @@ class TimeSeries:
                 and self.y_baseline is not None
                 and np.any(~np.isnan(self.y_baseline), axis=0)):
             axis.plot(self.t_data, self.y_baseline, color=colors[1])
+
+    def plot_markers_full(self, axis, peak_set_name, colors=None, markers=None,
+                          valid_only=False):
+        """
+        Plot the indicated signals in the provided axes. By default the most
+        advanced signal type (envelope > clean > raw) is plotted in the
+        provided colours.
+        axes
+
+        :param axis: matplotlib Axis object. If none provided, a new figure is
+        created.
+        :type axis: matplotlib.Axis
+        :param peak_set: Peak locations and validity
+        :type peak_set: PeaksSet object
+        :param colors: list of colors to plot the 1) signal, 2) the baseline
+        :type colors: list
+        :param baseline_bool: plot the baseline
+        :type baseline_bool: bool
+
+        :returns: None
+        :rtype: None
+        """
+        if peak_set_name in self.peaks.keys():
+            peak_set = self.peaks[peak_set_name]
+        else:
+            raise KeyError("Non-existent PeaksSet key")
+
+        x_vals_peak = peak_set.t_data[peak_set.peaks_s]
+        y_vals_peak = peak_set.signal[peak_set.peaks_s]
+        x_vals_start = peak_set.t_data[peak_set.starts_s]
+        y_vals_start = peak_set.signal[peak_set.starts_s]
+        x_vals_end = peak_set.t_data[peak_set.ends_s]
+        y_vals_end = peak_set.signal[peak_set.ends_s]
+
+        if valid_only and peak_set.valid is not None:
+            x_vals_peak = x_vals_peak[peak_set.valid]
+            y_vals_peak = y_vals_peak[peak_set.valid]
+            x_vals_start = x_vals_start[peak_set.valid]
+            y_vals_start = y_vals_start[peak_set.valid]
+            x_vals_end = x_vals_end[peak_set.valid]
+            y_vals_end = y_vals_end[peak_set.valid]
+
+        if colors is None:
+            colors = 'tab:red'
+        if isinstance(colors, str):
+            peak_color = colors
+            start_color = colors
+            end_color = colors
+        elif isinstance(colors, list) and len(colors) == 2:
+            peak_color = colors[0]
+            start_color = colors[1]
+            end_color = colors[1]
+        elif isinstance(colors, list) and len(colors) > 2:
+            peak_color = colors[0]
+            start_color = colors[1]
+            end_color = colors[2]
+        else:
+            raise ValueError('Invalid color')
+
+        if markers is None:
+            markers = '*'
+        if isinstance(markers, str):
+            peak_marker = markers
+            start_marker = markers
+            end_marker = markers
+        elif isinstance(markers, list) and len(markers) == 2:
+            peak_marker = markers[0]
+            start_marker = markers[1]
+            end_marker = markers[1]
+        elif isinstance(markers, list) and len(markers) > 2:
+            peak_marker = markers[0]
+            start_color = markers[1]
+            end_marker = markers[2]
+        else:
+            raise ValueError('Invalid marker')
+
+        axis.plot(x_vals_peak, y_vals_peak, marker=peak_marker,
+                    color=peak_color, linestyle='None')
+        axis.plot(x_vals_start, y_vals_start, marker=start_marker,
+                color=start_color, linestyle='None')
+        axis.plot(x_vals_end, y_vals_end, marker=end_marker,
+                color=end_color, linestyle='None')
 
 
 class TimeSeriesGroup:
