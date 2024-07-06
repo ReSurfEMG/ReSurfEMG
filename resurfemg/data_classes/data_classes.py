@@ -316,8 +316,8 @@ class TimeSeries:
                 and np.any(~np.isnan(self.y_baseline), axis=0)):
             axis.plot(self.t_data, self.y_baseline, color=colors[1])
 
-    def plot_markers_full(self, axis, peak_set_name, colors=None, markers=None,
-                          valid_only=False):
+    def plot_markers_full(self, axis, peak_set_name, valid_only=False,
+                          colors=None, markers=None):
         """
         Plot the indicated signals in the provided axes. By default the most
         advanced signal type (envelope > clean > raw) is plotted in the
@@ -327,12 +327,16 @@ class TimeSeries:
         :param axis: matplotlib Axis object. If none provided, a new figure is
         created.
         :type axis: matplotlib.Axis
-        :param peak_set: Peak locations and validity
-        :type peak_set: PeaksSet object
-        :param colors: list of colors to plot the 1) signal, 2) the baseline
-        :type colors: list
-        :param baseline_bool: plot the baseline
-        :type baseline_bool: bool
+        :param peak_set_name: PeakSet name in self.peaks dict
+        :type peak_set_name: str
+        :param colors: 1 color of list of up to 3 colors for the markers, peak,
+        start, and end markers. If 2 colors are provided, start and end have
+        the same colors
+        :type colors: str or list
+        :param markers: 1 markers or list of up to 3 markers for peak, start,
+        and end markers. If 2 markers are provided, start and end have the same
+        marker
+        :type markers: str or list
 
         :returns: None
         :rtype: None
@@ -397,6 +401,92 @@ class TimeSeries:
                 color=start_color, linestyle='None')
         axis.plot(x_vals_end, y_vals_end, marker=end_marker,
                 color=end_color, linestyle='None')
+
+    def plot_peaks(self, peak_set_name, axes=None, signal_type=None,
+                   margin_s=None, valid_only=False, colors=None,
+                   baseline_bool=True):
+        """
+        Plot the indicated peaks in the provided axes. By default the most
+        advanced signal type (envelope > clean > raw) is plotted in the
+        provided colours.
+        axes
+
+        :param axes: matplotlib Axes object. If none provided, a new figure is
+        created.
+        :type axes: matplotlib.Axes
+        :param signal_type: the signal ('envelope', 'clean', 'raw') to plot
+        :type signal_type: str
+        :param colors: list of colors to plot the 1) signal, 2) the baseline
+        :type colors: list
+        :param baseline_bool: plot the baseline
+        :type baseline_bool: bool
+
+        :returns: None
+        :rtype: None
+        """
+        if peak_set_name in self.peaks.keys():
+            peak_set = self.peaks[peak_set_name]
+        else:
+            raise KeyError("Non-existent PeaksSet key")
+
+        starts_s = peak_set.starts_s
+        ends_s = peak_set.ends_s
+
+        if valid_only and peak_set.valid is not None:
+            starts_s = starts_s[peak_set.valid]
+            ends_s = ends_s[peak_set.valid]
+
+        if axes is None:
+            _, axes = plt.subplots(nrows=1, ncols=len(starts_s),
+                                   sharey=True)
+
+        if colors is None:
+            colors = ['tab:blue', 'tab:orange', 'tab:red', 'tab:cyan',
+                      'tab:green']
+        if signal_type is None:
+            y_data = peak_set.signal
+        else:
+            y_data = self.signal_type_data(signal_type=signal_type)
+
+        if margin_s is None:
+            m_s = self.fs // 2
+        else:
+            m_s = margin_s
+
+        if len(starts_s) > 1:
+            for _, (axis, x_start, x_end) in enumerate(
+                    zip(axes, starts_s, ends_s)):
+                s_start = max([0, x_start - m_s])
+                s_end = max([0, x_end + m_s])
+
+                axis.grid(True)
+                axis.plot(self.t_data[s_start:s_end],
+                        y_data[s_start:s_end], color=colors[0])
+
+                if (baseline_bool is True
+                        and self.y_baseline is not None
+                        and np.any(~np.isnan(self.y_baseline), axis=0)):
+                    axis.plot(self.t_data[s_start:s_end],
+                              self.y_baseline[s_start:s_end], color=colors[1])
+
+            axes[0].set_ylabel(self.label + ' (' + self.units + ')')
+        else:
+            (axis, x_start, x_end) = (axes, starts_s, ends_s)
+            s_start = max([0, x_start - m_s])
+            s_end = max([0, x_start - m_s])
+
+            axis.grid(True)
+            axis.plot(self.t_data[s_start:s_end],
+                      y_data[s_start:s_end], color=colors[0])
+
+            if (baseline_bool is True
+                    and self.y_baseline is not None
+                    and np.any(~np.isnan(self.y_baseline), axis=0)):
+                axis.plot(self.t_data[s_start:s_end],
+                          self.y_baseline[s_start:s_end], color=colors[1])
+
+            axis.set_ylabel(self.label + ' (' + self.units + ')')
+
 
 
 class TimeSeriesGroup:
