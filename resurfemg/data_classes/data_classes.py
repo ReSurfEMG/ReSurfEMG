@@ -316,17 +316,17 @@ class TimeSeries:
                 and np.any(~np.isnan(self.y_baseline), axis=0)):
             axis.plot(self.t_data, self.y_baseline, color=colors[1])
 
-    def plot_markers_full(self, axis, peak_set_name, valid_only=False,
-                          colors=None, markers=None):
+    def plot_markers(self, axes, peak_set_name, valid_only=False,
+                     colors=None, markers=None):
         """
         Plot the indicated signals in the provided axes. By default the most
         advanced signal type (envelope > clean > raw) is plotted in the
         provided colours.
         axes
 
-        :param axis: matplotlib Axis object. If none provided, a new figure is
+        :param axes: matplotlib Axes object. If none provided, a new figure is
         created.
-        :type axis: matplotlib.Axis
+        :type axes: matplotlib.Axes
         :param peak_set_name: PeakSet name in self.peaks dict
         :type peak_set_name: str
         :param colors: 1 color of list of up to 3 colors for the markers, peak,
@@ -395,12 +395,24 @@ class TimeSeries:
         else:
             raise ValueError('Invalid marker')
 
-        axis.plot(x_vals_peak, y_vals_peak, marker=peak_marker,
-                    color=peak_color, linestyle='None')
-        axis.plot(x_vals_start, y_vals_start, marker=start_marker,
-                color=start_color, linestyle='None')
-        axis.plot(x_vals_end, y_vals_end, marker=end_marker,
-                color=end_color, linestyle='None')
+        if isinstance(axes, np.ndarray):
+            for _, (axis, x_peak, y_peak, x_start, y_start, x_end,
+                    y_end) in enumerate(zip(
+                        axes, x_vals_peak, y_vals_peak, x_vals_start,
+                        y_vals_start, x_vals_end, y_vals_end)):
+                axis.plot(x_peak, y_peak, marker=peak_marker,
+                          color=peak_color, linestyle='None')
+                axis.plot(x_start, y_start, marker=start_marker,
+                          color=start_color, linestyle='None')
+                axis.plot(x_end, y_end, marker=end_marker,
+                          color=end_color, linestyle='None')
+        else:
+            axes.plot(x_vals_peak, y_vals_peak, marker=peak_marker,
+                      color=peak_color, linestyle='None')
+            axes.plot(x_vals_start, y_vals_start, marker=start_marker,
+                      color=start_color, linestyle='None')
+            axes.plot(x_vals_end, y_vals_end, marker=end_marker,
+                      color=end_color, linestyle='None')
 
     def plot_peaks(self, peak_set_name, axes=None, signal_type=None,
                    margin_s=None, valid_only=False, colors=None,
@@ -453,27 +465,13 @@ class TimeSeries:
         else:
             m_s = margin_s
 
-        if len(starts_s) > 1:
-            for _, (axis, x_start, x_end) in enumerate(
-                    zip(axes, starts_s, ends_s)):
-                s_start = max([0, x_start - m_s])
-                s_end = max([0, x_end + m_s])
+        if len(starts_s) == 1:
+            axes = np.array(axes)
 
-                axis.grid(True)
-                axis.plot(self.t_data[s_start:s_end],
-                        y_data[s_start:s_end], color=colors[0])
-
-                if (baseline_bool is True
-                        and self.y_baseline is not None
-                        and np.any(~np.isnan(self.y_baseline), axis=0)):
-                    axis.plot(self.t_data[s_start:s_end],
-                              self.y_baseline[s_start:s_end], color=colors[1])
-
-            axes[0].set_ylabel(self.label + ' (' + self.units + ')')
-        else:
-            (axis, x_start, x_end) = (axes, starts_s, ends_s)
+        for _, (axis, x_start, x_end) in enumerate(
+                zip(axes, starts_s, ends_s)):
             s_start = max([0, x_start - m_s])
-            s_end = max([0, x_start - m_s])
+            s_end = max([0, x_end + m_s])
 
             axis.grid(True)
             axis.plot(self.t_data[s_start:s_end],
@@ -485,8 +483,7 @@ class TimeSeries:
                 axis.plot(self.t_data[s_start:s_end],
                           self.y_baseline[s_start:s_end], color=colors[1])
 
-            axis.set_ylabel(self.label + ' (' + self.units + ')')
-
+        axes[0].set_ylabel(self.label + ' (' + self.units + ')')
 
 
 class TimeSeriesGroup:
