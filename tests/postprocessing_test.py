@@ -15,7 +15,8 @@ from resurfemg.postprocessing.features import (
     times_under_curve, find_peak_in_breath,variability_maker, time_product,
     area_under_baseline)
 from resurfemg.postprocessing.quality_assessment import (
-    snr_pseudo, pocc_quality, interpeak_dist, percentage_under_baseline)
+    snr_pseudo, pocc_quality, interpeak_dist, percentage_under_baseline,
+    consecutive_manoeuvres)
 from resurfemg.postprocessing.event_detection import (
     onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation)
 
@@ -258,7 +259,7 @@ class TestSnrPseudo(unittest.TestCase):
     peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
 
     snr_values = snr_pseudo(y_block, peaks_s, y_baseline)
-    
+
     def test_snr_length(self):
         self.assertEqual(
             len(self.snr_values),
@@ -318,6 +319,14 @@ class TestPoccQuality(unittest.TestCase):
             steep_upslope[-1]
             )
 
+    def test_consecutive_manoeuvres(self):
+        valid_manoeuvres, double_dips = consecutive_manoeuvres(
+            y_t_paw,1,9,fs_vent,pocc_peaks_valid)
+        self.assertFalse(
+            np.all(double_dips))
+        self.assertTrue(
+            np.all(valid_manoeuvres)
+        )
 
 class TestInterpeakMethods(unittest.TestCase):
     def test_interpeak_dist(self):
@@ -397,7 +406,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
         self.assertTrue(
             np.all(valid_timeproducts)
             )
-        
+
     def test_percentage_aub_wrong(self):
         y_baseline = 2*np.ones(self.y_block.shape)
         valid_timeproducts, _ = percentage_under_baseline(
