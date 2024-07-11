@@ -72,7 +72,6 @@ for _idx, _ in enumerate(pocc_peaks_valid):
         -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
         dx=1/fs_vent
     )
-)
 
 # Dummy EMG signal
 fs_emg = 2048
