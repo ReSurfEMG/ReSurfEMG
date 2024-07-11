@@ -441,6 +441,7 @@ def gating(
             src_signal_gated_base,
             gate_width,)
 
+        interpolate_samples = list()
         for _, peak in enumerate(gate_peaks):
             k_start = max([0, int(peak-gate_width/2)])
             k_end = min([int(peak+gate_width/2), max_sample])
@@ -448,9 +449,29 @@ def gating(
             for k in range(k_start, k_end):
                 leftf = max([0, int(k-1.5*gate_width)])
                 rightf = min([int(k+1.5*gate_width), max_sample])
-                src_signal_gated[k] = np.nanmean(
-                    src_signal_gated_rms[leftf:rightf]
-                )
+                if any(np.logical_not(np.isnan(
+                        src_signal_gated_rms[leftf:rightf]))):
+                    src_signal_gated[k] = np.nanmean(
+                        src_signal_gated_rms[leftf:rightf]
+                    )
+                else:
+                    interpolate_samples.append(k)
+
+        if len(interpolate_samples) > 0:
+            interpolate_samples = np.array(interpolate_samples)
+            if 0 in interpolate_samples:
+                src_signal_gated[0] = 0
+
+            if len(src_signal_gated)-1 in interpolate_samples:
+                src_signal_gated[-1] = 0
+
+            x_samp = np.array([x_i for x_i in range(len(src_signal_gated))])
+            other_samples = x_samp[~np.isin(x_samp, interpolate_samples)]
+            src_signal_gated_interp = np.interp(
+                x_samp[interpolate_samples],
+                x_samp[other_samples],
+                src_signal_gated[other_samples])
+            src_signal_gated[interpolate_samples] = src_signal_gated_interp
 
     return src_signal_gated
 
