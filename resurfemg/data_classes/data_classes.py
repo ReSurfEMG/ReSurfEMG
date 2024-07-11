@@ -15,7 +15,8 @@ from resurfemg.preprocessing.envelope import full_rolling_rms
 from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
 from resurfemg.postprocessing.event_detection import (
-    onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation
+    onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation,
+    find_occluded_breaths
 )
 
 
@@ -689,6 +690,7 @@ class VentilatorDataGroup(TimeSeriesGroup):
     def find_occluded_breaths(
         self,
         pressure_idx,
+        peep=None,
         start_s=0,
         end_s=None,
         prominence_factor=0.8,
@@ -697,39 +699,23 @@ class VentilatorDataGroup(TimeSeriesGroup):
     ):
         """
         Find end-expiratory occlusion manoeuvres in ventilator pressure
-        timeseries data. start_s and end_s specify the samples to look into.
-        The prominence_factor, min_width_s, and distance_s specify the minimal
-        peak prominence relative to the PEEP level, peak width in samples, and
-        distance to other peaks.
+        timeseries data. See the documentation in the event_detection module on
+        the 'find_occluded_breaths' methods for a detailed description.
         """
-        if end_s is None:
-            end_s = len(self.channels[pressure_idx].y_raw) - 1
-
-        if min_width_s is None:
-            if self.fs is None:
-                raise ValueError('Minimmal peak min_width_s and ventilator '
-                                 + 'sampling rate are not defined.')
-            min_width_s = int(0.1 * self.fs)
-
-        if distance_s is None:
-            if self.fs is None:
-                raise ValueError('Minimmal peak distance and ventilator '
-                                 + 'sampling rate are not defined.')
-            distance_s = int(0.5 * self.fs)
-
-        if self.peep is None:
+        if peep is None and self.peep is None:
             raise ValueError('PEEP is not defined.')
+        elif peep is None:
+            peep = self.peep
 
-        prominence = prominence_factor * np.abs(
-            self.peep - min(self.channels[pressure_idx].y_raw))
-        height = prominence_factor - self.peep
-
-        peaks_s, _ = scipy.signal.find_peaks(
-            -self.channels[pressure_idx].y_raw[start_s:end_s],
-            height=height,
-            prominence=prominence,
-            width=min_width_s,
-            distance=distance_s
+        peaks_s = find_occluded_breaths(
+            p_aw=self.channels[pressure_idx].y_raw,
+            fs=self.fs,
+            peep=peep,
+            start_s=start_s,
+            end_s=end_s,
+            prominence_factor=prominence_factor,
+            min_width_s=min_width_s,
+            distance_s=distance_s,
         )
         self.channels[pressure_idx].set_peaks(
             signal=self.channels[pressure_idx].y_raw,
