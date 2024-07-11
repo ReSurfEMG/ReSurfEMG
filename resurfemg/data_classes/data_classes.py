@@ -283,8 +283,6 @@ class TimeSeries:
         Plot the indicated signals in the provided axes. By default the most
         advanced signal type (envelope > clean > raw) is plotted in the
         provided colours.
-        axes
-
         :param axis: matplotlib Axis object. If none provided, a new figure is
         created.
         :type axis: matplotlib.Axis
@@ -317,14 +315,11 @@ class TimeSeries:
                 and np.any(~np.isnan(self.y_baseline), axis=0)):
             axis.plot(self.t_data, self.y_baseline, color=colors[1])
 
-    def plot_markers(self, axes, peak_set_name, valid_only=False,
+    def plot_markers(self, peak_set_name, axes, valid_only=False,
                      colors=None, markers=None):
         """
-        Plot the indicated signals in the provided axes. By default the most
-        advanced signal type (envelope > clean > raw) is plotted in the
-        provided colours.
-        axes
-
+        Plot the markers for the peak set in the provided axes in the
+        provided colours using the provided markers.
         :param axes: matplotlib Axes object. If none provided, a new figure is
         created.
         :type axes: matplotlib.Axes
@@ -422,13 +417,17 @@ class TimeSeries:
         Plot the indicated peaks in the provided axes. By default the most
         advanced signal type (envelope > clean > raw) is plotted in the
         provided colours.
-        axes
-
+        :param peak_set_name: The name of the peak_set to be plotted.
+        :type peak_set_name: str
         :param axes: matplotlib Axes object. If none provided, a new figure is
         created.
         :type axes: matplotlib.Axes
         :param signal_type: the signal ('envelope', 'clean', 'raw') to plot
         :type signal_type: str
+        :param margin_s: margins in samples plotted before the peak onset and
+        after the peak offset
+        :param valid_only: when True, only valid peaks are plotted.
+        :type valid_only: bool
         :param colors: list of colors to plot the 1) signal, 2) the baseline
         :type colors: list
         :param baseline_bool: plot the baseline
@@ -616,8 +615,6 @@ class TimeSeriesGroup:
         Plot the indicated signals in the provided axes. By default the most
         advanced signal type (envelope > clean > raw) is plotted in the
         provided colours.
-        axes
-
         :param axes: matplotlib Axes object. If none provided, a new figure is
         created.
         :type axes: ~numpy.ndarray
@@ -651,6 +648,118 @@ class TimeSeriesGroup:
                 signal_type=signal_type,
                 colors=colors,
                 baseline_bool=baseline_bool)
+
+    def plot_peaks(self, peak_set_name, axes=None, channel_idxs=None,
+                   signal_type=None, margin_s=None, valid_only=False,
+                   colors=None, baseline_bool=True):
+        """
+        Plot the indicated peaks for all provided channels in the provided
+        axes. By default the most advanced signal type (envelope > clean > raw)
+        is plotted in the provided colours.
+        :param peak_set_name: The name of the peak_set to be plotted.
+        :type peak_set_name: str
+        :param axes: matplotlib Axes object. If none provided, a new figure is
+        created.
+        :type axes: matplotlib.Axes
+        :param channel_idxs: list of which channels indices to plot. If none
+        provided, all channels are plot.
+        :type channel_idxs: list
+        :param signal_type: the signal ('envelope', 'clean', 'raw') to plot
+        :type signal_type: str
+        :param margin_s: margins in samples plotted before the peak onset and
+        after the peak offset
+        :type margin_s: int
+        :param valid_only: when True, only valid peaks are plotted.
+        :type valid_only: bool
+        :param colors: list of colors to plot the 1) signal, 2) the baseline
+        :type colors: list
+        :param baseline_bool: plot the baseline
+        :type baseline_bool: bool
+
+        :returns: None
+        :rtype: None
+        """
+
+        if channel_idxs is None:
+            channel_idxs = np.arange(self.n_channel)
+        elif isinstance(channel_idxs, int):
+            channel_idxs = np.array([channel_idxs])
+
+        if len(axes.shape) == 1:
+            axes = axes.reshape((1, len(axes)))
+
+        if axes.shape[0] < len(channel_idxs):
+            raise ValueError('Provided axes have not enough rows for all '
+                             + 'channels to plot.')
+
+        for idx, channel_idx in enumerate(channel_idxs):
+            if peak_set_name in self.channels[channel_idx].peaks.keys():
+                axes_row = axes[idx, :]
+                self.channels[channel_idx].plot_peaks(
+                    axes=axes_row,
+                    peak_set_name=peak_set_name,
+                    signal_type=signal_type,
+                    margin_s=margin_s,
+                    valid_only=valid_only,
+                    colors=colors,
+                    baseline_bool=baseline_bool
+                    )
+            else:
+                warnings.warn('peak_set_name not occuring in channel: '
+                              + self.channels[channel_idx].label
+                              + ' Skipping this channel.')
+
+    def plot_markers(self, peak_set_name, axes=None, channel_idxs=None,
+                     valid_only=False, colors=None, markers=None):
+        """
+        Plot the indicated peak markers for all provided channels in the
+        provided axes using the provided colours and markers.
+        :param peak_set_name: PeakSet name in self.peaks dict
+        :type peak_set_name: str
+        :param axes: matplotlib Axes object. If none provided, a new figure is
+        created.
+        :type axes: matplotlib.Axes
+        :param colors: 1 color of list of up to 3 colors for the markers, peak,
+        start, and end markers. If 2 colors are provided, start and end have
+        the same colors
+        :type peak_set_name: str
+        :param valid_only: when True, only valid peaks are plotted.
+        :type valid_only: bool
+        :param markers: 1 markers or list of up to 3 markers for peak, start,
+        and end markers. If 2 markers are provided, start and end have the same
+        marker
+        :type markers: str or list
+
+        :returns: None
+        :rtype: None
+        """
+
+        if channel_idxs is None:
+            channel_idxs = np.arange(self.n_channel)
+        elif isinstance(channel_idxs, int):
+            channel_idxs = np.array([channel_idxs])
+
+        if len(axes.shape) == 1:
+            axes = axes.reshape((1, len(axes)))
+
+        if axes.shape[0] < len(channel_idxs):
+            raise ValueError('Provided axes have not enough rows for all '
+                             + 'channels to plot.')
+
+        for idx, channel_idx in enumerate(channel_idxs):
+            if peak_set_name in self.channels[channel_idx].peaks.keys():
+                axes_row = axes[idx, :]
+                self.channels[channel_idx].plot_markers(
+                    peak_set_name=peak_set_name,
+                    axes=axes_row,
+                    valid_only=valid_only,
+                    colors=colors,
+                    markers=markers
+                    )
+            else:
+                warnings.warn('peak_set_name not occuring in channel: '
+                              + self.channels[channel_idx].label
+                              + '. Skipping this channel.')
 
 
 class VentilatorDataGroup(TimeSeriesGroup):
