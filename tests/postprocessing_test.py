@@ -16,9 +16,10 @@ from resurfemg.postprocessing.features import (
     area_under_baseline)
 from resurfemg.postprocessing.quality_assessment import (
     snr_pseudo, pocc_quality, interpeak_dist, percentage_under_baseline,
-    consecutive_manoeuvres)
+    detect_non_consecutive_manoeuvres)
 from resurfemg.postprocessing.event_detection import (
-    onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation)
+    onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation,
+    detect_ventilator_breath)
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -64,6 +65,10 @@ for _idx, _ in enumerate(pocc_peaks_valid):
         -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
         dx=1/fs_vent
     )
+
+# Dummy ventilator data
+
+
 
 class TestEntropyMethods(unittest.TestCase):
 
@@ -248,6 +253,14 @@ class TestEventDetection(unittest.TestCase):
             len(peak_end_idxs),
             )
 
+    def test_detect_ventilator_breath(self):
+        ventilator_breath_idxs = detect_ventilator_breath(
+            V_signal=self.breathing_signal,start_s=1,end_s=10000,width_s=1)
+        self.assertEqual(
+            len(ventilator_breath_idxs),
+            2,
+            )
+
 class TestSnrPseudo(unittest.TestCase):
     fs_emg = 2048
     t_emg = np.array([s_t/fs_emg for s_t in range(15*fs_emg)])
@@ -319,13 +332,20 @@ class TestPoccQuality(unittest.TestCase):
             steep_upslope[-1]
             )
 
-    def test_consecutive_manoeuvres(self):
-        valid_manoeuvres, double_dips = consecutive_manoeuvres(
-            y_t_paw,1,9,fs_vent,pocc_peaks_valid)
-        self.assertFalse(
-            np.all(double_dips))
+    def test_consec_manoeuvres(self):
+        sim_breaths=np.arange(1,20,2)
+        sim_occ=np.arange(1,20,10)
+        sim_occ_false = np.array([1, 7, 9])
+        valid_manoeuvres = detect_non_consecutive_manoeuvres(
+            ventilator_breath_idxs=sim_breaths,
+            manoeuvres_idxs=sim_occ)
         self.assertTrue(
             np.all(valid_manoeuvres)
+        )
+        valid_manoeuvres_false = detect_non_consecutive_manoeuvres(
+            sim_breaths, sim_occ_false)
+        self.assertFalse(
+            np.all(valid_manoeuvres_false)
         )
 
 class TestInterpeakMethods(unittest.TestCase):

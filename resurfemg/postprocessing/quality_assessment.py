@@ -196,20 +196,18 @@ def percentage_under_baseline(
     return valid_timeproducts, percentages_aub
 
 
-def consecutive_manoeuvres(
-        signal,
-        start_s,
-        end_s,
-        fs,
-        manoeuvres_idxs
+def detect_non_consecutive_manoeuvres(
+    ventilator_breath_idxs,
+    manoeuvres_idxs
 ):
+
     """
     Detect manoeuvres (for example Pocc) with no supported breaths
-    in between. First identify the supported breaths from the ventilator signal
-    and then check for in-between supported breaths.
+    in between. Input are the ventilator breaths, to be detected with the
+    function event_detecton.detect_supported_breaths(...)
     If no supported breaths are detected in between two manoeuvres,
-    a 'double dip' is detected.
-    Double_dips true means the manoeuvre is not valid.
+    valid_manoeuvres is 'true'
+    Note: fs of both signals should be equal.
 
     :param signal: signal in which the manoeuvre is performed
     :type signal: ~numpy.ndarray
@@ -222,44 +220,28 @@ def consecutive_manoeuvres(
     :param manoeuvres_idxs : list of manoeuvres indexes
     :type manoeuvres_idxs: ~list
 
-    :returns: valid_manoeuvres, double_dips
+    :returns: valid_manoeuvres, consecutive_manoeuvres
     :return type: list, list
     """
 
-    start_s_samp = fs * start_s
-    end_s_samp = fs * end_s
-    V_t = signal[int(start_s_samp):int(end_s_samp)]
-    treshold = 0.25 * np.percentile(V_t, 90)
-    prominence = 0.10 * np.percentile(V_t, 90)
-    width = 0.25 * fs
-    resp_eff, _ = scipy.signal.find_peaks(V_t, height=treshold,
-                                          prominence=prominence, width=width)
-
-    treshold = 0.5 * np.percentile(V_t[resp_eff], 90)
-    prominence = 0.5 * np.percentile(V_t, 90)
-    width = 0.25 * fs
-    resp_eff2, _ = scipy.signal.find_peaks(
-        V_t, height=treshold, prominence=prominence, width=width)
-
-    #   Check for in-between supported breaths
-    double_dips = np.zeros((len(manoeuvres_idxs),), dtype=bool)
+    consecutive_manoeuvres = np.zeros(len(manoeuvres_idxs), dtype=bool)
     for idx in range(len(manoeuvres_idxs)):
         if idx > 0:
             # Check for supported breaths in between two Poccs
-            intermediate_breaths = (
-                manoeuvres_idxs[idx-1] < resp_eff2) & (resp_eff2 <
-                                                       manoeuvres_idxs[idx])
+            intermediate_breaths = np.equal(
+                (manoeuvres_idxs[idx-1] < ventilator_breath_idxs),
+                (ventilator_breath_idxs < manoeuvres_idxs[idx]))
 
             # If no supported breaths are detected in between, a
             # 'double dip' is detected
             intermediate_breath_count = np.sum(intermediate_breaths)
             if intermediate_breath_count > 0:
-                double_dips[idx] = False
+                consecutive_manoeuvres[idx] = False
             else:
-                double_dips[idx] = True
+                consecutive_manoeuvres[idx] = True
         else:
-            double_dips[idx] = False
+            consecutive_manoeuvres[idx] = False
 
-    valid_manoeuvres = np.logical_not(double_dips)
+    valid_manoeuvres = np.logical_not(consecutive_manoeuvres)
 
-    return valid_manoeuvres, double_dips
+    return valid_manoeuvres
