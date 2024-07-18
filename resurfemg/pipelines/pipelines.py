@@ -1,11 +1,26 @@
 
-from resurfemg.preprocessing.filtering import (
-    emg_highpass_butter, bad_end_cutter, bad_end_cutter_for_samples,
-    emg_bandpass_butter_sample)
-from resurfemg.preprocessing.ecg_removal import (
-    compute_ica_two_comp, compute_ICA_two_comp_selective,
-    pick_more_peaks_array, pick_lowest_correlation_array)
+"""
+Copyright 2022 Netherlands eScience Center and University of Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.
+
+This file contains functions to perform default procedures.
+"""
+
+import numpy as np
+import scipy
+import resurfemg.preprocessing.ecg_removal as ecg_rm
+import resurfemg.preprocessing.envelope as evl
+import resurfemg.preprocessing.filtering as filt
+from resurfemg.preprocessing.filtering import bad_end_cutter_for_samples
+from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
+from resurfemg.preprocessing.ecg_removal import compute_ICA_two_comp_selective
+from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
+from resurfemg.preprocessing.ecg_removal import pick_lowest_correlation_array
+from resurfemg.preprocessing.filtering import emg_highpass_butter
+from resurfemg.preprocessing.filtering import bad_end_cutter
 from resurfemg.preprocessing.envelope import naive_rolling_rms
+from resurfemg.preprocessing.ecg_removal import (
+    compute_ica_two_comp, detect_ecg_peaks, gating)
 
 
 def working_pipe_multi(our_chosen_samples, picker='heart', selected=(0, 2)):
@@ -350,3 +365,47 @@ def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
     final_envelope_d = emg_highpass_butter(abs_values, 150, 2048)
 
     return final_envelope_d
+
+def ecg_removal_gating(
+    emg_raw,
+    ecg_peaks_s,
+    gate_width_s,
+    method=3,
+    ecg_shift=None,
+):
+    """
+    Eliminate the ECG peaks from the emg_raw signal. 
+    :param emg_raw: 1 dimensional emg signal to gate
+    :type emg_raw: ~numpy.ndarray
+    :param ecg_peaks_s: List of ECG peak sample numbers to gate.
+    :type ecg_peaks_s: ~numpy.ndarray
+    :param gate_width_s: Number of samples to gate
+    :type gate_width_s: int
+    :param fs: Sampling rate of emg_raw
+    :type fs: int
+    :param method: gating method. See the ecg_removal.gating function.
+    :type method: int
+    :param ecg_shift: Shift gate windows relative to detected peaks in samples.
+    :type ecg_shift: int
+
+    :returns: emg_gated
+    :rtype: ~numpy.ndarray
+    """
+    if len(emg_raw.shape) > 1:
+        raise ValueError('emg_raw should be a 1-D array')
+
+    if ecg_shift is None:
+        ecg_shift = 0
+
+    gate_peaks_s = ecg_peaks_s + ecg_shift
+
+    # Gate ECG and EMG signal
+    # Fill methods: 0: Zeros, 1: Interpolate start-end, 2: Average prior data
+    # 3: Moving average
+    emg_gated = ecg_rm.gating(
+        emg_raw,
+        gate_peaks_s,
+        gate_width=gate_width_s,
+        method=method)
+
+    return emg_gated

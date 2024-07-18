@@ -8,10 +8,12 @@ This file contains functions to eliminate ECG artifacts from
 
 import copy
 import numpy as np
+import scipy
 from sklearn.decomposition import FastICA
 from scipy.signal import find_peaks
 
-from . import envelope as evl
+from resurfemg.preprocessing import envelope as evl
+import resurfemg.preprocessing.filtering as filt
 
 
 def compute_ica_two_comp(emg_samples):
@@ -342,6 +344,64 @@ def pick_highest_correlation_array(components_tuple, ecg_lead):
     ecg_component = components_tuple[hi_index]
 
     return ecg_component
+
+
+def detect_ecg_peaks(
+    ecg_raw,
+    fs,
+    peak_fraction=0.3,
+    peak_width_s=None,
+    peak_distance=None,
+    bp_filter=True,
+):
+    """
+    Detect ECG peaks in EMG signal. 
+    :param ecg_raw: ecg signals to detect the ECG peaks in.
+    :type ecg_raw: ~numpy.ndarray
+    :param emg_raw: emg signals to gate
+    :type emg_raw: ~numpy.ndarray
+    :param fs: Sampling rate of the emg signals.
+    :type fs: int
+    :param peak_fraction: ECG peaks amplitude threshold relative to the
+    specified fraction of the min-max values in the ECG signal
+    :type peak_fraction: float
+    :param peak_width_s: ECG peaks width threshold in samples.
+    :type peak_width_s: int
+    :param peak_distance: Minimum time between ECG peaks in samples.
+    :type peak_distance: int
+    :param filter: Bandpass filter the ecg_raw between 1-500 Hz before peak
+    detection.
+    :type filter: bool
+
+    :returns: emg_gated
+    :rtype: ~numpy.ndarray
+    """
+
+    if peak_width_s is None:
+        peak_width_s = fs // 1000
+
+    if peak_distance is None:
+        peak_distance = fs // 3
+
+    if bp_filter:
+        lp_cf = min([500, fs//2])
+        ecg_filt = filt.emg_bandpass_butter_sample(
+            ecg_raw, 1, lp_cf, fs, output='sos')
+        ecg_rms = evl.full_rolling_rms(ecg_filt, fs // 200)
+    else:
+        ecg_rms = evl.full_rolling_rms(ecg_raw, fs // 200)
+    max_ecg_rms = max(ecg_rms)
+    min_ecg_rms = min(ecg_rms)
+    peak_height = peak_fraction * (max_ecg_rms - min_ecg_rms)
+
+    ecg_peaks_s, _  = scipy.signal.find_peaks(
+        ecg_rms,
+        height=peak_height,
+        width=peak_width_s,
+        distance=peak_distance
+    )
+
+    return ecg_peaks_s
 
 
 def gating(
