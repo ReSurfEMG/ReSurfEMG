@@ -11,6 +11,9 @@ import numpy as np
 import scipy
 import matplotlib.pyplot as plt
 
+from resurfemg.preprocessing import filtering as filt
+from resurfemg.preprocessing import ecg_removal as ecg_rm
+from resurfemg.pipelines.pipelines import ecg_removal_gating
 from resurfemg.preprocessing.envelope import full_rolling_rms
 from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
@@ -185,6 +188,60 @@ class TimeSeries:
         else:
             y_data = self.y_raw
         return y_data
+
+    def filter_emg(
+        self,
+        signal_type='raw',
+        hp_cf=20.0,
+        lp_cf=500.0,
+    ):
+        """
+        Filter raw EMG signal to remove baseline wander and high frequency
+        components.
+
+        """
+
+        y_data = self.signal_type_data(signal_type=signal_type)
+        # Eliminate the baseline wander from the data using a band-pass filter
+        self.y_clean = filt.emg_bandpass_butter_sample(
+            y_data, hp_cf, lp_cf, self.fs, output='sos')
+
+    def gating(
+        self,
+        signal_type='clean',
+        gate_width_samples=None,
+        ecg_peak_idxs=None,
+        ecg_raw=None,
+        bp_filter=True,
+    ):
+        y_data = self.signal_type_data(signal_type=signal_type)
+        if ecg_peak_idxs is None:
+            if ecg_raw is None:
+                lp_cf = min([500.0, self.fs / 2])
+                ecg_raw = filt.emg_bandpass_butter_sample(
+                    self.y_raw, 1, lp_cf, self.fs, output='sos')
+
+            ecg_peak_idxs = ecg_rm.detect_ecg_peaks(
+                ecg_raw=ecg_raw,
+                fs=self.fs,
+                bp_filter=bp_filter,
+            )
+
+        self.set_peaks(
+            signal=ecg_raw,
+            peaks_s=ecg_peak_idxs,
+            peak_set_name='ecg',
+        )
+
+        if gate_width_samples is None:
+            gate_width_samples = self.fs // 10
+
+        self.y_clean = ecg_removal_gating(
+            y_data,
+            ecg_peak_idxs,
+            gate_width_samples,
+            ecg_shift=10,
+        )
 
     def envelope(
         self,
@@ -521,13 +578,13 @@ class TimeSeriesGroup:
             else:
                 y_raw = np.array(y_raw).T
         else:
-            raise ValueError
+            raise ValueError('Invalid data dimensions')
 
         if t_data is None and fs is None:
             t_data = np.arange(self.n_samp)
         elif t_data is not None:
             if len(np.array(t_data).shape) > 1:
-                raise ValueError
+                raise ValueError('Invalid time data dimensions')
             t_data = np.array(t_data)
             if fs is None:
                 fs = int(1/(t_data[1:]-t_data[:-1]))
@@ -538,7 +595,8 @@ class TimeSeriesGroup:
             self.labels = self.n_channel * [None]
         else:
             if len(labels) != self.n_channel:
-                raise ValueError
+                raise ValueError('Number of labels does not match the number'
+                                 + ' of data channels.')
             self.labels = labels
 
         if units is None:
@@ -760,6 +818,64 @@ class TimeSeriesGroup:
                 warnings.warn('peak_set_name not occuring in channel: '
                               + self.channels[channel_idx].label
                               + '. Skipping this channel.')
+
+
+class EmgDataGroup(TimeSeriesGroup):
+    """
+    Child-class of TimeSeriesGroup to store and handle emg data in.
+    """
+    def __init__(self, y_raw, t_data=None, fs=None, labels=None, units=None):
+        super().__init__(
+            y_raw, t_data=t_data, fs=fs, labels=labels, units=units)
+
+        labels_lc = [label.lower() for label in labels]
+        if 'ecg' in labels_lc:
+            self.ecg_idx = labels_lc.index('ecg')
+        else:
+            self.ecg_idx = None
+
+    def filter(
+        self,
+        signal_type='raw',
+        hp_cf=20.0,
+        lp_cf=500.0,
+        channel_idxs=None,
+    ):
+        if channel_idxs is None:
+            channel_idxs = np.arange(self.n_channel)
+
+        for _, channel_idx in enumerate(channel_idxs):
+            self.channels[channel_idx].filter_emg(
+                signal_type=signal_type,
+                hp_cf=hp_cf,
+                lp_cf=lp_cf,
+            )
+
+    def gating(
+        self,
+        signal_type='clean',
+        gate_width_samples=None,
+        ecg_peak_idxs=None,
+        ecg_raw=None,
+        bp_filter=True,
+        channel_idxs=None,
+    ):
+        if channel_idxs is None:
+            channel_idxs = np.arange(self.n_channel)
+
+        if ecg_raw is None and ecg_peak_idxs is None:
+            if self.ecg_idx is not None:
+                ecg_raw = self.channels[self.ecg_idx].y_raw
+                print('Auto-detected ECG channel.')
+
+        for _, channel_idx in enumerate(channel_idxs):
+            self.channels[channel_idx].gating(
+                signal_type=signal_type,
+                gate_width_samples=gate_width_samples,
+                ecg_peak_idxs=ecg_peak_idxs,
+                ecg_raw=ecg_raw,
+                bp_filter=bp_filter,
+            )
 
 
 class VentilatorDataGroup(TimeSeriesGroup):
