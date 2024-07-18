@@ -7,27 +7,21 @@ import os
 import scipy
 from scipy.signal import find_peaks
 import numpy as np
-from resurfemg.preprocessing.filtering import emg_bandpass_butter
-from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
-from resurfemg.preprocessing.filtering import bad_end_cutter
-from resurfemg.preprocessing.filtering import bad_end_cutter_better
-from resurfemg.preprocessing.filtering import bad_end_cutter_for_samples
-from resurfemg.preprocessing.filtering import notch_filter
-from resurfemg.preprocessing.filtering import emg_lowpass_butter
+from resurfemg.preprocessing.filtering import (
+    emg_bandpass_butter, emg_bandpass_butter_sample, bad_end_cutter,
+    bad_end_cutter_better, bad_end_cutter_for_samples, notch_filter,
+    emg_lowpass_butter)
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
-from resurfemg.preprocessing.ecg_removal import compute_ICA_two_comp_selective
 # from resurfemg.multi_lead_type import compute_ICA_n_comp
 # from resurfemg.multi_lead_type import compute_ICA_n_comp_selective_zeroing
-from resurfemg.preprocessing.ecg_removal import compute_ica_two_comp
-from resurfemg.preprocessing.ecg_removal import compute_ica_two_comp_multi
-from resurfemg.preprocessing.ecg_removal import pick_lowest_correlation_array
-from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
-from resurfemg.preprocessing.ecg_removal import gating
-from resurfemg.preprocessing.ecg_removal import pick_highest_correlation_array_multi
-from resurfemg.preprocessing.envelope import naive_rolling_rms
-from resurfemg.preprocessing.envelope import vect_naive_rolling_rms
-from resurfemg.preprocessing.envelope import full_rolling_rms
-from resurfemg.preprocessing.ecg_removal import find_peaks_in_ecg_signal
+from resurfemg.preprocessing.ecg_removal import (
+    compute_ica_two_comp, compute_ica_two_comp_multi,
+    pick_lowest_correlation_array, pick_more_peaks_array,
+    gating, pick_highest_correlation_array_multi,
+    compute_ICA_two_comp_selective, find_peaks_in_ecg_signal)
+from resurfemg.preprocessing.envelope import (
+    naive_rolling_rms, vect_naive_rolling_rms, full_rolling_rms,
+    full_rolling_arv)
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -107,6 +101,22 @@ class TestRmsMethods(unittest.TestCase):
             np.any(peak_errors > 0.05)
         )
 
+    def test_full_rolling_arv_length(self):
+        x_arv = full_rolling_arv(self.x_t, self.fs_emg//5)
+        self.assertEqual(
+            (len(self.x_t)),
+            len(x_arv) ,
+        )
+
+    def test_full_rolling_arv_time_shift(self):
+        x_arv = full_rolling_arv(self.x_t, self.fs_emg//5)
+        peaks_arv, _ = find_peaks(x_arv, prominence=0.1)
+        peak_errors = np.abs(
+            (self.t_emg[peaks_arv] - self.t_emg[self.peaks_source]))
+
+        self.assertFalse(
+            np.any(peak_errors > 0.05)
+        )
 class TestCuttingingMethods(unittest.TestCase):
 
     def test_emg_bad_end_cutter(self):
