@@ -554,6 +554,7 @@ def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
     :rtype: tuple
 
     """
+    # TODO: Eliminate. Not robust to +/- deflections.
     ecg_signal = abs(ecg_signal)
     max_peak = ecg_signal.max() - ecg_signal.min()
     set_ecg_peaks = find_peaks(
