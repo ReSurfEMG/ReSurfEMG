@@ -355,7 +355,7 @@ def detect_ecg_peaks(
     bp_filter=True,
 ):
     """
-    Detect ECG peaks in EMG signal. 
+    Detect ECG peaks in EMG signal.
     :param ecg_raw: ecg signals to detect the ECG peaks in.
     :type ecg_raw: ~numpy.ndarray
     :param emg_raw: emg signals to gate
@@ -394,7 +394,7 @@ def detect_ecg_peaks(
     min_ecg_rms = min(ecg_rms)
     peak_height = peak_fraction * (max_ecg_rms - min_ecg_rms)
 
-    ecg_peaks_s, _  = scipy.signal.find_peaks(
+    ecg_peaks_s, _ = scipy.signal.find_peaks(
         ecg_rms,
         height=peak_height,
         width=peak_width_s,

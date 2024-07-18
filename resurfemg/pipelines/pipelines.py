@@ -366,6 +366,7 @@ def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
 
     return final_envelope_d
 
+
 def ecg_removal_gating(
     emg_raw,
     ecg_peaks_s,
@@ -374,7 +375,7 @@ def ecg_removal_gating(
     ecg_shift=None,
 ):
     """
-    Eliminate the ECG peaks from the emg_raw signal. 
+    Eliminate the ECG peaks from the emg_raw signal.
     :param emg_raw: 1 dimensional emg signal to gate
     :type emg_raw: ~numpy.ndarray
     :param ecg_peaks_s: List of ECG peak sample numbers to gate.
