@@ -369,8 +369,8 @@ def working_pipeline_pre_ml(our_chosen_samples, picker='heart'):
 
 def ecg_removal_gating(
     emg_raw,
-    ecg_peaks_s,
-    gate_width_s,
+    ecg_peaks_idxs,
+    gate_width_samples,
     method=3,
     ecg_shift=None,
 ):
@@ -378,10 +378,10 @@ def ecg_removal_gating(
     Eliminate the ECG peaks from the emg_raw signal.
     :param emg_raw: 1 dimensional emg signal to gate
     :type emg_raw: ~numpy.ndarray
-    :param ecg_peaks_s: List of ECG peak sample numbers to gate.
-    :type ecg_peaks_s: ~numpy.ndarray
-    :param gate_width_s: Number of samples to gate
-    :type gate_width_s: int
+    :param ecg_peaks_idxs: List of ECG peak sample numbers to gate.
+    :type ecg_peaks_idxs: ~numpy.ndarray
+    :param gate_width_samples: Number of samples to gate
+    :type gate_width_samples: int
     :param fs: Sampling rate of emg_raw
     :type fs: int
     :param method: gating method. See the ecg_removal.gating function.
@@ -398,15 +398,15 @@ def ecg_removal_gating(
     if ecg_shift is None:
         ecg_shift = 0
 
-    gate_peaks_s = ecg_peaks_s + ecg_shift
+    gate_peaks_idxs = ecg_peaks_idxs + ecg_shift
 
     # Gate ECG and EMG signal
     # Fill methods: 0: Zeros, 1: Interpolate start-end, 2: Average prior data
     # 3: Moving average
     emg_gated = ecg_rm.gating(
         emg_raw,
-        gate_peaks_s,
-        gate_width=gate_width_s,
+        gate_peaks_idxs,
+        gate_width=gate_width_samples,
         method=method)
 
     return emg_gated

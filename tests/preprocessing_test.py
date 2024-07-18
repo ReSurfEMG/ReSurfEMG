@@ -5,29 +5,21 @@
 import unittest
 import os
 import scipy
-from scipy.signal import find_peaks
 import numpy as np
-from resurfemg.preprocessing.filtering import emg_bandpass_butter
-from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
-from resurfemg.preprocessing.filtering import bad_end_cutter
-from resurfemg.preprocessing.filtering import bad_end_cutter_better
-from resurfemg.preprocessing.filtering import bad_end_cutter_for_samples
-from resurfemg.preprocessing.filtering import notch_filter
-from resurfemg.preprocessing.filtering import emg_lowpass_butter
+from scipy.signal import find_peaks
+
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
-from resurfemg.preprocessing.ecg_removal import compute_ICA_two_comp_selective
-# from resurfemg.multi_lead_type import compute_ICA_n_comp
-# from resurfemg.multi_lead_type import compute_ICA_n_comp_selective_zeroing
-from resurfemg.preprocessing.ecg_removal import compute_ica_two_comp
-from resurfemg.preprocessing.ecg_removal import compute_ica_two_comp_multi
-from resurfemg.preprocessing.ecg_removal import pick_lowest_correlation_array
-from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
-from resurfemg.preprocessing.ecg_removal import gating
-from resurfemg.preprocessing.ecg_removal import pick_highest_correlation_array_multi
-from resurfemg.preprocessing.envelope import naive_rolling_rms
-from resurfemg.preprocessing.envelope import vect_naive_rolling_rms
-from resurfemg.preprocessing.envelope import full_rolling_rms
-from resurfemg.preprocessing.ecg_removal import find_peaks_in_ecg_signal
+from resurfemg.preprocessing.filtering import (
+    emg_bandpass_butter, emg_bandpass_butter_sample, bad_end_cutter,
+    bad_end_cutter_better, bad_end_cutter_for_samples, notch_filter,
+    emg_lowpass_butter)
+from resurfemg.preprocessing.ecg_removal import (
+    compute_ica_two_comp, compute_ICA_two_comp_selective, 
+    compute_ica_two_comp_multi, pick_lowest_correlation_array,
+    pick_highest_correlation_array_multi,pick_more_peaks_array,
+    find_peaks_in_ecg_signal, detect_ecg_peaks, gating)
+from resurfemg.preprocessing.envelope import (
+    naive_rolling_rms, vect_naive_rolling_rms, full_rolling_rms)
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -36,6 +28,11 @@ sample_emg = os.path.join(
     '2022-05-13_11-51-04',
     '002',
     'EMG_recording.Poly5',
+)
+synth_pocc_emg = os.path.join(
+    os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
+    'test_data',
+    'emg_data_synth_pocc.Poly5',
 )
 
 class TestFilteringMethods(unittest.TestCase):
@@ -48,7 +45,8 @@ class TestFilteringMethods(unittest.TestCase):
         )
     def test_emg_band_pass_butter_sample(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter_sample(sample_read.samples, 1, 10, 2048)
+        sample_emg_filtered = emg_bandpass_butter_sample(
+            sample_read.samples, 1, 10, 2048)
         self.assertEqual(
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,
@@ -252,6 +250,24 @@ class TestPickingMethods(unittest.TestCase):
             (len(components)),
             2 ,
         )
+
+
+class TestEcgPeakDetection(unittest.TestCase):
+    data_emg = Poly5Reader(synth_pocc_emg)
+    y_emg = data_emg.samples[:data_emg.num_samples]
+    fs_emg = data_emg.sample_rate 
+
+    def test_detect_ecg_peaks(self):
+        ecg_peaks = detect_ecg_peaks(
+            ecg_raw=self.y_emg[0],
+            fs=self.fs_emg,
+            bp_filter=True,
+        )
+        self.assertEqual(
+            len(ecg_peaks),
+            449
+        )
+
 
 class TestGating(unittest.TestCase):
     sample_read= Poly5Reader(sample_emg)
