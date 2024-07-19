@@ -8,6 +8,7 @@ preprocessed EMG arrays.
 
 import numpy as np
 from ..postprocessing.features import time_product, area_under_baseline
+import scipy.signal
 
 
 def snr_pseudo(
@@ -193,3 +194,48 @@ def percentage_under_baseline(
     valid_timeproducts = percentages_aub < aub_threshold
 
     return valid_timeproducts, percentages_aub
+
+
+def detect_non_consecutive_manoeuvres(
+    ventilator_breath_idxs,
+    manoeuvres_idxs
+):
+
+    """
+    Detect manoeuvres (for example Pocc) with no supported breaths
+    in between. Input are the ventilator breaths, to be detected with the
+    function event_detecton.detect_supported_breaths(...)
+    If no supported breaths are detected in between two manoeuvres,
+    valid_manoeuvres is 'true'
+    Note: fs of both signals should be equal.
+
+    :param ventilator_breath_idxs: list of supported breath indices
+    :type ventilator_breath_idxs: ~list
+    :param manoeuvres_idxs : list of manoeuvres indices
+    :type manoeuvres_idxs: ~list
+
+    :returns: valid_manoeuvres
+    :return type: list
+    """
+
+    consecutive_manoeuvres = np.zeros(len(manoeuvres_idxs), dtype=bool)
+    for idx, _ in enumerate(manoeuvres_idxs):
+        if idx > 0:
+            # Check for supported breaths in between two Poccs
+            intermediate_breaths = np.equal(
+                (manoeuvres_idxs[idx-1] < ventilator_breath_idxs),
+                (ventilator_breath_idxs < manoeuvres_idxs[idx]))
+
+            # If no supported breaths are detected in between, a
+            # 'double dip' is detected
+            intermediate_breath_count = np.sum(intermediate_breaths)
+            if intermediate_breath_count > 0:
+                consecutive_manoeuvres[idx] = False
+            else:
+                consecutive_manoeuvres[idx] = True
+        else:
+            consecutive_manoeuvres[idx] = False
+
+    valid_manoeuvres = np.logical_not(consecutive_manoeuvres)
+
+    return valid_manoeuvres
