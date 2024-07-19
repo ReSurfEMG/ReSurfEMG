@@ -323,7 +323,7 @@ class TestSnrPseudo(unittest.TestCase):
     y_baseline = np.ones(y_block.shape)
     peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
 
-    snr_values = snr_pseudo(y_block, peaks_s, y_baseline)
+    snr_values = snr_pseudo(y_block, peaks_s, y_baseline, fs_emg)
 
     def test_snr_length(self):
         self.assertEqual(

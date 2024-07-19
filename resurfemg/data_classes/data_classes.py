@@ -8,6 +8,7 @@ automation.
 import warnings
 
 import numpy as np
+import pandas as pd
 import scipy
 import matplotlib.pyplot as plt
 
@@ -22,6 +23,7 @@ from resurfemg.postprocessing.event_detection import (
     onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation,
     find_occluded_breaths, detect_emg_breaths
 )
+from resurfemg.postprocessing import quality_assessment as qa
 
 
 class TimeSeries:
@@ -56,6 +58,8 @@ class TimeSeries:
             self.start_idxs = None
             self.end_idxs = None
             self.valid = None
+            self.test_values_df = None
+            self.test_outcomes_df = None
 
         def detect_on_offset(
             self, baseline=None,
@@ -77,7 +81,6 @@ class TimeSeries:
                     self.signal,
                     baseline,
                     self.peak_idxs)
-                self.valid = np.array(valid_list)
 
             elif method == 'slope_extrapolation':
                 if fs is None:
@@ -90,7 +93,58 @@ class TimeSeries:
                 (self.start_idxs, self.end_idxs, _, _,
                  valid_list) = onoffpeak_slope_extrapolation(
                     self.signal, fs, self.peak_idxs, slope_window_s)
-                self.valid = np.array(valid_list)
+            else:
+                raise KeyError('Detection algorithm does not exist.')
+
+            n_peaks = len(self.peak_idxs)
+            performed_tests = ['peak_idx', 'baseline_detection']
+            tests_outcomes = np.concatenate(
+                (np.reshape(np.array([self.peak_idxs]), (n_peaks, 1)),
+                 np.reshape(np.array(valid_list), (n_peaks, 1))), axis=1)
+
+            test_outcomes_df = pd.DataFrame(tests_outcomes,
+                                            columns=performed_tests)
+            self.evaluate_validity(test_outcomes_df)
+
+        def evaluate_validity(self, tests_df_new):
+            if self.test_outcomes_df is not None:
+                df_old = self.test_outcomes_df
+                pre_existing_keys = list(
+                    set(tests_df_new.keys()) & set(df_old.keys()))
+                pre_existing_keys.pop(pre_existing_keys.index('peak_idx'))
+                df_old = df_old.drop(columns=pre_existing_keys)
+                tests_df_new = df_old.merge(
+                    tests_df_new,
+                    left_on='peak_idx',
+                    right_on='peak_idx',
+                    suffixes=(False, False))
+                self.test_outcomes_df = tests_df_new
+            else:
+                self.test_outcomes_df = tests_df_new
+
+            test_keys = list(tests_df_new.keys())
+            test_keys.pop(test_keys.index('peak_idx'))
+
+            n_tests = len(test_keys)
+            passed_tests = np.sum(tests_df_new.loc[:, test_keys].values,
+                                  axis=1)
+            self.valid = passed_tests == n_tests
+
+        def update_test_outcomes(self, tests_df_new):
+            if self.test_values_df is not None:
+                df_old = self.test_values_df
+                pre_existing_keys = list(
+                    set(tests_df_new.keys()) & set(df_old.keys()))
+                pre_existing_keys.pop(pre_existing_keys.index('peak_idx'))
+                df_old = df_old.drop(columns=pre_existing_keys)
+                tests_df_new = df_old.merge(
+                    tests_df_new,
+                    left_on='peak_idx',
+                    right_on='peak_idx',
+                    suffixes=(False, False))
+                self.test_values_df = tests_df_new
+            else:
+                self.test_values_df = tests_df_new
 
         def sanitize(self):
             """
@@ -387,6 +441,16 @@ class TimeSeries:
         t_reference_peaks,
         linked_peak_set_name=None,
     ):
+        """
+        Find the peaks in the PeakSet with the peak_set_name closest in time to
+        the provided peak timings in t_reference_peaks
+        :param peak_set_name: PeakSet name in self.peaks dict
+        :type peak_set_name: str
+        :param t_reference_peaks: Refernce peak timings in t_reference_peaks
+        :type t_reference_peaks: ~numpy.ndarray
+        :param linked_peak_set_name: Name of the new PeakSet
+        :type linked_peak_set_name: str
+        """
         if peak_set_name in self.peaks.keys():
             peak_set = self.peaks[peak_set_name]
         else:
@@ -414,6 +478,164 @@ class TimeSeries:
 
         if peak_set.valid is not None:
             linked_peak_set.valid = peak_set.valid[link_peak_nrs]
+
+        if peak_set.test_outcomes_df is not None:
+            test_outcomes_df = peak_set.test_outcomes_df.loc[link_peak_nrs]
+            test_outcomes_df = test_outcomes_df.reset_index(drop=True)
+            linked_peak_set.test_outcomes_df = test_outcomes_df
+
+        if peak_set.test_values_df is not None:
+            test_values_df = peak_set.test_values_df.loc[link_peak_nrs]
+            test_values_df = test_values_df.reset_index(drop=True)
+            linked_peak_set.test_values_df = test_values_df
+
+    def test_emg_quality(
+        self,
+        peak_set_name,
+        cutoff=None,
+        skip_tests=None,
+        verbose=True
+    ):
+        """
+        Test EMG PeakSet according to quality criteria in Warnaar et al. (2024)
+        Peak validity is updated in the PeakSet object.
+        :param peak_set_name: PeakSet name in self.peaks dict
+        :type peak_set_name: str
+        :param cutoff: Cut-off criteria for passing the tests, including
+        ratio between ECG and EMG interpeak time (interpeak_distance), signal-
+        to-noise ratio (snr), percentage area under the baseline (aub), and
+        percentage miss fit with bell curve (curve_fit). 'tolerant' and
+        'strict' can also be provided instead of a dict to use the respective
+        values from Warnaar et al.
+        :type cutoff: dict
+        :param skip_tests: List of tests to skip.
+        :type skip_tests: list(str)
+        :param verbose: Output the test values, and pass/fail to console.
+        :type verbose: bool
+        """
+        if peak_set_name in self.peaks.keys():
+            peak_set = self.peaks[peak_set_name]
+        else:
+            raise KeyError("Non-existent PeaksSet key")
+
+        if skip_tests is None:
+            skip_tests = []
+
+        if (cutoff is None
+                or (isinstance(cutoff, str) and cutoff == 'tolerant')):
+            cutoff = dict()
+            cutoff['interpeak_distance'] = 1.1
+            cutoff['snr'] = 1.4
+            cutoff['aub'] = 40
+            cutoff['aub_window_s'] = 5*self.fs
+            cutoff['curve_fit'] = 0.3
+        elif (isinstance(cutoff, str) and cutoff == 'strict'):
+            cutoff = dict()
+            cutoff['interpeak_distance'] = 1.1
+            cutoff['snr'] = 1.75
+            cutoff['aub'] = 30
+            cutoff['aub_window_s'] = 5*self.fs
+            cutoff['curve_fit'] = 0.25
+        elif isinstance(cutoff, dict):
+            tests = ['interpeak_distance', 'snr', 'aub', 'curve_fit']
+            for _, test in enumerate(tests):
+                if test not in skip_tests:
+                    if test not in cutoff.keys():
+                        raise KeyError(
+                            'No cut-off value provided for: ' + test)
+                    elif isinstance(cutoff, float):
+                        raise ValueError(
+                            'Invalid cut-off value provided for: ' + test)
+
+            if 'aub' not in skip_tests and 'aub_window_s' not in cutoff.keys():
+                raise KeyError('No area under the baseline window provided '
+                               + 'for: ' + test)
+
+        n_peaks = len(peak_set.peak_idxs)
+        performed_measures = ['peak_idx']
+        test_values = np.reshape(np.array([peak_set.peak_idxs]),
+                                 (n_peaks, 1))
+        performed_tests = ['peak_idx']
+        tests_outcomes = np.reshape(np.array([peak_set.peak_idxs]),
+                                    (n_peaks, 1))
+        if 'interpeak_dist' not in skip_tests:
+            if 'ecg' not in self.peaks.keys():
+                raise ValueError('ECG peaks not determined, but required for '
+                                 + ' interpeak distance evaluation.')
+            ecg_peaks = self.peaks['ecg'].peak_idxs
+            valid_interpeak = qa.interpeak_dist(
+                ECG_peaks=ecg_peaks,
+                EMG_peaks=peak_set.peak_idxs,
+                threshold=cutoff['interpeak_distance'])
+
+            valid_interpeak_vec = np.array(n_peaks * [valid_interpeak])
+            performed_tests.append('interpeak_distance')
+            tests_outcomes = np.concatenate(
+                (tests_outcomes,
+                 np.reshape(valid_interpeak_vec, (n_peaks, 1))), axis=1)
+
+        if 'snr' not in skip_tests:
+            if self.baseline is None:
+                raise ValueError('Baseline not determined, but required for '
+                                 + ' SNR evaluaton.')
+            snr_peaks = qa.snr_pseudo(
+                src_signal=peak_set.signal,
+                peaks=peak_set.peak_idxs,
+                baseline=self.y_baseline,
+                fs=self.fs,
+            )
+            valid_snr = snr_peaks > cutoff['snr']
+            performed_measures.append('snr')
+
+            test_values = np.concatenate(
+                (test_values, np.reshape(snr_peaks, (n_peaks, 1))), axis=1)
+            performed_tests.append('snr')
+            tests_outcomes = np.concatenate(
+                (tests_outcomes, np.reshape(valid_snr, (n_peaks, 1))), axis=1)
+
+        if 'aub' not in skip_tests:
+            if self.baseline is None:
+                raise ValueError('Baseline not determined, but required for '
+                                 + ' area under the baseline (AUB) evaluaton.')
+            if peak_set.start_idxs is None:
+                raise ValueError('start_idxs not determined, but required for '
+                                 + ' area under the baseline (AUB) evaluaton.')
+            if peak_set.end_idxs is None:
+                raise ValueError('end_idxs not determined, but required for '
+                                 + ' area under the baseline (AUB) evaluaton.')
+            valid_timeproducts, percentages_aub = qa.percentage_under_baseline(
+                signal=peak_set.signal,
+                fs=self.fs,
+                peaks_s=peak_set.peak_idxs,
+                starts_s=peak_set.start_idxs,
+                ends_s=peak_set.end_idxs,
+                baseline=self.y_baseline,
+                aub_window_s=None,
+                ref_signal=None,
+                aub_threshold=cutoff['aub'],
+            )
+
+            performed_measures.append('aub')
+            test_values = np.concatenate(
+                (test_values,
+                 np.reshape(percentages_aub, (n_peaks, 1))), axis=1)
+            performed_tests.append('aub')
+            tests_outcomes = np.concatenate(
+                (tests_outcomes,
+                 np.reshape(valid_timeproducts, (n_peaks, 1))), axis=1)
+
+        test_values_df = pd.DataFrame(data=test_values,
+                                      columns=performed_measures)
+        test_outcomes_df = pd.DataFrame(data=tests_outcomes,
+                                        columns=performed_tests)
+
+        peak_set.update_test_outcomes(test_values_df)
+        peak_set.evaluate_validity(test_outcomes_df)
+        if verbose:
+            print('Test values:')
+            print(peak_set.test_values_df)
+            print('Test outcomes:')
+            print(peak_set.test_outcomes_df)
 
     def plot_full(self, axis=None, signal_type=None,
                   colors=None, baseline_bool=True):
@@ -989,7 +1211,7 @@ class EmgDataGroup(TimeSeriesGroup):
         if ecg_raw is None and ecg_peak_idxs is None:
             if self.ecg_idx is not None:
                 ecg_raw = self.channels[self.ecg_idx].y_raw
-                print('Auto-detected ECG channel.')
+                print('Auto-detected ECG channel from labels.')
 
         for _, channel_idx in enumerate(channel_idxs):
             self.channels[channel_idx].gating(
@@ -1011,14 +1233,17 @@ class VentilatorDataGroup(TimeSeriesGroup):
 
         if 'Paw' in labels:
             self.p_aw_idx = labels.index('Paw')
+            print('Auto-detected Paw channel from labels.')
         else:
             self.p_aw_idx = None
         if 'F' in labels:
             self.f_idx = labels.index('F')
+            print('Auto-detected Flow channel from labels.')
         else:
             self.f_idx = None
         if 'Vvent' in labels:
             self.v_vent_idx = labels.index('Vvent')
+            print('Auto-detected Volume channel from labels.')
         else:
             self.v_vent_idx = None
 
