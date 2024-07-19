@@ -24,11 +24,11 @@ emg_timeseries = TimeSeriesGroup(
 emg_timeseries.envelope(signal_type='raw')
 emg_timeseries.baseline()
 emg_di = emg_timeseries.channels[1]
-peaks_s, _ = scipy.signal.find_peaks(
+peak_idxs, _ = scipy.signal.find_peaks(
     emg_di.y_env, prominence=1.0)
 emg_di.set_peaks(
     peak_set_name='breaths',
-    peaks_s=peaks_s,
+    peak_idxs=peak_idxs,
     signal=emg_di.y_env)
 emg_di.peaks['breaths'].detect_on_offset(
     baseline=emg_di.y_baseline
@@ -47,8 +47,11 @@ class TestTimeSeriesGroup(unittest.TestCase):
             emg_timeseries.channels[0].t_data.shape,
             t_emg.shape
         )
+    
+    # TODO: Test filtering, gating
 
     def test_env_data(self):
+        # TODO: Test ARV
         self.assertEqual(
             len(emg_timeseries.channels[0].y_env),
             len(y_emg[0, :])
@@ -66,13 +69,13 @@ class TestTimeSeriesGroup(unittest.TestCase):
 
     def test_plot_peaks(self):
         _, axes = plt.subplots(
-            nrows=1, ncols=len(peaks_s), figsize=(10, 6), sharex=True)
+            nrows=1, ncols=len(peak_idxs), figsize=(10, 6), sharex=True)
         emg_timeseries.plot_peaks(peak_set_name='breaths', axes=axes,
                                   channel_idxs=1, margin_s=0)
         emg_timeseries.plot_markers(peak_set_name='breaths', axes=axes,
                                     channel_idxs=1)
         peak_set = emg_di.peaks['breaths']
-        len_last_peak = peak_set.ends_s[-1] - peak_set.starts_s[-1]
+        len_last_peak = peak_set.end_idxs[-1] - peak_set.start_idxs[-1]
         y_plot_data_list = list()
         for _, line in enumerate(axes[-1].lines):
             _, y_plot_data = line.get_xydata().T
