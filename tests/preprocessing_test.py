@@ -32,7 +32,7 @@ sample_emg = os.path.join(
 synth_pocc_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
     'test_data',
-    'emg_data_synth_pocc.Poly5',
+    'emg_data_synth_quiet_breathing.Poly5',
 )
 
 class TestFilteringMethods(unittest.TestCase):
