@@ -11,16 +11,13 @@ import scipy
 import resurfemg.preprocessing.ecg_removal as ecg_rm
 import resurfemg.preprocessing.envelope as evl
 import resurfemg.preprocessing.filtering as filt
-from resurfemg.preprocessing.filtering import bad_end_cutter_for_samples
-from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
-from resurfemg.preprocessing.ecg_removal import compute_ICA_two_comp_selective
-from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
-from resurfemg.preprocessing.ecg_removal import pick_lowest_correlation_array
-from resurfemg.preprocessing.filtering import emg_highpass_butter
-from resurfemg.preprocessing.filtering import bad_end_cutter
-from resurfemg.preprocessing.envelope import naive_rolling_rms
+from resurfemg.preprocessing.filtering import (
+    emg_highpass_butter, bad_end_cutter, bad_end_cutter_for_samples,
+    emg_bandpass_butter_sample)
 from resurfemg.preprocessing.ecg_removal import (
-    compute_ica_two_comp, detect_ecg_peaks, gating)
+    compute_ica_two_comp, compute_ICA_two_comp_selective,
+    pick_more_peaks_array, pick_lowest_correlation_array)
+from resurfemg.preprocessing.envelope import naive_rolling_rms
 
 
 def working_pipe_multi(our_chosen_samples, picker='heart', selected=(0, 2)):

@@ -19,7 +19,8 @@ from resurfemg.preprocessing.ecg_removal import (
     pick_highest_correlation_array_multi,pick_more_peaks_array,
     find_peaks_in_ecg_signal, detect_ecg_peaks, gating)
 from resurfemg.preprocessing.envelope import (
-    naive_rolling_rms, vect_naive_rolling_rms, full_rolling_rms)
+    naive_rolling_rms, vect_naive_rolling_rms, full_rolling_rms,
+    full_rolling_arv)
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -105,6 +106,31 @@ class TestRmsMethods(unittest.TestCase):
             np.any(peak_errors > 0.05)
         )
 
+
+class TestArvMethods(unittest.TestCase):
+    fs_emg = 2048
+    t_emg = np.array(range(3*fs_emg))/fs_emg
+    x_sin = np.sin(t_emg * 2 * np.pi)
+    x_sin[x_sin < 0] = 0
+    x_rand = np.random.normal(0, 1, size=len(x_sin))
+    x_t = x_sin * x_rand
+    peaks_source, _ = find_peaks(x_sin, prominence=0.1)
+    def test_full_rolling_arv_length(self):
+        x_arv = full_rolling_arv(self.x_t, self.fs_emg//5)
+        self.assertEqual(
+            (len(self.x_t)),
+            len(x_arv) ,
+        )
+
+    def test_full_rolling_arv_time_shift(self):
+        x_arv = full_rolling_arv(self.x_t, self.fs_emg//5)
+        peaks_arv, _ = find_peaks(x_arv, prominence=0.1)
+        peak_errors = np.abs(
+            (self.t_emg[peaks_arv] - self.t_emg[self.peaks_source]))
+
+        self.assertFalse(
+            np.any(peak_errors > 0.05)
+        )
 class TestCuttingingMethods(unittest.TestCase):
 
     def test_emg_bad_end_cutter(self):

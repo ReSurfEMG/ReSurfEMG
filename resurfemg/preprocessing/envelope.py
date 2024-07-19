@@ -193,3 +193,25 @@ def vect_naive_rolling_rms(x, N):
     x_c = np.cumsum(np.abs(x)**2)
     emg_rms = np.sqrt((x_c[N:] - x_c[:-N])/N)
     return emg_rms
+
+
+def full_rolling_arv(data_emg, window_length):
+    """This function computes an average rectified value envelope over an
+    array :code:`data_emg`.  To do this it uses number of sample values
+    :code:`window_length`. It differs from :func:`naive_rolling_rms`
+    by that the output is the same length as the input vector.
+
+    :param data_emg: Samples from the EMG
+    :type data_emg: ~numpy.ndarray
+    :param window_length: Length of the sample use as window for function
+    :type window_length: int
+
+    :returns: The arv envelope of the EMG sample data
+    :rtype: ~numpy.ndarray
+    """
+    padded_samples = int(np.floor(window_length/2))
+    window = np.ones(window_length)/float(window_length)
+    emg_arv_padded = np.convolve(np.abs(data_emg), window, 'full')
+    emg_arv = emg_arv_padded[padded_samples:-padded_samples]
+
+    return emg_arv

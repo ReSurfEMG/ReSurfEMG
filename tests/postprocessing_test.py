@@ -12,21 +12,16 @@ from resurfemg.preprocessing import envelope as evl
 from resurfemg.preprocessing import envelope as evl
 from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
-from resurfemg.postprocessing.features import (
-    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve,
-    times_under_curve, find_peak_in_breath,variability_maker, time_product,
-    area_under_baseline)
-from resurfemg.postprocessing.quality_assessment import (
-    snr_pseudo, pocc_quality, interpeak_dist, percentage_under_baseline)
-from resurfemg.postprocessing.features import (
-    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve,
-    times_under_curve, find_peak_in_breath,variability_maker, time_product,
-    area_under_baseline)
-from resurfemg.postprocessing.quality_assessment import (
-    snr_pseudo, pocc_quality, interpeak_dist, percentage_under_baseline)
 from resurfemg.postprocessing.event_detection import (
     onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation,
-    find_occluded_breaths)
+    detect_ventilator_breath, find_occluded_breaths)
+from resurfemg.postprocessing.features import (
+    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve,
+    times_under_curve, find_peak_in_breath,variability_maker, time_product,
+    area_under_baseline)
+from resurfemg.postprocessing.quality_assessment import (
+    snr_pseudo, pocc_quality, interpeak_dist, percentage_under_baseline,
+    detect_non_consecutive_manoeuvres)
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -292,6 +287,19 @@ class TestOnsetDetection(unittest.TestCase):
             len(peak_end_idxs),
             )
 
+    def test_detect_ventilator_breath(self):
+        ventilator_breath_idxs = detect_ventilator_breath(
+            V_signal=self.breathing_signal,
+            start_s=1,
+            end_s=10000,
+            width_s=1
+            )
+        self.assertEqual(
+            len(ventilator_breath_idxs),
+            2,
+            )
+
+
 class TestPoccDetection(unittest.TestCase):
     def test_baseline_crossing_starts(self):
         peak_idxs_detected = find_occluded_breaths(
@@ -316,7 +324,7 @@ class TestSnrPseudo(unittest.TestCase):
     peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
 
     snr_values = snr_pseudo(y_block, peaks_s, y_baseline)
-    
+
     def test_snr_length(self):
         self.assertEqual(
             len(self.snr_values),
@@ -376,6 +384,21 @@ class TestPoccQuality(unittest.TestCase):
             steep_upslope[-1]
             )
 
+    def test_consec_manoeuvres(self):
+        sim_breaths = np.arange(1,20,2)
+        sim_occ = np.arange(1,20,10)
+        sim_occ_false = np.array([1, 7, 9])
+        valid_manoeuvres = detect_non_consecutive_manoeuvres(
+            ventilator_breath_idxs=sim_breaths,
+            manoeuvres_idxs=sim_occ)
+        self.assertTrue(
+            np.all(valid_manoeuvres)
+        )
+        valid_manoeuvres_false = detect_non_consecutive_manoeuvres(
+            sim_breaths, sim_occ_false)
+        self.assertFalse(
+            np.all(valid_manoeuvres_false)
+        )
 
 class TestInterpeakMethods(unittest.TestCase):
     def test_interpeak_dist(self):
@@ -455,7 +478,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
         self.assertTrue(
             np.all(valid_timeproducts)
             )
-        
+
     def test_percentage_aub_wrong(self):
         y_baseline = 2*np.ones(self.y_block.shape)
         valid_timeproducts, _ = percentage_under_baseline(
