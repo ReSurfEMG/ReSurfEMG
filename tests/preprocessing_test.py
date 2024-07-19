@@ -101,6 +101,15 @@ class TestRmsMethods(unittest.TestCase):
             np.any(peak_errors > 0.05)
         )
 
+
+class TestArvMethods(unittest.TestCase):
+    fs_emg = 2048
+    t_emg = np.array(range(3*fs_emg))/fs_emg
+    x_sin = np.sin(t_emg * 2 * np.pi)
+    x_sin[x_sin < 0] = 0
+    x_rand = np.random.normal(0, 1, size=len(x_sin))
+    x_t = x_sin * x_rand
+    peaks_source, _ = find_peaks(x_sin, prominence=0.1)
     def test_full_rolling_arv_length(self):
         x_arv = full_rolling_arv(self.x_t, self.fs_emg//5)
         self.assertEqual(
