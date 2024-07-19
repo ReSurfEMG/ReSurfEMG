@@ -6,7 +6,9 @@ import os
 import numpy as np
 import scipy
 from scipy.integrate import trapezoid
+from scipy.integrate import trapezoid
 
+from resurfemg.preprocessing import envelope as evl
 from resurfemg.preprocessing import envelope as evl
 from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
@@ -16,8 +18,15 @@ from resurfemg.postprocessing.features import (
     area_under_baseline)
 from resurfemg.postprocessing.quality_assessment import (
     snr_pseudo, pocc_quality, interpeak_dist, percentage_under_baseline)
+from resurfemg.postprocessing.features import (
+    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve,
+    times_under_curve, find_peak_in_breath,variability_maker, time_product,
+    area_under_baseline)
+from resurfemg.postprocessing.quality_assessment import (
+    snr_pseudo, pocc_quality, interpeak_dist, percentage_under_baseline)
 from resurfemg.postprocessing.event_detection import (
-    onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation)
+    onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation,
+    find_occluded_breaths)
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -27,6 +36,42 @@ sample_emg = os.path.join(
     '002',
     'EMG_recording.Poly5',
 )
+
+# Dummy EMG signal
+fs_emg = 2048
+t_emg = np.array([s_t/fs_emg for s_t in range(10*fs_emg)])
+y_sin = np.cos((0.5* t_emg - 0.5)* 2 * np.pi)
+y_sin[y_sin < 0] = 0
+y_rand = np.random.normal(0, 1, size=len(y_sin))
+y_rand_baseline = np.random.normal(0, 1, size=len(y_sin)) / 10
+y_t_emg = y_sin * y_rand + y_rand_baseline
+
+y_env_emg = evl.full_rolling_rms(y_t_emg, fs_emg // 5)
+y_emg_baseline = moving_baseline(y_env_emg, 5*fs_emg, fs_emg//2)
+
+peaks_env, _ = scipy.signal.find_peaks(y_env_emg, prominence=0.1)
+
+# Dummy Pocc signal
+fs_vent = 100
+s_vent = np.array([(s_t) for s_t in range(10*fs_vent)])
+t_vent = (s_vent + 1)/fs_vent
+rr = 12
+t_r = 60/rr
+f_r = 1/t_r
+y_sin = np.sin((f_r* t_vent)* 2 * np.pi)
+y_sin[y_sin > 0] = 0
+y_t_paw = 5 * y_sin
+
+pocc_peaks_valid, _ = scipy.signal.find_peaks(-y_t_paw, prominence=0.1)
+pocc_starts = s_vent[((t_vent+t_r/2)%t_r == 0)]
+pocc_ends = s_vent[(t_vent%t_r == 0)]
+
+PTP_occs = np.zeros(pocc_peaks_valid.shape)
+for _idx, _ in enumerate(pocc_peaks_valid):
+    PTP_occs[_idx] = trapezoid(
+        -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
+        dx=1/fs_vent
+    )
 
 # Dummy EMG signal
 fs_emg = 2048
@@ -192,7 +237,7 @@ class TestBaseline(unittest.TestCase):
             len(sinusbase),
             )
 
-class TestEventDetection(unittest.TestCase):
+class TestOnsetDetection(unittest.TestCase):
     fs = 1000
     t = np.arange(0, 10, 1/fs)
     slow_component = np.sin(2 * np.pi * 0.1 * t)
@@ -245,6 +290,19 @@ class TestEventDetection(unittest.TestCase):
         self.assertEqual(
             len(self.peak_idxs),
             len(peak_end_idxs),
+            )
+
+class TestPoccDetection(unittest.TestCase):
+    def test_baseline_crossing_starts(self):
+        peak_idxs_detected = find_occluded_breaths(
+            p_aw=y_t_paw,
+            peep=0,
+            fs=fs_vent,
+        )
+
+        np.testing.assert_array_equal(
+            peak_idxs_detected,
+            pocc_peaks_valid,
             )
 
 class TestSnrPseudo(unittest.TestCase):
