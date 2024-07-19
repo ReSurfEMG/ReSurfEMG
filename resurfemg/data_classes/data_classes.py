@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from resurfemg.preprocessing import filtering as filt
 from resurfemg.preprocessing import ecg_removal as ecg_rm
 from resurfemg.pipelines.pipelines import ecg_removal_gating
-from resurfemg.preprocessing.envelope import full_rolling_rms
+from resurfemg.preprocessing import envelope as evl
 from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
 from resurfemg.postprocessing.event_detection import (
@@ -245,23 +245,28 @@ class TimeSeries:
 
     def envelope(
         self,
-        rms_window=None,
+        env_window=None,
+        env_type=None,
         signal_type='clean',
     ):
         """
         Derive the moving envelope of the provided signal. See
         envelope submodule in preprocessing.
         """
-        if rms_window is None:
+        if env_window is None:
             if self.fs is None:
                 raise ValueError(
                     'Evelope window and sampling rate are not defined.')
             else:
-                rms_window = int(0.2 * self.fs)
-
+                env_window = int(0.2 * self.fs)
+        
         y_data = self.signal_type_data(signal_type=signal_type)
-
-        self.y_env = full_rolling_rms(y_data, rms_window)
+        if env_type == 'rms' or env_type is None:
+            self.y_env = evl.full_rolling_rms(y_data, env_window)
+        elif env_type == 'arv':
+            self.y_env = evl.full_rolling_arv(y_data, env_window)
+        else:
+            raise ValueError('Invalid envelope type')
 
     def baseline(
         self,
@@ -618,7 +623,8 @@ class TimeSeriesGroup:
 
     def envelope(
         self,
-        rms_window=None,
+        env_window=None,
+        env_type=None,
         signal_type='clean',
         channel_idxs=None,
     ):
@@ -634,7 +640,8 @@ class TimeSeriesGroup:
 
         for _, channel_idx in enumerate(channel_idxs):
             self.channels[channel_idx].envelope(
-                rms_window=rms_window,
+                env_window=env_window,
+                env_type=env_type,
                 signal_type=signal_type,
             )
 
