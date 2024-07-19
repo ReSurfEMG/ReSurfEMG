@@ -209,23 +209,17 @@ def detect_non_consecutive_manoeuvres(
     valid_manoeuvres is 'true'
     Note: fs of both signals should be equal.
 
-    :param signal: signal in which the manoeuvre is performed
-    :type signal: ~numpy.ndarray
-    :param start_s: start second of the window in which to be searched
-    :type start_s: ~int
-    :param end_s: end second of the windown in which to be searched
-    :type end_s: ~int
-    :param fs: sampling frequency
-    :type fs: ~int
-    :param manoeuvres_idxs : list of manoeuvres indexes
+    :param ventilator_breath_idxs: list of supported breath indices
+    :type ventilator_breath_idxs: ~list
+    :param manoeuvres_idxs : list of manoeuvres indices
     :type manoeuvres_idxs: ~list
 
-    :returns: valid_manoeuvres, consecutive_manoeuvres
-    :return type: list, list
+    :returns: valid_manoeuvres
+    :return type: list
     """
 
     consecutive_manoeuvres = np.zeros(len(manoeuvres_idxs), dtype=bool)
-    for idx in range(len(manoeuvres_idxs)):
+    for idx, _ in enumerate(manoeuvres_idxs):
         if idx > 0:
             # Check for supported breaths in between two Poccs
             intermediate_breaths = np.equal(

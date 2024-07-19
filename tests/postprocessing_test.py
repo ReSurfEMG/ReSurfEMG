@@ -255,7 +255,11 @@ class TestEventDetection(unittest.TestCase):
 
     def test_detect_ventilator_breath(self):
         ventilator_breath_idxs = detect_ventilator_breath(
-            V_signal=self.breathing_signal,start_s=1,end_s=10000,width_s=1)
+            V_signal=self.breathing_signal,
+            start_s=1,
+            end_s=10000,
+            width_s=1
+            )
         self.assertEqual(
             len(ventilator_breath_idxs),
             2,
@@ -333,8 +337,8 @@ class TestPoccQuality(unittest.TestCase):
             )
 
     def test_consec_manoeuvres(self):
-        sim_breaths=np.arange(1,20,2)
-        sim_occ=np.arange(1,20,10)
+        sim_breaths = np.arange(1,20,2)
+        sim_occ = np.arange(1,20,10)
         sim_occ_false = np.array([1, 7, 9])
         valid_manoeuvres = detect_non_consecutive_manoeuvres(
             ventilator_breath_idxs=sim_breaths,
