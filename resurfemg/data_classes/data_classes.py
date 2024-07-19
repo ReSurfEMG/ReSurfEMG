@@ -523,7 +523,7 @@ class TimeSeries:
             m_s = margin_s
 
         if len(starts_s) == 1:
-            axes = np.array(axes)
+            axes = np.array([axes])
 
         for _, (axis, x_start, x_end) in enumerate(
                 zip(axes, starts_s, ends_s)):
@@ -629,6 +629,8 @@ class TimeSeriesGroup:
 
         if channel_idxs is None:
             channel_idxs = np.arange(self.n_channel)
+        elif isinstance(channel_idxs, int):
+            channel_idxs = np.array([channel_idxs])
 
         for _, channel_idx in enumerate(channel_idxs):
             self.channels[channel_idx].envelope(
@@ -654,6 +656,8 @@ class TimeSeriesGroup:
         """
         if channel_idxs is None:
             channel_idxs = np.arange(self.n_channel)
+        elif isinstance(channel_idxs, int):
+            channel_idxs = np.array([channel_idxs])
 
         for _, channel_idx in enumerate(channel_idxs):
             self.channels[channel_idx].baseline(
@@ -692,17 +696,25 @@ class TimeSeriesGroup:
 
         if channel_idxs is None:
             channel_idxs = np.arange(self.n_channel)
+        elif isinstance(channel_idxs, int):
+            channel_idxs = np.array([channel_idxs])
 
         if axes is None:
             _, axes = plt.subplots(
                 nrows=len(channel_idxs), ncols=1, figsize=(10, 6), sharex=True)
 
-        if len(channel_idxs) != len(axes):
-            raise ValueError
+        if not isinstance(axes, np.ndarray):
+            axes = np.array([axes])
 
-        for _, (channel_idx, axis) in enumerate(zip(channel_idxs, axes)):
+        if len(channel_idxs) > len(axes):
+            raise ValueError('Provided axes have not enough rows for all '
+                             + 'channels to plot.')
+        elif len(channel_idxs) < len(axes):
+            warnings.warn('More axes provided than channels to plot.')
+
+        for idx, channel_idx in enumerate(channel_idxs):
             self.channels[channel_idx].plot_full(
-                axis=axis,
+                axis=axes[idx],
                 signal_type=signal_type,
                 colors=colors,
                 baseline_bool=baseline_bool)
@@ -843,6 +855,8 @@ class EmgDataGroup(TimeSeriesGroup):
     ):
         if channel_idxs is None:
             channel_idxs = np.arange(self.n_channel)
+        elif isinstance(channel_idxs, int):
+            channel_idxs = np.array([channel_idxs])
 
         for _, channel_idx in enumerate(channel_idxs):
             self.channels[channel_idx].filter_emg(
@@ -862,6 +876,8 @@ class EmgDataGroup(TimeSeriesGroup):
     ):
         if channel_idxs is None:
             channel_idxs = np.arange(self.n_channel)
+        elif isinstance(channel_idxs, int):
+            channel_idxs = np.array([channel_idxs])
 
         if ecg_raw is None and ecg_peak_idxs is None:
             if self.ecg_idx is not None:
@@ -942,6 +958,7 @@ class VentilatorDataGroup(TimeSeriesGroup):
             min_width_s=min_width_s,
             distance_s=distance_s,
         )
+        peaks_s = peaks_s + start_s
         self.channels[pressure_idx].set_peaks(
             signal=self.channels[pressure_idx].y_raw,
             peaks_s=peaks_s,
