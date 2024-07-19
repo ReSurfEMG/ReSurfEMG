@@ -6,10 +6,15 @@ import os
 import numpy as np
 import scipy
 from scipy.integrate import trapezoid
+from scipy.integrate import trapezoid
 
+from resurfemg.preprocessing import envelope as evl
 from resurfemg.preprocessing import envelope as evl
 from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
+from resurfemg.postprocessing.event_detection import (
+    onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation,
+    detect_ventilator_breath, find_occluded_breaths)
 from resurfemg.postprocessing.features import (
     entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve,
     times_under_curve, find_peak_in_breath,variability_maker, time_product,
@@ -17,9 +22,6 @@ from resurfemg.postprocessing.features import (
 from resurfemg.postprocessing.quality_assessment import (
     snr_pseudo, pocc_quality, interpeak_dist, percentage_under_baseline,
     detect_non_consecutive_manoeuvres)
-from resurfemg.postprocessing.event_detection import (
-    onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation,
-    detect_ventilator_breath)
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -65,10 +67,6 @@ for _idx, _ in enumerate(pocc_peaks_valid):
         -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
         dx=1/fs_vent
     )
-
-# Dummy ventilator data
-
-
 
 class TestEntropyMethods(unittest.TestCase):
 
@@ -198,7 +196,7 @@ class TestBaseline(unittest.TestCase):
             len(sinusbase),
             )
 
-class TestEventDetection(unittest.TestCase):
+class TestOnsetDetection(unittest.TestCase):
     fs = 1000
     t = np.arange(0, 10, 1/fs)
     slow_component = np.sin(2 * np.pi * 0.1 * t)
@@ -263,6 +261,19 @@ class TestEventDetection(unittest.TestCase):
         self.assertEqual(
             len(ventilator_breath_idxs),
             2,
+            )
+
+class TestPoccDetection(unittest.TestCase):
+    def test_baseline_crossing_starts(self):
+        peak_idxs_detected = find_occluded_breaths(
+            p_aw=y_t_paw,
+            peep=0,
+            fs=fs_vent,
+        )
+
+        np.testing.assert_array_equal(
+            peak_idxs_detected,
+            pocc_peaks_valid,
             )
 
 class TestSnrPseudo(unittest.TestCase):

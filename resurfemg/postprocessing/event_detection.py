@@ -11,6 +11,51 @@ import scipy.signal
 from ..helper_functions.helper_functions import derivative
 
 
+def find_occluded_breaths(
+    p_aw,
+    fs,
+    peep,
+    start_s=0,
+    end_s=None,
+    prominence_factor=0.8,
+    min_width_s=None,
+    distance_s=None,
+):
+    """
+    Find end-expiratory occlusion manoeuvres in ventilator pressure
+    timeseries data. start_s and end_s specify the samples to look into.
+    The prominence_factor, min_width_s, and distance_s specify the minimal
+    peak prominence relative to the PEEP level, peak width in samples, and
+    distance to other peaks.
+    """
+    if end_s is None:
+        end_s = len(p_aw) - 1
+
+    if min_width_s is None:
+        if fs is None:
+            raise ValueError('Minimmal peak min_width_s and ventilator'
+                             + ' sampling rate are not defined.')
+        min_width_s = int(0.1 * fs)
+
+    if distance_s is None:
+        if fs is None:
+            raise ValueError('Minimmal peak distance and ventilator sampling'
+                             + ' rate are not defined.')
+        distance_s = int(0.5 * fs)
+
+    prominence = prominence_factor * np.abs(peep - min(p_aw))
+    height = prominence - peep
+
+    peaks_s, _ = scipy.signal.find_peaks(
+        -p_aw[start_s:end_s],
+        height=height,
+        prominence=prominence,
+        width=min_width_s,
+        distance=distance_s
+    )
+    return peaks_s
+
+
 def onoffpeak_baseline_crossing(
     emg_env,
     baseline,
