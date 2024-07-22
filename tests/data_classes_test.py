@@ -74,8 +74,10 @@ class TestTimeSeriesGroup(unittest.TestCase):
                                   channel_idxs=1, margin_s=0)
         emg_timeseries.plot_markers(peak_set_name='breaths', axes=axes,
                                     channel_idxs=1)
-        peak_set = emg_di.peaks['breaths']
-        len_last_peak = peak_set.end_idxs[-1] - peak_set.start_idxs[-1]
+        peak_df = emg_di.peaks['breaths'].peak_df
+        len_peaks = len(peak_df)
+        len_last_peak = (peak_df.loc[len_peaks-1, 'end_idx']
+                         - peak_df.loc[len_peaks-1, 'start_idx'])
         y_plot_data_list = list()
         for _, line in enumerate(axes[-1].lines):
             _, y_plot_data = line.get_xydata().T
