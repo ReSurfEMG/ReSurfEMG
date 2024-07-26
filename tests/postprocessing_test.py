@@ -319,6 +319,15 @@ class TestFindLinkedPeaks(unittest.TestCase):
             np.array([10, 15, 20])
         )
 
+class TestDetectEmgBreaths(unittest.TestCase):
+    def test_detect_emg_breaths(self):
+        detected_peaks = evt.detect_emg_breaths(
+            y_env_emg, y_emg_baseline)
+        np.testing.assert_array_equal(
+            detected_peaks,
+            peaks_env
+        )
+
 class TestSnrPseudo(unittest.TestCase):
     fs_emg = 2048
     t_emg = np.array([s_t/fs_emg for s_t in range(15*fs_emg)])
