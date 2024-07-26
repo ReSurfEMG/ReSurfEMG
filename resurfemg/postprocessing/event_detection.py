@@ -349,11 +349,15 @@ def find_linked_peaks(
     :param signal_1_t_peaks: list of timing of peaks in signal 1
     :type signal_1_t_peaks: ~numpy.ndarray
     :param signal_2_t_peaks: list of timing of peaks in signal 2
-    :type signal_1_t_peaks: ~numpy.ndarray
+    :type signal_2_t_peaks: ~numpy.ndarray
 
     :returns: peaks_idxs_signal_1_in_2
     :rtype: ~numpy.ndarray
     """
+    if ~isinstance(signal_1_t_peaks, np.ndarray):
+        signal_1_t_peaks = np.array(signal_1_t_peaks)
+    if ~isinstance(signal_2_t_peaks, np.ndarray):
+        signal_2_t_peaks = np.array(signal_2_t_peaks)
     peaks_idxs_signal_1_in_2 = np.zeros(signal_1_t_peaks.shape, dtype=int)
     for idx, signal_1_t_peak in enumerate(signal_1_t_peaks):
         peaks_idxs_signal_1_in_2[idx] = np.argmin(

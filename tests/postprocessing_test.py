@@ -14,7 +14,7 @@ from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
 from resurfemg.postprocessing.event_detection import (
     onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation,
-    detect_ventilator_breath, find_occluded_breaths)
+    detect_ventilator_breath, find_occluded_breaths, find_linked_peaks)
 from resurfemg.postprocessing.features import (
     entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve,
     times_under_curve, find_peak_in_breath,variability_maker, time_product,
@@ -312,6 +312,16 @@ class TestPoccDetection(unittest.TestCase):
             peak_idxs_detected,
             pocc_peaks_valid,
             )
+
+class TestFindLinkedPeaks(unittest.TestCase):
+    def test_find_linked_peaks(self):
+        t_1 = [10.0, 15.0, 20.0]
+        t_2 = [x + 0.2 for x in range(30)]
+        linked_peaks = find_linked_peaks(t_1, t_2)
+        np.testing.assert_array_equal(
+            linked_peaks,
+            np.array([10, 15, 20])
+        )
 
 class TestSnrPseudo(unittest.TestCase):
     fs_emg = 2048
