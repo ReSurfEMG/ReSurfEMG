@@ -530,6 +530,8 @@ class TimeSeries:
         if include_aub:
             if aub_window_s is None:
                 aub_window_s = 5 * self.fs
+            if aub_reference_signal is None:
+                aub_reference_signal = peak_set.signal
             aub = feat.area_under_baseline(
                 signal=peak_set.signal,
                 fs=self.fs,

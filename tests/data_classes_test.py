@@ -3,7 +3,6 @@
 import os
 import unittest
 import numpy as np
-import scipy
 import matplotlib.pyplot as plt
 
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
@@ -24,7 +23,7 @@ synth_pocc_vent = os.path.join(
 class TestTimeSeriesGroup(unittest.TestCase):
     data_vent = Poly5Reader(synth_pocc_vent)
     y_vent = data_vent.samples[:data_vent.num_samples]
-    fs_vent = data_vent.sample_rate 
+    fs_vent = data_vent.sample_rate
     vent_timeseries = VentilatorDataGroup(
         y_vent,
         fs=fs_vent,
@@ -38,7 +37,7 @@ class TestTimeSeriesGroup(unittest.TestCase):
         )
 
     vent_timeseries.baseline(channel_idxs=[0], signal_type='raw')
-    
+
     # Find occlusion pressures
     vent_timeseries.find_occluded_breaths(
         vent_timeseries.p_aw_idx, start_idx=360*vent_timeseries.fs)
@@ -59,17 +58,51 @@ class TestTimeSeriesGroup(unittest.TestCase):
             len(peak_df['peak_idx']),
             151
         )
-    # TODO: Test pocc_quality_assessment
-    
+
+    # Calculate PTPs
+    paw.calculate_time_products(
+        peak_set_name='Pocc',
+        aub_reference_signal=paw.y_baseline,
+        parameter_name='PTPocc')
+
+    def test_time_product(self):
+        self.assertIn(
+            'PTPocc',
+            self.paw.peaks['Pocc'].peak_df.columns.values
+        )
+        np.testing.assert_array_almost_equal(
+            self.paw.peaks['Pocc'].peak_df['PTPocc'].values,
+            np.array([7.96794678, 7.81619293, 7.89553107])
+        )
+
+    # Test Pocc quality
+    parameter_names = {
+        'time_product': 'PTPocc'
+    }
+    paw.test_pocc_quality(
+        'Pocc', parameter_names=parameter_names, verbose=False)
+    def test_pocc_quality_assessment(self):
+        tests = ['baseline_detection', 'consecutive_poccs', 'pocc_upslope']
+        for test in tests:
+            self.assertIn(
+                test,
+                self.paw.peaks['Pocc'].quality_outcomes_df.columns.values
+            )
+
+        np.testing.assert_array_almost_equal(
+            self.paw.peaks['Pocc'].peak_df['valid'].values,
+            np.array([True, True, True])
+        )
+
     data_emg = Poly5Reader(synth_pocc_emg)
     y_emg = data_emg.samples[:data_emg.num_samples]
-    fs_emg = data_emg.sample_rate 
+    fs_emg = data_emg.sample_rate
     emg_timeseries = EmgDataGroup(
         y_emg,
         fs=fs_emg,
         labels=['ECG', 'EMGdi'],
         units=3*['uV'])
-    
+
     def test_raw_data(self):
         self.assertEqual(
             len(self.emg_timeseries.channels[0].y_raw),
@@ -81,7 +114,7 @@ class TestTimeSeriesGroup(unittest.TestCase):
             len(self.emg_timeseries.channels[0].t_data),
             len(self.y_emg[0, :])
         )
-    
+
     emg_timeseries.filter()
     emg_timeseries.gating()
     def test_clean_data(self):
@@ -96,7 +129,7 @@ class TestTimeSeriesGroup(unittest.TestCase):
             len(self.emg_timeseries.channels[0].y_env),
             len(self.y_emg[0, :])
         )
-    
+
     emg_timeseries.envelope(env_type='arv', signal_type='clean')
     def test_env_data_arv(self):
         self.assertEqual(
@@ -117,7 +150,11 @@ class TestTimeSeriesGroup(unittest.TestCase):
     emg_di.peaks['breaths'].detect_on_offset(
         baseline=emg_di.y_baseline
     )
-    # TODO: Test find_peaks
+    def test_find_peaks(self):
+        self.assertEqual(
+            len(self.emg_di.peaks['breaths'].peak_df),
+            154
+        )
 
     # Link ventilator Pocc peaks to EMG breaths
     t_pocc_peaks_vent = paw.peaks['Pocc'].peak_df['peak_idx']/paw.fs
@@ -127,9 +164,41 @@ class TestTimeSeriesGroup(unittest.TestCase):
         linked_peak_set_name='Pocc',
     )
 
-    # TODO: Test link_peaks
+    def test_link_peak_set(self):
+        self.assertEqual(
+            len(self.emg_di.peaks['Pocc'].peak_df),
+            3
+        )
 
-    # TODO: Test emg_quality_assessment
+    # Calculate ETPs
+    emg_di.calculate_time_products(
+        peak_set_name='Pocc',
+        parameter_name='ETPdi')
+
+    def test_emg_time_product(self):
+        self.assertIn(
+            'ETPdi',
+            self.emg_di.peaks['Pocc'].peak_df.columns.values
+        )
+        np.testing.assert_array_almost_equal(
+            self.emg_di.peaks['Pocc'].peak_df['ETPdi'].values,
+            np.array([3.59565976, 3.78080979, 3.55626967])
+        )
+
+    # Test emg_quality_assessment
+    emg_di.test_emg_quality('Pocc', verbose=False)
+    def test_emg_quality_assessment(self):
+        tests = ['baseline_detection', 'interpeak_distance', 'snr', 'aub']
+        for test in tests:
+            self.assertIn(
+                test,
+                self.emg_di.peaks['Pocc'].quality_outcomes_df.columns.values
+            )
+
+        np.testing.assert_array_almost_equal(
+            self.emg_di.peaks['Pocc'].peak_df['valid'].values,
+            np.array([True, True, True])
+        )
 
     def test_plot_full(self):
         _, axes = plt.subplots(
