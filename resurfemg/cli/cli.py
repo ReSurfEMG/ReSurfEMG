@@ -15,9 +15,9 @@ from argparse import ArgumentParser
 
 # from resurfemg.helper_functions.helper_functions import preprocess
 # from ..machine_learning.ml import applu_model
-from ..config.config import Config
-from ..config.config import make_realistic_syn_emg_cli
-from ..data_connector.converter_functions import save_j_as_np
+from resurfemg.config.config import Config
+from resurfemg.config.config import make_realistic_syn_emg_cli
+from resurfemg.data_connector.converter_functions import save_j_as_np
 
 
 def common(parser):
@@ -81,19 +81,19 @@ def make_parser():
         Accumulate leads for chosen leads desired in preprocessing.
         ''',
     )
-    acquire.add_argument(
-        '-p',
-        '--preprocessing',
-        default='working_pipeline_pre_ml_multi',
-        choices=(
-            'alternative_a_pipeline_multi',
-            'alternative_b_pipeline_multi',
-            'working_pipeline_pre_ml_multi'),
-        type=str,
-        help='''
-        Pick the desired algorithm for preprocessing.
-        ''',
-    )
+    # acquire.add_argument(
+    #     '-p',
+    #     '--preprocessing',
+    #     default='working_pipeline_pre_ml_multi',
+    #     choices=(
+    #         'alternative_a_pipeline_multi',
+    #         'alternative_b_pipeline_multi',
+    #         'working_pipeline_pre_ml_multi'),
+    #     type=str,
+    #     help='''
+    #     Pick the desired algorithm for preprocessing.
+    #     ''',
+    # )
     common(acquire)
 
     synth = subparsers.add_parser('synth')
@@ -120,37 +120,37 @@ def make_parser():
     #     '''
     # )
 
-    ml = subparsers.add_parser('ml')
-    ml.set_defaults(action='ml')
-    common(ml)
+    # ml = subparsers.add_parser('ml')
+    # ml.set_defaults(action='ml')
+    # common(ml)
 
-    ml.add_argument(
-        '-V',
-        '--verbose',
-        choices=tuple(range(10)),
-        default=0,
-        help='''
-        Verbosity of mne, scikit etc. libraries.
-        '''
-    )
-    ml.add_argument(
-        '-e',
-        '--features',
-        action='append',
-        default=['mean', 'entropy'],
-        help='''
-        Features used in ML. Note mean and entropy are base, add others.
-        '''
-    )
+    # ml.add_argument(
+    #     '-V',
+    #     '--verbose',
+    #     choices=tuple(range(10)),
+    #     default=0,
+    #     help='''
+    #     Verbosity of mne, scikit etc. libraries.
+    #     '''
+    # )
+    # ml.add_argument(
+    #     '-e',
+    #     '--features',
+    #     action='append',
+    #     default=['mean', 'entropy'],
+    #     help='''
+    #     Features used in ML. Note mean and entropy are base, add others.
+    #     '''
+    # )
 
-    ml.add_argument(
-        '-m',
-        '--model',
-        # choices=('svm', 'dt', 'lr'),
-        help='''
-        ML model/algorithm to use.
-        '''
-    )
+    # ml.add_argument(
+    #     '-m',
+    #     '--model',
+    #     # choices=('svm', 'dt', 'lr'),
+    #     help='''
+    #     ML model/algorithm to use.
+    #     '''
+    # )
 
     # ml.add_argument(
     #     'fit',

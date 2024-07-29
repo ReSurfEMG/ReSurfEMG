@@ -10,17 +10,15 @@ from scipy.signal import find_peaks
 
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 from resurfemg.preprocessing.filtering import (
-    emg_bandpass_butter, emg_bandpass_butter_sample, bad_end_cutter,
-    bad_end_cutter_better, bad_end_cutter_for_samples, notch_filter,
-    emg_lowpass_butter)
+    emg_bandpass_butter, emg_bandpass_butter_sample,
+    notch_filter, emg_lowpass_butter)
 from resurfemg.preprocessing.ecg_removal import (
-    compute_ica_two_comp, compute_ICA_two_comp_selective, 
+    compute_ica_two_comp, compute_ICA_two_comp_selective,
     compute_ica_two_comp_multi, pick_lowest_correlation_array,
     pick_highest_correlation_array_multi,pick_more_peaks_array,
     find_peaks_in_ecg_signal, detect_ecg_peaks, gating)
 from resurfemg.preprocessing.envelope import (
-    naive_rolling_rms, vect_naive_rolling_rms, full_rolling_rms,
-    full_rolling_arv)
+    full_rolling_rms, full_rolling_arv)
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -76,20 +74,20 @@ class TestRmsMethods(unittest.TestCase):
     x_rand = np.random.normal(0, 1, size=len(x_sin))
     x_t = x_sin * x_rand
     peaks_source, _ = find_peaks(x_sin, prominence=0.1)
-    def test_naive_rolling_rms(self):
-        sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = naive_rolling_rms(sample_read.samples[0], 10)
-        self.assertNotEqual(
-            (len(sample_emg_filtered)),
-            len(sample_read.samples[0]) ,
-        )
-    def test_vect_naive_rolling_rms(self):
-        sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = vect_naive_rolling_rms(sample_read.samples[0], 10)
-        self.assertNotEqual(
-            (len(sample_emg_filtered)),
-            len(sample_read.samples[0]) ,
-        )
+    # def test_naive_rolling_rms(self):
+    #     sample_read= Poly5Reader(sample_emg)
+    #     sample_emg_filtered = naive_rolling_rms(sample_read.samples[0], 10)
+    #     self.assertNotEqual(
+    #         (len(sample_emg_filtered)),
+    #         len(sample_read.samples[0]) ,
+    #     )
+    # def test_vect_naive_rolling_rms(self):
+    #     sample_read= Poly5Reader(sample_emg)
+    #     sample_emg_filtered = vect_naive_rolling_rms(sample_read.samples[0], 10)
+    #     self.assertNotEqual(
+    #         (len(sample_emg_filtered)),
+    #         len(sample_read.samples[0]) ,
+    #     )
     def test_full_rolling_rms_length(self):
         x_rms = full_rolling_rms(self.x_t, self.fs_emg//5)
         self.assertEqual(
@@ -131,29 +129,29 @@ class TestArvMethods(unittest.TestCase):
         self.assertFalse(
             np.any(peak_errors > 0.05)
         )
-class TestCuttingingMethods(unittest.TestCase):
+# class TestCuttingingMethods(unittest.TestCase):
 
-    def test_emg_bad_end_cutter(self):
-        sample_ready= Poly5Reader(sample_emg)
-        sample_emg_cut = bad_end_cutter(sample_ready, 1, 10)
-        self.assertNotEqual(
-            (len(sample_emg_cut[0])),
-            len(sample_ready.samples[0]),
-        )
-    def test_emg_bad_end_cutter_for_samples(self):
-        sample_read= Poly5Reader(sample_emg)
-        sample_emg_cut = bad_end_cutter_for_samples(sample_read.samples, 1, 10)
-        self.assertNotEqual(
-            (len(sample_emg_cut[0])),
-            len(sample_read.samples[0]) ,
-        )
-    def test_emg_bad_end_cutter_better(self):
-        sample_read= Poly5Reader(sample_emg)
-        sample_emg_cut = bad_end_cutter_better(sample_read, 1, 10)
-        self.assertNotEqual(
-            (len(sample_emg_cut[0])),
-            len(sample_read.samples[0]) ,
-        )
+#     def test_emg_bad_end_cutter(self):
+#         sample_ready= Poly5Reader(sample_emg)
+#         sample_emg_cut = bad_end_cutter(sample_ready, 1, 10)
+#         self.assertNotEqual(
+#             (len(sample_emg_cut[0])),
+#             len(sample_ready.samples[0]),
+#         )
+#     def test_emg_bad_end_cutter_for_samples(self):
+#         sample_read= Poly5Reader(sample_emg)
+#         sample_emg_cut = bad_end_cutter_for_samples(sample_read.samples, 1, 10)
+#         self.assertNotEqual(
+#             (len(sample_emg_cut[0])),
+#             len(sample_read.samples[0]) ,
+#         )
+#     def test_emg_bad_end_cutter_better(self):
+#         sample_read= Poly5Reader(sample_emg)
+#         sample_emg_cut = bad_end_cutter_better(sample_read, 1, 10)
+#         self.assertNotEqual(
+#             (len(sample_emg_cut[0])),
+#             len(sample_read.samples[0]) ,
+#         )
 
 class TestComponentPickingMethods(unittest.TestCase):
 

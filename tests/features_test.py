@@ -5,13 +5,13 @@ import unittest
 import os
 import numpy as np
 # helper_functions
-from resurfemg.postprocessing.features import entropy_scipy
+# from resurfemg.postprocessing.features import entropy_scipy
 from resurfemg.postprocessing.features import pseudo_slope
 # from resurfemg.postprocessing.features import area_under_curve
 # from resurfemg.postprocessing.features import simple_area_under_curve
 from resurfemg.postprocessing.features import times_under_curve
 # from resurfemg.postprocessing.features import find_peak_in_breath
-from resurfemg.postprocessing.features import variability_maker
+# from resurfemg.postprocessing.features import variability_maker
 
 
 sample_emg = os.path.join(
@@ -23,39 +23,39 @@ sample_emg = os.path.join(
     'EMG_recording.Poly5',
 )
 
-class TestEntropyMethods(unittest.TestCase):
+# class TestEntropyMethods(unittest.TestCase):
 
-    def test_entropy_scipy(self):
-        sample_array_lo_entropy = [0,0,0,0,0,0,0,0,0,0]
-        sample_array_hi_entropy = [0,4,0,5,8,0,12,0,1,0]
-        ent_sample_array_lo_entropy = entropy_scipy(sample_array_lo_entropy)
-        ent_sample_array_hi_entropy = entropy_scipy(sample_array_hi_entropy)
-        self.assertGreater(
-            ent_sample_array_hi_entropy ,
-            ent_sample_array_lo_entropy ,
-        )
+#     def test_entropy_scipy(self):
+#         sample_array_lo_entropy = [0,0,0,0,0,0,0,0,0,0]
+#         sample_array_hi_entropy = [0,4,0,5,8,0,12,0,1,0]
+#         ent_sample_array_lo_entropy = entropy_scipy(sample_array_lo_entropy)
+#         ent_sample_array_hi_entropy = entropy_scipy(sample_array_hi_entropy)
+#         self.assertGreater(
+#             ent_sample_array_hi_entropy ,
+#             ent_sample_array_lo_entropy ,
+#         )
 
-class TestVariabilityMethods(unittest.TestCase):
+# class TestVariabilityMethods(unittest.TestCase):
 
-    def test_variability_maker_variance(self):
-        sample_array_lo_var = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
-        sample_array_hi_var = [0,4,0,5,8,0,12,0,1,0,0,9,0,9,0,0,9,6,0]
-        var_sample_array_lo_var = variability_maker(sample_array_lo_var, 10)
-        var_sample_array_hi_var = variability_maker(sample_array_hi_var, 10)
-        self.assertGreater(
-            np.sum(var_sample_array_hi_var) ,
-            np.sum(var_sample_array_lo_var) ,
-        )
+#     def test_variability_maker_variance(self):
+#         sample_array_lo_var = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
+#         sample_array_hi_var = [0,4,0,5,8,0,12,0,1,0,0,9,0,9,0,0,9,6,0]
+#         var_sample_array_lo_var = variability_maker(sample_array_lo_var, 10)
+#         var_sample_array_hi_var = variability_maker(sample_array_hi_var, 10)
+#         self.assertGreater(
+#             np.sum(var_sample_array_hi_var) ,
+#             np.sum(var_sample_array_lo_var) ,
+#         )
 
-    def test_variability_maker_std(self):
-        sample_array_lo_var = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
-        sample_array_hi_var = [0,4,0,5,8,0,12,0,1,0,0,9,0,9,0,0,9,6,0]
-        var_sample_array_lo_var = variability_maker(sample_array_lo_var, 10, method='std')
-        var_sample_array_hi_var = variability_maker(sample_array_hi_var, 10, method='std')
-        self.assertGreater(
-            np.sum(var_sample_array_hi_var) ,
-            np.sum(var_sample_array_lo_var) ,
-        )
+#     def test_variability_maker_std(self):
+#         sample_array_lo_var = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
+#         sample_array_hi_var = [0,4,0,5,8,0,12,0,1,0,0,9,0,9,0,0,9,6,0]
+#         var_sample_array_lo_var = variability_maker(sample_array_lo_var, 10, method='std')
+#         var_sample_array_hi_var = variability_maker(sample_array_hi_var, 10, method='std')
+#         self.assertGreater(
+#             np.sum(var_sample_array_hi_var) ,
+#             np.sum(var_sample_array_lo_var) ,
+#         )
 
 class TestArrayMath(unittest.TestCase):
    

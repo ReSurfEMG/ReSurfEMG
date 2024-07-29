@@ -201,8 +201,8 @@ def raw_overlap_percent(signal1, signal2):
 # def relative_levenshtein(signal1, signal2):
 #     """
 #     Here we take two arrays, and create an edit distance based on Levelshtien
-#     edit distance The distance is then normalized between 0 and one regardless
-#     of signal length
+#     edit distance The distance is then normalized between 0 and one
+#     regardless of signal length
 #     """
 #     signal1_list = []
 #     signal2_list = []
