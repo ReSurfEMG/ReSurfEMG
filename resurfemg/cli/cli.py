@@ -13,8 +13,8 @@ import logging
 
 from argparse import ArgumentParser
 
-from resurfemg.helper_functions.helper_functions import preprocess
-from ..machine_learning.ml import applu_model
+# from resurfemg.helper_functions.helper_functions import preprocess
+# from ..machine_learning.ml import applu_model
 from ..config.config import Config
 from ..config.config import make_realistic_syn_emg_cli
 from ..data_connector.converter_functions import save_j_as_np
@@ -187,15 +187,15 @@ def main(argv):
             logging.exception(e)
             return 1
 
-    if parsed.action == 'acquire':
+    # if parsed.action == 'acquire':
 
-        preprocess(
-                path_in,
-                parsed.lead or [0, 2],  # list of chosen leads
-                parsed.preprocessing,
-                path_out,
-                parsed.force,
-        )
+    #     preprocess(
+    #             path_in,
+    #             parsed.lead or [0, 2],  # list of chosen leads
+    #             parsed.preprocessing,
+    #             path_out,
+    #             parsed.force,
+    #     )
 
     if parsed.action == 'save_np':
         try:
@@ -220,16 +220,16 @@ def main(argv):
             logging.exception(e)
             return 1
 
-    if parsed.action == 'ml':
-        try:
-            applu_model(
-                path_in,
-                parsed.model,
-                path_out,
-                parsed.features,
-            )
-        except Exception as e:
-            logging.exception(e)
-            return 1
+    # if parsed.action == 'ml':
+    #     try:
+    #         applu_model(
+    #             path_in,
+    #             parsed.model,
+    #             path_out,
+    #             parsed.features,
+    #         )
+    #     except Exception as e:
+    #         logging.exception(e)
+    #         return 1
 
     return 0

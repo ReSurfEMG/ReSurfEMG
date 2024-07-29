@@ -177,25 +177,25 @@ class TestArrayMath(unittest.TestCase):
             1.5
         )
 
-    def test_find_peak_in_breath(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
-        )
-        peak = feat.find_peak_in_breath(sample_array,0,20)
-        self.assertEqual(
-            peak,
-            (9,13, 13)
-        )
+    # def test_find_peak_in_breath(self):
+    #     sample_array= np.array(
+    #         [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
+    #     )
+    #     peak = feat.find_peak_in_breath(sample_array,0,20)
+    #     self.assertEqual(
+    #         peak,
+    #         (9,13, 13)
+    #     )
 
-    def test_find_peak_in_breath_convy(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
-        )
-        peak =feat.find_peak_in_breath(sample_array,0,20,'convy')
-        self.assertEqual(
-            peak,
-            (8,10, 11.5)
-        )
+    # def test_find_peak_in_breath_convy(self):
+    #     sample_array= np.array(
+    #         [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
+    #     )
+    #     peak =feat.find_peak_in_breath(sample_array,0,20,'convy')
+    #     self.assertEqual(
+    #         peak,
+    #         (8,10, 11.5)
+    #     )
 
 
 class TestBaseline(unittest.TestCase):

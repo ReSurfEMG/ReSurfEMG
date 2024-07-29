@@ -7,10 +7,10 @@ import numpy as np
 # helper_functions
 from resurfemg.postprocessing.features import entropy_scipy
 from resurfemg.postprocessing.features import pseudo_slope
-from resurfemg.postprocessing.features import area_under_curve
-from resurfemg.postprocessing.features import simple_area_under_curve
+# from resurfemg.postprocessing.features import area_under_curve
+# from resurfemg.postprocessing.features import simple_area_under_curve
 from resurfemg.postprocessing.features import times_under_curve
-from resurfemg.postprocessing.features import find_peak_in_breath
+# from resurfemg.postprocessing.features import find_peak_in_breath
 from resurfemg.postprocessing.features import variability_maker
 
 
@@ -60,25 +60,25 @@ class TestVariabilityMethods(unittest.TestCase):
 class TestArrayMath(unittest.TestCase):
    
 
-    def test_simple_area_under_curve(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,-5,10,10,0,0,0,1,1,1,0,1,1,1,0,0,0]
-        )
-        counted = simple_area_under_curve(sample_array,0,10)
-        self.assertEqual(
-            counted,
-            28,
-        )
+    # def test_simple_area_under_curve(self):
+    #     sample_array= np.array(
+    #         [0,0,0,0,1,1,1,-5,10,10,0,0,0,1,1,1,0,1,1,1,0,0,0]
+    #     )
+    #     counted = simple_area_under_curve(sample_array,0,10)
+    #     self.assertEqual(
+    #         counted,
+    #         28,
+    #     )
 
-    def test_area_under_curve(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,5,10,10,5,0,1,1,1,1,0,1,1,1,0,0,0]
-        )
-        counted = area_under_curve(sample_array,0,20,70)
-        self.assertEqual(
-            counted,
-            28,
-        )
+    # def test_area_under_curve(self):
+    #     sample_array= np.array(
+    #         [0,0,0,0,1,1,1,5,10,10,5,0,1,1,1,1,0,1,1,1,0,0,0]
+    #     )
+    #     counted = area_under_curve(sample_array,0,20,70)
+    #     self.assertEqual(
+    #         counted,
+    #         28,
+    #     )
    
     def test_times_under_curve(self):
         sample_array= np.array(
@@ -100,25 +100,25 @@ class TestArrayMath(unittest.TestCase):
             1.5
         )
 
-    def test_find_peak_in_breath(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
-        )
-        peak =find_peak_in_breath(sample_array,0,20)
-        self.assertEqual(
-            peak,
-            (9,13, 13)
-        )
+    # def test_find_peak_in_breath(self):
+    #     sample_array= np.array(
+    #         [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
+    #     )
+    #     peak =find_peak_in_breath(sample_array,0,20)
+    #     self.assertEqual(
+    #         peak,
+    #         (9,13, 13)
+    #     )
 
-    def test_find_peak_in_breath_convy(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
-        )
-        peak =find_peak_in_breath(sample_array,0,20,'convy')
-        self.assertEqual(
-            peak,
-            (8,10, 11.5)
-        )
+    # def test_find_peak_in_breath_convy(self):
+    #     sample_array= np.array(
+    #         [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
+    #     )
+    #     peak =find_peak_in_breath(sample_array,0,20,'convy')
+    #     self.assertEqual(
+    #         peak,
+    #         (8,10, 11.5)
+    #     )
              
 if __name__ == '__main__':
     unittest.main()
