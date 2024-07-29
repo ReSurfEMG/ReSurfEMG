@@ -1,10 +1,6 @@
 #sanity tests for the visualization functions
 import unittest
 import os
-import numpy as np
-from scipy.signal import welch, periodogram
-from scipy.fft import fft, fftfreq
-import matplotlib.pyplot as plt
 from unittest.mock import patch
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 from resurfemg.preprocessing.filtering import emg_bandpass_butter

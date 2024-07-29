@@ -13,8 +13,6 @@ import logging
 
 from argparse import ArgumentParser
 
-# from resurfemg.helper_functions.helper_functions import preprocess
-# from ..machine_learning.ml import applu_model
 from resurfemg.config.config import Config
 from resurfemg.config.config import make_realistic_syn_emg_cli
 from resurfemg.data_connector.converter_functions import save_j_as_np
@@ -81,19 +79,6 @@ def make_parser():
         Accumulate leads for chosen leads desired in preprocessing.
         ''',
     )
-    # acquire.add_argument(
-    #     '-p',
-    #     '--preprocessing',
-    #     default='working_pipeline_pre_ml_multi',
-    #     choices=(
-    #         'alternative_a_pipeline_multi',
-    #         'alternative_b_pipeline_multi',
-    #         'working_pipeline_pre_ml_multi'),
-    #     type=str,
-    #     help='''
-    #     Pick the desired algorithm for preprocessing.
-    #     ''',
-    # )
     common(acquire)
 
     synth = subparsers.add_parser('synth')
@@ -111,59 +96,6 @@ def make_parser():
     save_np = subparsers.add_parser('save_np')
     save_np.set_defaults(action='save_np')
     common(save_np)
-    # save_np.add_argument(
-    #     '-N',
-    #     '--number',
-    #     default=1,
-    #     help='''
-    #     Number of synthetic EMG to be made.
-    #     '''
-    # )
-
-    # ml = subparsers.add_parser('ml')
-    # ml.set_defaults(action='ml')
-    # common(ml)
-
-    # ml.add_argument(
-    #     '-V',
-    #     '--verbose',
-    #     choices=tuple(range(10)),
-    #     default=0,
-    #     help='''
-    #     Verbosity of mne, scikit etc. libraries.
-    #     '''
-    # )
-    # ml.add_argument(
-    #     '-e',
-    #     '--features',
-    #     action='append',
-    #     default=['mean', 'entropy'],
-    #     help='''
-    #     Features used in ML. Note mean and entropy are base, add others.
-    #     '''
-    # )
-
-    # ml.add_argument(
-    #     '-m',
-    #     '--model',
-    #     # choices=('svm', 'dt', 'lr'),
-    #     help='''
-    #     ML model/algorithm to use.
-    #     '''
-    # )
-
-    # ml.add_argument(
-    #     'fit',
-    #     choices=('fit', 'grid_search', 'best_fit'),
-    #     help='''
-    #     Action performed by the selected algorithm.  If `best_fit' is
-    #     selected, the algorithm will train the model using previously
-    #     established best parameters.  If `grid_search' is selected,
-    #     will re-run the grid search.  If `fit' is selected will run
-    #     the algorithm with the default optimization strategy (using
-    #     random search).
-    #     '''
-    # )
     return parser
 
 
@@ -187,16 +119,6 @@ def main(argv):
             logging.exception(e)
             return 1
 
-    # if parsed.action == 'acquire':
-
-    #     preprocess(
-    #             path_in,
-    #             parsed.lead or [0, 2],  # list of chosen leads
-    #             parsed.preprocessing,
-    #             path_out,
-    #             parsed.force,
-    #     )
-
     if parsed.action == 'save_np':
         try:
 
@@ -219,17 +141,5 @@ def main(argv):
         except Exception as e:
             logging.exception(e)
             return 1
-
-    # if parsed.action == 'ml':
-    #     try:
-    #         applu_model(
-    #             path_in,
-    #             parsed.model,
-    #             path_out,
-    #             parsed.features,
-    #         )
-    #     except Exception as e:
-    #         logging.exception(e)
-    #         return 1
 
     return 0

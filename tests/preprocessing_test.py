@@ -74,20 +74,6 @@ class TestRmsMethods(unittest.TestCase):
     x_rand = np.random.normal(0, 1, size=len(x_sin))
     x_t = x_sin * x_rand
     peaks_source, _ = find_peaks(x_sin, prominence=0.1)
-    # def test_naive_rolling_rms(self):
-    #     sample_read= Poly5Reader(sample_emg)
-    #     sample_emg_filtered = naive_rolling_rms(sample_read.samples[0], 10)
-    #     self.assertNotEqual(
-    #         (len(sample_emg_filtered)),
-    #         len(sample_read.samples[0]) ,
-    #     )
-    # def test_vect_naive_rolling_rms(self):
-    #     sample_read= Poly5Reader(sample_emg)
-    #     sample_emg_filtered = vect_naive_rolling_rms(sample_read.samples[0], 10)
-    #     self.assertNotEqual(
-    #         (len(sample_emg_filtered)),
-    #         len(sample_read.samples[0]) ,
-    #     )
     def test_full_rolling_rms_length(self):
         x_rms = full_rolling_rms(self.x_t, self.fs_emg//5)
         self.assertEqual(
@@ -129,29 +115,6 @@ class TestArvMethods(unittest.TestCase):
         self.assertFalse(
             np.any(peak_errors > 0.05)
         )
-# class TestCuttingingMethods(unittest.TestCase):
-
-#     def test_emg_bad_end_cutter(self):
-#         sample_ready= Poly5Reader(sample_emg)
-#         sample_emg_cut = bad_end_cutter(sample_ready, 1, 10)
-#         self.assertNotEqual(
-#             (len(sample_emg_cut[0])),
-#             len(sample_ready.samples[0]),
-#         )
-#     def test_emg_bad_end_cutter_for_samples(self):
-#         sample_read= Poly5Reader(sample_emg)
-#         sample_emg_cut = bad_end_cutter_for_samples(sample_read.samples, 1, 10)
-#         self.assertNotEqual(
-#             (len(sample_emg_cut[0])),
-#             len(sample_read.samples[0]) ,
-#         )
-#     def test_emg_bad_end_cutter_better(self):
-#         sample_read= Poly5Reader(sample_emg)
-#         sample_emg_cut = bad_end_cutter_better(sample_read, 1, 10)
-#         self.assertNotEqual(
-#             (len(sample_emg_cut[0])),
-#             len(sample_read.samples[0]) ,
-#         )
 
 class TestComponentPickingMethods(unittest.TestCase):
 
@@ -210,32 +173,6 @@ class TestComponentPickingMethods(unittest.TestCase):
             2,
         )
 class TestPickingMethods(unittest.TestCase):
-
-
-    # def test_compute_ICA_n_comp(self):
-    #     sample_read= Poly5Reader(sample_emg)
-    #     sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
-    #     sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
-    #     sample_emg_filtered[2] = sample_emg_filtered[0]*1.7
-    #     doubled = np.vstack((sample_emg_filtered,sample_emg_filtered))
-    #     no_zeros = compute_ICA_n_comp(doubled, 1)
-    #     self.assertEqual(
-    #         (no_zeros.shape[0]),
-    #         6,
-    #     )
-
-    # def test_compute_ICA_n_comp_selective_zeroing(self):
-    #     sample_read= Poly5Reader(sample_emg)
-    #     sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
-    #     sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
-    #     sample_emg_filtered[2] = sample_emg_filtered[0]*1.7
-    #     doubled = np.vstack((sample_emg_filtered,sample_emg_filtered))
-    #     with_zeros = compute_ICA_n_comp_selective_zeroing(doubled, 1)
-    #     self.assertEqual(
-    #         (with_zeros.shape[0]),
-    #         6,
-    #     )
-
     def test_compute_ICA_two_comp(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)

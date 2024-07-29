@@ -94,20 +94,6 @@ for _idx, _ in enumerate(pocc_peaks_valid):
         dx=1/fs_vent
     )
 
-# class TestEntropyMethods(unittest.TestCase):
-
-#     def test_entropy_scipy(self):
-#         sample_array_lo_entropy = [0,0,0,0,0,0,0,0,0,0]
-#         sample_array_hi_entropy = [0,4,0,5,8,0,12,0,1,0]
-#         ent_sample_array_lo_entropy = feat.entropy_scipy(
-#             sample_array_lo_entropy)
-#         ent_sample_array_hi_entropy = feat.entropy_scipy(
-#             sample_array_hi_entropy)
-#         self.assertGreater(
-#             ent_sample_array_hi_entropy ,
-#             ent_sample_array_lo_entropy ,
-#         )
-
 class TestBaseline(unittest.TestCase):
     fs = 1000
     t = np.arange(0, 10, 1/fs)

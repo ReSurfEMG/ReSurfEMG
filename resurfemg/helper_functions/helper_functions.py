@@ -7,15 +7,8 @@ repository
 
 import os
 from collections import namedtuple
-# import glob
 import numpy as np
-# import textdistance
 import pandas as pd
-# import scipy
-# from ..data_connector.tmsisdk_lite import Poly5Reader
-# from ..pipelines.pipelines import alternative_a_pipeline_multi
-# from ..pipelines.pipelines import alternative_b_pipeline_multi
-# from ..pipelines.pipelines import working_pipeline_pre_ml_multi
 
 
 class Range(namedtuple('RangeBase', 'start,end')):
@@ -114,20 +107,6 @@ def slices_jump_slider(array_sample, slice_len, jump):
         yield array_sample[(jump*i):((jump*i) + slice_len)]
 
 
-# def count_decision_array(decision_array):
-#     """This is a function that, practically speaking, counts events
-#     on a time series array that has been reduced down to a binary
-#     (0, 1) output. It counts changes then divides by two.
-#     :param decision_array: Array.
-#     :type decisions_array: ~numpy.ndarray
-#     :returns: Number of events
-#     :rtype: float
-#     """
-#     ups_and_downs = np.logical_xor(decision_array[1:], decision_array[:-1])
-#     count = ups_and_downs.sum()/2
-#     return count
-
-
 def ranges_of(array):
     """This function is made to work with :class:`Range` class objects, such
     that is selects ranges and returns tuples of boundaries.
@@ -198,26 +177,6 @@ def raw_overlap_percent(signal1, signal2):
     return _raw_overlap_percent
 
 
-# def relative_levenshtein(signal1, signal2):
-#     """
-#     Here we take two arrays, and create an edit distance based on Levelshtien
-#     edit distance The distance is then normalized between 0 and one
-#     regardless of signal length
-#     """
-#     signal1_list = []
-#     signal2_list = []
-#     for element in signal1:
-#         signal1_list.append(element)
-#     for element in signal2:
-#         signal2_list.append(element)
-#     distance = textdistance.levenshtein.similarity(signal1_list, signal2_list)
-#     if len(signal1) != len(signal2):
-#         print('Warning: length of arrays is not matched')
-#     longer_signal_len = np.max([len(signal1), len(signal2)])
-#     normalized_distance = distance / longer_signal_len
-#     return normalized_distance
-
-
 def merge(left, right):
     """
     Mergey function
@@ -272,40 +231,6 @@ def scale_arrays(array, maximumn, minimumn):
     return reformed
 
 
-# def distance_matrix(array_a, array_b):
-#     """
-#     :param array_a: an array of same size as other parameter array
-#     :type array_a: array or list
-#     :param array_b: an array of same size as other parameter array
-#     :type array_b: array or list
-#     :returns: distances
-#     :rtype: pd.DataFrame
-#     """
-#     if len(array_a) != len(array_b):
-#         print('Your arrays do not match in length, caution!')
-#     array_a_list = array_a.tolist()
-#     array_b_list = array_b.tolist()
-#     distance_earthmover = scipy.stats.wasserstein_distance(array_a, array_b)
-#     distance_edit_distance = textdistance.levenshtein.similarity(
-#         array_a_list,
-#         array_b_list,
-#     )
-#     distance_euclidian = scipy.spatial.distance.euclidean(array_a, array_b)
-#     distance_hamming = scipy.spatial.distance.hamming(array_a, array_b)
-#     distance_chebyshev = scipy.spatial.distance.cityblock(array_a, array_b)
-#     distance_cosine = scipy.spatial.distance.cosine(array_a, array_b)
-#     data_made = {
-#         'earthmover': distance_earthmover,
-#         'edit_distance': distance_edit_distance,
-#         'euclidean': distance_euclidian,
-#         'hamming': distance_hamming,
-#         'chebyshev': distance_chebyshev,
-#         'cosine': distance_cosine,
-#     }
-#     distances = pd.DataFrame(data=data_made, index=[0])
-#     return distances
-
-
 def delay_embedding(data, emb_dim, lag=1):
     """
     The following code is adapted from openly licensed code written by
@@ -347,57 +272,6 @@ def save_preprocessed(array, out_fname, force):
     except FileExistsError:
         pass
     np.save(out_fname, array, allow_pickle=False)
-
-
-# def preprocess(
-#     file_directory,
-#     our_chosen_leads,
-#     algorithm,
-#     processed,
-#     force=False
-# ):
-#     """
-#     This function is written to be called by the cli module.
-#     The cli module supports command line pre-processing.
-#     This function is currently written to accomodate Poly5 files types.
-#     It can be refactored later.
-
-#     :param file_directory: the directory with EMG files
-#     :type file_directory: str
-#     :param processed: the output directory
-#     :type processed: str
-#     :param our_chosen_leads: the leads selected for the pipeline to run over
-#     :type our_chosen_leads: list
-
-#     """
-#     file_directory_list = glob.glob(
-#         os.path.join(file_directory, '**/*.Poly5'),
-#         recursive=True,
-#     )
-#     for file in file_directory_list:
-#         reader = Poly5Reader(file)
-#         if algorithm == 'alternative_a_pipeline_multi':
-#             array = alternative_a_pipeline_multi(
-#                 reader.samples,
-#                 our_chosen_leads,
-#                 picker='heart',
-#             )
-#         elif algorithm == 'alternative_b_pipeline_multi':
-#             array = alternative_b_pipeline_multi(
-#                 reader.samples,
-#                 our_chosen_leads,
-#                 picker='heart',
-#             )
-
-#         else:
-#             array = working_pipeline_pre_ml_multi(
-#                 reader.samples,
-#                 our_chosen_leads,
-#                 picker='heart',
-#             )
-#         rel_fname = os.path.relpath(file, file_directory)
-#         out_fname = os.path.join(processed, rel_fname)
-#         save_preprocessed(array, out_fname, force)
 
 
 def derivative(signal, fs, window_s=None):

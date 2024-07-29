@@ -163,3 +163,45 @@
 * Minor revision
 	- Bug fixes in:
 		- postprocessing.event_detection: On-/Offset detection using baseline crossing, and maximum slope extrapolation.
+
+## Release 1.0.0
+
+* Major revision
+	- Discontinue machine learning (ML) functionality
+		- machine_learning.ml.save_ml_output
+		- machine_learning.ml.applu_model
+		- pipelines.pipelines.working_pipe_multi
+		- pipelines.pipelines.alternative_a_pipeline_multi
+		- pipelines.pipelines.alternative_b_pipeline_multi
+		- pipelines.pipelines.working_pipeline_pre_ml_multi
+		- pipelines.pipelines.working_pipeline_exp
+		- pipelines.pipelines.working_pipeline_pre_ml
+		
+	- Entropy functionality is moved to a legacy submodule (legacy.entropy), which is not included in the package:
+		- --> legacy.entropical
+		- --> legacy.entropy_scipy
+		- --> legacy.rowwise_chebyshev
+		- --> legacy.sampen
+		- --> legacy.calc_closed_sampent
+		- --> legacy.calc_open_sampent
+		- --> legacy.entropy_maker
+	- Rudimentary functions are discontinued:
+		- helper_functions.count_decision_array
+		- helper_functions.relative_levenshtein
+		- helper_functions.distance_matrix
+		- helper_functions.preprocess
+		- postprocessing.features.simple_area_under_curve
+		- postprocessing.features.area_under_curve
+		- postprocessing.features.find_peak_in_breath
+		- postprocessing.features.variability_maker
+		- postprocessing.envelope.smooth_for_baseline
+		- postprocessing.envelope.smooth_for_baseline_with_overlay
+		- postprocessing.envelope.vect_naive_rolling_rms
+		- postprocessing.filtering.bad_end_cutter
+		- postprocessing.filtering.bad_end_cutter_for_samples
+		- postprocessing.filtering.bad_end_cutter_better
+
+
+
+
+
