@@ -7,4 +7,6 @@ include CHANGELOG.md
 include LICENSE
 include citation.cff
 graft resurfemg
+exclude resurfemg/legacy
+exclude resurfemg/legacy/*
 global-exclude *.py[cod]
