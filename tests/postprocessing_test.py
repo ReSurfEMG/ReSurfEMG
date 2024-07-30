@@ -20,6 +20,7 @@ from resurfemg.postprocessing.features import (
 from resurfemg.postprocessing.quality_assessment import (
     snr_pseudo, pocc_quality, interpeak_dist, percentage_under_baseline,
     detect_non_consecutive_manoeuvres)
+import resurfemg.postprocessing.quality_assessment as qa
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -43,6 +44,10 @@ y_env_emg = evl.full_rolling_rms(y_t_emg, fs_emg // 5)
 y_emg_baseline = moving_baseline(y_env_emg, 5*fs_emg, fs_emg//2)
 
 peaks_env, _ = scipy.signal.find_peaks(y_env_emg, prominence=0.1)
+_, emg_starts_s, emg_ends_s, *_ = onoffpeak_baseline_crossing(
+             y_env_emg, y_emg_baseline, peaks_env)
+etps = time_product(
+    signal=y_env_emg, fs=fs_emg, starts_s=emg_starts_s, ends_s=emg_ends_s)
 
 # Dummy Pocc signal
 fs_vent = 100
@@ -459,29 +464,26 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
 
 class TestBellFit(unittest.TestCase):
     def test_evaluate_bell_curve_error(self):
-        self.fs = 1000
-        self.duration = 60
-        self.frequency = 12 / self.duration
-        self.t = np.linspace(0, self.duration, int(self.duration * self.fs))
-        self.signal = np.sin(2 * np.pi * self.frequency * self.t)
-        self.peaks_s = np.arange(self.fs // (2 * self.frequency), len(self.t),
-                                  self.fs // self.frequency)
-        self.starts_s = self.peaks_s - (self.fs // (2 * self.frequency))
-        self.ends_s = self.peaks_s + (self.fs // (2 * self.frequency))
+        output = qa.evaluate_bell_curve_error(
+            peaks_s=peaks_env,
+            starts_s=emg_starts_s,
+            ends_s=emg_ends_s,
+            signal=y_env_emg,
+            fs=fs_emg,
+            time_products=etps,
+            bell_window_s=None,
+            bell_threshold=40,
+        )
+        (valid_peak, _, percentage_bell_error, *_) = output
 
-        # Ensure indices are within bounds
-        self.starts_s = self.starts_s[self.starts_s >= 0]
-        self.ends_s = self.ends_s[self.ends_s < len(self.signal)]
-        self.peaks_s = self.peaks_s[:len(self.starts_s)]
-
-        # Add assertions or checks to verify the correctness of your code
-        self.assertTrue(
-            len(self.peaks_s) > 0, "No peaks found")
-        self.assertTrue(
-            np.all(self.starts_s >= 0), "Start indices out of bounds")
-        self.assertTrue(
-            np.all(self.ends_s < len(self.signal)),
-            "End indices out of bounds")
+        np.testing.assert_equal(
+            valid_peak,
+            np.array([True, True, True, True, True])
+        )
+        np.testing.assert_equal(
+            np.abs(percentage_bell_error - 5) < 5,
+            np.array([True, True, True, True, True])
+        )
 
 if __name__ == '__main__':
     unittest.main(argv=[''], exit=False)

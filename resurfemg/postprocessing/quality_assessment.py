@@ -8,7 +8,8 @@ preprocessed EMG arrays.
 
 import numpy as np
 from scipy.optimize import curve_fit
-from resurfemg.postprocessing.features import time_product, area_under_baseline
+import resurfemg.helper_functions.helper_functions as hf
+import resurfemg.postprocessing.features as feat
 
 
 def snr_pseudo(
@@ -127,7 +128,7 @@ def interpeak_dist(ECG_peaks, EMG_peaks, threshold=1.1):
     # Check if each median interpeak distance is above the threshold
     t_delta_relative = t_delta_emg_med / t_delta_ecg_med
 
-    valid_interpeak = t_delta_relative > threshold
+    valid_interpeak = t_delta_relative >= threshold
 
     return valid_interpeak
 
@@ -163,6 +164,8 @@ def percentage_under_baseline(
     :type aub_window_s: ~int
     :param ref_signal: signal in which the nadir is searched
     :type ref_signal: ~numpy.ndarray
+    :param aub_threshold: maximum aub error percentage for a peak
+    :type aub_threshold: ~float
     :returns: valid_timeproducts, percentages_aub
     :rtype: list, list
     """
@@ -172,14 +175,14 @@ def percentage_under_baseline(
     if ref_signal is None:
         ref_signal = signal
 
-    time_products = time_product(
+    time_products = feat.time_product(
         signal,
         fs,
         starts_s,
         ends_s,
         baseline,
     )
-    aubs = area_under_baseline(
+    aubs = feat.area_under_baseline(
         signal,
         fs,
         peaks_s,
@@ -191,7 +194,7 @@ def percentage_under_baseline(
     )
 
     percentages_aub = aubs / (time_products + aubs) * 100
-    valid_timeproducts = percentages_aub < aub_threshold
+    valid_timeproducts = percentages_aub <= aub_threshold
 
     return valid_timeproducts, percentages_aub
 
@@ -241,23 +244,18 @@ def detect_non_consecutive_manoeuvres(
     return valid_manoeuvres
 
 
-def func(x,
-         a,
-         b,
-         c):
-    return a * np.exp(-(x - b) ** 2 / c ** 2)
-
-
 def evaluate_bell_curve_error(
     peaks_s,
     starts_s,
     ends_s,
     signal,
     fs,
+    time_products,
     bell_window_s=None,
+    bell_threshold=40,
 ):
 
-    """This function calculates the bell-curve error of signal peaks
+    """This function calculates the bell-curve error of signal peaks, and pro
 
     :param signal: filtered signal
     :type signal: ~numpy.ndarray
@@ -269,9 +267,13 @@ def evaluate_bell_curve_error(
     :type ends_s: ~numpy.ndarray
     :param fs: sample rate
     :type fs: int
+    :param time_products: list of area under the curves per peak
+    :type time_products: ~numpy.ndarray
     :param bell_window_s: number of samples before and after peaks_s to look
     for the nadir
     :type bell_window_s: ~int
+    :param bell_threshold: maximum bell error percentage for a valid peak
+    :type bell_threshold: ~float
     :returns: bell_error
     :rtype: ~numpy.ndarray
     """
@@ -280,10 +282,11 @@ def evaluate_bell_curve_error(
     t = np.array([i / fs for i in range(len(signal))])
 
     bell_error = np.zeros((len(peaks_s),))
+    percentage_bell_error = np.zeros((len(peaks_s),))
+    fitted_parameters = np.zeros((len(peaks_s), 3))
     y_min = np.zeros((len(peaks_s),))
-
-    for idx, peak_s, start_i, end_i in enumerate(
-            zip((peaks_s, starts_s, ends_s))):
+    for idx, (peak_s, start_i, end_i, tp) in enumerate(
+            zip(peaks_s, starts_s, ends_s, time_products)):
         baseline_start_i = max(0, peak_s - bell_window_s)
         baseline_end_i = min(len(signal) - 1, peak_s + bell_window_s)
         y_min[idx] = np.min(signal[baseline_start_i:baseline_end_i])
@@ -304,20 +307,26 @@ def evaluate_bell_curve_error(
             continue
 
         try:
-            popt, _ = curve_fit(
-                func, x_data, y_data,
+            popt, *_ = curve_fit(
+                hf.bell_curve, x_data, y_data,
                 bounds=([0., t[peak_s] - 0.5, 0.],
                         [60., t[peak_s] + 0.5, 0.5])
             )
         except RuntimeError as e:
             print(f"Curve fitting failed for peak index {idx} with error: {e}")
             bell_error[idx] = np.nan
+            popt = np.array([np.nan, np.nan, np.nan])
             continue
 
         bell_error[idx] = np.trapz(
-            np.sqrt((signal[start_i:end_i + 1] - (
-                func(t[start_i:end_i + 1], *popt) + y_min[idx])) ** 2),
+            np.abs((signal[start_i:end_i + 1] - (
+                hf.bell_curve(t[start_i:end_i + 1], *popt) + y_min[idx]))),
             dx=1 / fs
         )
+        percentage_bell_error[idx] = bell_error[idx] / tp * 100
+        fitted_parameters[idx, :] = (popt)
 
-    return bell_error
+    valid_peak = percentage_bell_error <= bell_threshold
+
+    return (valid_peak, bell_error, percentage_bell_error, y_min,
+            fitted_parameters)
