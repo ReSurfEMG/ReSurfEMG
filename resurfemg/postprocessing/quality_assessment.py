@@ -313,7 +313,7 @@ def evaluate_bell_curve_error(
             popt, *_ = curve_fit(
                 hf.bell_curve, x_data, y_data,
                 bounds=([0., t[peak_s] - 0.5, 0.],
-                        [60., t[peak_s] + 0.5, 0.5])
+                        [np.inf, t[peak_s] + 0.5, np.inf])
             )
         except RuntimeError as e:
             print(f"Curve fitting failed for peak index {idx} with error: {e}")

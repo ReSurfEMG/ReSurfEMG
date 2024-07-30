@@ -186,7 +186,11 @@ class TestTimeSeriesGroup(unittest.TestCase):
         )
 
     # Test emg_quality_assessment
-    emg_di.test_emg_quality('Pocc', verbose=False)
+    parameter_names = {
+        'time_product': 'ETPdi'
+    }
+    emg_di.test_emg_quality(
+        'Pocc', verbose=False, parameter_names=parameter_names)
     def test_emg_quality_assessment(self):
         tests = ['baseline_detection', 'interpeak_distance', 'snr', 'aub']
         for test in tests:
