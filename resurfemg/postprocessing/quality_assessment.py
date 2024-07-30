@@ -152,9 +152,9 @@ def evaluate_bell_curve_error(
         y_data = signal[start_i:end_i + 1] - Y_min[idx]
 
         if np.any(np.isnan(x_data)) or np.any(np.isnan(y_data)) or np.any(
-            np.isinf(x_data)) or np.any(np.isinf(y_data)):
-            print(f"NaNs or Infs detected in data for peak index {idx}. 
-                  Skipping this peak.")
+                np.isinf(x_data)) or np.any(np.isinf(y_data)):
+            print(f"NaNs or Infs detected in data for peak index {idx}. "
+                  + "Skipping this peak.")
             ETP_bell_error[idx] = np.nan
             continue
 
@@ -176,4 +176,3 @@ def evaluate_bell_curve_error(
         )
 
     return ETP_bell_error
-
