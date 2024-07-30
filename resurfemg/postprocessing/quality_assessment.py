@@ -7,6 +7,7 @@ preprocessed EMG arrays.
 """
 
 import numpy as np
+from scipy.optimize import curve_fit
 
 
 def snr_pseudo(
@@ -96,3 +97,83 @@ def pocc_quality(
     ])
     valid_poccs = ~np.any(criteria_bool_matrix, axis=0)
     return valid_poccs, criteria_matrix
+
+
+def func(x,
+         a,
+         b,
+         c):
+    return a * np.exp(-(x - b) ** 2 / c ** 2)
+
+
+def evaluate_bell_curve_error(
+    peaks_s,
+    starts_s,
+    ends_s,
+    signal,
+    fs
+):
+
+    """This function calculates the bell-curve error of signal peaks
+
+    :param signal: filtered signal
+    :type signal: ~numpy.ndarray
+    :param peaks_s: list of peak indices
+    :type peaks_s: ~numpy.ndarray
+    :param starts_s: list of onsets indices
+    :type starts_s: ~numpy.ndarray
+    :param ends_s: list of offsets indices
+    :type ends_s: ~numpy.ndarray
+    :param fs: sample rate
+    :type fs: int
+    :returns:ETP_bell_error
+    :rtype: ~numpy.ndarray
+    """
+
+    t = np.array([i / fs for i in range(len(signal))])
+
+    ETP_bell_error = np.zeros((len(peaks_s),))
+    Y_min = np.zeros((len(peaks_s),))
+
+    for idx in range(len(peaks_s)):
+        start_i = int(starts_s[idx])
+        end_i = int(ends_s[idx])
+
+        baseline_start_i = max(0, int(peaks_s[idx]) - 5 * fs)
+        baseline_end_i = min(len(signal) - 1, int(peaks_s[idx]) + 5 * fs)
+        Y_min[idx] = np.min(signal[baseline_start_i:baseline_end_i])
+
+        if end_i - start_i < 3:
+            plus_idx = 3 - (end_i - start_i)
+        else:
+            plus_idx = 0
+
+        x_data = t[start_i:end_i + 1]
+        y_data = signal[start_i:end_i + 1] - Y_min[idx]
+
+        if np.any(np.isnan(x_data)) or np.any(np.isnan(y_data)) or np.any(
+            np.isinf(x_data)) or np.any(np.isinf(y_data)):
+            print(f"NaNs or Infs detected in data for peak index {idx}. 
+                  Skipping this peak.")
+            ETP_bell_error[idx] = np.nan
+            continue
+
+        try:
+            popt, _ = curve_fit(
+                func, x_data, y_data,
+                bounds=([0., t[int(peaks_s[idx])] - 0.5, 0.],
+                        [60., t[int(peaks_s[idx])] + 0.5, 0.5])
+            )
+        except RuntimeError as e:
+            print(f"Curve fitting failed for peak index {idx} with error: {e}")
+            ETP_bell_error[idx] = np.nan
+            continue
+
+        ETP_bell_error[idx] = np.trapz(
+            np.sqrt((signal[start_i:end_i + 1] - (
+                func(t[start_i:end_i + 1], *popt) + Y_min[idx])) ** 2),
+            dx=1 / fs
+        )
+
+    return ETP_bell_error
+

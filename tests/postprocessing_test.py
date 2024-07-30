@@ -308,5 +308,34 @@ class TestPoccQuality(unittest.TestCase):
             steep_upslope[-1]
             )
 
+
+class TestQualityAssessment(unittest.TestCase):
+
+    def test_evaluate_bell_curve_error(self):
+        self.fs = 1000
+        self.duration = 60
+        self.frequency = 12 / self.duration
+        self.t = np.linspace(0, self.duration, int(self.duration * self.fs))
+        self.signal = np.sin(2 * np.pi * self.frequency * self.t)
+        self.peaks_s = np.arange(self.fs // (2 * self.frequency), len(self.t),
+                                  self.fs // self.frequency)
+        self.starts_s = self.peaks_s - (self.fs // (2 * self.frequency))
+        self.ends_s = self.peaks_s + (self.fs // (2 * self.frequency))
+
+        # Ensure indices are within bounds
+        self.starts_s = self.starts_s[self.starts_s >= 0]
+        self.ends_s = self.ends_s[self.ends_s < len(self.signal)]
+        self.peaks_s = self.peaks_s[:len(self.starts_s)]
+
+        # Add assertions or checks to verify the correctness of your code
+        self.assertTrue(
+            len(self.peaks_s) > 0, "No peaks found")
+        self.assertTrue(
+            np.all(self.starts_s >= 0), "Start indices out of bounds")
+        self.assertTrue(
+            np.all(self.ends_s < len(self.signal)),
+            "End indices out of bounds")
+
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=[''], exit=False)
+
