@@ -6,8 +6,54 @@ This file contains functions to extract detect peak, on- and offset samples.
 """
 import numpy as np
 import scipy
+import scipy.signal
 
 from ..helper_functions.helper_functions import derivative
+
+
+def find_occluded_breaths(
+    p_aw,
+    fs,
+    peep,
+    start_s=0,
+    end_s=None,
+    prominence_factor=0.8,
+    min_width_s=None,
+    distance_s=None,
+):
+    """
+    Find end-expiratory occlusion manoeuvres in ventilator pressure
+    timeseries data. start_s and end_s specify the samples to look into.
+    The prominence_factor, min_width_s, and distance_s specify the minimal
+    peak prominence relative to the PEEP level, peak width in samples, and
+    distance to other peaks.
+    """
+    if end_s is None:
+        end_s = len(p_aw) - 1
+
+    if min_width_s is None:
+        if fs is None:
+            raise ValueError('Minimmal peak min_width_s and ventilator'
+                             + ' sampling rate are not defined.')
+        min_width_s = int(0.1 * fs)
+
+    if distance_s is None:
+        if fs is None:
+            raise ValueError('Minimmal peak distance and ventilator sampling'
+                             + ' rate are not defined.')
+        distance_s = int(0.5 * fs)
+
+    prominence = prominence_factor * np.abs(peep - min(p_aw))
+    height = prominence - peep
+
+    peaks_s, _ = scipy.signal.find_peaks(
+        -p_aw[start_s:end_s],
+        height=height,
+        prominence=prominence,
+        width=min_width_s,
+        distance=distance_s
+    )
+    return peaks_s
 
 
 def onoffpeak_baseline_crossing(
@@ -192,3 +238,56 @@ def onoffpeak_slope_extrapolation(
 
     return (peak_start_idxs, peak_end_idxs,
             valid_starts_bools, valid_ends_bools, valid_peaks)
+
+
+def detect_ventilator_breath(
+    V_signal,
+    start_s,
+    end_s,
+    width_s,
+    threshold=None,
+    prominence=None,
+    threshold_new=None,
+    prominence_new=None
+):
+    """Identify the breaths from the ventilator signal and return an array
+    of ventilator peak breath indices, in two steps of peak detection.
+    Input of threshold and prominence values is optional.
+    :param V_signal: Ventilator signal
+    :type V_signal: ~numpy.ndarray
+    :param start_s: start sample of the window in which to be searched
+    :type start_s: ~int
+    :param end_s: end sample of the window in which to be searched
+    :type end_s: ~int
+    :param width_s: required width of peak in samples
+    :type width_s:
+    :param threshold: required threshold of peaks, vertical threshold to
+    neighbouring samples
+    :type threshold: ~int
+    :param prominence: required prominence of peaks
+    :type prominence: ~int
+    :param threshold_new:
+    :type threshold_new: ~int
+    :param prominence_new:
+    :type prominence_new: ~int
+    """
+
+    V_t = V_signal[int(start_s):int(end_s)]
+    if threshold is None:
+        treshold = 0.25 * np.percentile(V_t, 90)
+    if prominence is None:
+        prominence = 0.10 * np.percentile(V_t, 90)
+
+    resp_eff, _ = scipy.signal.find_peaks(V_t, height=treshold,
+                                          prominence=prominence,
+                                          width=width_s)
+
+    if threshold_new is None:
+        treshold_new = 0.5 * np.percentile(V_t[resp_eff], 90)
+    if prominence_new is None:
+        prominence_new = 0.5 * np.percentile(V_t, 90)
+
+    ventilator_breath_idxs, _ = scipy.signal.find_peaks(
+        V_t, height=treshold_new, prominence=prominence_new, width=width_s)
+
+    return ventilator_breath_idxs

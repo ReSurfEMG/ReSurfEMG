@@ -8,6 +8,7 @@ preprocessed EMG arrays.
 
 import numpy as np
 from scipy.optimize import curve_fit
+from resurfemg.postprocessing.features import time_product, area_under_baseline
 
 
 def snr_pseudo(
@@ -99,6 +100,147 @@ def pocc_quality(
     return valid_poccs, criteria_matrix
 
 
+def interpeak_dist(ECG_peaks, EMG_peaks, threshold=1.1):
+    """
+    Calculate the median interpeak distances for ECG and EMG and
+    check if their ratio is above the given threshold, i.e. if cardiac
+    frequency is higher than respiratory frequency (TRUE)
+
+    :param t_emg: Time points array
+    :type t_emg: ~list
+    :param ECG_peaks: Indices of ECG peaks
+    :type ECG_peaks: ~numpy.ndarray
+    :param EMG_peaks: Indices of EMG peaks
+    :type EMG_peaks: ~numpy.ndarray
+    :param threshold: The threshold value to compare against. Default is 1.1
+    :type threshold: ~float
+    :returns: valid_interpeak
+    :rtype: bool
+    """
+
+    # Calculate median interpeak distance for ECG
+    t_delta_ecg_med = np.median(np.array(ECG_peaks[1:])
+                                - np.array(ECG_peaks[:-1]))
+    # # Calculate median interpeak distance for EMG
+    t_delta_emg_med = np.median(np.array(EMG_peaks[1:])
+                                - np.array(EMG_peaks[:-1]))
+    # Check if each median interpeak distance is above the threshold
+    t_delta_relative = t_delta_emg_med / t_delta_ecg_med
+
+    valid_interpeak = t_delta_relative > threshold
+
+    return valid_interpeak
+
+
+def percentage_under_baseline(
+    signal,
+    fs,
+    peaks_s,
+    starts_s,
+    ends_s,
+    baseline,
+    aub_window_s=None,
+    ref_signal=None,
+    aub_threshold=40,
+):
+    """
+    Calculate the percentage area under the baseline, in accordance with
+    Warnaar et al. (2024).
+    :param signal: signal in which the peaks are detected
+    :type signal: ~numpy.ndarray
+    :param fs: sampling frequency
+    :type fs: ~int
+    :param peaks_s: list of individual peak indices
+    :type peaks_s: ~list
+    :param starts_s: list of individual peak start indices
+    :type starts_s: ~list
+    :param ends_s: list of individual peak end indices
+    :type ends_s: ~list
+    :param baseline: running baseline of the signal
+    :type baseline: ~numpy.ndarray
+    :param aub_window_s: number of samples before and after peaks_s to look for
+    the nadir
+    :type aub_window_s: ~int
+    :param ref_signal: signal in which the nadir is searched
+    :type ref_signal: ~numpy.ndarray
+    :returns: valid_timeproducts, percentages_aub
+    :rtype: list, list
+    """
+    if aub_window_s is None:
+        aub_window_s = 5*fs
+
+    if ref_signal is None:
+        ref_signal = signal
+
+    time_products = time_product(
+        signal,
+        fs,
+        starts_s,
+        ends_s,
+        baseline,
+    )
+    aubs = area_under_baseline(
+        signal,
+        fs,
+        peaks_s,
+        starts_s,
+        ends_s,
+        aub_window_s,
+        baseline,
+        ref_signal=signal,
+    )
+
+    percentages_aub = aubs / (time_products + aubs) * 100
+    valid_timeproducts = percentages_aub < aub_threshold
+
+    return valid_timeproducts, percentages_aub
+
+
+def detect_non_consecutive_manoeuvres(
+    ventilator_breath_idxs,
+    manoeuvres_idxs
+):
+
+    """
+    Detect manoeuvres (for example Pocc) with no supported breaths
+    in between. Input are the ventilator breaths, to be detected with the
+    function event_detecton.detect_supported_breaths(...)
+    If no supported breaths are detected in between two manoeuvres,
+    valid_manoeuvres is 'true'
+    Note: fs of both signals should be equal.
+
+    :param ventilator_breath_idxs: list of supported breath indices
+    :type ventilator_breath_idxs: ~list
+    :param manoeuvres_idxs : list of manoeuvres indices
+    :type manoeuvres_idxs: ~list
+
+    :returns: valid_manoeuvres
+    :return type: list
+    """
+
+    consecutive_manoeuvres = np.zeros(len(manoeuvres_idxs), dtype=bool)
+    for idx, _ in enumerate(manoeuvres_idxs):
+        if idx > 0:
+            # Check for supported breaths in between two Poccs
+            intermediate_breaths = np.equal(
+                (manoeuvres_idxs[idx-1] < ventilator_breath_idxs),
+                (ventilator_breath_idxs < manoeuvres_idxs[idx]))
+
+            # If no supported breaths are detected in between, a
+            # 'double dip' is detected
+            intermediate_breath_count = np.sum(intermediate_breaths)
+            if intermediate_breath_count > 0:
+                consecutive_manoeuvres[idx] = False
+            else:
+                consecutive_manoeuvres[idx] = True
+        else:
+            consecutive_manoeuvres[idx] = False
+
+    valid_manoeuvres = np.logical_not(consecutive_manoeuvres)
+
+    return valid_manoeuvres
+
+
 def func(x,
          a,
          b,
@@ -111,7 +253,8 @@ def evaluate_bell_curve_error(
     starts_s,
     ends_s,
     signal,
-    fs
+    fs,
+    bell_window_s=None,
 ):
 
     """This function calculates the bell-curve error of signal peaks
@@ -126,53 +269,55 @@ def evaluate_bell_curve_error(
     :type ends_s: ~numpy.ndarray
     :param fs: sample rate
     :type fs: int
-    :returns:ETP_bell_error
+    :param bell_window_s: number of samples before and after peaks_s to look
+    for the nadir
+    :type bell_window_s: ~int
+    :returns: bell_error
     :rtype: ~numpy.ndarray
     """
-
+    if bell_window_s is None:
+        bell_window_s = fs * 5
     t = np.array([i / fs for i in range(len(signal))])
 
-    ETP_bell_error = np.zeros((len(peaks_s),))
-    Y_min = np.zeros((len(peaks_s),))
+    bell_error = np.zeros((len(peaks_s),))
+    y_min = np.zeros((len(peaks_s),))
 
-    for idx in range(len(peaks_s)):
-        start_i = int(starts_s[idx])
-        end_i = int(ends_s[idx])
-
-        baseline_start_i = max(0, int(peaks_s[idx]) - 5 * fs)
-        baseline_end_i = min(len(signal) - 1, int(peaks_s[idx]) + 5 * fs)
-        Y_min[idx] = np.min(signal[baseline_start_i:baseline_end_i])
+    for idx, peak_s, start_i, end_i in enumerate(
+            zip((peaks_s, starts_s, ends_s))):
+        baseline_start_i = max(0, peak_s - bell_window_s)
+        baseline_end_i = min(len(signal) - 1, peak_s + bell_window_s)
+        y_min[idx] = np.min(signal[baseline_start_i:baseline_end_i])
 
         if end_i - start_i < 3:
             plus_idx = 3 - (end_i - start_i)
         else:
             plus_idx = 0
 
-        x_data = t[start_i:end_i + 1]
-        y_data = signal[start_i:end_i + 1] - Y_min[idx]
+        x_data = t[start_i:end_i + 1 + plus_idx]
+        y_data = signal[start_i:end_i + 1 + plus_idx] - y_min[idx]
 
         if np.any(np.isnan(x_data)) or np.any(np.isnan(y_data)) or np.any(
                 np.isinf(x_data)) or np.any(np.isinf(y_data)):
             print(f"NaNs or Infs detected in data for peak index {idx}. "
                   + "Skipping this peak.")
-            ETP_bell_error[idx] = np.nan
+            bell_error[idx] = np.nan
             continue
 
         try:
             popt, _ = curve_fit(
                 func, x_data, y_data,
-                bounds=([0., t[int(peaks_s[idx])] - 0.5, 0.],
-                        [60., t[int(peaks_s[idx])] + 0.5, 0.5])
+                bounds=([0., t[peak_s] - 0.5, 0.],
+                        [60., t[peak_s] + 0.5, 0.5])
             )
         except RuntimeError as e:
             print(f"Curve fitting failed for peak index {idx} with error: {e}")
-            ETP_bell_error[idx] = np.nan
+            bell_error[idx] = np.nan
             continue
 
-        ETP_bell_error[idx] = np.trapz(
+        bell_error[idx] = np.trapz(
             np.sqrt((signal[start_i:end_i + 1] - (
-                func(t[start_i:end_i + 1], *popt) + Y_min[idx])) ** 2),
+                func(t[start_i:end_i + 1], *popt) + y_min[idx])) ** 2),
             dx=1 / fs
         )
 
-    return ETP_bell_error
+    return bell_error

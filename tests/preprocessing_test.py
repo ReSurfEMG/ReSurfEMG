@@ -5,27 +5,23 @@
 import unittest
 import os
 import scipy
+from scipy.signal import find_peaks
 import numpy as np
-from resurfemg.preprocessing.filtering import emg_bandpass_butter
-from resurfemg.preprocessing.filtering import emg_bandpass_butter_sample
-from resurfemg.preprocessing.filtering import bad_end_cutter
-from resurfemg.preprocessing.filtering import bad_end_cutter_better
-from resurfemg.preprocessing.filtering import bad_end_cutter_for_samples
-from resurfemg.preprocessing.filtering import notch_filter
-from resurfemg.preprocessing.filtering import emg_lowpass_butter
+from resurfemg.preprocessing.filtering import (
+    emg_bandpass_butter, emg_bandpass_butter_sample, bad_end_cutter,
+    bad_end_cutter_better, bad_end_cutter_for_samples, notch_filter,
+    emg_lowpass_butter)
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
-from resurfemg.preprocessing.ecg_removal import compute_ICA_two_comp_selective
 # from resurfemg.multi_lead_type import compute_ICA_n_comp
 # from resurfemg.multi_lead_type import compute_ICA_n_comp_selective_zeroing
-from resurfemg.preprocessing.ecg_removal import compute_ica_two_comp
-from resurfemg.preprocessing.ecg_removal import compute_ica_two_comp_multi
-from resurfemg.preprocessing.ecg_removal import pick_lowest_correlation_array
-from resurfemg.preprocessing.ecg_removal import pick_more_peaks_array
-from resurfemg.preprocessing.ecg_removal import gating
-from resurfemg.preprocessing.ecg_removal import pick_highest_correlation_array_multi
-from resurfemg.preprocessing.envelope import naive_rolling_rms
-from resurfemg.preprocessing.envelope import vect_naive_rolling_rms
-from resurfemg.preprocessing.ecg_removal import find_peaks_in_ecg_signal
+from resurfemg.preprocessing.ecg_removal import (
+    compute_ica_two_comp, compute_ica_two_comp_multi,
+    pick_lowest_correlation_array, pick_more_peaks_array,
+    gating, pick_highest_correlation_array_multi,
+    compute_ICA_two_comp_selective, find_peaks_in_ecg_signal)
+from resurfemg.preprocessing.envelope import (
+    naive_rolling_rms, vect_naive_rolling_rms, full_rolling_rms,
+    full_rolling_arv)
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -37,7 +33,6 @@ sample_emg = os.path.join(
 )
 
 class TestFilteringMethods(unittest.TestCase):
-
     def test_emg_band_pass_butter(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
@@ -67,6 +62,15 @@ class TestFilteringMethods(unittest.TestCase):
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,
         )
+
+class TestRmsMethods(unittest.TestCase):
+    fs_emg = 2048
+    t_emg = np.array(range(3*fs_emg))/fs_emg
+    x_sin = np.sin(t_emg * 2 * np.pi)
+    x_sin[x_sin < 0] = 0
+    x_rand = np.random.normal(0, 1, size=len(x_sin))
+    x_t = x_sin * x_rand
+    peaks_source, _ = find_peaks(x_sin, prominence=0.1)
     def test_naive_rolling_rms(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = naive_rolling_rms(sample_read.samples[0], 10)
@@ -81,8 +85,47 @@ class TestFilteringMethods(unittest.TestCase):
             (len(sample_emg_filtered)),
             len(sample_read.samples[0]) ,
         )
+    def test_full_rolling_rms_length(self):
+        x_rms = full_rolling_rms(self.x_t, self.fs_emg//5)
+        self.assertEqual(
+            (len(self.x_t)),
+            len(x_rms) ,
+        )
+    def test_full_rolling_rms_time_shift(self):
+        x_rms = full_rolling_rms(self.x_t, self.fs_emg//5)
+        peaks_rms, _ = find_peaks(x_rms, prominence=0.1)
+        peak_errors = np.abs(
+            (self.t_emg[peaks_rms] - self.t_emg[self.peaks_source]))
+
+        self.assertFalse(
+            np.any(peak_errors > 0.05)
+        )
 
 
+class TestArvMethods(unittest.TestCase):
+    fs_emg = 2048
+    t_emg = np.array(range(3*fs_emg))/fs_emg
+    x_sin = np.sin(t_emg * 2 * np.pi)
+    x_sin[x_sin < 0] = 0
+    x_rand = np.random.normal(0, 1, size=len(x_sin))
+    x_t = x_sin * x_rand
+    peaks_source, _ = find_peaks(x_sin, prominence=0.1)
+    def test_full_rolling_arv_length(self):
+        x_arv = full_rolling_arv(self.x_t, self.fs_emg//5)
+        self.assertEqual(
+            (len(self.x_t)),
+            len(x_arv) ,
+        )
+
+    def test_full_rolling_arv_time_shift(self):
+        x_arv = full_rolling_arv(self.x_t, self.fs_emg//5)
+        peaks_arv, _ = find_peaks(x_arv, prominence=0.1)
+        peak_errors = np.abs(
+            (self.t_emg[peaks_arv] - self.t_emg[self.peaks_source]))
+
+        self.assertFalse(
+            np.any(peak_errors > 0.05)
+        )
 class TestCuttingingMethods(unittest.TestCase):
 
     def test_emg_bad_end_cutter(self):
@@ -149,7 +192,7 @@ class TestComponentPickingMethods(unittest.TestCase):
         sample_emg_filtered[2,21] = 100
         sample_emg_filtered[2,42] = 100
         sample_emg_filtered[2,81] = 100
-        components = np.row_stack((sample_emg_filtered[1], sample_emg_filtered[2]))
+        components = np.vstack((sample_emg_filtered[1], sample_emg_filtered[2]))
         emg = pick_highest_correlation_array_multi(components, sample_emg_filtered[0])
         self.assertEqual(
             sum(components[emg]),
@@ -275,7 +318,7 @@ class TestGating(unittest.TestCase):
     def test_gating_method_3(self):
         height_threshold = np.max(self.sample_emg_filtered)/2
         ecg_peaks, _  = scipy.signal.find_peaks(
-            self.sample_emg_filtered[0, :10*2048-1], 
+            self.sample_emg_filtered[0, :10*2048-1],
             height=height_threshold)
 
         ecg_gated_3 = gating(self.sample_emg_filtered[0, :10*2048], ecg_peaks,

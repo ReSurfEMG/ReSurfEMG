@@ -5,17 +5,21 @@ import unittest
 import os
 import numpy as np
 import scipy
+from scipy.integrate import trapezoid
 
 from resurfemg.preprocessing import envelope as evl
 from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
-from resurfemg.postprocessing.features import (
-    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve, 
-    times_under_curve, find_peak_in_breath,variability_maker)
-from resurfemg.postprocessing.quality_assessment import (
-    snr_pseudo, pocc_quality)
 from resurfemg.postprocessing.event_detection import (
-    onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation)
+    onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation,
+    detect_ventilator_breath, find_occluded_breaths)
+from resurfemg.postprocessing.features import (
+    entropy_scipy, pseudo_slope, area_under_curve, simple_area_under_curve,
+    times_under_curve, find_peak_in_breath,variability_maker, time_product,
+    area_under_baseline)
+from resurfemg.postprocessing.quality_assessment import (
+    snr_pseudo, pocc_quality, interpeak_dist, percentage_under_baseline,
+    detect_non_consecutive_manoeuvres)
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -226,7 +230,7 @@ class TestEventDetection(unittest.TestCase):
             len(self.peak_idxs),
             len(peak_end_idxs),
             )
-    
+
     def test_slope_extrapolate_starts(self):
         peak_start_idxs, _, _, _, _ = onoffpeak_slope_extrapolation(
              self.breathing_signal, self.fs, self.peak_idxs, self.fs//4)
@@ -245,21 +249,54 @@ class TestEventDetection(unittest.TestCase):
             len(peak_end_idxs),
             )
 
+    def test_detect_ventilator_breath(self):
+        ventilator_breath_idxs = detect_ventilator_breath(
+            V_signal=self.breathing_signal,
+            start_s=1,
+            end_s=10000,
+            width_s=1
+            )
+        self.assertEqual(
+            len(ventilator_breath_idxs),
+            2,
+            )
+
+class TestPoccDetection(unittest.TestCase):
+    def test_baseline_crossing_starts(self):
+        peak_idxs_detected = find_occluded_breaths(
+            p_aw=y_t_paw,
+            peep=0,
+            fs=fs_vent,
+        )
+
+        np.testing.assert_array_equal(
+            peak_idxs_detected,
+            pocc_peaks_valid,
+            )
+
 class TestSnrPseudo(unittest.TestCase):
-    snr_values = snr_pseudo(y_env_emg, peaks_env, y_emg_baseline)
+    fs_emg = 2048
+    t_emg = np.array([s_t/fs_emg for s_t in range(15*fs_emg)])
+
+    y_block = np.array(
+        10*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
+    y_block[y_block < 0] = 0
+    y_baseline = np.ones(y_block.shape)
+    peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
+
+    snr_values = snr_pseudo(y_block, peaks_s, y_baseline)
+
     def test_snr_length(self):
         self.assertEqual(
             len(self.snr_values),
-            len(peaks_env),
+            len(self.peaks_s),
             )
 
     def test_snr_values(self):
         median_snr = np.median(self.snr_values)
-        self.assertEqual(
-            np.round(median_snr),
-            10.0,
+        self.assertAlmostEqual(
+            median_snr, 10.0, 3
             )
-
 
 class TestPoccQuality(unittest.TestCase):
     valid_poccs, _ = pocc_quality(
@@ -283,7 +320,7 @@ class TestPoccQuality(unittest.TestCase):
             )
 
     def test_steep_upslope(self):
-        y_sin_shifted = np.sin((f_r* t_vent - 0.4)* 2 * np.pi) 
+        y_sin_shifted = np.sin((f_r* t_vent - 0.4)* 2 * np.pi)
         y_sin_shifted[y_sin_shifted > 0] = 0
         y_sin_shifted = y_sin_shifted ** 4
         y_t_steeper = 1000 * y_sin * y_sin_shifted
@@ -294,23 +331,133 @@ class TestPoccQuality(unittest.TestCase):
         _, peak_starts_steep, peak_ends_steep, _, _, _ = \
             onoffpeak_baseline_crossing(y_t_steeper, y_baseline, peaks_steeper)
 
-        PTP_occs_steep = np.zeros(peaks_steeper.shape)
+        ptp_occs_steep = np.zeros(peaks_steeper.shape)
         for idx, _ in enumerate(peaks_steeper):
-            PTP_occs_steep[idx] = np.trapz(
+            ptp_occs_steep[idx] = trapezoid(
                 -y_t_steeper[peak_starts_steep[idx]:peak_ends_steep[idx]],
                 dx=1/fs_vent
             )
 
         steep_upslope, _ = pocc_quality(
-            y_t_steeper, peaks_steeper, peak_ends_steep, PTP_occs_steep)
+            y_t_steeper, peaks_steeper, peak_ends_steep, ptp_occs_steep)
 
         self.assertFalse(
             steep_upslope[-1]
             )
 
+    def test_consec_manoeuvres(self):
+        sim_breaths = np.arange(1,20,2)
+        sim_occ = np.arange(1,20,10)
+        sim_occ_false = np.array([1, 7, 9])
+        valid_manoeuvres = detect_non_consecutive_manoeuvres(
+            ventilator_breath_idxs=sim_breaths,
+            manoeuvres_idxs=sim_occ)
+        self.assertTrue(
+            np.all(valid_manoeuvres)
+        )
+        valid_manoeuvres_false = detect_non_consecutive_manoeuvres(
+            sim_breaths, sim_occ_false)
+        self.assertFalse(
+            np.all(valid_manoeuvres_false)
+        )
 
-class TestQualityAssessment(unittest.TestCase):
+class TestInterpeakMethods(unittest.TestCase):
+    def test_interpeak_dist(self):
+        sim_ECG=np.arange(1, 11)
+        sim_EMG=np.linspace(1, 10, 4)
+        valid_interpeak = interpeak_dist(sim_ECG, sim_EMG, threshold=1.1)
 
+        self.assertTrue(valid_interpeak, "The interpeak_dist function"
+                        "did not return True as expected.")
+
+
+class TestTimeProduct(unittest.TestCase):
+    # Define signal
+    fs_emg = 2048
+    t_emg = np.array([s_t/fs_emg for s_t in range(15*fs_emg)])
+
+    y_block = np.array(
+        3*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
+    y_block[y_block < 0] = 0
+
+    peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
+    starts_s = [(5 + x*5*4) * 2048 //4 for x in range(3)]
+    ends_s = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
+
+    y_baseline = np.ones(y_block.shape)
+
+    def test_timeproduct(self):
+        aob = time_product(
+            self.y_block,
+            self.fs_emg,
+            self.starts_s,
+            self.ends_s,
+            self.y_baseline,
+        )
+        self.assertAlmostEqual(np.median(aob), 5.0, 2)
+
+    def test_area_under_baseline(self):
+        aub = area_under_baseline(
+            self.y_block,
+            self.fs_emg,
+            self.peaks_s,
+            self.starts_s,
+            self.ends_s,
+            aub_window_s=self.fs_emg*5,
+            baseline=self.y_baseline,
+            ref_signal=self.y_block,
+        )
+        self.assertAlmostEqual(np.median(aub), 2.5, 2)
+
+class TestAreaUnderBaselineQuality(unittest.TestCase):
+    # Define signal
+    fs_emg = 2048
+    t_emg = np.array([s_t/fs_emg for s_t in range(15*fs_emg)])
+
+    y_block = np.array(
+        3*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
+    y_block[y_block < 0] = 0
+
+    peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
+    starts_s = [(5 + x*5*4) * 2048 //4 for x in range(3)]
+    ends_s = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
+
+    def test_percentage_aub_good(self):
+        y_baseline = np.ones(self.y_block.shape)
+        valid_timeproducts, _ = percentage_under_baseline(
+            self.y_block,
+            self.fs_emg,
+            self.peaks_s,
+            self.starts_s,
+            self.ends_s,
+            y_baseline,
+            aub_window_s=None,
+            ref_signal=None,
+            aub_threshold=40,
+        )
+
+        self.assertTrue(
+            np.all(valid_timeproducts)
+            )
+
+    def test_percentage_aub_wrong(self):
+        y_baseline = 2*np.ones(self.y_block.shape)
+        valid_timeproducts, _ = percentage_under_baseline(
+            self.y_block,
+            self.fs_emg,
+            self.peaks_s,
+            self.starts_s,
+            self.ends_s,
+            y_baseline,
+            aub_window_s=None,
+            ref_signal=None,
+            aub_threshold=40,
+        )
+
+        self.assertFalse(np.all(valid_timeproducts))
+
+
+class TestBellFit(unittest.TestCase):
     def test_evaluate_bell_curve_error(self):
         self.fs = 1000
         self.duration = 60
@@ -338,4 +485,3 @@ class TestQualityAssessment(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main(argv=[''], exit=False)
-
