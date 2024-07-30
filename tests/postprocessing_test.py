@@ -35,6 +35,10 @@ y_env_emg = evl.full_rolling_rms(y_t_emg, fs_emg // 5)
 y_emg_baseline = bl.moving_baseline(y_env_emg, 5*fs_emg, fs_emg//2)
 
 peaks_env, _ = scipy.signal.find_peaks(y_env_emg, prominence=0.1)
+_, emg_starts_s, emg_ends_s, *_ = evt.onoffpeak_baseline_crossing(
+             y_env_emg, y_emg_baseline, peaks_env)
+etps = feat.time_product(
+    signal=y_env_emg, fs=fs_emg, starts_s=emg_starts_s, ends_s=emg_ends_s)
 
 # Dummy Pocc signal
 fs_vent = 100
@@ -53,43 +57,7 @@ pocc_ends = s_vent[(t_vent%t_r == 0)]
 
 PTP_occs = np.zeros(pocc_peaks_valid.shape)
 for _idx, _ in enumerate(pocc_peaks_valid):
-    PTP_occs[_idx] = trapezoid(
-        -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
-        dx=1/fs_vent
-    )
-
-# Dummy EMG signal
-fs_emg = 2048
-t_emg = np.array([s_t/fs_emg for s_t in range(10*fs_emg)])
-y_sin = np.cos((0.5* t_emg - 0.5)* 2 * np.pi)
-y_sin[y_sin < 0] = 0
-y_rand = np.random.normal(0, 1, size=len(y_sin))
-y_rand_baseline = np.random.normal(0, 1, size=len(y_sin)) / 10
-y_t_emg = y_sin * y_rand + y_rand_baseline
-
-y_env_emg = evl.full_rolling_rms(y_t_emg, fs_emg // 5)
-y_emg_baseline = bl.moving_baseline(y_env_emg, 5*fs_emg, fs_emg//2)
-
-peaks_env, _ = scipy.signal.find_peaks(y_env_emg, prominence=0.1)
-
-# Dummy Pocc signal
-fs_vent = 100
-s_vent = np.array([(s_t) for s_t in range(10*fs_vent)])
-t_vent = (s_vent + 1)/fs_vent
-rr = 12
-t_r = 60/rr
-f_r = 1/t_r
-y_sin = np.sin((f_r* t_vent)* 2 * np.pi)
-y_sin[y_sin > 0] = 0
-y_t_paw = 5 * y_sin
-
-pocc_peaks_valid, _ = scipy.signal.find_peaks(-y_t_paw, prominence=0.1)
-pocc_starts = s_vent[((t_vent+t_r/2)%t_r == 0)]
-pocc_ends = s_vent[(t_vent%t_r == 0)]
-
-PTP_occs = np.zeros(pocc_peaks_valid.shape)
-for _idx, _ in enumerate(pocc_peaks_valid):
-    PTP_occs[_idx] = trapezoid(
+    PTP_occs[_idx] = np.trapz(
         -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
         dx=1/fs_vent
     )
@@ -125,7 +93,7 @@ class TestBaseline(unittest.TestCase):
             len(sinusbase),
             )
 
-class TestOnsetDetection(unittest.TestCase):
+class TestEventDetection(unittest.TestCase):
     fs = 1000
     t = np.arange(0, 10, 1/fs)
     slow_component = np.sin(2 * np.pi * 0.1 * t)
@@ -405,10 +373,31 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
             aub_threshold=40,
         )
 
-        self.assertFalse(
-            np.all(valid_timeproducts)
-            )
+        self.assertFalse(np.all(valid_timeproducts))
 
+
+class TestBellFit(unittest.TestCase):
+    def test_evaluate_bell_curve_error(self):
+        output = qa.evaluate_bell_curve_error(
+            peaks_s=peaks_env,
+            starts_s=emg_starts_s,
+            ends_s=emg_ends_s,
+            signal=y_env_emg,
+            fs=fs_emg,
+            time_products=etps,
+            bell_window_s=None,
+            bell_threshold=40,
+        )
+        (valid_peak, _, percentage_bell_error, *_) = output
+
+        np.testing.assert_equal(
+            valid_peak,
+            np.array([True, True, True, True, True])
+        )
+        np.testing.assert_equal(
+            np.abs(percentage_bell_error - 5) < 5,
+            np.array([True, True, True, True, True])
+        )
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=[''], exit=False)

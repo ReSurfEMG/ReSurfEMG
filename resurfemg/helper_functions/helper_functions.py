@@ -298,3 +298,20 @@ def derivative(signal, fs, window_s=None):
         dsignal_dt = (signal[1:] - signal[:-1]) * fs
 
     return dsignal_dt
+
+
+def bell_curve(x, a, b, c):
+    """This function calculates a bell curve on the samples of `x`, shifted by
+    `b`, amplified by `a` for a standard amplitude of 1. `c
+    :param x: x values to calculate the bell_curve for
+    :type x: ~numpy.ndarray
+    :param a: amplitude of the bell-curve
+    :type a: ~float
+    :param b: time shift of the bell-curve along the x-axis.
+    :type b: ~float
+    :param c: steepness factor of bell-curve.
+    :type c: ~float
+    :returns: The first derivative of the signal length len(signal)-1.
+    :rtype: ~numpy.ndarray
+    """
+    return a * np.exp(-(x - b) ** 2 / c ** 2)
