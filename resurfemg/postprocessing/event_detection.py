@@ -46,14 +46,14 @@ def find_occluded_breaths(
     prominence = prominence_factor * np.abs(peep - min(p_aw))
     height = prominence - peep
 
-    peaks_s, _ = scipy.signal.find_peaks(
+    peak_idxs, _ = scipy.signal.find_peaks(
         -p_aw[start_idx:end_s],
         height=height,
         prominence=prominence,
         width=min_width_s,
         distance=distance_s
     )
-    return peaks_s
+    return peak_idxs
 
 
 def onoffpeak_baseline_crossing(

@@ -200,14 +200,14 @@ class TestSnrPseudo(unittest.TestCase):
         10*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
     y_block[y_block < 0] = 0
     y_baseline = np.ones(y_block.shape)
-    peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
+    peak_idxs = [(5//2 + x*5) * 2048 for x in range(3)]
 
-    snr_values = qa.snr_pseudo(y_block, peaks_s, y_baseline, fs_emg)
+    snr_values = qa.snr_pseudo(y_block, peak_idxs, y_baseline, fs_emg)
 
     def test_snr_length(self):
         self.assertEqual(
             len(self.snr_values),
-            len(self.peaks_s),
+            len(self.peak_idxs),
             )
 
     def test_snr_values(self):
@@ -243,22 +243,23 @@ class TestPoccQuality(unittest.TestCase):
         y_sin_shifted = y_sin_shifted ** 4
         y_t_steeper = 1000 * y_sin * y_sin_shifted
 
-        peaks_steeper, _ = scipy.signal.find_peaks(-y_t_steeper, prominence=0.1)
+        peak_idxs_steeper, _ = scipy.signal.find_peaks(
+            -y_t_steeper, prominence=0.1)
         y_baseline = bl.moving_baseline(-y_t_steeper, 7.5*fs_vent, fs_vent//5)
 
         _, peak_start_idxsteep, peak_ends_steep, _, _, _ = \
             evt.onoffpeak_baseline_crossing(
-                y_t_steeper, y_baseline, peaks_steeper)
+                y_t_steeper, y_baseline, peak_idxs_steeper)
 
-        ptp_occs_steep = np.zeros(peaks_steeper.shape)
-        for idx, _ in enumerate(peaks_steeper):
+        ptp_occs_steep = np.zeros(peak_idxs_steeper.shape)
+        for idx, _ in enumerate(peak_idxs_steeper):
             ptp_occs_steep[idx] = trapezoid(
                 -y_t_steeper[peak_start_idxsteep[idx]:peak_ends_steep[idx]],
                 dx=1/fs_vent
             )
 
         steep_upslope, _ = qa.pocc_quality(
-            y_t_steeper, peaks_steeper, peak_ends_steep, ptp_occs_steep)
+            y_t_steeper, peak_idxs_steeper, peak_ends_steep, ptp_occs_steep)
 
         self.assertFalse(
             steep_upslope[-1]
@@ -299,7 +300,7 @@ class TestTimeProduct(unittest.TestCase):
         3*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
     y_block[y_block < 0] = 0
 
-    peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
+    peak_idxs = [(5//2 + x*5) * 2048 for x in range(3)]
     start_idxs = [(5 + x*5*4) * 2048 //4 for x in range(3)]
     ends_s = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
 
@@ -319,7 +320,7 @@ class TestTimeProduct(unittest.TestCase):
         aub = feat.area_under_baseline(
             self.y_block,
             self.fs_emg,
-            self.peaks_s,
+            self.peak_idxs,
             self.start_idxs,
             self.ends_s,
             aub_window_s=self.fs_emg*5,
@@ -337,7 +338,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
         3*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
     y_block[y_block < 0] = 0
 
-    peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
+    peak_idxs = [(5//2 + x*5) * 2048 for x in range(3)]
     start_idxs = [(5 + x*5*4) * 2048 //4 for x in range(3)]
     ends_s = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
 
@@ -346,7 +347,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
         valid_timeproducts, _ = qa.percentage_under_baseline(
             self.y_block,
             self.fs_emg,
-            self.peaks_s,
+            self.peak_idxs,
             self.start_idxs,
             self.ends_s,
             y_baseline,
@@ -364,7 +365,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
         valid_timeproducts, _ = qa.percentage_under_baseline(
             self.y_block,
             self.fs_emg,
-            self.peaks_s,
+            self.peak_idxs,
             self.start_idxs,
             self.ends_s,
             y_baseline,
@@ -379,7 +380,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
 class TestBellFit(unittest.TestCase):
     def test_evaluate_bell_curve_error(self):
         output = qa.evaluate_bell_curve_error(
-            peaks_s=peaks_env,
+            peak_idxs=peaks_env,
             start_idxs=emg_start_idxs,
             ends_s=emg_ends_s,
             signal=y_env_emg,

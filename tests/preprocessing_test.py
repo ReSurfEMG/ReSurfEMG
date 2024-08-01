@@ -73,7 +73,7 @@ class TestRmsMethods(unittest.TestCase):
     x_sin[x_sin < 0] = 0
     x_rand = np.random.normal(0, 1, size=len(x_sin))
     x_t = x_sin * x_rand
-    peaks_source, _ = find_peaks(x_sin, prominence=0.1)
+    peak_idxs_source, _ = find_peaks(x_sin, prominence=0.1)
     def test_full_rolling_rms_length(self):
         x_rms = full_rolling_rms(self.x_t, self.fs_emg//5)
         self.assertEqual(
@@ -84,7 +84,7 @@ class TestRmsMethods(unittest.TestCase):
         x_rms = full_rolling_rms(self.x_t, self.fs_emg//5)
         peaks_rms, _ = find_peaks(x_rms, prominence=0.1)
         peak_errors = np.abs(
-            (self.t_emg[peaks_rms] - self.t_emg[self.peaks_source]))
+            (self.t_emg[peaks_rms] - self.t_emg[self.peak_idxs_source]))
 
         self.assertFalse(
             np.any(peak_errors > 0.05)
@@ -98,7 +98,7 @@ class TestArvMethods(unittest.TestCase):
     x_sin[x_sin < 0] = 0
     x_rand = np.random.normal(0, 1, size=len(x_sin))
     x_t = x_sin * x_rand
-    peaks_source, _ = find_peaks(x_sin, prominence=0.1)
+    peak_idxs_source, _ = find_peaks(x_sin, prominence=0.1)
     def test_full_rolling_arv_length(self):
         x_arv = full_rolling_arv(self.x_t, self.fs_emg//5)
         self.assertEqual(
@@ -110,7 +110,7 @@ class TestArvMethods(unittest.TestCase):
         x_arv = full_rolling_arv(self.x_t, self.fs_emg//5)
         peaks_arv, _ = find_peaks(x_arv, prominence=0.1)
         peak_errors = np.abs(
-            (self.t_emg[peaks_arv] - self.t_emg[self.peaks_source]))
+            (self.t_emg[peaks_arv] - self.t_emg[self.peak_idxs_source]))
 
         self.assertFalse(
             np.any(peak_errors > 0.05)

@@ -537,7 +537,7 @@ class TimeSeries:
                 signal=peak_set.signal,
                 fs=self.fs,
                 start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
-                peaks_s=peak_set.peak_df['peak_idx'].to_numpy(),
+                peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
                 ends_s=peak_set.peak_df['end_idx'].to_numpy(),
                 aub_window_s=aub_window_s,
                 baseline=baseline,
@@ -672,7 +672,7 @@ class TimeSeries:
             valid_timeproducts, percentages_aub = qa.percentage_under_baseline(
                 signal=peak_set.signal,
                 fs=self.fs,
-                peaks_s=peak_set.peak_df['peak_idx'].to_numpy(),
+                peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
                 start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
                 ends_s=peak_set.peak_df['end_idx'].to_numpy(),
                 baseline=self.y_baseline,
@@ -697,7 +697,7 @@ class TimeSeries:
                 raise ValueError('ETPs not determined, but required for curve '
                                  + 'fit evaluaton.')
             outputs = qa.evaluate_bell_curve_error(
-                peaks_s=peak_set.peak_df['peak_idx'].to_numpy(),
+                peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
                 start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
                 ends_s=peak_set.peak_df['end_idx'].to_numpy(),
                 signal=peak_set.signal,

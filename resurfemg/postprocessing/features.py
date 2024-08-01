@@ -126,7 +126,7 @@ def time_product(
 def area_under_baseline(
     signal,
     fs,
-    peaks_s,
+    peak_idxs,
     start_idxs,
     ends_s,
     aub_window_s,
@@ -141,14 +141,14 @@ def area_under_baseline(
     :type signal: ~numpy.ndarray
     :param fs: sampling frequency
     :type fs: ~int
-    :param peaks_s: list of individual peak indices
-    :type peaks_s: ~list
+    :param peak_idxs: list of individual peak indices
+    :type peak_idxs: ~list
     :param start_idxs: list of individual peak start indices
     :type start_idxs: ~list
     :param ends_s: list of individual peak end indices
     :type ends_s: ~list
-    :param aub_window_s: number of samples before and after peaks_s to look for
-    the nadir
+    :param aub_window_s: number of samples before and after peak_idxs to look
+    for the nadir
     :type aub_window_s: ~int
     :param baseline: running baseline of the signal
     :type baseline: ~numpy.ndarray
@@ -160,9 +160,9 @@ def area_under_baseline(
     if ref_signal is None:
         ref_signal = signal
 
-    aubs = np.zeros(np.asarray(peaks_s).shape)
+    aubs = np.zeros(np.asarray(peak_idxs).shape)
     for idx, (start_idx, peak_s, end_s) in enumerate(
-            zip(start_idxs, peaks_s, ends_s)):
+            zip(start_idxs, peak_idxs, ends_s)):
         y_delta_curve = signal[start_idx:end_s+1]-baseline[start_idx:end_s+1]
         ref_start_idx = max([0, peak_s - aub_window_s])
         ref_end_s = min([len(signal) - 1, peak_s + aub_window_s])

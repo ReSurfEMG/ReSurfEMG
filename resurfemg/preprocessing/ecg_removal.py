@@ -373,7 +373,7 @@ def detect_ecg_peaks(
     detection.
     :type filter: bool
 
-    :returns: emg_gated
+    :returns: ecg_peak_idxs
     :rtype: ~numpy.ndarray
     """
 
@@ -394,14 +394,14 @@ def detect_ecg_peaks(
     min_ecg_rms = min(ecg_rms)
     peak_height = peak_fraction * (max_ecg_rms - min_ecg_rms)
 
-    ecg_peaks_s, _ = scipy.signal.find_peaks(
+    ecg_peak_idxs, _ = scipy.signal.find_peaks(
         ecg_rms,
         height=peak_height,
         width=peak_width_s,
         distance=peak_distance
     )
 
-    return ecg_peaks_s
+    return ecg_peak_idxs
 
 
 def gating(

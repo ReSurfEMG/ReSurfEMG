@@ -139,7 +139,7 @@ def interpeak_dist(ECG_peaks, EMG_peaks, threshold=1.1):
 def percentage_under_baseline(
     signal,
     fs,
-    peaks_s,
+    peak_idxs,
     start_idxs,
     ends_s,
     baseline,
@@ -154,16 +154,16 @@ def percentage_under_baseline(
     :type signal: ~numpy.ndarray
     :param fs: sampling frequency
     :type fs: ~int
-    :param peaks_s: list of individual peak indices
-    :type peaks_s: ~list
+    :param peak_idxs: list of individual peak indices
+    :type peak_idxs: ~list
     :param start_idxs: list of individual peak start indices
     :type start_idxs: ~list
     :param ends_s: list of individual peak end indices
     :type ends_s: ~list
     :param baseline: running baseline of the signal
     :type baseline: ~numpy.ndarray
-    :param aub_window_s: number of samples before and after peaks_s to look for
-    the nadir
+    :param aub_window_s: number of samples before and after peak_idxs to look
+    for the nadir
     :type aub_window_s: ~int
     :param ref_signal: signal in which the nadir is searched
     :type ref_signal: ~numpy.ndarray
@@ -188,7 +188,7 @@ def percentage_under_baseline(
     aubs = feat.area_under_baseline(
         signal,
         fs,
-        peaks_s,
+        peak_idxs,
         start_idxs,
         ends_s,
         aub_window_s,
@@ -248,7 +248,7 @@ def detect_non_consecutive_manoeuvres(
 
 
 def evaluate_bell_curve_error(
-    peaks_s,
+    peak_idxs,
     start_idxs,
     ends_s,
     signal,
@@ -262,8 +262,8 @@ def evaluate_bell_curve_error(
 
     :param signal: filtered signal
     :type signal: ~numpy.ndarray
-    :param peaks_s: list of peak indices
-    :type peaks_s: ~numpy.ndarray
+    :param peak_idxs: list of peak indices
+    :type peak_idxs: ~numpy.ndarray
     :param start_idxs: list of onsets indices
     :type start_idxs: ~numpy.ndarray
     :param ends_s: list of offsets indices
@@ -272,7 +272,7 @@ def evaluate_bell_curve_error(
     :type fs: int
     :param time_products: list of area under the curves per peak
     :type time_products: ~numpy.ndarray
-    :param bell_window_s: number of samples before and after peaks_s to look
+    :param bell_window_s: number of samples before and after peak_idxs to look
     for the nadir
     :type bell_window_s: ~int
     :param bell_threshold: maximum bell error percentage for a valid peak
@@ -284,12 +284,12 @@ def evaluate_bell_curve_error(
         bell_window_s = fs * 5
     t = np.array([i / fs for i in range(len(signal))])
 
-    bell_error = np.zeros((len(peaks_s),))
-    percentage_bell_error = np.zeros((len(peaks_s),))
-    fitted_parameters = np.zeros((len(peaks_s), 3))
-    y_min = np.zeros((len(peaks_s),))
+    bell_error = np.zeros((len(peak_idxs),))
+    percentage_bell_error = np.zeros((len(peak_idxs),))
+    fitted_parameters = np.zeros((len(peak_idxs), 3))
+    y_min = np.zeros((len(peak_idxs),))
     for idx, (peak_s, start_i, end_i, tp) in enumerate(
-            zip(peaks_s, start_idxs, ends_s, time_products)):
+            zip(peak_idxs, start_idxs, ends_s, time_products)):
         baseline_start_i = max(0, peak_s - bell_window_s)
         baseline_end_i = min(len(signal) - 1, peak_s + bell_window_s)
         y_min[idx] = np.min(signal[baseline_start_i:baseline_end_i])
