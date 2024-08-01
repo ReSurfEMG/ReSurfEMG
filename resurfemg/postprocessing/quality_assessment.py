@@ -39,9 +39,9 @@ def snr_pseudo(
 
     for peak_nr, idx in enumerate(peaks):
         peak_heights[peak_nr] = src_signal[idx]
-        start_i = max([0, idx - fs])
+        start_idx = max([0, idx - fs])
         end_i = min([len(src_signal), idx + fs])
-        noise_heights[peak_nr] = np.median(baseline[start_i:end_i])
+        noise_heights[peak_nr] = np.median(baseline[start_idx:end_i])
 
     snr_peaks = np.divide(peak_heights, noise_heights)
     return snr_peaks
@@ -288,19 +288,19 @@ def evaluate_bell_curve_error(
     percentage_bell_error = np.zeros((len(peak_idxs),))
     fitted_parameters = np.zeros((len(peak_idxs), 3))
     y_min = np.zeros((len(peak_idxs),))
-    for idx, (peak_s, start_i, end_i, tp) in enumerate(
+    for idx, (peak_idx, start_idx, end_i, tp) in enumerate(
             zip(peak_idxs, start_idxs, ends_s, time_products)):
-        baseline_start_i = max(0, peak_s - bell_window_s)
-        baseline_end_i = min(len(signal) - 1, peak_s + bell_window_s)
-        y_min[idx] = np.min(signal[baseline_start_i:baseline_end_i])
+        baseline_start_idx = max(0, peak_idx - bell_window_s)
+        baseline_end_i = min(len(signal) - 1, peak_idx + bell_window_s)
+        y_min[idx] = np.min(signal[baseline_start_idx:baseline_end_i])
 
-        if end_i - start_i < 3:
-            plus_idx = 3 - (end_i - start_i)
+        if end_i - start_idx < 3:
+            plus_idx = 3 - (end_i - start_idx)
         else:
             plus_idx = 0
 
-        x_data = t[start_i:end_i + 1 + plus_idx]
-        y_data = signal[start_i:end_i + 1 + plus_idx] - y_min[idx]
+        x_data = t[start_idx:end_i + 1 + plus_idx]
+        y_data = signal[start_idx:end_i + 1 + plus_idx] - y_min[idx]
 
         if np.any(np.isnan(x_data)) or np.any(np.isnan(y_data)) or np.any(
                 np.isinf(x_data)) or np.any(np.isinf(y_data)):
@@ -312,8 +312,8 @@ def evaluate_bell_curve_error(
         try:
             popt, *_ = curve_fit(
                 hf.bell_curve, x_data, y_data,
-                bounds=([0., t[peak_s] - 0.5, 0.],
-                        [np.inf, t[peak_s] + 0.5, np.inf])
+                bounds=([0., t[peak_idx] - 0.5, 0.],
+                        [np.inf, t[peak_idx] + 0.5, np.inf])
             )
         except RuntimeError as e:
             print(f"Curve fitting failed for peak index {idx} with error: {e}")
@@ -322,8 +322,8 @@ def evaluate_bell_curve_error(
             continue
 
         bell_error[idx] = np.trapz(
-            np.abs((signal[start_i:end_i + 1] - (
-                hf.bell_curve(t[start_i:end_i + 1], *popt) + y_min[idx]))),
+            np.abs((signal[start_idx:end_i + 1] - (
+                hf.bell_curve(t[start_idx:end_i + 1], *popt) + y_min[idx]))),
             dx=1 / fs
         )
         percentage_bell_error[idx] = bell_error[idx] / tp * 100
