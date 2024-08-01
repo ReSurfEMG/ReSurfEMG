@@ -64,8 +64,8 @@ def slopesum_baseline(
     :type window_s: int
     :param step_s: number of consecutive samples with the same baseline value
     :type step_s: int
-    :param emg_sample_rate: sample rate from recording
-    :type emg_sample_rate: int
+    :param emg_fs: sample rate from recording
+    :type emg_fs: int
     :param set_percentile
     :type set_percentile: float (0-100)
     :param ma_window: moving average window in samples for average dy/dt
