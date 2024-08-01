@@ -523,7 +523,7 @@ class TimeSeries:
         time_products = feat.time_product(
             signal=peak_set.signal,
             fs=self.fs,
-            starts_s=peak_set.peak_df['start_idx'].to_numpy(),
+            start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
             ends_s=peak_set.peak_df['end_idx'].to_numpy(),
             baseline=baseline,
         )
@@ -536,7 +536,7 @@ class TimeSeries:
             aub = feat.area_under_baseline(
                 signal=peak_set.signal,
                 fs=self.fs,
-                starts_s=peak_set.peak_df['start_idx'].to_numpy(),
+                start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
                 peaks_s=peak_set.peak_df['peak_idx'].to_numpy(),
                 ends_s=peak_set.peak_df['end_idx'].to_numpy(),
                 aub_window_s=aub_window_s,
@@ -673,7 +673,7 @@ class TimeSeries:
                 signal=peak_set.signal,
                 fs=self.fs,
                 peaks_s=peak_set.peak_df['peak_idx'].to_numpy(),
-                starts_s=peak_set.peak_df['start_idx'].to_numpy(),
+                start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
                 ends_s=peak_set.peak_df['end_idx'].to_numpy(),
                 baseline=self.y_baseline,
                 aub_window_s=None,
@@ -698,7 +698,7 @@ class TimeSeries:
                                  + 'fit evaluaton.')
             outputs = qa.evaluate_bell_curve_error(
                 peaks_s=peak_set.peak_df['peak_idx'].to_numpy(),
-                starts_s=peak_set.peak_df['start_idx'].to_numpy(),
+                start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
                 ends_s=peak_set.peak_df['end_idx'].to_numpy(),
                 signal=peak_set.signal,
                 fs=self.fs,
