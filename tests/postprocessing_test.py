@@ -152,7 +152,7 @@ class TestEventDetection(unittest.TestCase):
         ventilator_breath_idxs = evt.detect_ventilator_breath(
             V_signal=self.breathing_signal,
             start_idx=1,
-            end_s=10000,
+            end_idx=10000,
             width_s=1
             )
         self.assertEqual(

@@ -231,7 +231,7 @@ class TestTimeSeriesGroup(unittest.TestCase):
             y_plot_data_list.append(len(y_plot_data))
 
         # Length of plotted data:
-        # [signal, baseline, peak_idx, start_idx, end_s]
+        # [signal, baseline, peak_idx, start_idx, end_idx]
         np.testing.assert_array_equal(
             [len_last_peak, len_last_peak, 1, 1, 1],
             y_plot_data_list)

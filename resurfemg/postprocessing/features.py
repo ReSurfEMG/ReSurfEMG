@@ -92,7 +92,7 @@ def time_product(
 ):
     """
     Calculate the time product between the signal and the baseline for the
-    windows defined by the start_idx and end_s sample pairs.
+    windows defined by the start_idx and end_idx sample pairs.
     :param signal: signal to calculate the time product over
     :type signal: ~numpy.ndarray
     :param fs: sampling frequency
@@ -110,8 +110,8 @@ def time_product(
         baseline = np.zeros(signal.shape)
 
     time_products = np.zeros(np.asarray(start_idxs).shape)
-    for idx, (start_idx, end_s) in enumerate(zip(start_idxs, end_idxs)):
-        y_delta = signal[start_idx:end_s+1]-baseline[start_idx:end_s+1]
+    for idx, (start_idx, end_idx) in enumerate(zip(start_idxs, end_idxs)):
+        y_delta = signal[start_idx:end_idx+1]-baseline[start_idx:end_idx+1]
         if (not np.all(np.sign(y_delta[1:]) >= 0)
                 and not np.all(np.sign(y_delta[1:]) <= 0)):
             warnings.warn("Warning: Curve for peak idx" + str(idx)
@@ -136,7 +136,7 @@ def area_under_baseline(
     """
     Calculate the time product between the baseline and the nadir of the
     reference signal in the aub_window_s for the windows defined by the
-    start_idx and end_s sample pairs.
+    start_idx and end_idx sample pairs.
     :param signal: signal to calculate the time product over
     :type signal: ~numpy.ndarray
     :param fs: sampling frequency
@@ -161,11 +161,12 @@ def area_under_baseline(
         ref_signal = signal
 
     aubs = np.zeros(np.asarray(peak_idxs).shape)
-    for idx, (start_idx, peak_idx, end_s) in enumerate(
+    for idx, (start_idx, peak_idx, end_idx) in enumerate(
             zip(start_idxs, peak_idxs, end_idxs)):
-        y_delta_curve = signal[start_idx:end_s+1]-baseline[start_idx:end_s+1]
+        y_delta_curve = (signal[start_idx:end_idx+1]
+                         - baseline[start_idx:end_idx+1])
         ref_start_idx = max([0, peak_idx - aub_window_s])
-        ref_end_s = min([len(signal) - 1, peak_idx + aub_window_s])
+        ref_end_idx = min([len(signal) - 1, peak_idx + aub_window_s])
         if (not np.all(np.sign(y_delta_curve[1:]) >= 0)
                 and not np.all(np.sign(y_delta_curve[1:]) <= 0)):
             warnings.warn("Warning: Curve for peak idx" + str(idx)
@@ -174,12 +175,12 @@ def area_under_baseline(
 
         if np.median(np.sign(y_delta_curve[1:]) >= 0):
             # Positively deflected signal: Baseline below peak
-            y_ref = min(ref_signal[ref_start_idx:ref_end_s])
-            y_delta = baseline[start_idx:end_s+1] - y_ref
+            y_ref = min(ref_signal[ref_start_idx:ref_end_idx])
+            y_delta = baseline[start_idx:end_idx+1] - y_ref
         elif np.median(np.sign(y_delta_curve[1:]) <= 0):
             # Negatively deflected signal: Baseline above peak
-            y_ref = max(ref_signal[ref_start_idx:ref_end_s])
-            y_delta = y_ref - baseline[start_idx:end_s+1]
+            y_ref = max(ref_signal[ref_start_idx:ref_end_idx])
+            y_delta = y_ref - baseline[start_idx:end_idx+1]
 
         aubs[idx] = np.abs(trapezoid(y_delta, dx=1/fs))
 
