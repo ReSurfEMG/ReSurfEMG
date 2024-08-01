@@ -35,10 +35,10 @@ y_env_emg = evl.full_rolling_rms(y_t_emg, fs_emg // 5)
 y_emg_baseline = bl.moving_baseline(y_env_emg, 5*fs_emg, fs_emg//2)
 
 peaks_env, _ = scipy.signal.find_peaks(y_env_emg, prominence=0.1)
-_, emg_start_idxs, emg_ends_s, *_ = evt.onoffpeak_baseline_crossing(
+_, emg_start_idxs, emg_end_idxs, *_ = evt.onoffpeak_baseline_crossing(
              y_env_emg, y_emg_baseline, peaks_env)
 etps = feat.time_product(
-    signal=y_env_emg, fs=fs_emg, start_idxs=emg_start_idxs, ends_s=emg_ends_s)
+    signal=y_env_emg, fs=fs_emg, start_idxs=emg_start_idxs, end_idxs=emg_end_idxs)
 
 # Dummy Pocc signal
 fs_vent = 100
@@ -247,19 +247,23 @@ class TestPoccQuality(unittest.TestCase):
             -y_t_steeper, prominence=0.1)
         y_baseline = bl.moving_baseline(-y_t_steeper, 7.5*fs_vent, fs_vent//5)
 
-        _, peak_start_idxsteep, peak_ends_steep, _, _, _ = \
+        _, peak_start_idxsteep, peak_end_idxs_steep, _, _, _ = \
             evt.onoffpeak_baseline_crossing(
                 y_t_steeper, y_baseline, peak_idxs_steeper)
 
         ptp_occs_steep = np.zeros(peak_idxs_steeper.shape)
         for idx, _ in enumerate(peak_idxs_steeper):
             ptp_occs_steep[idx] = trapezoid(
-                -y_t_steeper[peak_start_idxsteep[idx]:peak_ends_steep[idx]],
+                -y_t_steeper[peak_start_idxsteep[idx]:
+                             peak_end_idxs_steep[idx]],
                 dx=1/fs_vent
             )
 
         steep_upslope, _ = qa.pocc_quality(
-            y_t_steeper, peak_idxs_steeper, peak_ends_steep, ptp_occs_steep)
+            y_t_steeper,
+            peak_idxs_steeper,
+            peak_end_idxs_steep,
+            ptp_occs_steep)
 
         self.assertFalse(
             steep_upslope[-1]
@@ -302,7 +306,7 @@ class TestTimeProduct(unittest.TestCase):
 
     peak_idxs = [(5//2 + x*5) * 2048 for x in range(3)]
     start_idxs = [(5 + x*5*4) * 2048 //4 for x in range(3)]
-    ends_s = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
+    end_idxs = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
 
     y_baseline = np.ones(y_block.shape)
 
@@ -311,7 +315,7 @@ class TestTimeProduct(unittest.TestCase):
             self.y_block,
             self.fs_emg,
             self.start_idxs,
-            self.ends_s,
+            self.end_idxs,
             self.y_baseline,
         )
         self.assertAlmostEqual(np.median(aob), 5.0, 2)
@@ -322,7 +326,7 @@ class TestTimeProduct(unittest.TestCase):
             self.fs_emg,
             self.peak_idxs,
             self.start_idxs,
-            self.ends_s,
+            self.end_idxs,
             aub_window_s=self.fs_emg*5,
             baseline=self.y_baseline,
             ref_signal=self.y_block,
@@ -340,7 +344,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
 
     peak_idxs = [(5//2 + x*5) * 2048 for x in range(3)]
     start_idxs = [(5 + x*5*4) * 2048 //4 for x in range(3)]
-    ends_s = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
+    end_idxs = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
 
     def test_percentage_aub_good(self):
         y_baseline = np.ones(self.y_block.shape)
@@ -349,7 +353,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
             self.fs_emg,
             self.peak_idxs,
             self.start_idxs,
-            self.ends_s,
+            self.end_idxs,
             y_baseline,
             aub_window_s=None,
             ref_signal=None,
@@ -367,7 +371,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
             self.fs_emg,
             self.peak_idxs,
             self.start_idxs,
-            self.ends_s,
+            self.end_idxs,
             y_baseline,
             aub_window_s=None,
             ref_signal=None,
@@ -382,7 +386,7 @@ class TestBellFit(unittest.TestCase):
         output = qa.evaluate_bell_curve_error(
             peak_idxs=peaks_env,
             start_idxs=emg_start_idxs,
-            ends_s=emg_ends_s,
+            end_idxs=emg_end_idxs,
             signal=y_env_emg,
             fs=fs_emg,
             time_products=etps,

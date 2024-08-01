@@ -141,7 +141,7 @@ def percentage_under_baseline(
     fs,
     peak_idxs,
     start_idxs,
-    ends_s,
+    end_idxs,
     baseline,
     aub_window_s=None,
     ref_signal=None,
@@ -158,8 +158,8 @@ def percentage_under_baseline(
     :type peak_idxs: ~list
     :param start_idxs: list of individual peak start indices
     :type start_idxs: ~list
-    :param ends_s: list of individual peak end indices
-    :type ends_s: ~list
+    :param end_idxs: list of individual peak end indices
+    :type end_idxs: ~list
     :param baseline: running baseline of the signal
     :type baseline: ~numpy.ndarray
     :param aub_window_s: number of samples before and after peak_idxs to look
@@ -182,7 +182,7 @@ def percentage_under_baseline(
         signal,
         fs,
         start_idxs,
-        ends_s,
+        end_idxs,
         baseline,
     )
     aubs = feat.area_under_baseline(
@@ -190,7 +190,7 @@ def percentage_under_baseline(
         fs,
         peak_idxs,
         start_idxs,
-        ends_s,
+        end_idxs,
         aub_window_s,
         baseline,
         ref_signal=signal,
@@ -250,7 +250,7 @@ def detect_non_consecutive_manoeuvres(
 def evaluate_bell_curve_error(
     peak_idxs,
     start_idxs,
-    ends_s,
+    end_idxs,
     signal,
     fs,
     time_products,
@@ -266,8 +266,8 @@ def evaluate_bell_curve_error(
     :type peak_idxs: ~numpy.ndarray
     :param start_idxs: list of onsets indices
     :type start_idxs: ~numpy.ndarray
-    :param ends_s: list of offsets indices
-    :type ends_s: ~numpy.ndarray
+    :param end_idxs: list of offsets indices
+    :type end_idxs: ~numpy.ndarray
     :param fs: sample rate
     :type fs: int
     :param time_products: list of area under the curves per peak
@@ -289,7 +289,7 @@ def evaluate_bell_curve_error(
     fitted_parameters = np.zeros((len(peak_idxs), 3))
     y_min = np.zeros((len(peak_idxs),))
     for idx, (peak_idx, start_idx, end_i, tp) in enumerate(
-            zip(peak_idxs, start_idxs, ends_s, time_products)):
+            zip(peak_idxs, start_idxs, end_idxs, time_products)):
         baseline_start_idx = max(0, peak_idx - bell_window_s)
         baseline_end_i = min(len(signal) - 1, peak_idx + bell_window_s)
         y_min[idx] = np.min(signal[baseline_start_idx:baseline_end_i])

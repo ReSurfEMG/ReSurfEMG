@@ -87,7 +87,7 @@ def time_product(
     signal,
     fs,
     start_idxs,
-    ends_s,
+    end_idxs,
     baseline=None,
 ):
     """
@@ -99,8 +99,8 @@ def time_product(
     :type fs: ~int
     :param start_idxs: list of individual peak start indices
     :type start_idxs: ~list
-    :param ends_s: list of individual peak end indices
-    :type ends_s: ~list
+    :param end_idxs: list of individual peak end indices
+    :type end_idxs: ~list
     :param baseline: running Baseline of the signal
     :type baseline: ~numpy.ndarray
     :returns: time_products
@@ -110,7 +110,7 @@ def time_product(
         baseline = np.zeros(signal.shape)
 
     time_products = np.zeros(np.asarray(start_idxs).shape)
-    for idx, (start_idx, end_s) in enumerate(zip(start_idxs, ends_s)):
+    for idx, (start_idx, end_s) in enumerate(zip(start_idxs, end_idxs)):
         y_delta = signal[start_idx:end_s+1]-baseline[start_idx:end_s+1]
         if (not np.all(np.sign(y_delta[1:]) >= 0)
                 and not np.all(np.sign(y_delta[1:]) <= 0)):
@@ -128,7 +128,7 @@ def area_under_baseline(
     fs,
     peak_idxs,
     start_idxs,
-    ends_s,
+    end_idxs,
     aub_window_s,
     baseline,
     ref_signal=None,
@@ -145,8 +145,8 @@ def area_under_baseline(
     :type peak_idxs: ~list
     :param start_idxs: list of individual peak start indices
     :type start_idxs: ~list
-    :param ends_s: list of individual peak end indices
-    :type ends_s: ~list
+    :param end_idxs: list of individual peak end indices
+    :type end_idxs: ~list
     :param aub_window_s: number of samples before and after peak_idxs to look
     for the nadir
     :type aub_window_s: ~int
@@ -162,7 +162,7 @@ def area_under_baseline(
 
     aubs = np.zeros(np.asarray(peak_idxs).shape)
     for idx, (start_idx, peak_idx, end_s) in enumerate(
-            zip(start_idxs, peak_idxs, ends_s)):
+            zip(start_idxs, peak_idxs, end_idxs)):
         y_delta_curve = signal[start_idx:end_s+1]-baseline[start_idx:end_s+1]
         ref_start_idx = max([0, peak_idx - aub_window_s])
         ref_end_s = min([len(signal) - 1, peak_idx + aub_window_s])

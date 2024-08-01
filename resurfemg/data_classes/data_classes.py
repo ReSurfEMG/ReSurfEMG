@@ -524,7 +524,7 @@ class TimeSeries:
             signal=peak_set.signal,
             fs=self.fs,
             start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
-            ends_s=peak_set.peak_df['end_idx'].to_numpy(),
+            end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
             baseline=baseline,
         )
 
@@ -538,7 +538,7 @@ class TimeSeries:
                 fs=self.fs,
                 start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
                 peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
-                ends_s=peak_set.peak_df['end_idx'].to_numpy(),
+                end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
                 aub_window_s=aub_window_s,
                 baseline=baseline,
                 ref_signal=aub_reference_signal,
@@ -674,7 +674,7 @@ class TimeSeries:
                 fs=self.fs,
                 peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
                 start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
-                ends_s=peak_set.peak_df['end_idx'].to_numpy(),
+                end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
                 baseline=self.y_baseline,
                 aub_window_s=None,
                 ref_signal=None,
@@ -699,7 +699,7 @@ class TimeSeries:
             outputs = qa.evaluate_bell_curve_error(
                 peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
                 start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
-                ends_s=peak_set.peak_df['end_idx'].to_numpy(),
+                end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
                 signal=peak_set.signal,
                 fs=self.fs,
                 time_products=peak_set.peak_df[
