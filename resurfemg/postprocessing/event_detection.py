@@ -15,7 +15,7 @@ def find_occluded_breaths(
     p_aw,
     fs,
     peep,
-    start_s=0,
+    start_idx=0,
     end_s=None,
     prominence_factor=0.8,
     min_width_s=None,
@@ -23,7 +23,7 @@ def find_occluded_breaths(
 ):
     """
     Find end-expiratory occlusion manoeuvres in ventilator pressure
-    timeseries data. start_s and end_s specify the samples to look into.
+    timeseries data. start_idx and end_s specify the samples to look into.
     The prominence_factor, min_width_s, and distance_s specify the minimal
     peak prominence relative to the PEEP level, peak width in samples, and
     distance to other peaks.
@@ -47,7 +47,7 @@ def find_occluded_breaths(
     height = prominence - peep
 
     peaks_s, _ = scipy.signal.find_peaks(
-        -p_aw[start_s:end_s],
+        -p_aw[start_idx:end_s],
         height=height,
         prominence=prominence,
         width=min_width_s,
@@ -174,7 +174,7 @@ def onoffpeak_slope_extrapolation(
     prev_downslope = 0
     for peak_nr, peak_idx in enumerate(peak_idxs):
         if len(max_upslope_idxs[max_upslope_idxs < peak_idx]) < 1:
-            start_s = 0
+            start_idx = 0
         else:
             max_upslope_idx = int(
                 max_upslope_idxs[max_upslope_idxs < peak_idx][-1])
@@ -185,9 +185,9 @@ def onoffpeak_slope_extrapolation(
             upslope_idx_ds = np.array(
                 y_val * fs // (dy_dt_val), dtype=int).astype(np.int64)
 
-            start_s = max([0, max_upslope_idx - upslope_idx_ds])
+            start_idx = max([0, max_upslope_idx - upslope_idx_ds])
 
-        peak_start_idxs[peak_nr] = start_s
+        peak_start_idxs[peak_nr] = start_idx
 
         if len(max_downslope_idxs[max_downslope_idxs > peak_idx]) < 1:
             end_s = len(signal)-1
@@ -208,7 +208,7 @@ def onoffpeak_slope_extrapolation(
         peak_end_idxs[peak_nr] = end_s
 
         # Evaluate start validity
-        if start_s > peak_idx:
+        if start_idx > peak_idx:
             valid_starts_bools[peak_nr] = False
 
         # Evaluate end validity
@@ -219,7 +219,7 @@ def onoffpeak_slope_extrapolation(
             valid_ends_bools[peak_nr] = False
 
         # Evaluate conflicts
-        if (peak_nr > 0) and (start_s < peak_end_idxs[peak_nr-1]):
+        if (peak_nr > 0) and (start_idx < peak_end_idxs[peak_nr-1]):
             if valid_ends_bools[peak_nr-1] is False:
                 # The previous end is already labelled as incorrect
                 pass
@@ -242,7 +242,7 @@ def onoffpeak_slope_extrapolation(
 
 def detect_ventilator_breath(
     V_signal,
-    start_s,
+    start_idx,
     end_s,
     width_s,
     threshold=None,
@@ -255,8 +255,8 @@ def detect_ventilator_breath(
     Input of threshold and prominence values is optional.
     :param V_signal: Ventilator signal
     :type V_signal: ~numpy.ndarray
-    :param start_s: start sample of the window in which to be searched
-    :type start_s: ~int
+    :param start_idx: start sample of the window in which to be searched
+    :type start_idx: ~int
     :param end_s: end sample of the window in which to be searched
     :type end_s: ~int
     :param width_s: required width of peak in samples
@@ -275,7 +275,7 @@ def detect_ventilator_breath(
     :rtype: list
     """
 
-    V_t = V_signal[int(start_s):int(end_s)]
+    V_t = V_signal[int(start_idx):int(end_s)]
     if threshold is None:
         treshold = 0.25 * np.percentile(V_t, 90)
     if prominence is None:

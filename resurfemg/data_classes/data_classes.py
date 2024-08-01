@@ -1574,7 +1574,7 @@ class VentilatorDataGroup(TimeSeriesGroup):
             p_aw=self.channels[pressure_idx].y_raw,
             fs=self.fs,
             peep=peep,
-            start_s=start_idx,
+            start_idx=start_idx,
             end_s=end_idx,
             prominence_factor=prominence_factor,
             min_width_s=min_width_s,
@@ -1617,7 +1617,7 @@ class VentilatorDataGroup(TimeSeriesGroup):
 
         peak_idxs = evt.detect_ventilator_breath(
             V_signal=self.channels[volume_idx].y_raw,
-            start_s=start_idx,
+            start_idx=start_idx,
             end_s=end_idx,
             width_s=width_s,
             threshold=threshold,
