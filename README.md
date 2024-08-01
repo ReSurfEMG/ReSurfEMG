@@ -18,11 +18,8 @@ the repository for this library we keep [related resources](https://github.com/R
 ReSurfEMG includes a [main code library](https://github.com/ReSurfEMG/ReSurfEMG) where the user can access the code to change various filter and analysis settings directly and/or in our [researcher interface notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/researcher_interface).
 In addition, ReSurfEMG has a [dashboard interface](https://github.com/ReSurfEMG/ReSurfEMG-dashboard) which contains default settings for preprocessing and analysis which can be changed through a graphical (no code) interface. We have some functionality available through a [command line interface](#command-line-interface) as well.
 
-The library was initially
-built for surface EMG, however many functions will also work for
-invasively measured respiratory EMG.  This library
-supports the ongoing research at University of Twente on respiratory
-EMG.
+The library was initially built for surface EMG, however many functions will also work for
+invasively measured respiratory EMG.  This library supports the ongoing research at University of Twente on respiratory EMG.
 
 
 ### Program files
@@ -33,38 +30,33 @@ The core functions of ReSurfEMG are in the folder [resurfemg](https://github.com
 -   **config:** Configure all paths for data analysis
 -   **data_connector:**  Converter functions for various hardware/software and the TMSisdk lite module
 -   **helper_functions:** General functions to support the functions in this repository
--   **machine_learning:** Run machine learning algorithms on arrays
--   **post-processing:** Calculate features from the respiratory data:
-      - entropy
-      - area under curve
-      - time under curve
-      - slope
-      - peak in breath
-      - variability
-      - SampEn adapted from nolds package
--   **pre_processing:** Process the raw EMG signal
-      - ecg-removal: ICA and gating
-      - envelope: RMS and smoothers
+-   **pre_processing:** Process the raw respiratory EMG signal
       - filtering: cutters, low-, high- and bandpass, notchfilter, computer power loss
+      - ecg-removal: independent component analysis (ICA) and gating
+      - envelope: root-mean-square (RMS), average rectified (ARV) and smoothers
+-   **post_processing:** Aspects of pre-processed the respiratory EMG data:
+      - moving baselines
+      - event detection: find pneumatic and EMG breaths, on- and offset detection
+      - features: area under the curve, slope, area under the baseline
+      - quality assessment: signal-to-noise ratio, end-expiratory occlussion manoeuvre quality, interpeak distance, area under the baseline, consecutive manoeuvres, bell-curve error
 -   **visualization:** Show powerspectrum
+-   **data_classes:** Store and process EMG and ventilator data in an object-oriented way.
 
 
 ### Folders and Notebooks
 
 Our [guide to notebooks](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks_guide.md) is under construction. To look around keep in mind the following distinction on folders:
 
-researcher_interface:
-- These are a growing series of interactive notebooks that allow
-  researchers to investigate questions about their own EMG data
-  - ⚡ Important: in almost all data there will be a time 
-  difference between EMG signals and ventilator signals. You can
-  pre-process to correct for this lead or lag with the notebook
-  called lead_lag_mismatch_upsample.
+dev:
+- These notebooks are used in feature development and debugging by core members of the ReSurfEMG team. They can provide a basic example how to use some of the functionality.
 
 open_work:
 - This folder contains experimental work by core members of the ReSurfEMG
-  team (Dr. Eline Mos-Oppersma, Rob Warnaar, Dr. Walter Baccinelli and Dr. Candace Makeda Moore)
+  team that is not deployed yet.
 
+researcher_interface:
+- These are a growing series of interactive notebooks that allow
+  researchers to investigate questions about their own EMG data
 
 ### Data sets
 
@@ -79,6 +71,8 @@ the data in the ReSurfEMG/synthetic_data repository
 
 Data there can be used with any respiratory EMG algorithms in any program. Thus that data can function as a benchmarking set to compare algorithms across different programs.
 
+Alternatively, the data in the **test_data** folder, which is also used in testing the ReSurfEMG functions.
+
 
 ### Configuring (to work with your data)
 
@@ -88,11 +82,9 @@ able to locate the raw data you want it to find.
 There are several ways to specify the location of the following
 directories:
 
--   **root_emg_directory:** Special directory.  The rest of the directory layout can
-    be derived from its location.
+-   **root_emg_directory:** Special directory. The rest of the directory layout can be derived from its location.
 -   **preprocessed:** The directory that will be used by preprocessing
     code to output to.
--   **models:** The directory to output trained models to.
 
 You can store this information persistently in several locations.
 
@@ -107,7 +99,6 @@ This file can have this or similar contents:
     {
         "root_emg_directory": "/mnt/data",
         "preprocessed": "/mnt/data/preprocessed",
-        "models": "/mnt/data/models",
         "output": "/mnt/data/output",
     }
 
