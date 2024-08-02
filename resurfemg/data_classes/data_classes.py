@@ -1440,6 +1440,7 @@ class EmgDataGroup(TimeSeriesGroup):
         labels_lc = [label.lower() for label in labels]
         if 'ecg' in labels_lc:
             self.ecg_idx = labels_lc.index('ecg')
+            print('Auto-detected ECG channel from labels.')
         else:
             self.ecg_idx = None
 
