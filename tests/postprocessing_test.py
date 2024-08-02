@@ -54,7 +54,7 @@ pocc_ends = s_vent[(t_vent%t_r == 0)]
 
 PTP_occs = np.zeros(pocc_peaks_valid.shape)
 for _idx, _ in enumerate(pocc_peaks_valid):
-    PTP_occs[_idx] = np.trapz(
+    PTP_occs[_idx] = trapezoid(
         -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
         dx=1/fs_vent
     )
