@@ -214,12 +214,10 @@ def detect_non_consecutive_manoeuvres(
     If no supported breaths are detected in between two manoeuvres,
     valid_manoeuvres is 'true'
     Note: fs of both signals should be equal.
-
     :param ventilator_breath_idxs: list of supported breath indices
     :type ventilator_breath_idxs: ~list
     :param manoeuvres_idxs : list of manoeuvres indices
     :type manoeuvres_idxs: ~list
-
     :returns: valid_manoeuvres
     :return type: list
     """
@@ -258,8 +256,9 @@ def evaluate_bell_curve_error(
     bell_threshold=40,
 ):
 
-    """This function calculates the bell-curve error of signal peaks, and pro
-
+    """
+    This function calculates the bell-curve error of signal peaks, in
+    accordance with Warnaar et al. (2024).
     :param signal: filtered signal
     :type signal: ~numpy.ndarray
     :param peak_idxs: list of peak indices

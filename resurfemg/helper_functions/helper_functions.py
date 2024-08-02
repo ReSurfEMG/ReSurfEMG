@@ -302,7 +302,7 @@ def derivative(signal, fs, window_s=None):
 
 def bell_curve(x, a, b, c):
     """This function calculates a bell curve on the samples of `x`, shifted by
-    `b`, amplified by `a` for a standard amplitude of 1. `c
+    b, amplified by a for a standard amplitude of 1.
     :param x: x values to calculate the bell_curve for
     :type x: ~numpy.ndarray
     :param a: amplitude of the bell-curve
