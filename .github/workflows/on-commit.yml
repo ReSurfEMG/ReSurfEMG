@@ -17,7 +17,7 @@ jobs:
           python-version: 3.9
       - run: python3 -m venv .venv
       - run: .venv/bin/python -m pip install wheel
-      - run: .venv/bin/python pip install -e .[tests]
+      - run: .venv/bin/python -m pip install -e .[tests]
       - run: .venv/bin/python pytest
 
   # Lint:
