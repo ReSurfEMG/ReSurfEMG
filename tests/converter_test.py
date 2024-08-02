@@ -1,9 +1,8 @@
-#sanity tests for the converter functions
+"""sanity tests for the converter functions"""
 
 import unittest
 import os
 from tempfile import TemporaryDirectory
-from unittest import main
 
 # tmsisdk_lite
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
@@ -13,11 +12,8 @@ from resurfemg.config.config import hash_it_up_right_all
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
-    'not_pushed',
-    'Test_lung_data',
-    '2022-05-13_11-51-04',
-    '002',
-    'EMG_recording.Poly5',
+    'test_data',
+    'emg_data_synth_quiet_breathing.Poly5',
 )
 
 class TestConverterMethods(unittest.TestCase):

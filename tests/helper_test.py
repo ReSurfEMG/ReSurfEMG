@@ -14,11 +14,8 @@ from resurfemg.helper_functions.helper_functions import derivative
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
-    'not_pushed',
-    'Test_lung_data',
-    '2022-05-13_11-51-04',
-    '002',
-    'EMG_recording.Poly5',
+    'test_data',
+    'emg_data_synth_quiet_breathing.Poly5',
 )
 
 

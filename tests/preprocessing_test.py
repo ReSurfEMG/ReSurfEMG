@@ -22,11 +22,8 @@ from resurfemg.preprocessing.envelope import (
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
-    'not_pushed',
-    'Test_lung_data',
-    '2022-05-13_11-51-04',
-    '002',
-    'EMG_recording.Poly5',
+    'test_data',
+    'emg_data_synth_quiet_breathing.Poly5',
 )
 synth_pocc_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -121,19 +118,28 @@ class TestComponentPickingMethods(unittest.TestCase):
     def test_pick_more_peaks_array(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
-        sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
-        sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
+        sample_emg_filtered = sample_emg_filtered[:, :30*2048]
+        t = np.array([x/2048 for x in range(len(sample_emg_filtered[0]))])
+        sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
+        sample_emg_filtered = np.concatenate(
+            (sample_emg_filtered,
+             [sample_emg_filtered[0]*1.7 + np.sin(t * 2 * np.pi)]), axis=0)
         components = compute_ica_two_comp(sample_emg_filtered)
         emg = pick_more_peaks_array(components)
         self.assertEqual(
             (len(emg)),
             len(components[0]) ,
         )
+
     def test_pick_lowest_correlation_array(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered = sample_emg_filtered[:, :30*2048]
+        t = np.array([x/2048 for x in range(len(sample_emg_filtered[0]))])
         sample_emg_filtered[1] = sample_emg_filtered[0]
-        sample_emg_filtered[2] = sample_emg_filtered[0]*0.7
+        sample_emg_filtered = np.concatenate(
+            (sample_emg_filtered,
+             [sample_emg_filtered[0]*0.7 + np.sin(t * 2 * np.pi)]), axis=0)
         sample_emg_filtered[2,20] = 0
         sample_emg_filtered[2,40] = 0
         sample_emg_filtered[2,80] = 0
@@ -150,16 +156,22 @@ class TestComponentPickingMethods(unittest.TestCase):
     def test_pick_highest_correlation_array_multi(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered = sample_emg_filtered[:, :30*2048]
+        t = np.array([x/2048 for x in range(len(sample_emg_filtered[0]))])
         sample_emg_filtered[1] = sample_emg_filtered[0]
-        sample_emg_filtered[2] = sample_emg_filtered[0]*0.7
+        sample_emg_filtered = np.concatenate(
+            (sample_emg_filtered,
+             [sample_emg_filtered[0]*1.7 + np.sin(t * 2 * np.pi)]), axis=0)
         sample_emg_filtered[2,20] = 0
         sample_emg_filtered[2,40] = 0
         sample_emg_filtered[2,80] = 0
         sample_emg_filtered[2,21] = 100
         sample_emg_filtered[2,42] = 100
         sample_emg_filtered[2,81] = 100
-        components = np.vstack((sample_emg_filtered[1], sample_emg_filtered[2]))
-        emg = pick_highest_correlation_array_multi(components, sample_emg_filtered[0])
+        components = np.vstack((sample_emg_filtered[1],
+                                sample_emg_filtered[2]))
+        emg = pick_highest_correlation_array_multi(
+            components, sample_emg_filtered[0])
         self.assertEqual(
             sum(components[emg]),
             sum(sample_emg_filtered[1]),
@@ -176,8 +188,12 @@ class TestPickingMethods(unittest.TestCase):
     def test_compute_ICA_two_comp(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
-        sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
-        sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
+        sample_emg_filtered = sample_emg_filtered[:, :30*2048]
+        t = np.array([x/2048 for x in range(len(sample_emg_filtered[0]))])
+        sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
+        sample_emg_filtered = np.concatenate(
+            (sample_emg_filtered,
+             [sample_emg_filtered[0] * 1.7 + np.sin(t * 2 * np.pi)]), axis=0)
         components = compute_ica_two_comp(sample_emg_filtered)
         self.assertEqual(
             (len(components[1])),
@@ -187,10 +203,12 @@ class TestPickingMethods(unittest.TestCase):
     def test_compute_ICA_two_comp_multi(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered = sample_emg_filtered[:, :30*2048]
         t = np.array([x/2048 for x in range(len(sample_emg_filtered[0]))])
         sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
-        sample_emg_filtered[2]= sample_emg_filtered[0]*1.7+np.sin(
-            t * 2 * np.pi)
+        sample_emg_filtered = np.concatenate(
+            (sample_emg_filtered,
+             [sample_emg_filtered[0] * 1.7 + np.sin(t * 2 * np.pi)]), axis=0)
         components = compute_ica_two_comp_multi(sample_emg_filtered)
         self.assertEqual(
             (len(components)),
@@ -198,14 +216,18 @@ class TestPickingMethods(unittest.TestCase):
         )
 
     def test_compute_ICA_two_comp_selective(self):
-        sample_read= Poly5Reader(sample_emg)
+        sample_read = Poly5Reader(sample_emg)
         sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
-        sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
-        sample_emg_filtered[2]= sample_emg_filtered[0]*1.7
+        sample_emg_filtered = sample_emg_filtered[:, :30*2048]
+        t = np.array([x/2048 for x in range(len(sample_emg_filtered[0]))])
+        sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
+        sample_emg_filtered = np.concatenate(
+            (sample_emg_filtered,
+             [sample_emg_filtered[0] * 1.7] + np.sin(t * 2 * np.pi)), axis=0)
         components =  compute_ICA_two_comp_selective(
         sample_emg_filtered,
         use_all_leads=False,
-        desired_leads=[0, 1],
+        desired_leads=[0, 2],
         )
         self.assertEqual(
             (len(components)),
