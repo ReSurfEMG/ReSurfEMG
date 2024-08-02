@@ -1,5 +1,5 @@
-resurfemg.cli package
-=====================
+resurfemg.data\_classes package
+===============================
 
 Submodules
 ----------
@@ -7,12 +7,12 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   resurfemg.cli.cli
+   resurfemg.data_classes.data_classes
 
 Module contents
 ---------------
 
-.. automodule:: resurfemg.cli
+.. automodule:: resurfemg.data_classes
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,5 +1,5 @@
-resurfemg.cli package
-=====================
+resurfemg.pipelines package
+===========================
 
 Submodules
 ----------
@@ -7,12 +7,12 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   resurfemg.cli.cli
+   resurfemg.pipelines.pipelines
 
 Module contents
 ---------------
 
-.. automodule:: resurfemg.cli
+.. automodule:: resurfemg.pipelines
    :members:
    :undoc-members:
    :show-inheritance:
