@@ -18,7 +18,7 @@ jobs:
       - run: python3 -m venv .venv
       - run: .venv/bin/python -m pip install wheel
       - run: .venv/bin/python -m pip install -e .[tests]
-      - run: .venv/bin/python pytest
+      - run: .venv/bin/python -m pytest
 
   # Lint:
   #   runs-on: ubuntu-latest
