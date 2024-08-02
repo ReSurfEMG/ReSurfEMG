@@ -108,16 +108,7 @@ the root.  You don't need to specify all entries.
 
 ### Test data
 
-You can get test data by extracting it from the Docker image like
-this:
-
-``` sh
-mkdir -p not_pushed
-cd ./not_pushed
-docker create --name test-data crabbone/resurfemg-poly5-test-files:latest
-docker cp test-data:/ReSurfEMG/tests/not_pushed/. .
-docker rm -f test-data
-```
+Test data is provided in the repository in the test_data folder.
 
 ### Supported Platforms
 
