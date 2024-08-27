@@ -6,7 +6,6 @@ import os
 import numpy as np
 import scipy
 from scipy.integrate import trapezoid
-from scipy.integrate import trapezoid
 
 from resurfemg.preprocessing import envelope as evl
 import resurfemg.postprocessing.baseline as bl
@@ -72,6 +71,10 @@ y_env_emg = evl.full_rolling_rms(y_t_emg, fs_emg // 5)
 y_emg_baseline = bl.moving_baseline(y_env_emg, 5*fs_emg, fs_emg//2)
 
 peaks_env, _ = scipy.signal.find_peaks(y_env_emg, prominence=0.1)
+_, emg_starts_s, emg_ends_s, *_ = evt.onoffpeak_baseline_crossing(
+             y_env_emg, y_emg_baseline, peaks_env)
+etps = feat.time_product(
+    signal=y_env_emg, fs=fs_emg, starts_s=emg_starts_s, ends_s=emg_ends_s)
 
 # Dummy Pocc signal
 fs_vent = 100
@@ -90,7 +93,7 @@ pocc_ends = s_vent[(t_vent%t_r == 0)]
 
 PTP_occs = np.zeros(pocc_peaks_valid.shape)
 for _idx, _ in enumerate(pocc_peaks_valid):
-    PTP_occs[_idx] = trapezoid(
+    PTP_occs[_idx] = np.trapz(
         -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
         dx=1/fs_vent
     )
@@ -229,7 +232,7 @@ class TestBaseline(unittest.TestCase):
             len(sinusbase),
             )
 
-class TestOnsetDetection(unittest.TestCase):
+class TestEventDetection(unittest.TestCase):
     fs = 1000
     t = np.arange(0, 10, 1/fs)
     slow_component = np.sin(2 * np.pi * 0.1 * t)
@@ -509,10 +512,31 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
             aub_threshold=40,
         )
 
-        self.assertFalse(
-            np.all(valid_timeproducts)
-            )
+        self.assertFalse(np.all(valid_timeproducts))
 
+
+class TestBellFit(unittest.TestCase):
+    def test_evaluate_bell_curve_error(self):
+        output = qa.evaluate_bell_curve_error(
+            peaks_s=peaks_env,
+            starts_s=emg_starts_s,
+            ends_s=emg_ends_s,
+            signal=y_env_emg,
+            fs=fs_emg,
+            time_products=etps,
+            bell_window_s=None,
+            bell_threshold=40,
+        )
+        (valid_peak, _, percentage_bell_error, *_) = output
+
+        np.testing.assert_equal(
+            valid_peak,
+            np.array([True, True, True, True, True])
+        )
+        np.testing.assert_equal(
+            np.abs(percentage_bell_error - 5) < 5,
+            np.array([True, True, True, True, True])
+        )
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=[''], exit=False)
