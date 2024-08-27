@@ -533,7 +533,7 @@ class TimeSeries:
                 aub_window_s = 5 * self.fs
             if aub_reference_signal is None:
                 aub_reference_signal = peak_set.signal
-            aub = feat.area_under_baseline(
+            aub, y_refs = feat.area_under_baseline(
                 signal=peak_set.signal,
                 fs=self.fs,
                 start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
@@ -544,6 +544,7 @@ class TimeSeries:
                 ref_signal=aub_reference_signal,
             )
             peak_set.peak_df['AUB'] = aub
+            peak_set.peak_df['aub_y_ref'] = y_refs
             time_products += aub
 
         if parameter_name is not None:
@@ -669,7 +670,7 @@ class TimeSeries:
             if 'end_idx' not in peak_set.peak_df.columns:
                 raise ValueError('end_idxs not determined, but required for '
                                  + ' area under the baseline (AUB) evaluaton.')
-            valid_timeproducts, percentages_aub = qa.percentage_under_baseline(
+            outputs = qa.percentage_under_baseline(
                 signal=peak_set.signal,
                 fs=self.fs,
                 peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
@@ -680,6 +681,7 @@ class TimeSeries:
                 ref_signal=None,
                 aub_threshold=cutoff['aub'],
             )
+            (valid_timeproducts, percentages_aub, y_refs) = outputs
             quality_values_df['aub'] = percentages_aub
             quality_outcomes_df['aub'] = valid_timeproducts
 
@@ -1136,6 +1138,77 @@ class TimeSeries:
                 )
                 axes[0].plot(peak_set.t_data[row.start_idx:row.end_idx],
                              row.bell_y_min + y_bell, color=color)
+
+    def plot_aub(self, peak_set_name, axes, signal_type, valid_only=False,
+                 colors=None):
+        """
+        Plot the area under the baseline (AUB) for the peak set in the provided
+        axes in the provided colours using the provided markers.
+        :param axes: matplotlib Axes object. If none provided, a new figure is
+        created.
+        :type axes: matplotlib.Axes
+        :param signal_type: the signal ('envelope', 'clean', 'raw') to plot
+        :type signal_type: str
+        :param peak_set_name: PeakSet name in self.peaks dict
+        :type peak_set_name: str
+        :param colors: 1 color or list of up to 3 colors for the peak
+        :type colors: str or list
+        :returns: None
+        :rtype: None
+        """
+        if peak_set_name in self.peaks.keys():
+            peak_set = self.peaks[peak_set_name]
+        else:
+            raise KeyError("Non-existent PeaksSet key")
+
+        if not isinstance(axes, np.ndarray):
+            axes = np.array([axes])
+
+        for parameter in ['y_ref']:
+            if 'aub_' + parameter not in peak_set.peak_df.columns:
+                raise KeyError('aub_' + parameter + 'not included in PeakSet'
+                               + ', area under the baseline is not evaluated'
+                               + ' yet.')
+
+        if signal_type is None:
+            y_data = peak_set.signal
+        else:
+            y_data = self.signal_type_data(signal_type=signal_type)
+
+        if valid_only and 'valid' in peak_set.peak_df.columns:
+            plot_peak_df = peak_set.peak_df.loc[peak_set.peak_df]
+        else:
+            plot_peak_df = peak_set.peak_df
+
+        if colors is None:
+            colors = ['tab:cyan']
+
+        if isinstance(colors, str):
+            color = colors
+        elif isinstance(colors, list) and len(colors) >= 1:
+            color = colors[0]
+        else:
+            raise ValueError('Invalid color')
+
+        if len(axes) > 1:
+            for _, (axis, (_, row)) in enumerate(zip(
+                        axes, plot_peak_df.iterrows())):
+                axis.plot(peak_set.t_data[[row.start_idx, row.end_idx]],
+                          [row.aub_y_ref, row.aub_y_ref], color=color)
+                axis.plot(peak_set.t_data[[row.start_idx, row.start_idx]],
+                          [y_data[row.start_idx], row.aub_y_ref], color=color)
+                axis.plot(peak_set.t_data[[row.end_idx, row.end_idx]],
+                          [y_data[row.end_idx], row.aub_y_ref], color=color)
+        else:
+            for _, row in plot_peak_df.iterrows():
+                axes[0].plot(peak_set.t_data[[row.start_idx, row.end_idx]],
+                             [row.aub_y_ref, row.aub_y_ref], color=color)
+                axes[0].plot(peak_set.t_data[[row.start_idx, row.start_idx]],
+                             [y_data[row.start_idx], row.aub_y_ref],
+                             color=color)
+                axes[0].plot(peak_set.t_data[[row.end_idx, row.end_idx]],
+                             [y_data[row.end_idx], row.aub_y_ref],
+                             color=color)
 
 
 class TimeSeriesGroup:

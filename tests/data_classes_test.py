@@ -217,6 +217,9 @@ class TestTimeSeriesGroup(unittest.TestCase):
     def test_plot_peaks(self):
         _, axes = plt.subplots(
             nrows=1, ncols=3, figsize=(10, 6), sharex=True)
+        self.emg_di.plot_curve_fits(axes=axes[1], peak_set_name='Pocc')
+        self.emg_di.plot_aub(
+            axes=axes[1], signal_type='env', peak_set_name='Pocc')
         self.emg_timeseries.plot_peaks(peak_set_name='Pocc', axes=axes,
                                   channel_idxs=1, margin_s=0)
         self.emg_timeseries.plot_markers(peak_set_name='Pocc', axes=axes,

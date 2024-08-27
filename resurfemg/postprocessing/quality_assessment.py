@@ -185,7 +185,7 @@ def percentage_under_baseline(
         end_idxs,
         baseline,
     )
-    aubs = feat.area_under_baseline(
+    aubs, y_refs = feat.area_under_baseline(
         signal,
         fs,
         peak_idxs,
@@ -199,7 +199,7 @@ def percentage_under_baseline(
     percentages_aub = aubs / (time_products + aubs) * 100
     valid_timeproducts = percentages_aub <= aub_threshold
 
-    return valid_timeproducts, percentages_aub
+    return valid_timeproducts, percentages_aub, y_refs
 
 
 def detect_non_consecutive_manoeuvres(
