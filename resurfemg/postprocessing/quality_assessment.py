@@ -13,9 +13,10 @@ import resurfemg.postprocessing.features as feat
 
 
 def snr_pseudo(
-        src_signal,
-        peaks,
-        baseline,
+    src_signal,
+    peaks,
+    baseline,
+    fs,
 ):
     """
     Approximate the signal-to-noise ratio (SNR) of the signal based
@@ -27,6 +28,8 @@ def snr_pseudo(
     :type gate_peaks: ~list
     :param baseline: Baseline signal to evaluate SNR to.
     :type baseline: ~numpy.ndarray
+    :param fs: sampling rate
+    :type fs: int
     :returns: snr_peaks, the SNR per peak
     :rtype: ~numpy.ndarray
     """
@@ -36,8 +39,8 @@ def snr_pseudo(
 
     for peak_nr, idx in enumerate(peaks):
         peak_heights[peak_nr] = src_signal[idx]
-        start_i = max([0, idx-2048])
-        end_i = min([len(src_signal), idx+2048])
+        start_i = max([0, idx - fs])
+        end_i = min([len(src_signal), idx + fs])
         noise_heights[peak_nr] = np.median(baseline[start_i:end_i])
 
     snr_peaks = np.divide(peak_heights, noise_heights)

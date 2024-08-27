@@ -41,6 +41,7 @@ class Config:
 
     default_layout = {
         'root_emg_directory': '{}',
+        'test_data': '{}/test_data',
         'synthetic_data': '{}',
         'preprocessed': '{}/preprocessed',
         'models': '{}/models',

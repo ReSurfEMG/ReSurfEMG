@@ -270,6 +270,9 @@ def detect_ventilator_breath(
     :type threshold_new: ~int
     :param prominence_new:
     :type prominence_new: ~int
+
+    :returns: ventilator_breath_idxs
+    :rtype: list
     """
 
     V_t = V_signal[int(start_s):int(end_s)]
@@ -291,3 +294,74 @@ def detect_ventilator_breath(
         V_t, height=treshold_new, prominence=prominence_new, width=width_s)
 
     return ventilator_breath_idxs
+
+
+def detect_emg_breaths(
+    emg_env,
+    emg_baseline=None,
+    threshold=0,
+    prominence_factor=0.5,
+    min_peak_width_s=1,
+):
+    """
+    Identify the electrophysiological breaths from the EMG envelope and return
+    an array breath peak indices. Input of baseline threshold, peak prominence
+    factor, and minimal peak width are optional.
+    :param emg_env: 1D EMG envelope signal
+    :type emg_env: ~numpy.ndarray
+    :param emg_baseline: EMG baseline. If none provided, 0 baseline is used.
+    :type emg_baseline: ~numpy.ndarray
+    :param threshold: required threshold of peaks, vertical threshold to
+    neighbouring samples
+    :type threshold: ~float
+    :param prominence_factor: required prominence of peaks, relative to the
+    75th - 50th percentile of the emg_env above the baseline
+    :type prominence_factor: ~float
+    :param min_peak_width_s: required width of peak in samples
+    :type min_peak_width_s: ~int
+
+    :returns: peak_idxs
+    :rtype: list
+    """
+    if emg_baseline is None:
+        emg_baseline = np.zeros(emg_env.shape)
+
+    emg_env_delta = emg_env - emg_baseline
+    prominence = prominence_factor * \
+        (np.nanpercentile(emg_env_delta, 75)
+         + np.nanpercentile(emg_env_delta, 50))
+    peak_idxs, _ = scipy.signal.find_peaks(
+        emg_env,
+        height=threshold,
+        prominence=prominence,
+        width=min_peak_width_s)
+
+    return peak_idxs
+
+
+def find_linked_peaks(
+    signal_1_t_peaks,
+    signal_2_t_peaks,
+):
+    """
+    Find the indices of the peaks in signal 2 closest to the time of the
+    peaks in signal 1
+    :param signal_1_t_peaks: list of timing of peaks in signal 1
+    :type signal_1_t_peaks: ~numpy.ndarray
+    :param signal_2_t_peaks: list of timing of peaks in signal 2
+    :type signal_2_t_peaks: ~numpy.ndarray
+
+    :returns: peaks_idxs_signal_1_in_2
+    :rtype: ~numpy.ndarray
+    """
+    if ~isinstance(signal_1_t_peaks, np.ndarray):
+        signal_1_t_peaks = np.array(signal_1_t_peaks)
+    if ~isinstance(signal_2_t_peaks, np.ndarray):
+        signal_2_t_peaks = np.array(signal_2_t_peaks)
+    peaks_idxs_signal_1_in_2 = np.zeros(signal_1_t_peaks.shape, dtype=int)
+    for idx, signal_1_t_peak in enumerate(signal_1_t_peaks):
+        peaks_idxs_signal_1_in_2[idx] = np.argmin(
+            np.abs(signal_2_t_peaks - signal_1_t_peak)
+        )
+
+    return peaks_idxs_signal_1_in_2
