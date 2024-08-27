@@ -318,7 +318,7 @@ class TestTimeProduct(unittest.TestCase):
         self.assertAlmostEqual(np.median(aob), 5.0, 2)
 
     def test_area_under_baseline(self):
-        aub = feat.area_under_baseline(
+        aub, _ = feat.area_under_baseline(
             self.y_block,
             self.fs_emg,
             self.peak_idxs,
@@ -345,7 +345,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
 
     def test_percentage_aub_good(self):
         y_baseline = np.ones(self.y_block.shape)
-        valid_timeproducts, _ = qa.percentage_under_baseline(
+        valid_timeproducts, _, _ = qa.percentage_under_baseline(
             self.y_block,
             self.fs_emg,
             self.peak_idxs,
@@ -363,7 +363,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
 
     def test_percentage_aub_wrong(self):
         y_baseline = 2*np.ones(self.y_block.shape)
-        valid_timeproducts, _ = qa.percentage_under_baseline(
+        valid_timeproducts, _, _ = qa.percentage_under_baseline(
             self.y_block,
             self.fs_emg,
             self.peak_idxs,

@@ -161,6 +161,7 @@ def area_under_baseline(
         ref_signal = signal
 
     aubs = np.zeros(np.asarray(peak_idxs).shape)
+    y_refs = np.zeros(np.asarray(peak_idxs).shape)
     for idx, (start_idx, peak_idx, end_idx) in enumerate(
             zip(start_idxs, peak_idxs, end_idxs)):
         y_delta_curve = (signal[start_idx:end_idx+1]
@@ -183,5 +184,6 @@ def area_under_baseline(
             y_delta = y_ref - baseline[start_idx:end_idx+1]
 
         aubs[idx] = np.abs(trapezoid(y_delta, dx=1/fs))
+        y_refs[idx] = y_ref
 
-    return aubs
+    return aubs, y_refs
