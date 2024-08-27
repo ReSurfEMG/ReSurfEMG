@@ -94,7 +94,7 @@ class TimeSeries:
 
                 if slope_window_s is None:
                     # TODO Insert valid default slope window
-                    slope_window_s = 0.2 * fs
+                    slope_window_s = fs // 5
 
                 (start_idxs, end_idxs, _, _,
                  valid_list) = onoffpeak_slope_extrapolation(
