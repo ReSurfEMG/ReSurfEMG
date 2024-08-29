@@ -11,19 +11,12 @@
 # documentation root, use os.path.abspath to make it absolute, under development
 #
 import sys, subprocess
-import os
-
-# TODO(makeda): This is wrong, the resurfemg module needs to have an __init__.py file.
-# Once that happens, the resurfemg component should be removed from this path, and
-# the modules inside resurfemg folder will become its submodules.
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # -- Project information -----------------------------------------------------
 
 project = 'resurfemg'
-copyright = '2022, c.moore@esciencecenter.nl'
-author = 'c.moore@esciencecenter.nl'
+copyright = '2022, e.oppersma@utwente.nl'
+author = 'e.oppersma@utwente.nl'
 
 # The full version, including alpha/beta/rc tags
 try:
@@ -87,4 +80,3 @@ intersphinx_mapping = {
     'pandas': ('https://pandas.pydata.org/docs/', None),
     'IPython': ('https://ipython.readthedocs.io/en/stable/', None),
 }
-

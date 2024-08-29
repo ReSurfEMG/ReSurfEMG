@@ -13,8 +13,7 @@ from scipy.signal import savgol_filter
 def full_rolling_rms(data_emg, window_length):
     """This function computes a root mean squared envelope over an
     array :code:`data_emg`.  To do this it uses number of sample values
-    :code:`window_length`. It differs from :func:`naive_rolling_rms`
-    by that the     output is the same length as the input vector.
+    :code:`window_length`.
 
     :param data_emg: Samples from the EMG
     :type data_emg: ~numpy.ndarray
@@ -90,116 +89,10 @@ def running_smoother(array):
     return smoothed_array
 
 
-def smooth_for_baseline(
-    single_filtered_array, start=None, end=None, smooth=100
-):
-    """
-    This is an adaptive smoothing a series that overvalues closer numbers.
-
-    :param single_filtered_array: Array.
-    :type single_filtered_array: ~numpy.ndarray
-    :param start: The number of samples to work from
-    :type start: int
-    :param end: The number of samples to work until
-    :type end: int
-    :param smooth: The number of samples to work over
-    :type smooth: int
-
-    :return: tuple of arrays
-    :rtype: tuple
-    """
-    array = single_filtered_array[start:end]
-    dists = np.zeros(len(array))
-    wmax, wmin = 0, 0
-    nwmax, nwmin = 0, 0
-    tail = (smooth - 1) / smooth
-
-    for i, elt in enumerate(array[1:]):
-        if elt > 0:
-            nwmax = wmax * tail + elt / smooth
-        else:
-            nwmin = wmin * tail + elt / smooth
-        dist = nwmax - nwmin
-        dists[i] = dist
-        wmax, wmin = nwmax, nwmin
-    return array, dists
-
-
-def smooth_for_baseline_with_overlay(
-    my_own_array, threshold=10, start=None, end=None, smooth=100
-):
-    """This is the same as smooth for baseline, but we also get an
-    overlay 0 or 1 mask tagging the baseline.
-
-    :param my_own_array: Array
-    :type  my_own_array: ~numpy.ndarray
-    :param threshold: Number where to cut the mask for overlay
-    :type threshold: int
-    :param start: The number of samples to work from
-    :type start: int
-    :param end: The number of samples to work until
-    :type end: int
-    :param smooth: The number of samples to work over
-    :type smooth: int
-
-    :return: tuple of arrays
-    :rtype: tuple
-    """
-    array = my_own_array[start:end]
-    overlay = np.zeros(len(array)).astype('int8')
-    dists = np.zeros(len(array))
-    wmax, wmin = 0, 0
-    nwmax, nwmin = 0, 0
-    count, filler = 0, False
-    tail = (smooth - 1) / smooth
-    switched = 0
-
-    for i, elt in enumerate(array[1:]):
-        if elt > 0:
-            nwmax = wmax * tail + elt / smooth
-        else:
-            nwmin = wmin * tail + elt / smooth
-        dist = nwmax - nwmin
-        if (i > smooth) and (i - switched > smooth):
-            vodist = dists[i - smooth]
-            if (vodist / dist > threshold) or (dist / vodist > threshold):
-                filler = not filler
-                # Now we need to go back and repaing the values in the overlay
-                # because the change was detected after `smooth' interval
-                overlay[i - smooth:i] = filler
-                count += 1
-                switched = i
-        overlay[i] = filler
-        dists[i] = dist
-        wmax, wmin = nwmax, nwmin
-    return array, overlay, dists
-
-
-def vect_naive_rolling_rms(x, N):
-    """This function computes a root mean squared envelope over an
-    array :code:`x`.  To do this it uses number of sample values
-    :code:`N`. It differs from :func:`naive_rolling_rms` by the way
-    the signal is put in.
-
-    :param xc: Samples from the EMG
-    :type xc: ~numpy.ndarray
-
-    :param N: Legnth of the sample use as window for function
-    :type N: int
-
-    :return: The root-mean-squared EMG sample data
-    :rtype: ~numpy.ndarray
-    """
-    x_c = np.cumsum(np.abs(x)**2)
-    emg_rms = np.sqrt((x_c[N:] - x_c[:-N])/N)
-    return emg_rms
-
-
 def full_rolling_arv(data_emg, window_length):
     """This function computes an average rectified value envelope over an
     array :code:`data_emg`.  To do this it uses number of sample values
-    :code:`window_length`. It differs from :func:`naive_rolling_rms`
-    by that the output is the same length as the input vector.
+    :code:`window_length`.
 
     :param data_emg: Samples from the EMG
     :type data_emg: ~numpy.ndarray

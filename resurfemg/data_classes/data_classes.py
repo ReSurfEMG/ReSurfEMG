@@ -12,6 +12,7 @@ import pandas as pd
 import scipy
 import matplotlib.pyplot as plt
 
+from resurfemg.helper_functions import helper_functions as hf
 from resurfemg.preprocessing import filtering as filt
 from resurfemg.preprocessing import ecg_removal as ecg_rm
 from resurfemg.pipelines.pipelines import ecg_removal_gating
@@ -93,7 +94,7 @@ class TimeSeries:
 
                 if slope_window_s is None:
                     # TODO Insert valid default slope window
-                    slope_window_s = 0.2 * fs
+                    slope_window_s = fs // 5
 
                 (start_idxs, end_idxs, _, _,
                  valid_list) = onoffpeak_slope_extrapolation(
@@ -522,8 +523,8 @@ class TimeSeries:
         time_products = feat.time_product(
             signal=peak_set.signal,
             fs=self.fs,
-            starts_s=peak_set.peak_df['start_idx'].to_numpy(),
-            ends_s=peak_set.peak_df['end_idx'].to_numpy(),
+            start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
+            end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
             baseline=baseline,
         )
 
@@ -535,9 +536,9 @@ class TimeSeries:
             aub = feat.area_under_baseline(
                 signal=peak_set.signal,
                 fs=self.fs,
-                starts_s=peak_set.peak_df['start_idx'].to_numpy(),
-                peaks_s=peak_set.peak_df['peak_idx'].to_numpy(),
-                ends_s=peak_set.peak_df['end_idx'].to_numpy(),
+                start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
+                peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
+                end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
                 aub_window_s=aub_window_s,
                 baseline=baseline,
                 ref_signal=aub_reference_signal,
@@ -592,15 +593,17 @@ class TimeSeries:
             cutoff['interpeak_distance'] = 1.1
             cutoff['snr'] = 1.4
             cutoff['aub'] = 40
+            cutoff['curve_fit'] = 30
             cutoff['aub_window_s'] = 5*self.fs
-            cutoff['curve_fit'] = 0.3
+            cutoff['bell_window_s'] = 5*self.fs
         elif (isinstance(cutoff, str) and cutoff == 'strict'):
             cutoff = dict()
             cutoff['interpeak_distance'] = 1.1
             cutoff['snr'] = 1.75
             cutoff['aub'] = 30
+            cutoff['curve_fit'] = 25
             cutoff['aub_window_s'] = 5*self.fs
-            cutoff['curve_fit'] = 0.25
+            cutoff['bell_window_s'] = 5*self.fs
         elif isinstance(cutoff, dict):
             tests = ['interpeak_distance', 'snr', 'aub', 'curve_fit']
             for _, test in enumerate(tests):
@@ -619,7 +622,7 @@ class TimeSeries:
         if parameter_names is None:
             parameter_names = dict()
 
-        for parameter in ['ecg']:
+        for parameter in ['ecg', 'time_product']:
             if parameter not in parameter_names.keys():
                 parameter_names[parameter] = parameter
 
@@ -641,10 +644,6 @@ class TimeSeries:
 
             valid_interpeak_vec = np.array(n_peaks * [valid_interpeak])
             quality_outcomes_df['interpeak_distance'] = valid_interpeak_vec
-            # performed_tests.append('interpeak_distance')
-            # tests_outcomes = np.concatenate(
-            #     (tests_outcomes,
-            #      np.reshape(valid_interpeak_vec, (n_peaks, 1))), axis=1)
 
         if 'snr' not in skip_tests:
             if self.baseline is None:
@@ -673,9 +672,9 @@ class TimeSeries:
             valid_timeproducts, percentages_aub = qa.percentage_under_baseline(
                 signal=peak_set.signal,
                 fs=self.fs,
-                peaks_s=peak_set.peak_df['peak_idx'].to_numpy(),
-                starts_s=peak_set.peak_df['start_idx'].to_numpy(),
-                ends_s=peak_set.peak_df['end_idx'].to_numpy(),
+                peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
+                start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
+                end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
                 baseline=self.y_baseline,
                 aub_window_s=None,
                 ref_signal=None,
@@ -683,6 +682,43 @@ class TimeSeries:
             )
             quality_values_df['aub'] = percentages_aub
             quality_outcomes_df['aub'] = valid_timeproducts
+
+        if 'curve_fit' not in skip_tests:
+            if self.baseline is None:
+                raise ValueError('Baseline not determined, but required for '
+                                 + ' area under the baseline (AUB) evaluaton.')
+            if 'start_idx' not in peak_set.peak_df.columns:
+                raise ValueError('start_idxs not determined, but required for '
+                                 + ' curve fit evaluaton.')
+            if 'end_idx' not in peak_set.peak_df.columns:
+                raise ValueError('end_idxs not determined, but required for '
+                                 + ' curve fit evaluaton.')
+            if parameter_names['time_product'] not in peak_set.peak_df.columns:
+                raise ValueError('ETPs not determined, but required for curve '
+                                 + 'fit evaluaton.')
+            outputs = qa.evaluate_bell_curve_error(
+                peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
+                start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
+                end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
+                signal=peak_set.signal,
+                fs=self.fs,
+                time_products=peak_set.peak_df[
+                    parameter_names['time_product']].to_numpy(),
+                bell_window_s=cutoff['bell_window_s'],
+                bell_threshold=cutoff['curve_fit'],
+            )
+            (valid_bell_shape,
+             _,
+             percentage_bell_error,
+             y_min,
+             parameters) = outputs
+
+            peak_set.peak_df['bell_y_min'] = y_min
+            for idx, parameter in enumerate(['a', 'b', 'c']):
+                peak_set.peak_df['bell_' + parameter] = parameters[:, idx]
+
+            quality_values_df['bell'] = percentage_bell_error
+            quality_outcomes_df['bell'] = valid_bell_shape
 
         peak_set.update_test_outcomes(quality_values_df)
         peak_set.evaluate_validity(quality_outcomes_df)
@@ -1036,6 +1072,71 @@ class TimeSeries:
 
         axes[0].set_ylabel(self.label + ' (' + self.units + ')')
 
+    def plot_curve_fits(self, peak_set_name, axes, valid_only=False,
+                        colors=None):
+        """
+        Plot the curve-fits for the peak set in the provided axes in the
+        provided colours using the provided markers.
+        :param axes: matplotlib Axes object. If none provided, a new figure is
+        created.
+        :type axes: matplotlib.Axes
+        :param peak_set_name: PeakSet name in self.peaks dict
+        :type peak_set_name: str
+        :param colors: 1 color or list of up to 3 colors for the peak
+        :type colors: str or list
+        :returns: None
+        :rtype: None
+        """
+        if peak_set_name in self.peaks.keys():
+            peak_set = self.peaks[peak_set_name]
+        else:
+            raise KeyError("Non-existent PeaksSet key")
+
+        if not isinstance(axes, np.ndarray):
+            axes = np.array([axes])
+
+        for parameter in ['y_min', 'a', 'b', 'c']:
+            if 'bell_' + parameter not in peak_set.peak_df.columns:
+                raise KeyError('bell_' + parameter + 'not included in PeakSet'
+                               + ', curve fit is not evaluated yet.')
+
+        if valid_only and 'valid' in peak_set.peak_df.columns:
+            plot_peak_df = peak_set.peak_df.loc[peak_set.peak_df]
+        else:
+            plot_peak_df = peak_set.peak_df
+
+        if colors is None:
+            colors = ['tab:green']
+
+        if isinstance(colors, str):
+            color = colors
+        elif isinstance(colors, list) and len(colors) >= 1:
+            color = colors[0]
+        else:
+            raise ValueError('Invalid color')
+
+        if len(axes) > 1:
+            for _, (axis, (_, row)) in enumerate(zip(
+                        axes, plot_peak_df.iterrows())):
+                y_bell = hf.bell_curve(
+                    peak_set.t_data[row.start_idx:row.end_idx],
+                    a=row.bell_a,
+                    b=row.bell_b,
+                    c=row.bell_c,
+                )
+                axis.plot(peak_set.t_data[row.start_idx:row.end_idx],
+                          row.bell_y_min + y_bell, color=color)
+        else:
+            for _, row in plot_peak_df.iterrows():
+                y_bell = hf.bell_curve(
+                    peak_set.t_data[row.start_idx:row.end_idx],
+                    a=row.bell_a,
+                    b=row.bell_b,
+                    c=row.bell_c,
+                )
+                axes[0].plot(peak_set.t_data[row.start_idx:row.end_idx],
+                             row.bell_y_min + y_bell, color=color)
+
 
 class TimeSeriesGroup:
     """
@@ -1339,6 +1440,7 @@ class EmgDataGroup(TimeSeriesGroup):
         labels_lc = [label.lower() for label in labels]
         if 'ecg' in labels_lc:
             self.ecg_idx = labels_lc.index('ecg')
+            print('Auto-detected ECG channel from labels.')
         else:
             self.ecg_idx = None
 
@@ -1473,8 +1575,8 @@ class VentilatorDataGroup(TimeSeriesGroup):
             p_aw=self.channels[pressure_idx].y_raw,
             fs=self.fs,
             peep=peep,
-            start_s=start_idx,
-            end_s=end_idx,
+            start_idx=start_idx,
+            end_idx=end_idx,
             prominence_factor=prominence_factor,
             min_width_s=min_width_s,
             distance_s=distance_s,
@@ -1516,8 +1618,8 @@ class VentilatorDataGroup(TimeSeriesGroup):
 
         peak_idxs = evt.detect_ventilator_breath(
             V_signal=self.channels[volume_idx].y_raw,
-            start_s=start_idx,
-            end_s=end_idx,
+            start_idx=start_idx,
+            end_idx=end_idx,
             width_s=width_s,
             threshold=threshold,
             prominence=prominence,

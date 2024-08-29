@@ -186,7 +186,11 @@ class TestTimeSeriesGroup(unittest.TestCase):
         )
 
     # Test emg_quality_assessment
-    emg_di.test_emg_quality('Pocc', verbose=False)
+    parameter_names = {
+        'time_product': 'ETPdi'
+    }
+    emg_di.test_emg_quality(
+        'Pocc', verbose=False, parameter_names=parameter_names)
     def test_emg_quality_assessment(self):
         tests = ['baseline_detection', 'interpeak_distance', 'snr', 'aub']
         for test in tests:
@@ -226,7 +230,8 @@ class TestTimeSeriesGroup(unittest.TestCase):
             _, y_plot_data = line.get_xydata().T
             y_plot_data_list.append(len(y_plot_data))
 
-        # Length of plotted data: [signal, baseline, peak_s, start_s, end_s]
+        # Length of plotted data:
+        # [signal, baseline, peak_idx, start_idx, end_idx]
         np.testing.assert_array_equal(
             [len_last_peak, len_last_peak, 1, 1, 1],
             y_plot_data_list)

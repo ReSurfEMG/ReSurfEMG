@@ -15,11 +15,8 @@ import resurfemg.postprocessing.quality_assessment as qa
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
-    'not_pushed',
-    'Test_lung_data',
-    '2022-05-13_11-51-04',
-    '002',
-    'EMG_recording.Poly5',
+    'test_data',
+    'emg_data_synth_quiet_breathing.Poly5',
 )
 
 # Dummy EMG signal
@@ -35,6 +32,10 @@ y_env_emg = evl.full_rolling_rms(y_t_emg, fs_emg // 5)
 y_emg_baseline = bl.moving_baseline(y_env_emg, 5*fs_emg, fs_emg//2)
 
 peaks_env, _ = scipy.signal.find_peaks(y_env_emg, prominence=0.1)
+_, emg_start_idxs, emg_end_idxs, *_ = evt.onoffpeak_baseline_crossing(
+             y_env_emg, y_emg_baseline, peaks_env)
+etps = feat.time_product(
+    signal=y_env_emg, fs=fs_emg, start_idxs=emg_start_idxs, end_idxs=emg_end_idxs)
 
 # Dummy Pocc signal
 fs_vent = 100
@@ -57,149 +58,6 @@ for _idx, _ in enumerate(pocc_peaks_valid):
         -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
         dx=1/fs_vent
     )
-
-# Dummy EMG signal
-fs_emg = 2048
-t_emg = np.array([s_t/fs_emg for s_t in range(10*fs_emg)])
-y_sin = np.cos((0.5* t_emg - 0.5)* 2 * np.pi)
-y_sin[y_sin < 0] = 0
-y_rand = np.random.normal(0, 1, size=len(y_sin))
-y_rand_baseline = np.random.normal(0, 1, size=len(y_sin)) / 10
-y_t_emg = y_sin * y_rand + y_rand_baseline
-
-y_env_emg = evl.full_rolling_rms(y_t_emg, fs_emg // 5)
-y_emg_baseline = bl.moving_baseline(y_env_emg, 5*fs_emg, fs_emg//2)
-
-peaks_env, _ = scipy.signal.find_peaks(y_env_emg, prominence=0.1)
-_, emg_starts_s, emg_ends_s, *_ = evt.onoffpeak_baseline_crossing(
-             y_env_emg, y_emg_baseline, peaks_env)
-etps = feat.time_product(
-    signal=y_env_emg, fs=fs_emg, starts_s=emg_starts_s, ends_s=emg_ends_s)
-
-# Dummy Pocc signal
-fs_vent = 100
-s_vent = np.array([(s_t) for s_t in range(10*fs_vent)])
-t_vent = (s_vent + 1)/fs_vent
-rr = 12
-t_r = 60/rr
-f_r = 1/t_r
-y_sin = np.sin((f_r* t_vent)* 2 * np.pi)
-y_sin[y_sin > 0] = 0
-y_t_paw = 5 * y_sin
-
-pocc_peaks_valid, _ = scipy.signal.find_peaks(-y_t_paw, prominence=0.1)
-pocc_starts = s_vent[((t_vent+t_r/2)%t_r == 0)]
-pocc_ends = s_vent[(t_vent%t_r == 0)]
-
-PTP_occs = np.zeros(pocc_peaks_valid.shape)
-for _idx, _ in enumerate(pocc_peaks_valid):
-    PTP_occs[_idx] = np.trapz(
-        -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
-        dx=1/fs_vent
-    )
-
-class TestEntropyMethods(unittest.TestCase):
-
-    def test_entropy_scipy(self):
-        sample_array_lo_entropy = [0,0,0,0,0,0,0,0,0,0]
-        sample_array_hi_entropy = [0,4,0,5,8,0,12,0,1,0]
-        ent_sample_array_lo_entropy = feat.entropy_scipy(
-            sample_array_lo_entropy)
-        ent_sample_array_hi_entropy = feat.entropy_scipy(
-            sample_array_hi_entropy)
-        self.assertGreater(
-            ent_sample_array_hi_entropy ,
-            ent_sample_array_lo_entropy ,
-        )
-
-class TestVariabilityMethods(unittest.TestCase):
-
-    def test_variability_maker_variance(self):
-        sample_array_lo_var = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
-        sample_array_hi_var = [0,4,0,5,8,0,12,0,1,0,0,9,0,9,0,0,9,6,0]
-        var_sample_array_lo_var = feat.variability_maker(
-            sample_array_lo_var, 10)
-        var_sample_array_hi_var = feat.variability_maker(
-            sample_array_hi_var, 10)
-        self.assertGreater(
-            np.sum(var_sample_array_hi_var) ,
-            np.sum(var_sample_array_lo_var) ,
-        )
-
-    def test_variability_maker_std(self):
-        sample_array_lo_var = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0]
-        sample_array_hi_var = [0,4,0,5,8,0,12,0,1,0,0,9,0,9,0,0,9,6,0]
-        var_sample_array_lo_var = feat.variability_maker(
-            sample_array_lo_var, 10, method='std')
-        var_sample_array_hi_var = feat.variability_maker(
-            sample_array_hi_var, 10, method='std')
-        self.assertGreater(
-            np.sum(var_sample_array_hi_var) ,
-            np.sum(var_sample_array_lo_var) ,
-        )
-
-class TestArrayMath(unittest.TestCase):
-
-    def test_simple_area_under_curve(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,-5,10,10,0,0,0,1,1,1,0,1,1,1,0,0,0]
-        )
-        counted = feat.simple_area_under_curve(sample_array,0,10)
-        self.assertEqual(
-            counted,
-            28,
-        )
-
-    def test_area_under_curve(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,5,10,10,5,0,1,1,1,1,0,1,1,1,0,0,0]
-        )
-        counted = feat.area_under_curve(sample_array,0,20,70)
-        self.assertEqual(
-            counted,
-            28,
-        )
-
-    def test_times_under_curve(self):
-        sample_array= np.array(
-            [0,1,2,3,1,5,6,-5,8,9,20,11,12,13,4,5,6,1,1,1,0]
-        )
-        counted = feat.times_under_curve(sample_array,0,20)
-        self.assertEqual(
-            counted,
-            ((10,0.5)),
-        )
-
-    def test_pseudo_slope(self):
-        test_arr_1 = np.array(
-            [0,9,8,7,10,11,13,15,12,16,13,17,18,6,5,4,3,2,1,0,0,0,0,0]
-        )
-        slope = feat.pseudo_slope(test_arr_1,0,17)
-        self.assertEqual(
-            slope,
-            1.5
-        )
-
-    def test_find_peak_in_breath(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
-        )
-        peak = feat.find_peak_in_breath(sample_array,0,20)
-        self.assertEqual(
-            peak,
-            (9,13, 13)
-        )
-
-    def test_find_peak_in_breath_convy(self):
-        sample_array= np.array(
-            [0,0,0,0,1,1,1,5,10,13,5,0,1,1,1,1,0,1,1,1,0,0,0]
-        )
-        peak =feat.find_peak_in_breath(sample_array,0,20,'convy')
-        self.assertEqual(
-            peak,
-            (8,10, 11.5)
-        )
-
 
 class TestBaseline(unittest.TestCase):
     fs = 1000
@@ -290,8 +148,8 @@ class TestEventDetection(unittest.TestCase):
     def test_detect_ventilator_breath(self):
         ventilator_breath_idxs = evt.detect_ventilator_breath(
             V_signal=self.breathing_signal,
-            start_s=1,
-            end_s=10000,
+            start_idx=1,
+            end_idx=10000,
             width_s=1
             )
         self.assertEqual(
@@ -339,14 +197,14 @@ class TestSnrPseudo(unittest.TestCase):
         10*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
     y_block[y_block < 0] = 0
     y_baseline = np.ones(y_block.shape)
-    peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
+    peak_idxs = [(5//2 + x*5) * 2048 for x in range(3)]
 
-    snr_values = qa.snr_pseudo(y_block, peaks_s, y_baseline, fs_emg)
+    snr_values = qa.snr_pseudo(y_block, peak_idxs, y_baseline, fs_emg)
 
     def test_snr_length(self):
         self.assertEqual(
             len(self.snr_values),
-            len(self.peaks_s),
+            len(self.peak_idxs),
             )
 
     def test_snr_values(self):
@@ -382,22 +240,27 @@ class TestPoccQuality(unittest.TestCase):
         y_sin_shifted = y_sin_shifted ** 4
         y_t_steeper = 1000 * y_sin * y_sin_shifted
 
-        peaks_steeper, _ = scipy.signal.find_peaks(-y_t_steeper, prominence=0.1)
+        peak_idxs_steeper, _ = scipy.signal.find_peaks(
+            -y_t_steeper, prominence=0.1)
         y_baseline = bl.moving_baseline(-y_t_steeper, 7.5*fs_vent, fs_vent//5)
 
-        _, peak_starts_steep, peak_ends_steep, _, _, _ = \
+        _, peak_start_idxsteep, peak_end_idxs_steep, _, _, _ = \
             evt.onoffpeak_baseline_crossing(
-                y_t_steeper, y_baseline, peaks_steeper)
+                y_t_steeper, y_baseline, peak_idxs_steeper)
 
-        ptp_occs_steep = np.zeros(peaks_steeper.shape)
-        for idx, _ in enumerate(peaks_steeper):
+        ptp_occs_steep = np.zeros(peak_idxs_steeper.shape)
+        for idx, _ in enumerate(peak_idxs_steeper):
             ptp_occs_steep[idx] = trapezoid(
-                -y_t_steeper[peak_starts_steep[idx]:peak_ends_steep[idx]],
+                -y_t_steeper[peak_start_idxsteep[idx]:
+                             peak_end_idxs_steep[idx]],
                 dx=1/fs_vent
             )
 
         steep_upslope, _ = qa.pocc_quality(
-            y_t_steeper, peaks_steeper, peak_ends_steep, ptp_occs_steep)
+            y_t_steeper,
+            peak_idxs_steeper,
+            peak_end_idxs_steep,
+            ptp_occs_steep)
 
         self.assertFalse(
             steep_upslope[-1]
@@ -438,9 +301,9 @@ class TestTimeProduct(unittest.TestCase):
         3*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
     y_block[y_block < 0] = 0
 
-    peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
-    starts_s = [(5 + x*5*4) * 2048 //4 for x in range(3)]
-    ends_s = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
+    peak_idxs = [(5//2 + x*5) * 2048 for x in range(3)]
+    start_idxs = [(5 + x*5*4) * 2048 //4 for x in range(3)]
+    end_idxs = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
 
     y_baseline = np.ones(y_block.shape)
 
@@ -448,8 +311,8 @@ class TestTimeProduct(unittest.TestCase):
         aob = feat.time_product(
             self.y_block,
             self.fs_emg,
-            self.starts_s,
-            self.ends_s,
+            self.start_idxs,
+            self.end_idxs,
             self.y_baseline,
         )
         self.assertAlmostEqual(np.median(aob), 5.0, 2)
@@ -458,9 +321,9 @@ class TestTimeProduct(unittest.TestCase):
         aub = feat.area_under_baseline(
             self.y_block,
             self.fs_emg,
-            self.peaks_s,
-            self.starts_s,
-            self.ends_s,
+            self.peak_idxs,
+            self.start_idxs,
+            self.end_idxs,
             aub_window_s=self.fs_emg*5,
             baseline=self.y_baseline,
             ref_signal=self.y_block,
@@ -476,18 +339,18 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
         3*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
     y_block[y_block < 0] = 0
 
-    peaks_s = [(5//2 + x*5) * 2048 for x in range(3)]
-    starts_s = [(5 + x*5*4) * 2048 //4 for x in range(3)]
-    ends_s = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
+    peak_idxs = [(5//2 + x*5) * 2048 for x in range(3)]
+    start_idxs = [(5 + x*5*4) * 2048 //4 for x in range(3)]
+    end_idxs = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
 
     def test_percentage_aub_good(self):
         y_baseline = np.ones(self.y_block.shape)
         valid_timeproducts, _ = qa.percentage_under_baseline(
             self.y_block,
             self.fs_emg,
-            self.peaks_s,
-            self.starts_s,
-            self.ends_s,
+            self.peak_idxs,
+            self.start_idxs,
+            self.end_idxs,
             y_baseline,
             aub_window_s=None,
             ref_signal=None,
@@ -503,9 +366,9 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
         valid_timeproducts, _ = qa.percentage_under_baseline(
             self.y_block,
             self.fs_emg,
-            self.peaks_s,
-            self.starts_s,
-            self.ends_s,
+            self.peak_idxs,
+            self.start_idxs,
+            self.end_idxs,
             y_baseline,
             aub_window_s=None,
             ref_signal=None,
@@ -518,9 +381,9 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
 class TestBellFit(unittest.TestCase):
     def test_evaluate_bell_curve_error(self):
         output = qa.evaluate_bell_curve_error(
-            peaks_s=peaks_env,
-            starts_s=emg_starts_s,
-            ends_s=emg_ends_s,
+            peak_idxs=peaks_env,
+            start_idxs=emg_start_idxs,
+            end_idxs=emg_end_idxs,
             signal=y_env_emg,
             fs=fs_emg,
             time_products=etps,

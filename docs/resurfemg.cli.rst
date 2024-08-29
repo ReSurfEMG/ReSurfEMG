@@ -1,5 +1,16 @@
-resurfemg.cli module
-====================
+resurfemg.cli package
+=====================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   resurfemg.cli.cli
+
+Module contents
+---------------
 
 .. automodule:: resurfemg.cli
    :members:

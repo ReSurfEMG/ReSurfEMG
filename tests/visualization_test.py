@@ -1,10 +1,6 @@
 #sanity tests for the visualization functions
 import unittest
 import os
-import numpy as np
-from scipy.signal import welch, periodogram
-from scipy.fft import fft, fftfreq
-import matplotlib.pyplot as plt
 from unittest.mock import patch
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 from resurfemg.preprocessing.filtering import emg_bandpass_butter
@@ -14,11 +10,8 @@ from resurfemg.visualization.visualization import show_my_power_spectrum
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
-    'not_pushed',
-    'Test_lung_data',
-    '2022-05-13_11-51-04',
-    '002',
-    'EMG_recording.Poly5',
+    'test_data',
+    'emg_data_synth_quiet_breathing.Poly5',
 )
 
 

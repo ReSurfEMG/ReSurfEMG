@@ -291,7 +291,7 @@ def simulate_emg_with_occlusions(
     occs_times_vals,
     t_start=0,
     t_end=7*60,
-    emg_sample_rate=2048,   # hertz
+    emg_fs=2048,   # hertz
     rr=22,          # respiratory rate /min
     ie_ratio=1/2,   # ratio between inspiratory and expiratory time
     tau_mus_up=0.3,
@@ -314,7 +314,7 @@ def simulate_emg_with_occlusions(
             printable2 = 'should be at least a full resp. cycle from t_end'
             print(printable1 + printable2)
     # time axis
-    fs_emg = emg_sample_rate
+    fs_emg = emg_fs
     t_emg = np.array(
         [i/fs_emg for i in range(int(t_start*fs_emg), int(t_end*fs_emg))]
     )
@@ -322,7 +322,7 @@ def simulate_emg_with_occlusions(
     # reference signal pattern generator
     emg_block = (signal.square(t_emg*rr/60*2*np.pi + 0.5, ie_fraction)+1)/2
     for i, t_occ in enumerate(t_occs):
-        i_occ = int(t_occ*emg_sample_rate)
+        i_occ = int(t_occ*emg_fs)
         blocker = np.arange(int(fs_emg*60/rr)+1)/fs_emg*rr/60*2*np.pi
         squared_wave = (signal.square(blocker, ie_fraction)+1)/2
         emg_block[i_occ:i_occ+int(fs_emg*60/rr)+1] = squared_wave
@@ -332,7 +332,7 @@ def simulate_emg_with_occlusions(
 
     for i in range(1, len(t_emg)):
         pat = pattern_gen_emg[i-1]
-        fs_emg = emg_sample_rate
+        fs_emg = emg_fs
         if (emg_block[i-1]-pat) > 0:
             pattern_gen_emg[i] = pat + ((emg_block[i-1] - pat) /
                                         (tau_mus_up * fs_emg))
@@ -375,7 +375,7 @@ def make_realistic_syn_emg(loaded_ecg, number):
         emg = simulate_emg_with_occlusions(
             t_start=0,
             t_end=7*60,
-            emg_sample_rate=2048,   # hertz
+            emg_fs=2048,   # hertz
             rr=22,         # respiratory rate /min
             ie_ratio=1/2,  # ratio btw insp + expir phase
             tau_mus_up=0.3,

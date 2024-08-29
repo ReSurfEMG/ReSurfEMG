@@ -17,7 +17,6 @@ def show_my_power_spectrum(signal, fs_emg, t_window_s, axis_spec=1,
     comtained in an EMG based on a Fourier transform.  It does not
     return the graph, rather the values but plots the graph before it
     return.  Sample should be one single row (1-dimensional array.)
-
     :param signal: The signal array
     :type signal: ~numpy.ndarray
     :param fs_emg: Number of samples per second
@@ -28,9 +27,8 @@ def show_my_power_spectrum(signal, fs_emg, t_window_s, axis_spec=1,
     :type axis_spec: int
     :param signal_unit: Unit of y-axis, default is uV
     :type signal_unit: str
-
     :return: :code:`yf, xf` tuple of fourier transformed array and
-        frequencies (the values for plotting the power spectrum)
+    frequencies (the values for plotting the power spectrum)
     :rtype: Tuple[float, float]
     """
     n_samples = len(signal)
@@ -62,7 +60,6 @@ def show_psd_welch(signal, fs_emg, t_window_s, axis_spec=1, signal_unit='uV'):
     method. Tis method involves dividing the signal into overlapping segments,
     copmuting a modified periodogram for each segment, and then averaging
     these periodograms.
-
     :param signal: the signal array
     :type signal: ~numpy.ndarray
     :param fs_emg: Number of samples per second
@@ -101,7 +98,6 @@ def show_psd_welch(signal, fs_emg, t_window_s, axis_spec=1, signal_unit='uV'):
 def show_periodogram(signal, fs_emg, axis_spec=1,
                      signal_unit='uV'):
     """This function calculates the periodogram.
-
     :param signal: the signal array
     :type signal: ~numpy.ndarray
     :param fs_emg: Number of samples per second
