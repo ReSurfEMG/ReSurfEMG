@@ -133,22 +133,22 @@ class Config:
         return value
 
 
-def hash_it_up_right_all(origin_folder1, file_extension):
+def hash_it_up_right_all(origin_directory, file_extension):
     """Hashing function to check files are not corrupted or to assure
     files are changed.
 
-    :param origin_folder1: The string of the folder with files to hash
-    :type origin_folder1: str
+    :param origin_directory: The string of the directory with files to hash
+    :type origin_directory: str
     :param file_extension: File extension
     :type file_extension: str
 
-    :returns: Dataframe with hashes for what is in folder
+    :returns: Dataframe with hashes for what is in directory
     :rtype: ~pandas.DataFrame
     """
     hash_list = []
     file_names = []
     files = '*' + file_extension
-    non_suspects1 = glob.glob(os.path.join(origin_folder1, files))
+    non_suspects1 = glob.glob(os.path.join(origin_directory, files))
     BUF_SIZE = 65536
     for file in non_suspects1:
         sha256 = hashlib.sha256()
@@ -170,48 +170,76 @@ def hash_it_up_right_all(origin_folder1, file_extension):
     return df
 
 
-def make_synth_emg(long, max_abs_volt, humps):
+def make_synth_emg(n_samp, max_abs_volt, n_breaths):
     """
-    Function to create a synthetic EMG,
-    not to add longer expirations (relatively flat)
-    the results can be fed to another function.
-
-    :param long: The legnth in samples of synth EMG created
-    :type long: int
-    :param max_abs_volt: desired abs voltage maximum
+    Function to create synthetic EMG, not to add longer expirations
+    (relatively flat).
+    :param n_samp: The number of samples of created synth EMG
+    :type n_samp: int
+    :param max_abs_volt: desired absolute maximum potential
     :type max_abs_volt: float
-    :param humps: desired number of inspiratory waves
-    :type humps: int
+    :param n_breaths: desired number of inspiratory waves
+    :type n_breaths: int
 
-    :returns: signal
+    :returns: synthetic_emg_raw
     :rtype: ~np.array
     """
-    x = np.linspace(0, (long/500), long)
-    raised_sin = np.sin(x*humps/60*2*math.pi)**2
+    x = np.linspace(0, (n_samp/500), n_samp)
+    raised_sin = np.sin(x * n_breaths / 60*2*math.pi) ** 2
     synth_emg1 = raised_sin * np.random.randn(
         (len(x))) + 0.1 * np.random.randn(len(x))
     volt_multiplier = max_abs_volt / abs(synth_emg1).max()
-    synthetic_signal = synth_emg1*volt_multiplier
-    return synthetic_signal
+    synthetic_emg_raw = synth_emg1 * volt_multiplier
+    return synthetic_emg_raw
 
 
 def simulate_ventilator_with_occlusions(
-    occs_times_vals,     # Timing of occlusions (s)
+    t_p_occs,
     t_start=0,
     t_end=7*60,
-    fs_vent=2048,       # hertz
-    rr=22,              # respiratory rate /min
-    ie_ratio=1/2,       # Ratio between inspiratory and expiratory time
-    p_mus_max=5,        # Maximal respiratory muscle pressure (cmH2O)
-    tau_mus_up=0.3,     # Muscle contraction time constant
-    tau_mus_down=0.3,   # Muscle release time constant
-    c=.050,             # Respiratory system compliance (L/cmH2O)
-    r=5,                # Respiratory system resistance (cmH2O/L/s)
-    peep=5,             # Positive end-expiratory pressure (cmH2O)
-    dp=5                # Driving pressure above PEEP (cmH2O)
+    fs_vent=2048,
+    rr=22,
+    ie_ratio=1/2,
+    p_mus_max=5,
+    tau_mus_up=0.3,
+    tau_mus_down=0.3,
+    c=.050,
+    r=5,
+    peep=5,
+    dp=5
 ):
     """
     This function simulates ventilator data with occlusion manuevers.
+
+    :param t_p_occs: Timing of occlusions (s)
+    :type t_p_occs: float
+    :param t_start: start time
+    :type t_start: float
+    :param t_end: end time
+    :type t_end: float
+    :param fs_vent: ventilator sampling rate (Hz)
+    :type fs_vent: int
+    :param rr: respiratory rate (/min)
+    :type rr: float
+    :param ie_ratio: Ratio between inspiratory and expiratory time
+    :type ie_ratio: float
+    :param p_mus_max: Maximal respiratory muscle pressure (cmH2O)
+    :type p_mus_max: float
+    :param tau_mus_up: Muscle contraction time constant (s)
+    :type tau_mus_up: float
+    :param tau_mus_down: Muscle release time constant (s)
+    :type tau_mus_down: float
+    :param c: Respiratory system compliance (L/cmH2O)
+    :type c: float
+    :param r: Respiratory system resistance (cmH2O/L/s)
+    :type r: float
+    :param peep: Positive end-expiratory pressure (cmH2O)
+    :type peep: float
+    :type dp: float
+    :param dp: Driving pressure above PEEP (cmH2O)
+
+    :returns: y_vent: np.array([p_vent, f_vent, v_vent])
+    :rtype: ~np.array
     """
     # Parse input parameters
     ie_fraction = ie_ratio/(ie_ratio + 1)
@@ -221,7 +249,7 @@ def simulate_ventilator_with_occlusions(
         [i/fs_vent for i in range(int(t_start*fs_vent), int(t_end*fs_vent))])
 
     # Reference signal/Pattern generator
-    occs_times = np.array(occs_times_vals)
+    occs_times = np.array(t_p_occs)
 
     t_occs = np.floor(occs_times*rr/60)*60/rr
     p_mus_block = (signal.square(t_vent*rr/60*2*np.pi + 0.1, ie_fraction)+1)/2
@@ -288,25 +316,53 @@ def simulate_ventilator_with_occlusions(
 
 
 def simulate_emg_with_occlusions(
-    occs_times_vals,
+    t_p_occs,
     t_start=0,
     t_end=7*60,
-    emg_fs=2048,   # hertz
-    rr=22,          # respiratory rate /min
-    ie_ratio=1/2,   # ratio between inspiratory and expiratory time
+    fs_emg=2048,
+    rr=22,
+    ie_ratio=1/2,
     tau_mus_up=0.3,
     tau_mus_down=0.3,
-    emg_amp=5,      # Approximate EMG-RMS amplitude (uV)
-    drift_amp=100,  # Approximate drift RMS amplitude (uV)
-    noise_amp=2     # Approximate baseline noise RMS amplitude (uV)
+    emg_amp=5,
+    drift_amp=100,
+    noise_amp=2
 ):
     """
     This function simulates an surface respiratory emg with no ecg
-    component but with occlusion manuevers.
-    An ECG component can be added and mixed in later.
+    component but with occlusion manuevers. An ECG component can be added and
+    mixed in later.
+
+    :param t_p_occs: Timing of occlusions (s)
+    :type t_p_occs: float
+    :param t_start: start time
+    :type t_start: float
+    :param t_end: end time
+    :type t_end: float
+    :param fs_emg: emg sampling rate (Hz)
+    :type fs_emg: int
+    :param rr: respiratory rate (/min)
+    :type rr: float
+    :param ie_ratio: Ratio between inspiratory and expiratory time
+    :type ie_ratio: float
+    :param p_mus_max: Maximal respiratory muscle pressure (cmH2O)
+    :type p_mus_max: float
+    :param tau_mus_up: Muscle contraction time constant (s)
+    :type tau_mus_up: float
+    :param tau_mus_down: Muscle release time constant (s)
+    :type tau_mus_down: float
+    :param emg_amp: Approximate EMG-RMS amplitude (uV)
+    :type emg_amp: float
+    :param drift_amp: Approximate drift RMS amplitude (uV)
+    :type drift_amp: float
+    :param noise_amp: Approximate baseline noise RMS amplitude (uV)
+    :type noise_amp: float
+
+    :returns: y_vent: np.array([p_vent, f_vent, v_vent])
+    :rtype: ~np.array
     """
     ie_fraction = ie_ratio/(ie_ratio + 1)
-    occs_times = np.array(occs_times_vals)
+    occs_times = np.array(t_p_occs)
     t_occs = np.floor(occs_times*rr/60)*60/rr
     for i, t_occ in enumerate(t_occs):
         if t_end < (t_occ + 60/rr):
@@ -314,7 +370,6 @@ def simulate_emg_with_occlusions(
             printable2 = 'should be at least a full resp. cycle from t_end'
             print(printable1 + printable2)
     # time axis
-    fs_emg = emg_fs
     t_emg = np.array(
         [i/fs_emg for i in range(int(t_start*fs_emg), int(t_end*fs_emg))]
     )
@@ -322,7 +377,7 @@ def simulate_emg_with_occlusions(
     # reference signal pattern generator
     emg_block = (signal.square(t_emg*rr/60*2*np.pi + 0.5, ie_fraction)+1)/2
     for i, t_occ in enumerate(t_occs):
-        i_occ = int(t_occ*emg_fs)
+        i_occ = int(t_occ*fs_emg)
         blocker = np.arange(int(fs_emg*60/rr)+1)/fs_emg*rr/60*2*np.pi
         squared_wave = (signal.square(blocker, ie_fraction)+1)/2
         emg_block[i_occ:i_occ+int(fs_emg*60/rr)+1] = squared_wave
@@ -332,7 +387,6 @@ def simulate_emg_with_occlusions(
 
     for i in range(1, len(t_emg)):
         pat = pattern_gen_emg[i-1]
-        fs_emg = emg_fs
         if (emg_block[i-1]-pat) > 0:
             pattern_gen_emg[i] = pat + ((emg_block[i-1] - pat) /
                                         (tau_mus_up * fs_emg))
@@ -360,27 +414,29 @@ def simulate_emg_with_occlusions(
     return y_emg
 
 
-def make_realistic_syn_emg(loaded_ecg, number):
+def make_realistic_syn_emg(loaded_ecg, n_emg):
     """
     This function makes realistic synthetic respiratory EMG data.
     :param loaded_ecg: synthetic emg/s as numpy array
     :type loaded_ecg: np.array
+    :param n_emg: number of EMGs to simulate
+    :type n_emg: int
 
-    :returns: list_emg
+    :returns: list_emg_raw
     :rtype: list
     """
-    list_emg = []
-    number = int(number)  # added for cli
-    for _ in list(range(number)):
+    list_emg_raw = []
+    n_emg = int(n_emg)  # added for cli
+    for _ in list(range(n_emg)):
         emg = simulate_emg_with_occlusions(
             t_start=0,
             t_end=7*60,
-            emg_fs=2048,   # hertz
+            fs_emg=2048,   # hertz
             rr=22,         # respiratory rate /min
             ie_ratio=1/2,  # ratio btw insp + expir phase
             tau_mus_up=0.3,
             tau_mus_down=0.3,
-            occs_times_vals=[365, 381, 395]
+            t_p_occs=[365, 381, 395]
         )
         emg1 = emg[:307200]
         emg2 = emg[:307200]
@@ -394,11 +450,11 @@ def make_realistic_syn_emg(loaded_ecg, number):
         t_emg[0] = ecg_out + np.array(0.05 * emg_stack[0], dtype='float64')
         t_emg[1] = ecg_out + np.array(4 * emg_stack[1], dtype='float64')
         t_emg[2] = ecg_out + np.array(8 * emg_stack[2], dtype='float64')
-        list_emg.append(t_emg)
-    return list_emg
+        list_emg_raw.append(t_emg)
+    return list_emg_raw
 
 
-def make_realistic_syn_emg_cli(file_directory, number, made):
+def make_realistic_syn_emg_cli(file_directory, n_emg, output_directory):
     """
     This function works with the cli
     module to makes realistic synthetic respiratory EMG data
@@ -406,10 +462,10 @@ def make_realistic_syn_emg_cli(file_directory, number, made):
 
     :param file_directory: file directory where synthetic ecg are
     :type file_directory: str
-    :param number: file directory where synthetic ecg are
-    :type number: int
-    :param made: file directory where synthetic emg will be put
-    :type made: str
+    :param n_emg: number of EMGs to simulate
+    :type n_emg: int
+    :param output_directory: file directory where synthetic emg will be put
+    :type output_directory: str
     """
     file_directory_list = glob.glob(
         os.path.join(file_directory, '*.npy'),
@@ -417,11 +473,11 @@ def make_realistic_syn_emg_cli(file_directory, number, made):
     )
     file = file_directory_list[0]
     loaded = np.load(file)
-    synthetics = make_realistic_syn_emg(loaded, number)
+    synthetics = make_realistic_syn_emg(loaded, n_emg)
     number_end = 0
     for single_synth in synthetics:
-        out_fname = os.path.join(made, str(number_end))
-        if not os.path.exists(made):
-            os.mkdir(made)
+        out_fname = os.path.join(output_directory, str(number_end))
+        if not os.path.exists(output_directory):
+            os.mkdir(output_directory)
         np.save(out_fname, single_synth)
         number_end += 1

@@ -37,6 +37,14 @@ class TimeSeries:
         Data class to store, and process peak information.
         """
         def __init__(self, signal, t_data, peak_idxs=None):
+            """
+            :param signal: 1-dimensional signal data
+            :type signal: ~numpy.ndarray
+            :param t_data: time axis data
+            :type t_data: ~numpy.ndarray
+            :param peak_idxs: Indices of peaks
+            :type peak_idxs: ~numpy.ndarray
+            """
             if isinstance(signal, np.ndarray):
                 self.signal = signal
             else:
@@ -51,7 +59,7 @@ class TimeSeries:
                 peak_idxs = np.array([])
             elif (isinstance(peak_idxs, np.ndarray)
                     and len(np.array(peak_idxs).shape) == 1):
-                peak_idxs = peak_idxs
+                pass
             elif isinstance(peak_idxs, list):
                 peak_idxs = np.array(peak_idxs)
             else:
@@ -66,15 +74,15 @@ class TimeSeries:
             self.time_products = None
 
         def detect_on_offset(
-            self, baseline=None,
+            self,
+            baseline=None,
             method='default',
             fs=None,
             slope_window_s=None
         ):
             """
-            Detect the peak on- and offsets. See the documentation in the
-            event_detection module on the 'onoffpeak_baseline_crossing' and
-            the 'slope_extrapolation' methods for a detailed description.
+            Detect the peak on- and offsets. See postprocessing.event_detection
+            submodule.
             """
             if baseline is None:
                 baseline = np.zeros(self.signal.shape)
@@ -82,7 +90,7 @@ class TimeSeries:
             peak_idxs = self.peak_df['peak_idx'].to_numpy()
 
             if method == 'default' or method == 'baseline_crossing':
-                (_, start_idxs, end_idxs,
+                (start_idxs, end_idxs,
                  _, _, valid_list) = onoffpeak_baseline_crossing(
                     self.signal,
                     baseline,
@@ -110,7 +118,43 @@ class TimeSeries:
 
             self.evaluate_validity(quality_outcomes_df)
 
+        def update_test_outcomes(self, tests_df_new):
+            """
+            Add new peak quality test to self.quality_outcomes_df, and update
+            existing entries.
+
+            :param tests_df_new: Dataframe of test parameters per peak
+            :type tests_df_new: pandas.DataFrame
+
+            :returns: None
+            :rtype: None
+            """
+            if self.quality_values_df is not None:
+                df_old = self.quality_values_df
+                pre_existing_keys = list(
+                    set(tests_df_new.keys()) & set(df_old.keys()))
+                pre_existing_keys.pop(pre_existing_keys.index('peak_idx'))
+                df_old = df_old.drop(columns=pre_existing_keys)
+                tests_df_new = df_old.merge(
+                    tests_df_new,
+                    left_on='peak_idx',
+                    right_on='peak_idx',
+                    suffixes=(False, False))
+                self.quality_values_df = tests_df_new
+            else:
+                self.quality_values_df = tests_df_new
+
         def evaluate_validity(self, tests_df_new):
+            """
+            Update peak validity based on previously and newly executed tests
+            in self.quality_outcomes_df.
+
+            :param tests_df_new: Dataframe of passed tests per peak
+            :type tests_df_new: pandas.DataFrame
+
+            :returns: None
+            :rtype: None
+            """
             if self.quality_outcomes_df is not None:
                 df_old = self.quality_outcomes_df
                 pre_existing_keys = list(
@@ -132,25 +176,13 @@ class TimeSeries:
                 tests_df_new.loc[:, test_keys].to_numpy(), axis=1)
             self.peak_df['valid'] = passed_tests
 
-        def update_test_outcomes(self, tests_df_new):
-            if self.quality_values_df is not None:
-                df_old = self.quality_values_df
-                pre_existing_keys = list(
-                    set(tests_df_new.keys()) & set(df_old.keys()))
-                pre_existing_keys.pop(pre_existing_keys.index('peak_idx'))
-                df_old = df_old.drop(columns=pre_existing_keys)
-                tests_df_new = df_old.merge(
-                    tests_df_new,
-                    left_on='peak_idx',
-                    right_on='peak_idx',
-                    suffixes=(False, False))
-                self.quality_values_df = tests_df_new
-            else:
-                self.quality_values_df = tests_df_new
-
         def sanitize(self):
             """
-            Delete invalid peak entries from the lists.
+            Delete invalid peak entries (self.peak_df['valid'] is False) from
+            self.peak_df, self.quality_values_df, and self.quality_outcomes_df.
+
+            :returns: None
+            :rtype: None
             """
             valid_idxs = np.argwhere(self.peak_df['valid'])
 
@@ -162,17 +194,16 @@ class TimeSeries:
 
     def __init__(self, y_raw, t_data=None, fs=None, label=None, units=None):
         """
-        Initialize the main data characteristics:
         :param y_raw: 1-dimensional raw signal data
         :type y_raw: ~numpy.ndarray
         :param t_data: time axis data, if None, generated from fs
         :type t_data: ~numpy.ndarray
         :param fs: sampling rate, if None, calculated from t_data
         :type fs: ~int
-        :param labels: list of labels, one per provided channel
-        :type labels: ~list of str
-        :param units: list of signal units, one per provided channel
-        :type units: ~list of str
+        :param label: label of the channel
+        :type label: str
+        :param units: channel signal units
+        :type units: str
         """
         self.fs = fs
         data_shape = list(np.array(y_raw).shape)
@@ -219,12 +250,13 @@ class TimeSeries:
     def signal_type_data(self, signal_type=None):
         """
         Automatically select the most advanced data type eligible for a
-        subprocess ('envelope' > 'clean' > 'raw')
-        :param signal_type: one of 'envelope', 'clean', or 'raw'
+        subprocess ('env' {=envelope} > 'clean' > 'raw')
+
+        :param signal_type: one of 'env', 'clean', or 'raw'
         :type signal_type: str
 
         :returns: y_data
-        :rtype: ~numpy.ndarray
+        :rtype: numpy.ndarray
         """
         y_data = np.zeros(self.y_raw.shape)
         if signal_type is None:
@@ -247,6 +279,7 @@ class TimeSeries:
                 y_data = self.y_clean
         else:
             y_data = self.y_raw
+
         return y_data
 
     def filter_emg(
@@ -257,7 +290,10 @@ class TimeSeries:
     ):
         """
         Filter raw EMG signal to remove baseline wander and high frequency
-        components.
+        components. See preprocessing.emg_bandpass_butter_sample submodule.
+
+        :returns: None
+        :rtype: None
         """
         y_data = self.signal_type_data(signal_type=signal_type)
         # Eliminate the baseline wander from the data using a band-pass filter
@@ -273,8 +309,11 @@ class TimeSeries:
         bp_filter=True,
     ):
         """
-        Eliminate ECG artifacts from the provided signal. See ecg_removal
-        submodule in preprocessing.
+        Eliminate ECG artifacts from the provided signal. See
+        preprocessing.ecg_removal submodule.
+
+        :returns: None
+        :rtype: None
         """
         y_data = self.signal_type_data(signal_type=signal_type)
         if ecg_peak_idxs is None:
@@ -313,7 +352,10 @@ class TimeSeries:
     ):
         """
         Derive the moving envelope of the provided signal. See
-        envelope submodule in preprocessing.
+        preprocessing.envelope submodule.
+
+        :returns: None
+        :rtype: None
         """
         if env_window is None:
             if self.fs is None:
@@ -343,7 +385,10 @@ class TimeSeries:
     ):
         """
         Derive the moving baseline of the provided signal. See
-        baseline submodule in postprocessing.
+        postprocessing.baseline submodule.
+
+        :returns: None
+        :rtype: None
         """
         if window_s is None:
             if self.fs is None:
@@ -393,8 +438,10 @@ class TimeSeries:
         peak_set_name,
     ):
         """
-        Derive the moving envelope of the provided signal. See
-        envelope submodule in preprocessing.
+        Store a new PeaksSet object in the self.peaks dict
+
+        :returns: None
+        :rtype: None
         """
         self.peaks[peak_set_name] = self.PeaksSet(
             peak_idxs=peak_idxs,
@@ -410,7 +457,10 @@ class TimeSeries:
     ):
         """
         Find breath peaks in provided EMG envelope signal. See
-        event_detection submodule in postprocessing.
+        postprocessing.event_detection submodule.
+
+        :returns: None
+        :rtype: None
         """
         if self.y_env is None:
             raise ValueError('Envelope not yet defined.')
@@ -445,14 +495,18 @@ class TimeSeries:
         linked_peak_set_name=None,
     ):
         """
-        Find the peaks in the PeakSet with the peak_set_name closest in time to
-        the provided peak timings in t_reference_peaks
-        :param peak_set_name: PeakSet name in self.peaks dict
+        Find the peaks in the PeaksSet with the peak_set_name closest in time
+        to the provided peak timings in t_reference_peaks
+
+        :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param t_reference_peaks: Refernce peak timings in t_reference_peaks
         :type t_reference_peaks: ~numpy.ndarray
-        :param linked_peak_set_name: Name of the new PeakSet
+        :param linked_peak_set_name: Name of the new PeaksSet
         :type linked_peak_set_name: str
+
+        :return: None
+        :rtype: None
         """
         if peak_set_name in self.peaks.keys():
             peak_set = self.peaks[peak_set_name]
@@ -462,10 +516,10 @@ class TimeSeries:
         if linked_peak_set_name is None:
             linked_peak_set_name = peak_set_name + '_linked'
 
-        t_peakset_peaks = peak_set.peak_df['peak_idx'].to_numpy() / self.fs
+        t_PeaksSet_peaks = peak_set.peak_df['peak_idx'].to_numpy() / self.fs
         link_peak_nrs = evt.find_linked_peaks(
             t_reference_peaks,
-            t_peakset_peaks,
+            t_PeaksSet_peaks,
         )
         self.peaks[linked_peak_set_name] = self.PeaksSet(
             peak_set.signal, peak_set.t_data, peak_idxs=None
@@ -489,19 +543,30 @@ class TimeSeries:
         parameter_name=None,
     ):
         """
-        Calculate the time product, i.e. area under the curve for a PeakSet.
-        :param peak_set_name: PeakSet name in self.peaks dict
+        Calculate the time product, i.e. area under the curve for a PeaksSet.
+        The results are stored as
+        self.peaks[peak_set_name].peak_df[parameter_name]. If no parameter_name
+        is provided, parameter_name = 'time_product'
+
+        :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param include_aub: Include the area under the baseline in the
         time product
         :type include_aub: bool
+        :param signal_type: one of 'env', 'clean', or 'raw'
         :type signal_type: str
         :param aub_window_s: window length in samples in which the local
         extreme is sought.
         :param aub_window_s: int
         :param aub_reference_signal: Optional reference signal to find the
-        local extreme in, else the signal underlying the peakset is taken.
+        local extreme in, else the signal underlying the PeaksSet is taken.
         :type aub_reference_signal: ~numpy.ndarray
+        :param parameter_name: parameter name in Dataframe
+        self.peaks[peak_set_name].peak_df
+        :type parameter_name: str
+
+        :returns: None
+        :rtype: None
         """
         if peak_set_name in self.peaks.keys():
             peak_set = self.peaks[peak_set_name]
@@ -561,9 +626,10 @@ class TimeSeries:
         verbose=True
     ):
         """
-        Test EMG PeakSet according to quality criteria in Warnaar et al. (2024)
-        Peak validity is updated in the PeakSet object.
-        :param peak_set_name: PeakSet name in self.peaks dict
+        Test EMG PeaksSet according to quality criteria in Warnaar et al.
+        (2024). Peak validity is updated in the PeaksSet object.
+
+        :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param cutoff: Cut-off criteria for passing the tests, including
         ratio between ECG and EMG interpeak time (interpeak_distance), signal-
@@ -573,12 +639,15 @@ class TimeSeries:
         values from Warnaar et al.
         :type cutoff: dict
         :param skip_tests: List of tests to skip.
-        :type skip_tests: list(str)
+        :type skip_tests: list
         :param parameter_names: Optionally refer to custom parameter names for
         default PeaksSet (ecg)
         :type parameter_names: dict
         :param verbose: Output the test values, and pass/fail to console.
         :type verbose: bool
+
+        :returns: None
+        :rtype: None
         """
         if peak_set_name in self.peaks.keys():
             peak_set = self.peaks[peak_set_name]
@@ -683,6 +752,7 @@ class TimeSeries:
             )
             (valid_timeproducts, percentages_aub, y_refs) = outputs
             quality_values_df['aub'] = percentages_aub
+            quality_values_df['aub_y_refs'] = y_refs
             quality_outcomes_df['aub'] = valid_timeproducts
 
         if 'curve_fit' not in skip_tests:
@@ -739,24 +809,28 @@ class TimeSeries:
         verbose=True,
     ):
         """
-        Test EMG PeakSet according to quality criteria in Warnaar et al. (2024)
-        Peak validity is updated in the PeakSet object.
-        :param peak_set_name: PeakSet name in self.peaks dict
+        Test EMG PeaksSet according to quality criteria in Warnaar et al.
+        (2024). Peak validity is updated in the PeaksSet object.
+
+        :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param cutoff: Cut-off criteria for passing the tests, including
-        consecutiveness of Pocc manoeuvre (consecutive_poccs), and Paw upslope
-        (dP_up_10, dP_up_90, and dP_up_90_norm). 'tolerant' and 'strict' can
-        also be provided instead of a dict to use the respective values from
-        Warnaar et al.
+        consecutiveness of Pocc manoeuvre (consecutive_poccs), and p_vent
+        upslope (dP_up_10, dP_up_90, and dP_up_90_norm). 'tolerant' and
+        'strict' can also be provided instead of a dict to use the respective
+         values from Warnaar et al.
         :type cutoff: dict
         :param skip_tests: List of tests to skip.
-        :type skip_tests: list(str)
+        :type skip_tests: list
         :param parameter_names: Optionally refer to custom parameter names for
         default PeaksSet and parameter names (ventilator_breaths,
         time_product, AUB, )
         :type parameter_names: dict
         :param verbose: Output the test values, and pass/fail to console.
         :type verbose: bool
+
+        :returns: None
+        :rtype: None
         """
         if peak_set_name in self.peaks.keys():
             peak_set = self.peaks[peak_set_name]
@@ -850,11 +924,12 @@ class TimeSeries:
         Plot the indicated signals in the provided axes. By default the most
         advanced signal type (envelope > clean > raw) is plotted in the
         provided colours.
+
         :param axis: matplotlib Axis object. If none provided, a new figure is
         created.
         :type axis: matplotlib.Axis
         :type channel_idxs: list
-        :param signal_type: the signal ('envelope', 'clean', 'raw') to plot
+        :param signal_type: the signal ('env', 'clean', 'raw') to plot
         :type signal_type: str
         :param colors: list of colors to plot the 1) signal, 2) the baseline
         :type colors: list
@@ -887,11 +962,14 @@ class TimeSeries:
         """
         Plot the markers for the peak set in the provided axes in the
         provided colours using the provided markers.
+
+        :param peak_set_name: PeaksSet name in self.peaks dict
+        :type peak_set_name: str
         :param axes: matplotlib Axes object. If none provided, a new figure is
         created.
         :type axes: matplotlib.Axes
-        :param peak_set_name: PeakSet name in self.peaks dict
-        :type peak_set_name: str
+        :param valid_only: when True, only valid peaks are plotted.
+        :type valid_only: bool
         :param colors: 1 color of list of up to 3 colors for the markers, peak,
         start, and end markers. If 2 colors are provided, start and end have
         the same colors
@@ -1006,6 +1084,7 @@ class TimeSeries:
         Plot the indicated peaks in the provided axes. By default the most
         advanced signal type (envelope > clean > raw) is plotted in the
         provided colours.
+
         :param peak_set_name: The name of the peak_set to be plotted.
         :type peak_set_name: str
         :param axes: matplotlib Axes object. If none provided, a new figure is
@@ -1079,13 +1158,17 @@ class TimeSeries:
         """
         Plot the curve-fits for the peak set in the provided axes in the
         provided colours using the provided markers.
+
+        :param peak_set_name: PeaksSet name in self.peaks dict
+        :type peak_set_name: str
         :param axes: matplotlib Axes object. If none provided, a new figure is
         created.
         :type axes: matplotlib.Axes
-        :param peak_set_name: PeakSet name in self.peaks dict
-        :type peak_set_name: str
-        :param colors: 1 color or list of up to 3 colors for the peak
+        :param valid_only: when True, only valid peaks are plotted.
+        :type valid_only: bool
+        :param colors: 1 color or list of colors for the fitted curve peak
         :type colors: str or list
+
         :returns: None
         :rtype: None
         """
@@ -1099,7 +1182,7 @@ class TimeSeries:
 
         for parameter in ['y_min', 'a', 'b', 'c']:
             if 'bell_' + parameter not in peak_set.peak_df.columns:
-                raise KeyError('bell_' + parameter + 'not included in PeakSet'
+                raise KeyError('bell_' + parameter + 'not included in PeaksSet'
                                + ', curve fit is not evaluated yet.')
 
         if valid_only and 'valid' in peak_set.peak_df.columns:
@@ -1144,15 +1227,19 @@ class TimeSeries:
         """
         Plot the area under the baseline (AUB) for the peak set in the provided
         axes in the provided colours using the provided markers.
+
+        :param peak_set_name: PeaksSet name in self.peaks dict
+        :type peak_set_name: str
         :param axes: matplotlib Axes object. If none provided, a new figure is
         created.
         :type axes: matplotlib.Axes
-        :param signal_type: the signal ('envelope', 'clean', 'raw') to plot
+        :param signal_type: the signal ('env', 'clean', 'raw') to plot
         :type signal_type: str
-        :param peak_set_name: PeakSet name in self.peaks dict
-        :type peak_set_name: str
+        :param valid_only: when True, only valid peaks are plotted.
+        :type valid_only: bool
         :param colors: 1 color or list of up to 3 colors for the peak
         :type colors: str or list
+
         :returns: None
         :rtype: None
         """
@@ -1166,7 +1253,7 @@ class TimeSeries:
 
         for parameter in ['y_ref']:
             if 'aub_' + parameter not in peak_set.peak_df.columns:
-                raise KeyError('aub_' + parameter + 'not included in PeakSet'
+                raise KeyError('aub_' + parameter + 'not included in PeaksSet'
                                + ', area under the baseline is not evaluated'
                                + ' yet.')
 
@@ -1218,7 +1305,6 @@ class TimeSeriesGroup:
 
     def __init__(self, y_raw, t_data=None, fs=None, labels=None, units=None):
         """
-        Initialize the main data characteristics:
         :param y_raw: raw signal data
         :type y_raw: ~numpy.ndarray
         :param t_data: time axis data, if None, generated from fs
@@ -1226,9 +1312,12 @@ class TimeSeriesGroup:
         :param fs: sampling rate, if None, calculated from t_data
         :type fs: ~int
         :param labels: list of labels, one per provided channel
-        :type labels: ~list of str
+        :type labels: ~list
         :param units: list of signal units, one per provided channel
-        :type units: ~list of str
+        :type units: ~list
+
+        :returns: None
+        :rtype: None
         """
         self.channels = []
         self.fs = fs
@@ -1293,9 +1382,11 @@ class TimeSeriesGroup:
     ):
         """
         Derive the moving envelope of the provided signal. See
-        envelope submodule in preprocessing.
-        """
+        TimeSeries.envelope.
 
+        :returns: None
+        :rtype: None
+        """
         if channel_idxs is None:
             channel_idxs = np.arange(self.n_channel)
         elif isinstance(channel_idxs, int):
@@ -1322,7 +1413,10 @@ class TimeSeriesGroup:
     ):
         """
         Derive the moving baseline of the provided signal. See
-        baseline submodule in postprocessing.
+        TimeSeries.baseline.
+
+        :returns: None
+        :rtype: None
         """
         if channel_idxs is None:
             channel_idxs = np.arange(self.n_channel)
@@ -1346,14 +1440,15 @@ class TimeSeriesGroup:
         """
         Plot the indicated signals in the provided axes. By default the most
         advanced signal type (envelope > clean > raw) is plotted in the
-        provided colours.
+        provided colours. See TimeSeries.plot_full.
+
         :param axes: matplotlib Axes object. If none provided, a new figure is
         created.
         :type axes: ~numpy.ndarray
         :param channel_idxs: list of which channels indices to plot. If none
         provided, all channels are plot.
         :type channel_idxs: list
-        :param signal_type: the signal ('envelope', 'clean', 'raw') to plot
+        :param signal_type: the signal ('env', 'clean', 'raw') to plot
         :type signal_type: str
         :param colors: list of colors to plot the 1) signal, 2) the baseline
         :type colors: list
@@ -1363,7 +1458,6 @@ class TimeSeriesGroup:
         :returns: None
         :rtype: None
         """
-
         if channel_idxs is None:
             channel_idxs = np.arange(self.n_channel)
         elif isinstance(channel_idxs, int):
@@ -1394,8 +1488,9 @@ class TimeSeriesGroup:
                    colors=None, baseline_bool=True):
         """
         Plot the indicated peaks for all provided channels in the provided
-        axes. By default the most advanced signal type (envelope > clean > raw)
-        is plotted in the provided colours.
+        axes. By default the most advanced signal type (env > clean > raw)
+        is plotted in the provided colours. See TimeSeries.plot_peaks
+
         :param peak_set_name: The name of the peak_set to be plotted.
         :type peak_set_name: str
         :param axes: matplotlib Axes object. If none provided, a new figure is
@@ -1454,17 +1549,22 @@ class TimeSeriesGroup:
         """
         Plot the indicated peak markers for all provided channels in the
         provided axes using the provided colours and markers.
-        :param peak_set_name: PeakSet name in self.peaks dict
+        See TimeSeries.plot_markers
+
+        :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param axes: matplotlib Axes object. If none provided, a new figure is
         created.
         :type axes: matplotlib.Axes
+        :param channel_idxs: list of which channels indices to plot. If none
+        provided, all channels are plot.
+        :type channel_idxs: list
+        :param valid_only: when True, only valid peaks are plotted.
+        :type valid_only: bool
         :param colors: 1 color of list of up to 3 colors for the markers, peak,
         start, and end markers. If 2 colors are provided, start and end have
         the same colors
         :type colors: str or list
-        :param valid_only: when True, only valid peaks are plotted.
-        :type valid_only: bool
         :param markers: 1 markers or list of up to 3 markers for peak, start,
         and end markers. If 2 markers are provided, start and end have the same
         marker
@@ -1505,6 +1605,9 @@ class TimeSeriesGroup:
 class EmgDataGroup(TimeSeriesGroup):
     """
     Child-class of TimeSeriesGroup to store and handle emg data in.
+
+    :returns: None
+    :rtype: None
     """
     def __init__(self, y_raw, t_data=None, fs=None, labels=None, units=None):
         super().__init__(
@@ -1526,7 +1629,10 @@ class EmgDataGroup(TimeSeriesGroup):
     ):
         """
         Filter raw EMG signals to remove baseline wander and high frequency
-        components.
+        components. See TimeSeries.filter_emg.
+
+        :returns: None
+        :rtype: None
         """
         if channel_idxs is None:
             channel_idxs = np.arange(self.n_channel)
@@ -1550,8 +1656,8 @@ class EmgDataGroup(TimeSeriesGroup):
         channel_idxs=None,
     ):
         """
-        Eliminate ECG artifacts from the provided signal. See ecg_removal
-        submodule in preprocessing.
+        Eliminate ECG artifacts from the provided signal. See
+        TimeSeries.gating.
         """
         if channel_idxs is None:
             channel_idxs = np.arange(self.n_channel)
@@ -1582,10 +1688,13 @@ class VentilatorDataGroup(TimeSeriesGroup):
             y_raw, t_data=t_data, fs=fs, labels=labels, units=units)
 
         if 'Paw' in labels:
-            self.p_aw_idx = labels.index('Paw')
-            print('Auto-detected Paw channel from labels.')
+            self.p_vent_idx = labels.index('Paw')
+            print('Auto-detected Pvent channel from labels.')
+        elif 'Pvent' in labels:
+            self.p_vent_idx = labels.index('Pvent')
+            print('Auto-detected Pvent channel from labels.')
         else:
-            self.p_aw_idx = None
+            self.p_vent_idx = None
         if 'F' in labels:
             self.f_idx = labels.index('F')
             print('Auto-detected Flow channel from labels.')
@@ -1597,21 +1706,29 @@ class VentilatorDataGroup(TimeSeriesGroup):
         else:
             self.v_vent_idx = None
 
-        if self.p_aw_idx is not None and self.v_vent_idx is not None:
-            self.find_peep(self.p_aw_idx, self.v_vent_idx)
+        if self.p_vent_idx is not None and self.v_vent_idx is not None:
+            self.find_peep(self.p_vent_idx, self.v_vent_idx)
         else:
             self.peep = None
 
     def find_peep(self, pressure_idx, volume_idx):
         """
-        Calculate PEEP as the median value of Paw at end-expiration
+        Calculate PEEP as the median value of p_vent at end-expiration.
+
+        :param pressure_idx: Channel index of the ventilator pressure data
+        :type pressure_idx: int
+        :param volume_idx: Channel index of the ventilator volume data
+        :type volume_idx: int
+
+        :returns: None
+        :rtype: None
         """
         if pressure_idx is None:
-            if self.p_aw_idx is not None:
-                pressure_idx = self.p_aw_idx
+            if self.p_vent_idx is not None:
+                pressure_idx = self.p_vent_idx
             else:
                 raise ValueError(
-                    'pressure_idx and self.p_aw_idx not defined')
+                    'pressure_idx and self.p_vent_idx not defined')
 
         if volume_idx is None:
             if self.v_vent_idx is not None:
@@ -1636,8 +1753,14 @@ class VentilatorDataGroup(TimeSeriesGroup):
     ):
         """
         Find end-expiratory occlusion manoeuvres in ventilator pressure
-        timeseries data. See the documentation in the event_detection module on
-        the 'find_occluded_breaths' methods for a detailed description.
+        timeseries data. See postprocessing.event_detection submodule.
+
+        :param pressure_idx: Channel index of the ventilator pressure data
+        :type pressure_idx: int
+        For other arguments, see postprocessing.event_detection submodule.
+
+        :returns: None
+        :rtype: None
         """
         if peep is None and self.peep is None:
             raise ValueError('PEEP is not defined.')
@@ -1645,7 +1768,7 @@ class VentilatorDataGroup(TimeSeriesGroup):
             peep = self.peep
 
         peak_idxs = find_occluded_breaths(
-            p_aw=self.channels[pressure_idx].y_raw,
+            p_vent=self.channels[pressure_idx].y_raw,
             fs=self.fs,
             peep=peep,
             start_idx=start_idx,
@@ -1674,7 +1797,16 @@ class VentilatorDataGroup(TimeSeriesGroup):
         pressure_idx=None,
     ):
         """
-        Find tidal-volume peaks in ventilator volume signal.
+        Find tidal-volume peaks in ventilator volume signal. Peaks are stored
+        in PeaksSet named 'ventilator_breaths' in ventilator pressure and
+        volume TimeSeries.
+
+        :param volume_idx: Channel index of the ventilator volume data
+        :type volume_idx: int
+        For other arguments, see postprocessing.event_detection submodule.
+
+        :returns: None
+        :rtype: None
         """
         if volume_idx is None:
             if self.v_vent_idx is not None:
@@ -1690,7 +1822,7 @@ class VentilatorDataGroup(TimeSeriesGroup):
             width_s = self.fs // 4
 
         peak_idxs = evt.detect_ventilator_breath(
-            V_signal=self.channels[volume_idx].y_raw,
+            v_vent=self.channels[volume_idx].y_raw,
             start_idx=start_idx,
             end_idx=end_idx,
             width_s=width_s,
@@ -1706,8 +1838,8 @@ class VentilatorDataGroup(TimeSeriesGroup):
             peak_set_name='ventilator_breaths',
         )
 
-        if pressure_idx is None and self.p_aw_idx is not None:
-            pressure_idx = self.p_aw_idx
+        if pressure_idx is None and self.p_vent_idx is not None:
+            pressure_idx = self.p_vent_idx
 
         if pressure_idx is not None:
             self.channels[pressure_idx].set_peaks(
@@ -1716,4 +1848,4 @@ class VentilatorDataGroup(TimeSeriesGroup):
                 peak_set_name='ventilator_breaths',
             )
         else:
-            warnings.warn('pressure_idx and self.p_aw_idx not defined.')
+            warnings.warn('pressure_idx and self.p_vent_idx not defined.')

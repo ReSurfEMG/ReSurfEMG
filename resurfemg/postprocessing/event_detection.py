@@ -12,7 +12,7 @@ from ..helper_functions.helper_functions import derivative
 
 
 def find_occluded_breaths(
-    p_aw,
+    p_vent,
     fs,
     peep,
     start_idx=0,
@@ -22,14 +22,34 @@ def find_occluded_breaths(
     distance_s=None,
 ):
     """
-    Find end-expiratory occlusion manoeuvres in ventilator pressure
+    Find end-expiratory occlusion manoeuvres (Pocc) in ventilator pressure
     timeseries data. start_idx and end_idx specify the samples to look into.
     The prominence_factor, min_width_s, and distance_s specify the minimal
     peak prominence relative to the PEEP level, peak width in samples, and
     distance to other peaks.
+
+    :param p_vent: ventilator pressure signal
+    :type p_vent: ~nd.array
+    :param fs: sampling rate
+    :type fs: int
+    :param peep: positive end-expiratory pressure
+    :type peep: ~float
+    :param start_idx: start index to start looking for Pocc manoeuvres
+    :type start_idx: int
+    :param end_idx: end index to start looking for Pocc manoeuvres
+    :type end_idx: int
+    :param prominence_factor: multiplier in setting the minimum peak prominence
+    :type prominence_factor: ~float
+    :param min_width_s: minimum peak width in samples
+    :type min_width_s: int
+    :param distance_s: mininum interpeak distance in samples
+    :type distance_s: int
+
+    :returns peak_idxs: list of Pocc peak indices
+    :rtpe peak_idxs: ~nd.array[int]
     """
     if end_idx is None:
-        end_idx = len(p_aw) - 1
+        end_idx = len(p_vent) - 1
 
     if min_width_s is None:
         if fs is None:
@@ -43,11 +63,11 @@ def find_occluded_breaths(
                              + ' rate are not defined.')
         distance_s = int(0.5 * fs)
 
-    prominence = prominence_factor * np.abs(peep - min(p_aw))
+    prominence = prominence_factor * np.abs(peep - min(p_vent))
     height = prominence - peep
 
     peak_idxs, _ = scipy.signal.find_peaks(
-        -p_aw[start_idx:end_idx],
+        -p_vent[start_idx:end_idx],
         height=height,
         prominence=prominence,
         width=min_width_s,
@@ -57,26 +77,28 @@ def find_occluded_breaths(
 
 
 def onoffpeak_baseline_crossing(
-    emg_env,
+    signal_env,
     baseline,
     peak_idxs
 ):
     """This function calculates the peaks of each breath using the
-    slopesum baseline from a filtered EMG
+    slopesum baseline of envelope data.
 
-    :param emg_env: filtered envelope signal of EMG data
-    :type emg_env: ~numpy.ndarray
+    :param signal_env: envelope signal
+    :type signal_env: ~numpy.ndarray
     :param baseline: baseline signal of EMG data for baseline detection
     :type baseline: ~numpy.ndarray
     :param peak_idxs: list of peak indices for which to find on- and offset
     :type peak_idxs: ~numpy.ndarray
-    :returns: peak_idxs, peak_start_idxs, peak_end_idxs
-    :rtype: list
+
+    :returns: peak_start_idxs, peak_end_idxs, valid_starts_bools,
+    valid_ends_bools, valid_peaks
+    :rtype: (list[int], list[int], list[bool], list[bool])
     """
 
     # Detect the sEAdi on- and offsets
     baseline_crossings_idx = np.nonzero(
-        np.diff(np.sign(emg_env - baseline)) != 0)[0]
+        np.diff(np.sign(signal_env - baseline)) != 0)[0]
 
     peak_start_idxs = np.zeros((len(peak_idxs),), dtype=int)
     peak_end_idxs = np.zeros((len(peak_idxs),), dtype=int)
@@ -96,7 +118,7 @@ def onoffpeak_baseline_crossing(
             if a < len(baseline_crossings_idx) - 1:
                 peak_end_idxs[peak_nr] = int(baseline_crossings_idx[a+1])
             else:
-                peak_end_idxs[peak_nr] = len(emg_env) - 1
+                peak_end_idxs[peak_nr] = len(signal_env) - 1
 
         # Evaluate start validity
         if (peak_nr > 0) and (peak_start_idxs[peak_nr] > peak_idxs[peak_nr]):
@@ -130,12 +152,12 @@ def onoffpeak_baseline_crossing(
                    for valid_detections
                    in zip(valid_starts_bools, valid_ends_bools)]
 
-    return (peak_idxs, peak_start_idxs, peak_end_idxs,
+    return (peak_start_idxs, peak_end_idxs,
             valid_starts_bools, valid_ends_bools, valid_peaks)
 
 
 def onoffpeak_slope_extrapolation(
-    signal,
+    signal_env,
     fs,
     peak_idxs,
     slope_window_s
@@ -146,8 +168,8 @@ def onoffpeak_slope_extrapolation(
     and offsets, aiming to prevent onsets after peak indices, offsets before
     peak.
     indices, and overlapping peaks.
-    :param signal: signal to identify on- and offsets in
-    :type signal: ~numpy.ndarray
+    :param signal_env: signal to identify on- and offsets in
+    :type signal_env: ~numpy.ndarray
     :param fs: sample rate
     :type fs: int
     :param peak_idxs: list of peak indices for which to find on- and offset
@@ -157,10 +179,10 @@ def onoffpeak_slope_extrapolation(
     :type fs: int
     :returns: peak_start_idxs, peak_end_idxs, valid_starts_bools,
     valid_ends_bools, valid_peaks
-    :rtype: (list, list, list, list, list)
+    :rtype: (list[int], list[int], list[bool], list[bool], list[bool])
     """
 
-    dsignal_dt = derivative(signal, fs)
+    dsignal_dt = derivative(signal_env, fs)
 
     max_upslope_idxs = scipy.signal.argrelextrema(
         dsignal_dt, np.greater, order=slope_window_s)[0]
@@ -180,7 +202,7 @@ def onoffpeak_slope_extrapolation(
                 max_upslope_idxs[max_upslope_idxs < peak_idx][-1])
 
             new_upslope = dsignal_dt[max_upslope_idx]
-            y_val = signal[max_upslope_idx]
+            y_val = signal_env[max_upslope_idx]
             dy_dt_val = dsignal_dt[max_upslope_idx]
             upslope_idx_ds = np.array(
                 y_val * fs // (dy_dt_val), dtype=int).astype(np.int64)
@@ -190,7 +212,7 @@ def onoffpeak_slope_extrapolation(
         peak_start_idxs[peak_nr] = start_idx
 
         if len(max_downslope_idxs[max_downslope_idxs > peak_idx]) < 1:
-            end_idx = len(signal)-1
+            end_idx = len(signal_env) - 1
         else:
             if peak_nr > 0:
                 prev_downslope = dsignal_dt[max_downslope_idx]
@@ -198,12 +220,12 @@ def onoffpeak_slope_extrapolation(
             max_downslope_idx = int(
                 max_downslope_idxs[max_downslope_idxs > peak_idx][0])\
 
-            y_val = signal[max_downslope_idx]
+            y_val = signal_env[max_downslope_idx]
             dy_dt_val = dsignal_dt[max_downslope_idx]
             downslope_idx_ds = np.array(
                 y_val * fs // (dy_dt_val), dtype=int).astype(np.int64)
 
-            end_idx = min([len(signal) - 1,
+            end_idx = min([len(signal_env) - 1,
                            max_downslope_idx - downslope_idx_ds])
 
         peak_end_idxs[peak_nr] = end_idx
@@ -242,7 +264,7 @@ def onoffpeak_slope_extrapolation(
 
 
 def detect_ventilator_breath(
-    V_signal,
+    v_vent,
     start_idx,
     end_idx,
     width_s,
@@ -254,8 +276,9 @@ def detect_ventilator_breath(
     """Identify the breaths from the ventilator signal and return an array
     of ventilator peak breath indices, in two steps of peak detection.
     Input of threshold and prominence values is optional.
-    :param V_signal: Ventilator signal
-    :type V_signal: ~numpy.ndarray
+
+    :param v_vent: Ventilator volume signal
+    :type v_vent: ~numpy.ndarray
     :param start_idx: start sample of the window in which to be searched
     :type start_idx: ~int
     :param end_idx: end sample of the window in which to be searched
@@ -273,26 +296,29 @@ def detect_ventilator_breath(
     :type prominence_new: ~int
 
     :returns: ventilator_breath_idxs
-    :rtype: list
+    :rtype: list[int]
     """
 
-    V_t = V_signal[int(start_idx):int(end_idx)]
+    v_t_slice = v_vent[int(start_idx):int(end_idx)]
     if threshold is None:
-        treshold = 0.25 * np.percentile(V_t, 90)
+        treshold = 0.25 * np.percentile(v_t_slice, 90)
     if prominence is None:
-        prominence = 0.10 * np.percentile(V_t, 90)
+        prominence = 0.10 * np.percentile(v_t_slice, 90)
 
-    resp_eff, _ = scipy.signal.find_peaks(V_t, height=treshold,
-                                          prominence=prominence,
-                                          width=width_s)
+    resp_eff, _ = scipy.signal.find_peaks(
+        v_t_slice, height=treshold, prominence=prominence, width=width_s)
 
     if threshold_new is None:
-        treshold_new = 0.5 * np.percentile(V_t[resp_eff], 90)
+        treshold_new = 0.5 * np.percentile(v_t_slice[resp_eff], 90)
     if prominence_new is None:
-        prominence_new = 0.5 * np.percentile(V_t, 90)
+        prominence_new = 0.5 * np.percentile(v_t_slice, 90)
 
     ventilator_breath_idxs, _ = scipy.signal.find_peaks(
-        V_t, height=treshold_new, prominence=prominence_new, width=width_s)
+        v_t_slice,
+        height=treshold_new,
+        prominence=prominence_new,
+        width=width_s
+    )
 
     return ventilator_breath_idxs
 
@@ -308,6 +334,7 @@ def detect_emg_breaths(
     Identify the electrophysiological breaths from the EMG envelope and return
     an array breath peak indices. Input of baseline threshold, peak prominence
     factor, and minimal peak width are optional.
+
     :param emg_env: 1D EMG envelope signal
     :type emg_env: ~numpy.ndarray
     :param emg_baseline: EMG baseline. If none provided, 0 baseline is used.
@@ -322,7 +349,7 @@ def detect_emg_breaths(
     :type min_peak_width_s: ~int
 
     :returns: peak_idxs
-    :rtype: list
+    :rtype: list[int]
     """
     if emg_baseline is None:
         emg_baseline = np.zeros(emg_env.shape)
@@ -352,8 +379,8 @@ def find_linked_peaks(
     :param signal_2_t_peaks: list of timing of peaks in signal 2
     :type signal_2_t_peaks: ~numpy.ndarray
 
-    :returns: peaks_idxs_signal_1_in_2
-    :rtype: ~numpy.ndarray
+    :returns: Peaks indices of signal 2 closest to the peaks in signal 1
+    :rtype: ~numpy.ndarray[int]
     """
     if ~isinstance(signal_1_t_peaks, np.ndarray):
         signal_1_t_peaks = np.array(signal_1_t_peaks)

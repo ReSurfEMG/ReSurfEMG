@@ -22,8 +22,10 @@ class Range(namedtuple('RangeBase', 'start,end')):
 
     def intersects(self, other):
         """Returns :code:`True` if this range intersects :code:`other` range.
+
         :param other: Another range to compare this one to
         :type other: ~resurfemg.helper_functions.Range
+
         :returns: :code:`True` if this range intersects another range
         :rtype: bool
         """
@@ -35,8 +37,10 @@ class Range(namedtuple('RangeBase', 'start,end')):
 
     def precedes(self, other):
         """Returns :code:`True` if this range precedes :code:`other` range.
+
         :param other: Another range to compare this one to
         :type other: ~resurfemg.helper_functions.Range
+
         :returns: :code:`True` if this range strictly precedes another range
         :rtype: bool
         """
@@ -46,6 +50,7 @@ class Range(namedtuple('RangeBase', 'start,end')):
         """Converts this range to a :class:`slice`.
         :returns: A slice with its start set to this range's start and end set
         to this range's end
+
         :rtype: slice
         """
         return slice(*map(int, self))   # maps whole tuple set
@@ -54,10 +59,12 @@ class Range(namedtuple('RangeBase', 'start,end')):
 def zero_one_for_jumps_base(array, cut_off):
     """This function takes an array and makes it binary (0, 1) based
     on a cut-off value.
+
     :param array: An array
     :type array: ~numpy.ndarray
     :param cut_off: The number defining a cut-off line for binarization
     :type cut_off: float
+
     :returns: Binarized list that can be turned into array
     :rtype: list
     """
@@ -77,6 +84,7 @@ def slices_slider(array_sample, slice_len):
     :code:`array_sample`, the signal and :code:`slice_len` - the
     window which you wish to slide with.  The function yields, does
     not return these slices.
+
     :param array_sample: array containing the signal
     :type array_sample: ~numpy.ndarray
     :param slice_len: the length of window on the array
@@ -92,14 +100,15 @@ def slices_jump_slider(array_sample, slice_len, jump):
     """
     This function produces continuous sequential slices over an
     array of a certain length spaced out by a 'jump'.
-    The function yields, does
-    not return these slices.
+    The function yields, does not return these slices.
+
     :param array_sample: array containing the signal
     :type array_sample: ~numpy.ndarray
     :param slice_len: the length of window on the array
     :type slice_len: int
     :param jump: the amount by which the window is moved at iteration
     :type jump: int
+
     :returns: Actually yields, no return
     :rtype: ~numpy.ndarray
     """
@@ -110,8 +119,9 @@ def slices_jump_slider(array_sample, slice_len, jump):
 def ranges_of(array):
     """This function is made to work with :class:`Range` class objects, such
     that is selects ranges and returns tuples of boundaries.
-    :param my_own_array: array
-    :type  my_own_array: ~numpy.ndarray
+    :param array: array
+    :type  array: ~numpy.ndarray
+
     :return: range_return
     :rtype: tuple
     """
@@ -133,10 +143,12 @@ def intersections(left, right):
     """This function works over two arrays, :code:`left` and
     :code:`right`, and allows a picking based on intersections.  It
     only takes ranges on the left that intersect ranges on the right.
+
     :param left: List of ranges
     :type left: List[Range]
     :param right: List of ranges
     :type right: List[Range]
+
     :returns: Ranges from the :code:`left` that intersect ranges from
     the :code:`right`.
     :rtype: List[Range]
@@ -158,10 +170,12 @@ def intersections(left, right):
 def raw_overlap_percent(signal1, signal2):
     """This function takes two binary 0 or 1 signal arrays and gives
     the percentage of overlap.
+
     :param signal1: Binary signal 1
     :type signal1: ~numpy.ndarray
     :param rsignal2: Binary signal 2
     :type rsignal2: ~numpy.ndarray
+
     :returns: Raw overlap percent
     :rtype: float
     """
@@ -179,7 +193,15 @@ def raw_overlap_percent(signal1, signal2):
 
 def merge(left, right):
     """
-    Mergey function
+    Merge two lists based linear order.
+
+    :param left: First list
+    :type left: List
+    :param right: Second list
+    :type right: List
+
+    :returns: Merged lists
+    :rtpe: List
     """
     # Initialize an empty list output that will be populated
     # with sorted elements.
@@ -209,24 +231,25 @@ def merge(left, right):
     return output
 
 
-def scale_arrays(array, maximumn, minimumn):
+def scale_arrays(array, maximum, minimum):
     """
-    This function will scale all arrays along
-    the vertical axis to have an absolute maximum
-    value of the maximum parameter
+    This function will scale all arrays along the vertical axis to have an
+    absolute maximum value of the maximum parameter
+
     :param array: Original signal array with any number iflayers
     :type array: ~numpy.ndarray
-    :param maximumn: the absolute maximum below which the new array exists
-    :type maximumn: float
-    :param minimumn: the absolute maximum below which the new array exists
-    :type minimumn: float
+    :param maximum: the absolute maximum below which the new array exists
+    :type maximum: float
+    :param minimum: the absolute maximum below which the new array exists
+    :type minimum: float
+
     :returns: reformed, a new array with absolute max of maximum
     :rtype: ~numpy.ndarray
     """
     reformed = np.interp(
         array,
         (array.min(), array.max()),
-        (maximumn, minimumn)
+        (maximum, minimum)
     )
     return reformed
 
@@ -234,15 +257,16 @@ def scale_arrays(array, maximumn, minimumn):
 def delay_embedding(data, emb_dim, lag=1):
     """
     The following code is adapted from openly licensed code written by
-    Christopher Schölzel in his package nolds
-    (NOnLinear measures for Dynamical Systems).
-    It performs a time-delay embedding of a time series
+    Christopher Schölzel in his package nolds (NOnLinear measures for Dynamical
+    Systems).It performs a time-delay embedding of a time series
+
     :param data: array-like
     :type data: array
     :param emb_dim: the embedded dimension
     :type emb_dim: int
     :param lag: the lag between elements in the embedded vectors
     :type lag: int
+
     :returns: matrix_vectors
     :rtype: ~nd.array
     """
@@ -256,6 +280,7 @@ def delay_embedding(data, emb_dim, lag=1):
     indices = np.repeat([np.arange(emb_dim) * lag], m, axis=0)
     indices += np.arange(m).reshape((m, 1))
     matrix_vectors = data[indices]
+
     return matrix_vectors
 
 
@@ -263,6 +288,16 @@ def save_preprocessed(array, out_fname, force):
     """
     This function is written to be called by the cli module.
     It stores arrays in a directory.
+
+    :param array: array to be stored
+    :type array: ~nd.array
+    :param out_fname: output file name
+    :type out_fname: str
+    :param force: force writing the file
+    :type force: bool
+
+    :returns: None
+    :rtype: None
     """
     if not force:
         if os.path.isfile(out_fname):
@@ -275,14 +310,17 @@ def save_preprocessed(array, out_fname, force):
 
 
 def derivative(signal, fs, window_s=None):
-    """This function calculates the first derivative of a signal. If
+    """
+    This function calculates the first derivative of a signal. If
     window_s is given, the signal is smoothed before derivative calculation.
+
     :param signal: signal to calculate the derivate over
     :type signal: ~numpy.ndarray
     :param fs: sample rate
     :type fs: int
     :param window_s: centralised averaging window length in samples
     :type window_s: int
+
     :returns: The first derivative of the signal length len(signal)-1.
     :rtype: ~numpy.ndarray
     """
@@ -301,8 +339,10 @@ def derivative(signal, fs, window_s=None):
 
 
 def bell_curve(x, a, b, c):
-    """This function calculates a bell curve on the samples of `x`, shifted by
+    """
+    This function calculates a bell curve on the samples of `x`, shifted by
     b, amplified by a for a standard amplitude of 1.
+
     :param x: x values to calculate the bell_curve for
     :type x: ~numpy.ndarray
     :param a: amplitude of the bell-curve
@@ -311,6 +351,7 @@ def bell_curve(x, a, b, c):
     :type b: ~float
     :param c: steepness factor of bell-curve.
     :type c: ~float
+
     :returns: The first derivative of the signal length len(signal)-1.
     :rtype: ~numpy.ndarray
     """
