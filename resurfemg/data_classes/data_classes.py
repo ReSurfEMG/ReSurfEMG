@@ -287,6 +287,7 @@ class TimeSeries:
         signal_type='raw',
         hp_cf=20.0,
         lp_cf=500.0,
+        order=3,
     ):
         """
         Filter raw EMG signal to remove baseline wander and high frequency
@@ -298,7 +299,7 @@ class TimeSeries:
         y_data = self.signal_type_data(signal_type=signal_type)
         # Eliminate the baseline wander from the data using a band-pass filter
         self.y_clean = filt.emg_bandpass_butter_sample(
-            y_data, hp_cf, lp_cf, self.fs, output='sos')
+            y_data, hp_cf, lp_cf, self.fs, order=order, output='sos')
 
     def gating(
         self,
@@ -307,10 +308,11 @@ class TimeSeries:
         ecg_peak_idxs=None,
         ecg_raw=None,
         bp_filter=True,
+        fill_method=3,
     ):
         """
         Eliminate ECG artifacts from the provided signal. See
-        preprocessing.ecg_removal submodule.
+        preprocessing.ecg_removal and pipelines.ecg_removal_gating submodules.
 
         :returns: None
         :rtype: None
@@ -342,6 +344,7 @@ class TimeSeries:
             ecg_peak_idxs,
             gate_width_samples,
             ecg_shift=10,
+            method=fill_method,
         )
 
     def envelope(
@@ -1625,6 +1628,7 @@ class EmgDataGroup(TimeSeriesGroup):
         signal_type='raw',
         hp_cf=20.0,
         lp_cf=500.0,
+        order=3,
         channel_idxs=None,
     ):
         """
@@ -1644,6 +1648,7 @@ class EmgDataGroup(TimeSeriesGroup):
                 signal_type=signal_type,
                 hp_cf=hp_cf,
                 lp_cf=lp_cf,
+                order=order,
             )
 
     def gating(
@@ -1653,6 +1658,7 @@ class EmgDataGroup(TimeSeriesGroup):
         ecg_peak_idxs=None,
         ecg_raw=None,
         bp_filter=True,
+        fill_method=3,
         channel_idxs=None,
     ):
         """
@@ -1676,6 +1682,7 @@ class EmgDataGroup(TimeSeriesGroup):
                 ecg_peak_idxs=ecg_peak_idxs,
                 ecg_raw=ecg_raw,
                 bp_filter=bp_filter,
+                fill_method=fill_method,
             )
 
 
