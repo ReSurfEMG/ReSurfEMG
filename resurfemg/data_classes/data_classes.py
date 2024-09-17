@@ -457,6 +457,8 @@ class TimeSeries:
         prominence_factor=0.5,
         min_peak_width_s=None,
         peak_set_name='breaths',
+        start_idx=0,
+        end_idx=None,
     ):
         """
         Find breath peaks in provided EMG envelope signal. See
@@ -475,16 +477,29 @@ class TimeSeries:
         else:
             y_baseline = self.y_baseline
 
+        if start_idx > len(self.y_env):
+            raise ValueError('Start index higher than sample length.')
+
+        if end_idx is None:
+            end_idx = len(self.y_env)
+
+        if end_idx < start_idx:
+            raise ValueError('End index smaller than start index.')
+
+        if end_idx > len(self.y_env):
+            raise ValueError('End index higher than sample length.')
+
         if min_peak_width_s is None:
             min_peak_width_s = self.fs // 5
 
         peak_idxs = detect_emg_breaths(
-            self.y_env,
-            y_baseline,
+            self.y_env[start_idx:end_idx],
+            y_baseline[start_idx:end_idx],
             threshold=threshold,
             prominence_factor=prominence_factor,
             min_peak_width_s=min_peak_width_s,
         )
+        peak_idxs += start_idx
         self.set_peaks(
             peak_idxs=peak_idxs,
             signal=self.y_env,
@@ -1850,7 +1865,7 @@ class VentilatorDataGroup(TimeSeriesGroup):
 
         if pressure_idx is not None:
             self.channels[pressure_idx].set_peaks(
-                signal=self.channels[volume_idx].y_raw,
+                signal=self.channels[pressure_idx].y_raw,
                 peak_idxs=peak_idxs,
                 peak_set_name='ventilator_breaths',
             )
