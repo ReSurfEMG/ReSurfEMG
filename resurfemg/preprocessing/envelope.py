@@ -6,6 +6,7 @@ This file contains functions extract the envelopes from EMG arrays.
 """
 
 import numpy as np
+import pandas as pd
 from scipy import signal
 from scipy.signal import savgol_filter
 
@@ -23,23 +24,11 @@ def full_rolling_rms(data_emg, window_length):
     :returns: The root-mean-squared EMG sample data
     :rtype: ~numpy.ndarray
     """
-    padded_samples = int(np.floor(window_length/2))
-    window = np.ones(window_length)/float(window_length)
-    emg_rms_padded = np.sqrt(
-        np.convolve(np.power(data_emg, 2), window, 'full'))
-
-    start_correction = np.sqrt(
-        window_length / (window_length - np.arange(window_length - 1, 0, -1)))
-    emg_rms_padded[:len(start_correction)] *= start_correction
-    end_correction = np.sqrt(
-        window_length / (window_length - np.arange(1, window_length)))
-    emg_rms_padded[-len(end_correction):] *= end_correction
-    if len(emg_rms_padded) % 2 == 1 and len(data_emg) % 2 == 0:
-        emg_rms = emg_rms_padded[padded_samples:-(padded_samples-1)]
-    elif len(emg_rms_padded) % 2 == 0 and len(data_emg) % 2 == 1:
-        emg_rms = emg_rms_padded[padded_samples:-(padded_samples-1)]
-    else:
-        emg_rms = emg_rms_padded[padded_samples:-padded_samples]
+    data_emg_sqr = pd.Series(np.power(data_emg, 2))
+    emg_rms = np.sqrt(data_emg_sqr.rolling(
+        window=window_length,
+        min_periods=1,
+        center=True).mean()).values
 
     return emg_rms
 
@@ -114,21 +103,10 @@ def full_rolling_arv(data_emg, window_length):
     :returns: The arv envelope of the EMG sample data
     :rtype: ~numpy.ndarray
     """
-    padded_samples = int(np.floor(window_length/2))
-    window = np.ones(window_length)/float(window_length)
-    emg_arv_padded = np.convolve(np.abs(data_emg), window, 'full')
-
-    start_correction = window_length / (
-        window_length - np.arange(window_length - 1, 0, -1))
-    emg_arv_padded[:len(start_correction)] *= start_correction
-    end_correction = window_length / (
-        window_length - np.arange(1, window_length))
-    emg_arv_padded[-len(end_correction):] *= end_correction
-    if len(emg_arv_padded) % 2 == 1 and len(data_emg) % 2 == 0:
-        emg_arv = emg_arv_padded[padded_samples:-(padded_samples-1)]
-    elif len(emg_arv_padded) % 2 == 0 and len(data_emg) % 2 == 1:
-        emg_arv = emg_arv_padded[padded_samples:-(padded_samples-1)]
-    else:
-        emg_arv = emg_arv_padded[padded_samples:-padded_samples]
+    data_emg_abs = pd.Series(np.abs(data_emg))
+    emg_arv = data_emg_abs.rolling(
+        window=window_length,
+        min_periods=1,
+        center=True).mean().values
 
     return emg_arv

@@ -182,7 +182,7 @@ class TestTimeSeriesGroup(unittest.TestCase):
         )
         np.testing.assert_array_almost_equal(
             self.emg_di.peaks['Pocc'].peak_df['ETPdi'].values,
-            np.array([3.59565976, 3.78080979, 3.55626967])
+            np.array([3.575323, 3.722479, 3.461432])
         )
 
     # Test emg_quality_assessment
