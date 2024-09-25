@@ -17,6 +17,7 @@ def ecg_removal_gating(
 ):
     """
     Eliminate the ECG peaks from the emg_raw signal.
+
     :param emg_raw: 1 dimensional emg signal to gate
     :type emg_raw: ~numpy.ndarray
     :param ecg_peaks_idxs: List of ECG peak sample numbers to gate.

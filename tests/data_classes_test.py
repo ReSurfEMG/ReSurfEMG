@@ -27,7 +27,7 @@ class TestTimeSeriesGroup(unittest.TestCase):
     vent_timeseries = VentilatorDataGroup(
         y_vent,
         fs=fs_vent,
-        labels=['Paw', 'F', 'Vvent'],
+        labels=['Pvent', 'F', 'Vvent'],
         units=['cmH2O', 'L/s', 'L']
     )
     def test_find_peep(self):
@@ -40,12 +40,12 @@ class TestTimeSeriesGroup(unittest.TestCase):
 
     # Find occlusion pressures
     vent_timeseries.find_occluded_breaths(
-        vent_timeseries.p_aw_idx, start_idx=360*vent_timeseries.fs)
-    paw = vent_timeseries.channels[vent_timeseries.p_aw_idx]
-    paw.peaks['Pocc'].detect_on_offset(baseline=paw.y_baseline)
+        vent_timeseries.p_vent_idx, start_idx=360*vent_timeseries.fs)
+    p_vent = vent_timeseries.channels[vent_timeseries.p_vent_idx]
+    p_vent.peaks['Pocc'].detect_on_offset(baseline=p_vent.y_baseline)
     def test_find_occluded_breaths(self):
         np.testing.assert_array_equal(
-            self.paw.peaks['Pocc'].peak_df['peak_idx'],
+            self.p_vent.peaks['Pocc'].peak_df['peak_idx'],
             [37465, 39101, 40465]
         )
 
@@ -53,25 +53,25 @@ class TestTimeSeriesGroup(unittest.TestCase):
     v_vent = vent_timeseries.channels[vent_timeseries.v_vent_idx]
     vent_timeseries.find_tidal_volume_peaks()
     def test_find_tidal_volume_peaks(self):
-        peak_df = self.paw.peaks['ventilator_breaths'].peak_df
+        peak_df = self.p_vent.peaks['ventilator_breaths'].peak_df
         self.assertEqual(
             len(peak_df['peak_idx']),
             151
         )
 
     # Calculate PTPs
-    paw.calculate_time_products(
+    p_vent.calculate_time_products(
         peak_set_name='Pocc',
-        aub_reference_signal=paw.y_baseline,
+        aub_reference_signal=p_vent.y_baseline,
         parameter_name='PTPocc')
 
     def test_time_product(self):
         self.assertIn(
             'PTPocc',
-            self.paw.peaks['Pocc'].peak_df.columns.values
+            self.p_vent.peaks['Pocc'].peak_df.columns.values
         )
         np.testing.assert_array_almost_equal(
-            self.paw.peaks['Pocc'].peak_df['PTPocc'].values,
+            self.p_vent.peaks['Pocc'].peak_df['PTPocc'].values,
             np.array([7.96794678, 7.81619293, 7.89553107])
         )
 
@@ -79,18 +79,18 @@ class TestTimeSeriesGroup(unittest.TestCase):
     parameter_names = {
         'time_product': 'PTPocc'
     }
-    paw.test_pocc_quality(
+    p_vent.test_pocc_quality(
         'Pocc', parameter_names=parameter_names, verbose=False)
     def test_pocc_quality_assessment(self):
         tests = ['baseline_detection', 'consecutive_poccs', 'pocc_upslope']
         for test in tests:
             self.assertIn(
                 test,
-                self.paw.peaks['Pocc'].quality_outcomes_df.columns.values
+                self.p_vent.peaks['Pocc'].quality_outcomes_df.columns.values
             )
 
         np.testing.assert_array_almost_equal(
-            self.paw.peaks['Pocc'].peak_df['valid'].values,
+            self.p_vent.peaks['Pocc'].peak_df['valid'].values,
             np.array([True, True, True])
         )
 
@@ -157,7 +157,7 @@ class TestTimeSeriesGroup(unittest.TestCase):
         )
 
     # Link ventilator Pocc peaks to EMG breaths
-    t_pocc_peaks_vent = paw.peaks['Pocc'].peak_df['peak_idx']/paw.fs
+    t_pocc_peaks_vent = p_vent.peaks['Pocc'].peak_df['peak_idx']/p_vent.fs
     emg_di.link_peak_set(
         peak_set_name='breaths',
         t_reference_peaks=t_pocc_peaks_vent,

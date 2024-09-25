@@ -79,27 +79,25 @@ def csv_from_jkmn_to_array(file_name):
 
 
 def save_j_as_np(
-    file_directory,
-    made,
-    force=False
+    file_read_directory,
+    file_write_directory
 ):
     """
     This is an implementation of the save_j_as_np_single function in the
     same module which can be run from the commmand-line cli module.
 
-    :param file_directory: the directory with EMG files
-    :type file_directory: str
-    :param processed: the output directory
-    :type processed: str
-    :param our_chosen_leads: the leads selected for the pipeline to run over
-    :type our_chosen_leads: list
+    :param file_read_directory: the directory with EMG files
+    :type file_read_directory: str
+    :param file_write_directory: the output directory
+    :type file_write_directory: str
 
+    :returns: None
     """
-    file_directory_list = glob.glob(
-        os.path.join(file_directory, '**/*.csv'),
+    file_read_directory_list = glob.glob(
+        os.path.join(file_read_directory, '**/*.csv'),
         recursive=True,
     )
-    for file_name in file_directory_list:
+    for file_name in file_read_directory_list:
         file = pd.read_csv(file_name)
         new_df = (
             file.T.reset_index().T.reset_index(drop=True)
@@ -108,23 +106,21 @@ def save_j_as_np(
         arrayed = np.rot90(new_df)
         arrayed = np.flipud(arrayed)
 
-        rel_fname = os.path.relpath(file_name, file_directory)
-        out_fname = os.path.join(made, rel_fname)
+        rel_fname = os.path.relpath(file_name, file_read_directory)
+        out_fname = os.path.join(file_write_directory, rel_fname)
         # check the directory does not exist
-        if not (os.path.exists(made)):
+        if not (os.path.exists(file_write_directory)):
             # create the directory you want to save to
-            os.mkdir(made)
+            os.mkdir(file_write_directory)
 
         np.save(out_fname, arrayed)
 
 
 def save_j_as_np_single(file_name):
     """
-    This function takes a file in csv format
-    where teh sequence is top to bottom
-    and changes it
-    into the shape the library functions work on,
-    then saves it as a numpy file
+    This function takes a file in csv format where teh sequence is top to
+    bottom and changes it into the shape the library functions work on, then
+    saves it as a numpy file
 
     :param file_name: Filename of csv files
     :type file_name: str
@@ -140,18 +136,17 @@ def save_j_as_np_single(file_name):
     arrayed = np.rot90(new_df)
     arrayed = np.flipud(arrayed)
     np.save(file_name, arrayed)
+
     return arrayed
 
 
 def poly_dvrman(file_name):
     """
-    This is a function to read in Duiverman type Poly5 files,
-    which has 18 layers/pseudo-leads,
-    and return an array of the twelve  unprocessed leads
-    for further pre-processing. The leads eliminated
-    were RMS calculated on other leads (leads 6-12).
-    The expected organization returned is from leads 0-5
-    EMG data, then the following leads
+    This is a function to read in Duiverman type Poly5 files, which has 18
+    layers/pseudo-leads, and return an array of the twelve  unprocessed leads
+    for further pre-processing. The leads eliminated were RMS calculated on
+    other leads (leads 6-12). The expected organization returned is from leads
+    0-5 EMG data, then the following leads
     # 6 Paw: airway pressure (not always recorded)
     # 7 Pes: esophageal pressure (not always recorded)
     # 8 Pga: gastric pressure (not always recorded)
@@ -167,6 +162,7 @@ def poly_dvrman(file_name):
     """
     data_samples = Poly5Reader(file_name)
     samps = np.vstack([data_samples.samples[:6], data_samples.samples[12:]])
+
     return samps
 
 
@@ -187,14 +183,14 @@ def dvrmn_csv_to_array(file_name):
     new_df = file.drop(['Events', 'Time'], axis=1)
     arrayed = np.rot90(new_df)
     arrayed = np.flipud(arrayed)
+
     return arrayed
 
 
 def dvrmn_csv_freq_find(file_name):
     """
-    This is means to extract the frequency of a Duiverman
-    type csv of EMG. Note this data may be resampled down by a
-    factor of 10.
+    This is means to extract the frequency of a Duiverman type csv of EMG. Note
+    this data may be resampled down by a factor of 10.
 
     :param file_name: Filename of csv file
     :type file_name: str
@@ -210,4 +206,5 @@ def dvrmn_csv_freq_find(file_name):
     hours = int(time_string[0:1])
     sum_time = (hours*3600) + (minutes*60) + seconds
     freq = round(sample_points/sum_time)
+
     return freq

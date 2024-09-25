@@ -32,7 +32,7 @@ y_env_emg = evl.full_rolling_rms(y_t_emg, fs_emg // 5)
 y_emg_baseline = bl.moving_baseline(y_env_emg, 5*fs_emg, fs_emg//2)
 
 peaks_env, _ = scipy.signal.find_peaks(y_env_emg, prominence=0.1)
-_, emg_start_idxs, emg_end_idxs, *_ = evt.onoffpeak_baseline_crossing(
+emg_start_idxs, emg_end_idxs, *_ = evt.onoffpeak_baseline_crossing(
              y_env_emg, y_emg_baseline, peaks_env)
 etps = feat.time_product(
     signal=y_env_emg, fs=fs_emg, start_idxs=emg_start_idxs, end_idxs=emg_end_idxs)
@@ -46,16 +46,16 @@ t_r = 60/rr
 f_r = 1/t_r
 y_sin = np.sin((f_r* t_vent)* 2 * np.pi)
 y_sin[y_sin > 0] = 0
-y_t_paw = 5 * y_sin
+y_t_p_vent = 5 * y_sin
 
-pocc_peaks_valid, _ = scipy.signal.find_peaks(-y_t_paw, prominence=0.1)
+pocc_peaks_valid, _ = scipy.signal.find_peaks(-y_t_p_vent, prominence=0.1)
 pocc_starts = s_vent[((t_vent+t_r/2)%t_r == 0)]
 pocc_ends = s_vent[(t_vent%t_r == 0)]
 
 PTP_occs = np.zeros(pocc_peaks_valid.shape)
 for _idx, _ in enumerate(pocc_peaks_valid):
     PTP_occs[_idx] = trapezoid(
-        -y_t_paw[pocc_starts[_idx]:pocc_ends[_idx]],
+        -y_t_p_vent[pocc_starts[_idx]:pocc_ends[_idx]],
         dx=1/fs_vent
     )
 
@@ -110,7 +110,7 @@ class TestEventDetection(unittest.TestCase):
         width=width)
 
     def test_baseline_crossing_starts(self):
-        _, peak_start_idxs, _, _, _, _ = evt.onoffpeak_baseline_crossing(
+        peak_start_idxs, _, _, _, _ = evt.onoffpeak_baseline_crossing(
              self.breathing_signal, self.baseline, self.peak_idxs)
 
         self.assertEqual(
@@ -119,7 +119,7 @@ class TestEventDetection(unittest.TestCase):
             )
 
     def test_baseline_crossing_ends(self):
-        _, _, peak_end_idxs, _, _, _ = evt.onoffpeak_baseline_crossing(
+        _, peak_end_idxs, _, _, _ = evt.onoffpeak_baseline_crossing(
              self.breathing_signal, self.baseline, self.peak_idxs)
 
         self.assertEqual(
@@ -147,7 +147,7 @@ class TestEventDetection(unittest.TestCase):
 
     def test_detect_ventilator_breath(self):
         ventilator_breath_idxs = evt.detect_ventilator_breath(
-            V_signal=self.breathing_signal,
+            v_vent=self.breathing_signal,
             start_idx=1,
             end_idx=10000,
             width_s=1
@@ -160,7 +160,7 @@ class TestEventDetection(unittest.TestCase):
 class TestPoccDetection(unittest.TestCase):
     def test_baseline_crossing_starts(self):
         peak_idxs_detected = evt.find_occluded_breaths(
-            p_aw=y_t_paw,
+            p_vent=y_t_p_vent,
             peep=0,
             fs=fs_vent,
         )
@@ -215,7 +215,7 @@ class TestSnrPseudo(unittest.TestCase):
 
 class TestPoccQuality(unittest.TestCase):
     valid_poccs, _ = qa.pocc_quality(
-        y_t_paw, pocc_peaks_valid, pocc_ends, PTP_occs)
+        y_t_p_vent, pocc_peaks_valid, pocc_ends, PTP_occs)
     def test_valid_pocc(self):
         self.assertFalse(
             np.any(~self.valid_poccs)
@@ -244,7 +244,7 @@ class TestPoccQuality(unittest.TestCase):
             -y_t_steeper, prominence=0.1)
         y_baseline = bl.moving_baseline(-y_t_steeper, 7.5*fs_vent, fs_vent//5)
 
-        _, peak_start_idxsteep, peak_end_idxs_steep, _, _, _ = \
+        peak_start_idxsteep, peak_end_idxs_steep, _, _, _ = \
             evt.onoffpeak_baseline_crossing(
                 y_t_steeper, y_baseline, peak_idxs_steeper)
 
