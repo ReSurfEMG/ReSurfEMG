@@ -12,7 +12,6 @@ base_path = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
     'test_data',
 )
-print(base_path)
 
 class TestFileDiscovery(unittest.TestCase):
     def test_find_files(self):
@@ -30,7 +29,7 @@ class TestFileDiscovery(unittest.TestCase):
             (len(found_files)),
             len(real_files),
         )
-    
+
     def test_find_folder(self):
         if platform.system() == 'Windows':
             path_sep = "\\"
@@ -48,3 +47,4 @@ class TestFileDiscovery(unittest.TestCase):
             (len(found_folders)),
             len(real_folders),
         )
+
