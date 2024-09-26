@@ -106,7 +106,7 @@ def file_select(
                 elif len(options) > 0:
                     value = options[0]
             elif idx_options_bool[btn_idx] is True:
-                if default_idx_select[btn_idx] <= len(options):
+                if default_idx_select[btn_idx] < len(options):
                     value = options[default_idx_select[btn_idx]]
                 elif len(options) > 0:
                     value = options[0]
