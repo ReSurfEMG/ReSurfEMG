@@ -26,7 +26,7 @@ class TestIpyWidgets(unittest.TestCase):
         button_list = ipy_widgets.file_select(
             files=files,
             folder_levels=['files'],
-            default_idx_select=[0]
+            default_value_select=[files['files'].values[0]]
         )
         self.assertEqual(
             (button_list[0].value),
