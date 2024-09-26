@@ -12,7 +12,7 @@ import pandas as pd
 import scipy
 import matplotlib.pyplot as plt
 
-from resurfemg.helper_functions import helper_functions as hf
+from resurfemg.helper_functions import math_operations as mo
 from resurfemg.preprocessing import filtering as filt
 from resurfemg.preprocessing import ecg_removal as ecg_rm
 from resurfemg.pipelines.pipelines import ecg_removal_gating
@@ -1221,7 +1221,7 @@ class TimeSeries:
         if len(axes) > 1:
             for _, (axis, (_, row)) in enumerate(zip(
                         axes, plot_peak_df.iterrows())):
-                y_bell = hf.bell_curve(
+                y_bell = mo.bell_curve(
                     peak_set.t_data[row.start_idx:row.end_idx],
                     a=row.bell_a,
                     b=row.bell_b,
@@ -1231,7 +1231,7 @@ class TimeSeries:
                           row.bell_y_min + y_bell, color=color)
         else:
             for _, row in plot_peak_df.iterrows():
-                y_bell = hf.bell_curve(
+                y_bell = mo.bell_curve(
                     peak_set.t_data[row.start_idx:row.end_idx],
                     a=row.bell_a,
                     b=row.bell_b,

@@ -13,8 +13,8 @@ import logging
 
 from argparse import ArgumentParser
 
-from resurfemg.config.config import Config
-from resurfemg.config.config import make_realistic_syn_emg_cli
+from resurfemg.helper_functions.config import Config
+from resurfemg.helper_functions.config import make_realistic_syn_emg_cli
 from resurfemg.data_connector.converter_functions import save_j_as_np
 
 

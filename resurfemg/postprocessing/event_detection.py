@@ -8,7 +8,7 @@ import numpy as np
 import scipy
 import scipy.signal
 
-from ..helper_functions.helper_functions import derivative
+from resurfemg.helper_functions.math_operations import derivative
 
 
 def find_occluded_breaths(

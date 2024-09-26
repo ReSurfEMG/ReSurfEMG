@@ -7,9 +7,9 @@ from math import pi
 import numpy as np
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 from resurfemg.preprocessing.filtering  import emg_bandpass_butter
-from resurfemg.helper_functions.helper_functions import scale_arrays
-from resurfemg.helper_functions.helper_functions import zero_one_for_jumps_base
-from resurfemg.helper_functions.helper_functions import derivative
+from resurfemg.helper_functions.math_operations import scale_arrays
+from resurfemg.helper_functions.math_operations import zero_one_for_jumps_base
+from resurfemg.helper_functions.math_operations import derivative
 
 
 sample_emg = os.path.join(

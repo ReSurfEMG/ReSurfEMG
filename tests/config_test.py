@@ -5,8 +5,8 @@ import json
 from unittest import TestCase
 from tempfile import TemporaryDirectory
 # config
-from resurfemg.config.config import Config
-from resurfemg.config.config import make_realistic_syn_emg
+from resurfemg.helper_functions.config import Config
+from resurfemg.data_connector.synthetic_data import make_realistic_syn_emg
 
 class TestConfig(TestCase):
 

@@ -13,7 +13,7 @@ import warnings
 from scipy.stats import entropy
 import numpy as np
 
-from resurfemg.helper_functions.helper_functions import delay_embedding
+from resurfemg.helper_functions.math_operations import delay_embedding
 
 
 def entropical(sig):

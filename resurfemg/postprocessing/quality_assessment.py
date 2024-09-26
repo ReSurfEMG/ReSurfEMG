@@ -9,7 +9,7 @@ preprocessed EMG arrays.
 import numpy as np
 from scipy.optimize import curve_fit
 from scipy.integrate import trapezoid
-import resurfemg.helper_functions.helper_functions as hf
+import resurfemg.helper_functions.math_operations as mo
 import resurfemg.postprocessing.features as feat
 
 
@@ -311,7 +311,7 @@ def evaluate_bell_curve_error(
 
         try:
             popt, *_ = curve_fit(
-                hf.bell_curve, x_data, y_data,
+                mo.bell_curve, x_data, y_data,
                 bounds=([0., t[peak_idx] - 0.5, 0.],
                         [np.inf, t[peak_idx] + 0.5, np.inf])
             )
@@ -323,7 +323,7 @@ def evaluate_bell_curve_error(
 
         bell_error[idx] = trapezoid(
             np.abs((signal[start_idx:end_i + 1] - (
-                hf.bell_curve(t[start_idx:end_i + 1], *popt) + y_min[idx]))),
+                mo.bell_curve(t[start_idx:end_i + 1], *popt) + y_min[idx]))),
             dx=1 / fs
         )
         percentage_bell_error[idx] = bell_error[idx] / tp * 100

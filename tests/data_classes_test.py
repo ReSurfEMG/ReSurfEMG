@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
-from resurfemg.data_classes.data_classes import (
+from resurfemg.data_connector.data_classes import (
     VentilatorDataGroup, EmgDataGroup)
 
 synth_pocc_emg = os.path.join(

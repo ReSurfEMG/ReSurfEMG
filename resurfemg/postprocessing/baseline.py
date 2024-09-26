@@ -8,7 +8,7 @@ This file contains functions to calculate moving baselines from a filtered
 """
 import numpy as np
 import pandas as pd
-from ..helper_functions.helper_functions import derivative
+from resurfemg.helper_functions.math_operations import derivative
 
 
 def moving_baseline(

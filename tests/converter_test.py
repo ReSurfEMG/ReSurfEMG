@@ -8,7 +8,7 @@ from tempfile import TemporaryDirectory
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 # converter_functions 
 from resurfemg.data_connector.converter_functions import poly5unpad
-from resurfemg.config.config import hash_it_up_right_all
+from resurfemg.helper_functions.config import hash_it_up_right_all
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
