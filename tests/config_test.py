@@ -1,12 +1,9 @@
-#sanity tests for the resurfemg library
+"""sanity tests for the config functions"""
 import os
-import numpy as np
 import json
 from unittest import TestCase
 from tempfile import TemporaryDirectory
-# config
 from resurfemg.helper_functions.config import Config
-from resurfemg.data_connector.synthetic_data import make_realistic_syn_emg
 
 class TestConfig(TestCase):
 
@@ -40,7 +37,3 @@ class TestConfig(TestCase):
         else:
             assert False, 'Didn\'t notify on missing config file'
 
-    def test_make_realistic_syn_emg(self):
-        x_ecg = np.zeros((10,307200))
-        made = make_realistic_syn_emg(x_ecg,2)
-        self.assertEqual(len(made),2)
