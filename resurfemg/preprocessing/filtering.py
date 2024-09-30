@@ -11,7 +11,7 @@ from scipy.signal import butter, lfilter
 import numpy as np
 
 
-def emg_bandpass_butter(data_emg, low_pass, high_pass):
+def emg_bandpass_butter(data_emg, low_pass, high_pass, order=3):
     """The parameter taken in here is the Poly5 file. Output is
     the EMG after a bandpass as made here.
 
@@ -21,12 +21,14 @@ def emg_bandpass_butter(data_emg, low_pass, high_pass):
     :type low_pass: int
     :param high_pass: The number to cut off :code:`frequenceisbelow`
     :type high_pass: int
+    :param order: The filter order
+    :type order: int
 
     :returns: The bandpass filtered EMG sample data
     :rtype: ~numpy.ndarray
     """
     sos = signal.butter(
-        3,
+        order,
         [low_pass, high_pass],
         'bandpass',
         fs=data_emg.sample_rate,
@@ -41,7 +43,8 @@ def emg_bandpass_butter_sample(
     data_emg_samp,
     low_pass,
     high_pass,
-    sample_rate,
+    fs,
+    order=3,
     output='sos'
 ):
     """Output is the EMG after a bandpass as made here.
@@ -52,8 +55,10 @@ def emg_bandpass_butter_sample(
     :type low_pass: int
     :param high_pass: The number to cut off :code:`frequenceisbelow`
     :type high_pass: int
-    :param sample_rate: The number of samples per second i.e. Hertz
-    :type sample_rate: int
+    :param fs: The sample rate i.e. Hertz
+    :type fs: int
+    :param order: The filter order
+    :type order: int
     :param output: The type of sampling stabilizor
     :type high_pass: str
 
@@ -61,10 +66,10 @@ def emg_bandpass_butter_sample(
     :rtype: ~numpy.ndarray
     """
     sos = signal.butter(
-        3,
+        order,
         [low_pass, high_pass],
         'bandpass',
-        fs=sample_rate,
+        fs=fs,
         output='sos',
     )
     # sos (output parameter)is second order section  -> "stabilizes" ?
@@ -75,7 +80,7 @@ def emg_bandpass_butter_sample(
 def emg_lowpass_butter_sample(
     data_emg_samp,
     low_pass,
-    sample_rate,
+    fs,
     order=3,
 ):
     """Output is the EMG after a lowpass as made here.
@@ -96,7 +101,7 @@ def emg_lowpass_butter_sample(
         order,
         [low_pass],
         'lowpass',
-        fs=sample_rate,
+        fs=fs,
         output='sos',
     )
     emg_filtered = signal.sosfiltfilt(sos, data_emg_samp)
@@ -106,7 +111,7 @@ def emg_lowpass_butter_sample(
 def emg_highpass_butter_sample(
     data_emg_samp,
     high_pass,
-    sample_rate,
+    fs,
     order=3,
 ):
 
@@ -126,7 +131,7 @@ def emg_highpass_butter_sample(
         order,
         [high_pass],
         'highpass',
-        fs=sample_rate,
+        fs=fs,
         output='sos',
     )
     emg_filtered = signal.sosfiltfilt(sos, data_emg_samp)
@@ -165,7 +170,7 @@ def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
     return output_signal
 
 
-def emg_highpass_butter(data_emg, cut_above, sample_rate):
+def emg_highpass_butter(data_emg, cut_above, fs, order=3):
     """The parameter taken in here is the Poly5 file's samples or
     another array.  Output is the EMG after a bandpass as made here.
 
@@ -173,13 +178,20 @@ def emg_highpass_butter(data_emg, cut_above, sample_rate):
     :type data_emg: ~numpy.ndarray
     :param cut_above: The number to cut off :code:`frequenceisbelow`
     :type cut_above: int
-    :param sample_rate: The number of samples per second i.e. Hertz
-    :type sample_rate: int
+    :param fs: The sample rate i.e. Hertz
+    :type fs: int
+    :param order: The filter order
+    :type order: int
 
     :returns: The bandpass filtered EMG sample data
     :rtype: ~numpy.ndarray
     """
-    sos = signal.butter(3, cut_above, 'highpass', fs=sample_rate, output='sos')
+    sos = signal.butter(
+        order,
+        cut_above,
+        'highpass',
+        fs=fs,
+        output='sos')
     # sos (output parameter)is second order section  -> "stabilizes" ?
     emg_filtered = signal.sosfiltfilt(sos, data_emg)
     return emg_filtered

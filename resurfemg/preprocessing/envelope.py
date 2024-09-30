@@ -6,6 +6,7 @@ This file contains functions extract the envelopes from EMG arrays.
 """
 
 import numpy as np
+import pandas as pd
 from scipy import signal
 from scipy.signal import savgol_filter
 
@@ -23,11 +24,11 @@ def full_rolling_rms(data_emg, window_length):
     :returns: The root-mean-squared EMG sample data
     :rtype: ~numpy.ndarray
     """
-    padded_samples = int(np.floor(window_length/2))
-    window = np.ones(window_length)/float(window_length)
-    emg_rms_padded = np.sqrt(
-        np.convolve(np.power(data_emg, 2), window, 'full'))
-    emg_rms = emg_rms_padded[padded_samples:-padded_samples]
+    data_emg_sqr = pd.Series(np.power(data_emg, 2))
+    emg_rms = np.sqrt(data_emg_sqr.rolling(
+        window=window_length,
+        min_periods=1,
+        center=True).mean()).values
 
     return emg_rms
 
@@ -102,9 +103,10 @@ def full_rolling_arv(data_emg, window_length):
     :returns: The arv envelope of the EMG sample data
     :rtype: ~numpy.ndarray
     """
-    padded_samples = int(np.floor(window_length/2))
-    window = np.ones(window_length)/float(window_length)
-    emg_arv_padded = np.convolve(np.abs(data_emg), window, 'full')
-    emg_arv = emg_arv_padded[padded_samples:-padded_samples]
+    data_emg_abs = pd.Series(np.abs(data_emg))
+    emg_arv = data_emg_abs.rolling(
+        window=window_length,
+        min_periods=1,
+        center=True).mean().values
 
     return emg_arv

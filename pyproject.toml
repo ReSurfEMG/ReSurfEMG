@@ -46,7 +46,8 @@ tests = ['pytest',
          'pytest-cov',
          'pycodestyle', 
          'isort',
-         'wheel']
+         'wheel',
+         'ipywidgets']
 docs = ['wheel',
         'sphinx']
 dev = ['pytest', 
