@@ -9,7 +9,8 @@ from resurfemg.pipelines import ipy_widgets
 
 
 base_path = os.path.join(
-    os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
+    os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(
+        __file__)))),
     'test_data',
 )
 

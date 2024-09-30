@@ -13,7 +13,8 @@ from resurfemg.helper_functions.math_operations import derivative
 
 
 sample_emg = os.path.join(
-    os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
+    os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(
+        __file__)))),
     'test_data',
     'emg_data_synth_quiet_breathing.Poly5',
 )

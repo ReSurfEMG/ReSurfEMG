@@ -8,7 +8,8 @@ from resurfemg.preprocessing.ecg_removal  import (
 from resurfemg.pipelines.pipelines import ecg_removal_gating
 
 synth_pocc_emg = os.path.join(
-    os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
+    os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(
+        __file__)))),
     'test_data',
     'emg_data_synth_quiet_breathing.Poly5',
 )

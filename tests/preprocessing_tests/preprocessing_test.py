@@ -14,12 +14,14 @@ from resurfemg.preprocessing import ecg_removal as ecg_rm
 from resurfemg.preprocessing import envelope as evl
 
 sample_emg = os.path.join(
-    os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
+    os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(
+        __file__)))),
     'test_data',
     'emg_data_synth_quiet_breathing.Poly5',
 )
 synth_pocc_emg = os.path.join(
-    os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
+    os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(
+        __file__)))),
     'test_data',
     'emg_data_synth_quiet_breathing.Poly5',
 )

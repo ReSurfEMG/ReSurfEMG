@@ -11,7 +11,8 @@ from resurfemg.data_connector.converter_functions import poly5unpad
 from resurfemg.helper_functions.config import hash_it_up_right_all
 
 sample_emg = os.path.join(
-    os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
+    os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(
+        __file__)))),
     'test_data',
     'emg_data_synth_quiet_breathing.Poly5',
 )

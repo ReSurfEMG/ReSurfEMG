@@ -10,12 +10,14 @@ from resurfemg.data_connector.data_classes import (
     VentilatorDataGroup, EmgDataGroup)
 
 synth_pocc_emg = os.path.join(
-    os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
+    os.path.abspath(os.path.dirname(os.path.dirname(
+        os.path.dirname(__file__)))),
     'test_data',
     'emg_data_synth_pocc.Poly5',
 )
 synth_pocc_vent = os.path.join(
-    os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
+    os.path.abspath(os.path.dirname(os.path.dirname(
+        os.path.dirname(__file__)))),
     'test_data',
     'vent_data_synth_pocc.Poly5',
 )

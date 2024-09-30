@@ -4,12 +4,13 @@ import os
 from unittest.mock import patch
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 from resurfemg.preprocessing.filtering import emg_bandpass_butter
-from resurfemg.visualization.visualization import show_psd_welch
-from resurfemg.visualization.visualization import show_periodogram
-from resurfemg.visualization.visualization import show_my_power_spectrum
+from resurfemg.helper_functions.visualization import show_psd_welch
+from resurfemg.helper_functions.visualization import show_periodogram
+from resurfemg.helper_functions.visualization import show_my_power_spectrum
 
 sample_emg = os.path.join(
-    os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
+    os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(
+        __file__)))),
     'test_data',
     'emg_data_synth_quiet_breathing.Poly5',
 )
