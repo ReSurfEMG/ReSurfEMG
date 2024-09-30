@@ -9,6 +9,8 @@ This file contains functions to eliminate ECG artifacts from
 import copy
 import numpy as np
 import scipy
+import pywt
+import pandas as pd
 from sklearn.decomposition import FastICA
 from scipy.signal import find_peaks
 
@@ -16,17 +18,17 @@ from resurfemg.preprocessing import envelope as evl
 import resurfemg.preprocessing.filtering as filt
 
 
-def compute_ica_two_comp(emg_samples):
+def compute_ica_two_comp(emg_raw):
     """A function that performs an independent component analysis
     (ICA) meant for EMG data that includes three stacked arrays.
 
-    :param emg_samples: Original signal array with three layers
-    :type emg_samples: ~numpy.ndarray
+    :param emg_raw: Original signal array with three layers
+    :type emg_raw: ~numpy.ndarray
 
     :returns: Two arrays of independent components (ECG-like and EMG)
     :rtype: ~numpy.ndarray
     """
-    X = np.c_[emg_samples[0], emg_samples[2]]
+    X = np.c_[emg_raw[0], emg_raw[2]]
     ica = FastICA(n_components=2, random_state=1)
     S = ica.fit_transform(X)
     component_0 = S.T[0]
@@ -34,21 +36,21 @@ def compute_ica_two_comp(emg_samples):
     return component_0, component_1
 
 
-def compute_ica_two_comp_multi(emg_samples):
+def compute_ica_two_comp_multi(emg_raw):
     """A function that performs an independant component analysis
     (ICA) meant for EMG data that includes stacked arrays,
     there should be at least two arrays but there can be more.
 
-    :param emg_samples: Original signal array with three or more layers
-    :type emg_samples: ~numpy.ndarray
+    :param emg_raw: Original signal array with three or more layers
+    :type emg_raw: ~numpy.ndarray
 
     :returns: Two arrays of independent components (ECG-like and EMG)
     :rtype: ~numpy.ndarray
     """
-    all_component_numbers = list(range(emg_samples.shape[0]))
+    all_component_numbers = list(range(emg_raw.shape[0]))
     list_to_c = []
     for i in all_component_numbers:
-        list_to_c.append(emg_samples[i])
+        list_to_c.append(emg_raw[i])
     X = np.column_stack(list_to_c)
     ica = FastICA(n_components=2, random_state=1)
     S = ica.fit_transform(X)
@@ -58,7 +60,7 @@ def compute_ica_two_comp_multi(emg_samples):
 
 
 def compute_ICA_two_comp_selective(
-    emg_samples,
+    emg_raw,
     use_all_leads=True,
     desired_leads=(0, 2),
 ):
@@ -66,8 +68,8 @@ def compute_ICA_two_comp_selective(
     (ICA) meant for EMG data that includes stacked arrays,
     there should be at least two arrays but there can be more.
 
-    :param emg_samples: Original signal array with three or more layers
-    :type emg_samples: ~numpy.ndarray
+    :param emg_raw: Original signal array with three or more layers
+    :type emg_raw: ~numpy.ndarray
     :param use_all_leads: True if all leads used, otherwise specify leads
     :type use_all_leads: bool
     :param desired_leads: tuple of leads to use starting from 0
@@ -77,10 +79,10 @@ def compute_ICA_two_comp_selective(
     :rtype: ~numpy.ndarray
     """
     if use_all_leads:
-        all_component_numbers = list(range(emg_samples.shape[0]))
+        all_component_numbers = list(range(emg_raw.shape[0]))
     else:
         all_component_numbers = desired_leads
-        diff = set(all_component_numbers) - set(range(emg_samples.shape[0]))
+        diff = set(all_component_numbers) - set(range(emg_raw.shape[0]))
         if diff:
             raise IndexError(
                 "You picked nonexistant leads {}, "
@@ -89,7 +91,7 @@ def compute_ICA_two_comp_selective(
     list_to_c = []
     # TODO (makeda): change to list comprehension on refactoring
     for i in all_component_numbers:
-        list_to_c.append(emg_samples[i])
+        list_to_c.append(emg_raw[i])
     X = np.column_stack(list_to_c)
     ica = FastICA(n_components=2, random_state=1)
     S = ica.fit_transform(X)
@@ -99,7 +101,7 @@ def compute_ICA_two_comp_selective(
 
 
 def compute_ICA_n_comp(
-    emg_samples,
+    emg_raw,
     use_all_leads=True,
     desired_leads=(0, 2),
 ):
@@ -109,8 +111,8 @@ def compute_ICA_n_comp(
     This differs from helper_functions.compute_ICA_two_comp_multi
     because you can get n leads back instead of only two.
 
-    :param emg_samples: Original signal array with three or more layers
-    :type emg_samples: ~numpy.ndarray
+    :param emg_raw: Original signal array with three or more layers
+    :type emg_raw: ~numpy.ndarray
     :param use_all_leads: True if all leads used, otherwise specify leads
     :type use_all_leads: bool
     :param desired_leads: tuple of leads to use starting from 0
@@ -120,12 +122,12 @@ def compute_ICA_n_comp(
     :rtype: ~numpy.ndarray
     """
     if use_all_leads:
-        all_component_numbers = list(range(emg_samples.shape[0]))
+        all_component_numbers = list(range(emg_raw.shape[0]))
         n_components = len(all_component_numbers)
     else:
         all_component_numbers = desired_leads
         n_components = len(all_component_numbers)
-        diff = set(all_component_numbers) - set(range(emg_samples.shape[0]))
+        diff = set(all_component_numbers) - set(range(emg_raw.shape[0]))
         if diff:
             raise IndexError(
                 "You picked nonexistant leads {}, "
@@ -134,7 +136,7 @@ def compute_ICA_n_comp(
     list_to_c = []
     # TODO (makeda): change to list comprehension on refactoring
     for i in all_component_numbers:
-        list_to_c.append(emg_samples[i])
+        list_to_c.append(emg_raw[i])
     X = np.column_stack(list_to_c)
     ica = FastICA(n_components, random_state=1)
     S = ica.fit_transform(X)
@@ -215,7 +217,7 @@ def pick_highest_correlation_array_multi(components, ecg_lead):
 
 
 def compute_ICA_n_comp_selective_zeroing(
-    emg_samples,
+    emg_raw,
     ecg_lead_to_remove,
     use_all_leads=True,
     desired_leads=(0, 2),
@@ -226,8 +228,8 @@ def compute_ICA_n_comp_selective_zeroing(
     In this ICA one lead is put to zero before reconstruction.
     This should probably be the ECG lead.
 
-    :param emg_samples: Original signal array with three or more layers
-    :type emg_samples: ~numpy.ndarray
+    :param emg_raw: Original signal array with three or more layers
+    :type emg_raw: ~numpy.ndarray
     :param ecg_lead_to_remove: Lead number counting from zero to get rid of
     :type ecg_lead_to_remove: int
     :param use_all_leads: True if all leads used, otherwise specify leads
@@ -239,12 +241,12 @@ def compute_ICA_n_comp_selective_zeroing(
     :rtype: ~numpy.ndarray
     """
     if use_all_leads:
-        all_component_numbers = list(range(emg_samples.shape[0]))
+        all_component_numbers = list(range(emg_raw.shape[0]))
         n_components = len(all_component_numbers)
     else:
         all_component_numbers = desired_leads
         n_components = len(all_component_numbers)
-        diff = set(all_component_numbers) - set(range(emg_samples.shape[0]))
+        diff = set(all_component_numbers) - set(range(emg_raw.shape[0]))
         if diff:
             raise IndexError(
                 "You picked nonexistant leads {}, "
@@ -253,7 +255,7 @@ def compute_ICA_n_comp_selective_zeroing(
     list_to_c = []
     # TODO (makeda): change to list comprehension on refactoring
     for i in all_component_numbers:
-        list_to_c.append(emg_samples[i])
+        list_to_c.append(emg_raw[i])
 
     X = np.column_stack(list_to_c)
     ica = FastICA(n_components, random_state=1)
@@ -262,7 +264,7 @@ def compute_ICA_n_comp_selective_zeroing(
 
     hi_index = pick_highest_correlation_array_multi(
         S_copy.transpose(),
-        emg_samples[ecg_lead_to_remove])
+        emg_raw[ecg_lead_to_remove])
 
     S_copy.T[hi_index] = np.zeros(len(S_copy.T[hi_index]))
 
@@ -405,13 +407,13 @@ def detect_ecg_peaks(
 
 
 def gating(
-    src_signal,
-    gate_peaks,
+    emg_raw,
+    peak_idxs,
     gate_width=205,
     method=1,
 ):
     """
-    Eliminate peaks (e.g. QRS) from src_signal using gates
+    Eliminate peaks (e.g. QRS) from emg_raw using gates
     of width gate_width. The gate either filled by zeros or interpolation.
     The filling method for the gate is encoded as follows:
     0: Filled with zeros
@@ -420,52 +422,52 @@ def gating(
     otherwise fill with post segment
     3: Fill with running average of RMS (default)
 
-    :param src_signal: Signal to process
-    :type src_signalsignal: ~numpy.ndarray
-    :param gate_peaks: list of individual peak index places to be gated
-    :type gate_peaks: ~list
+    :param emg_raw: Signal to process
+    :type emg_raw: ~numpy.ndarray
+    :param peak_idxs: list of individual peak index places to be gated
+    :type peak_idxs: ~list
     :param gate_width: width of the gate
     :type gate_width: int
     :param method: filling method of gate
     :type method: int
 
-    :returns: src_signal_gated, the gated result
+    :returns: emg_raw_gated, the gated result
     :rtype: ~numpy.ndarray
     """
-    src_signal_gated = copy.deepcopy(src_signal)
-    max_sample = src_signal_gated.shape[0]
+    emg_raw_gated = copy.deepcopy(emg_raw)
+    max_sample = emg_raw_gated.shape[0]
     half_gate_width = gate_width // 2
     if method == 0:
         # Method 0: Fill with zeros
         # TODO: can rewrite with slices from numpy irange to be more efficient
         gate_samples = []
-        for _, peak in enumerate(gate_peaks):
+        for _, peak in enumerate(peak_idxs):
             for k in range(
                 max(0, peak - half_gate_width),
                 min(max_sample, peak + half_gate_width),
             ):
                 gate_samples.append(k)
 
-        src_signal_gated[gate_samples] = 0
+        emg_raw_gated[gate_samples] = 0
     elif method == 1:
         # Method 1: Fill with interpolation pre- and post gate sample
         # TODO: rewrite with numpy interpolation for efficiency
-        for _, peak in enumerate(gate_peaks):
-            pre_ave_emg = src_signal[peak-half_gate_width-1]
+        for _, peak in enumerate(peak_idxs):
+            pre_ave_emg = emg_raw[peak-half_gate_width-1]
 
-            if (peak + half_gate_width + 1) < src_signal_gated.shape[0]:
-                post_ave_emg = src_signal[peak+half_gate_width+1]
+            if (peak + half_gate_width + 1) < emg_raw_gated.shape[0]:
+                post_ave_emg = emg_raw[peak+half_gate_width+1]
             else:
                 post_ave_emg = 0
 
             k_start = max(0, peak-half_gate_width)
             k_end = min(
-                peak+half_gate_width, src_signal_gated.shape[0]
+                peak+half_gate_width, emg_raw_gated.shape[0]
             )
             for k in range(k_start, k_end):
                 frac = (k - peak + half_gate_width)/gate_width
                 loup = (1 - frac) * pre_ave_emg + frac * post_ave_emg
-                src_signal_gated[k] = loup
+                emg_raw_gated[k] = loup
 
     elif method == 2:
         # Method 2: Fill with window length mean over prior section
@@ -473,36 +475,36 @@ def gating(
         #         ^               ^- gate start   ^- gate end
         #         - peak - half_gate_width * 3 (replacer)
 
-        for _, peak in enumerate(gate_peaks):
+        for _, peak in enumerate(peak_idxs):
             start = peak - half_gate_width * 3
             if start < 0:
                 start = peak + half_gate_width
             end = start + gate_width
-            pre_ave_emg = np.nanmean(src_signal[start:end])
+            pre_ave_emg = np.nanmean(emg_raw[start:end])
 
             k_start = max(0, peak - half_gate_width)
-            k_end = min(peak + half_gate_width, src_signal_gated.shape[0])
+            k_end = min(peak + half_gate_width, emg_raw_gated.shape[0])
             for k in range(k_start, k_end):
-                src_signal_gated[k] = pre_ave_emg
+                emg_raw_gated[k] = pre_ave_emg
 
     elif method == 3:
         # Method 3: Fill with moving average over RMS
         gate_samples = []
-        for _, peak in enumerate(gate_peaks):
+        for _, peak in enumerate(peak_idxs):
             for k in range(
                 max([0, int(peak-gate_width/2)]),
                 min([max_sample, int(peak+gate_width/2)])
             ):
                 gate_samples.append(k)
 
-        src_signal_gated_base = copy.deepcopy(src_signal_gated)
-        src_signal_gated_base[gate_samples] = np.nan
-        src_signal_gated_rms = evl.full_rolling_rms(
-            src_signal_gated_base,
+        emg_raw_gated_base = copy.deepcopy(emg_raw_gated)
+        emg_raw_gated_base[gate_samples] = np.nan
+        emg_raw_gated_rms = evl.full_rolling_rms(
+            emg_raw_gated_base,
             gate_width,)
 
         interpolate_samples = list()
-        for _, peak in enumerate(gate_peaks):
+        for _, peak in enumerate(peak_idxs):
             k_start = max([0, int(peak-gate_width/2)])
             k_end = min([int(peak+gate_width/2), max_sample])
 
@@ -510,9 +512,9 @@ def gating(
                 leftf = max([0, int(k-1.5*gate_width)])
                 rightf = min([int(k+1.5*gate_width), max_sample])
                 if any(np.logical_not(np.isnan(
-                        src_signal_gated_rms[leftf:rightf]))):
-                    src_signal_gated[k] = np.nanmean(
-                        src_signal_gated_rms[leftf:rightf]
+                        emg_raw_gated_rms[leftf:rightf]))):
+                    emg_raw_gated[k] = np.nanmean(
+                        emg_raw_gated_rms[leftf:rightf]
                     )
                 else:
                     interpolate_samples.append(k)
@@ -520,23 +522,23 @@ def gating(
         if len(interpolate_samples) > 0:
             interpolate_samples = np.array(interpolate_samples)
             if 0 in interpolate_samples:
-                src_signal_gated[0] = 0
+                emg_raw_gated[0] = 0
 
-            if len(src_signal_gated)-1 in interpolate_samples:
-                src_signal_gated[-1] = 0
+            if len(emg_raw_gated)-1 in interpolate_samples:
+                emg_raw_gated[-1] = 0
 
-            x_samp = np.array([x_i for x_i in range(len(src_signal_gated))])
+            x_samp = np.array([x_i for x_i in range(len(emg_raw_gated))])
             other_samples = x_samp[~np.isin(x_samp, interpolate_samples)]
-            src_signal_gated_interp = np.interp(
+            emg_raw_gated_interp = np.interp(
                 x_samp[interpolate_samples],
                 x_samp[other_samples],
-                src_signal_gated[other_samples])
-            src_signal_gated[interpolate_samples] = src_signal_gated_interp
+                emg_raw_gated[other_samples])
+            emg_raw_gated[interpolate_samples] = emg_raw_gated_interp
 
-    return src_signal_gated
+    return emg_raw_gated
 
 
-def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
+def find_peaks_in_ecg(ecg_raw, lower_border_percent=50):
     """
     This function assumes you have isolated an ecg-like signal with
     QRS peaks "higher" (or lower) than ST waves.
@@ -545,8 +547,8 @@ def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
     signal has already been through a bandpass or low-pass filter
     or has little baseline drift.
 
-    :param ecg_signal: frequency array sampled at in Hertz
-    :type ecg_signal: ~numpy.ndarray
+    :param ecg_raw: frequency array sampled at in Hertz
+    :type ecg_raw: ~numpy.ndarray
     :param low_border_percent: percentage max below which no peaks expected
     :type low_border_percent: int
 
@@ -555,10 +557,190 @@ def find_peaks_in_ecg_signal(ecg_signal, lower_border_percent=50):
 
     """
     # TODO: Eliminate. Not robust to +/- deflections.
-    ecg_signal = abs(ecg_signal)
-    max_peak = ecg_signal.max() - ecg_signal.min()
+    ecg_raw = abs(ecg_raw)
+    max_peak = ecg_raw.max() - ecg_raw.min()
     set_ecg_peaks = find_peaks(
-        ecg_signal,
+        ecg_raw,
         prominence=(max_peak*lower_border_percent/100, max_peak)
     )
     return set_ecg_peaks
+
+
+def wavelet_denoising(
+    emg_raw,
+    ecg_peak_idxs,
+    fs,
+    hard_thresholding=True,
+    n=4,
+    wavelet_type='db2',
+    fixed_threshold=4.5
+):
+    """
+    Shrinkage Denoising using a-trous wavelet decomposition (SWT). NB: This
+    function assumes that the emg_raw has already been preprocessed for
+    removal of baseline, powerline, and aliasing. N.B. This is a Python
+    implementation of the SWT, as previously implemented in MATLAB by Jan
+    Graßhoff. See Copyright notice below.
+
+    :param emg_raw: 1D raw EMG data
+    :type emg_raw: numpy.ndarray
+    :param ecg_peak_idxs: list of R-peaks indices
+    :type ecg_peak_idxs: numpy.ndarray
+    :param fs: Sampling rate of emg_raw
+    :type fs: int
+    :param hard_thresholding: True: hard (default), False: soft
+    :type hard_thresholding: bool
+    :param n: True: decomposition level (default: 4)
+    :type n: int
+    :param wavelet_type: wavelet type (default: 'db2', see pywt.swt help)
+    :type wavelet_type: str
+
+    :returns: (cleansed EMG, wavelet decomposition, thresholds, gate_windows)
+    :rtype: tuple(numpy.ndarray, list(tuples), numpy.ndarray, numpy.ndarray)
+
+    --------------------------------------------------------------------------
+    Copyright 2019 Institute for Electrical Engineering in Medicine,
+    University of Luebeck
+    Jan Graßhoff
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+    """
+    def estimate_noise(signal, window_length):
+        """
+        Estimate noise level
+        :param signal: wavelet-decomposed signal
+        :type signal: numpy.ndarray
+        :param window_length: window length for noise estimation
+        :type window_length: int
+
+        :returns: estimated noise level
+        :rtype: numpy.ndarray(~float)
+        """
+        nb_level = signal.shape[0]
+        std_estimated = np.zeros(signal.shape)
+
+        for k in range(nb_level):
+            # Estimate std from MAD: std ~ MAD/0.6745
+            std_estimated[k, :] = pd.Series(np.abs(signal[k, :])).rolling(
+                window=window_length,
+                min_periods=1,
+                center=True).median().values / 0.6745
+
+            # Correct on- and offset effects
+            std_estimated[k, :window_length // 2] = std_estimated[
+                k, window_length // 2]
+            std_estimated[k, -window_length // 2:] = std_estimated[
+                k, -window_length // 2]
+        return std_estimated
+
+    def get_gate_windows(rpeak_bool_vec, window_length):
+        """
+        Generate gate windows for the peaks
+        :param rpeak_bool_vec: 1D raw, where R-peak location == 1
+        :type rpeak_bool_vec: numpy.ndarray
+        :param window_length: number of samples to gate around peaks
+        :type window_length: int
+
+        :returns: gated signal based on R-peaks, where gate == 1
+        :rtype: numpy.ndarray(int)
+        """
+        window_length = int(np.floor(window_length / 2) * 2)
+        rpeak_idxs = np.where(rpeak_bool_vec == 1)[0]
+
+        gate_windows = np.zeros_like(rpeak_bool_vec)
+        for _, rpeak_idx in enumerate(rpeak_idxs):
+            gate_windows[
+                max(rpeak_idx - window_length // 2, 0):
+                min(rpeak_idx + window_length // 2, len(rpeak_bool_vec))
+            ] = 1
+
+        return gate_windows
+
+    def threshold_wavelets(data, hard_thresholding, threshold):
+        """
+        Apply thresholding to data based on 'soft' or 'hard' option
+        :param data: input data
+        :type data: numpy.ndarray
+        :param hard_thresholding: True: hard (default), False: soft
+        :type hard_thresholding: bool
+        :param threshold: threshold value
+        :type threshold: ~float
+
+        :returns: thresholded data
+        :rtype: numpy.ndarray
+        """
+        if hard_thresholding is True:
+            # Hard thresholding
+            data[np.abs(data) < threshold] = 0
+        elif hard_thresholding is False:
+            # Soft thresholding
+            data = np.sign(data) * np.maximum(np.abs(data) - threshold, 0)
+        return data
+
+    # Calculate gate windows
+    r_peak_bool = np.zeros(emg_raw.shape)
+    r_peak_bool[ecg_peak_idxs] = 1
+    gate_bool_array = get_gate_windows(r_peak_bool, fs//10)
+
+    # Signal Extension by zero padding
+    pow_2_n = 2 ** n
+    n_samp = len(emg_raw)
+    n_samp_extended = int(np.ceil(n_samp / pow_2_n) * pow_2_n)
+    zero_padding = np.zeros(n_samp_extended - n_samp)
+    emg_raw_zero_padded = np.concatenate((emg_raw, zero_padding))
+    gate_bool_array = np.concatenate((gate_bool_array, zero_padding))
+
+    # Wavelet decomposition of emg_raw using Stationary Wavelet Transform (SWT)
+    wav_dec = pywt.swt(emg_raw_zero_padded, wavelet_type, level=n)
+    wav_dec_unpacked = np.array(
+        [[subband[0], subband[1]] for subband in wav_dec])
+    swc = np.vstack((wav_dec_unpacked[:, 1, :], wav_dec_unpacked[n-1, 0, :]))
+
+    # Gate out R-peaks in wavelet subbands
+    wav_dec_gated = np.array(swc)
+    wav_dec_gated[:, gate_bool_array == 1] = np.nan
+
+    # Custom threshold coefficients
+    window_length = 15 * fs
+    # win_len = 15000
+    s = estimate_noise(wav_dec_gated[:-1], window_length)
+
+    thresholds = np.zeros_like(swc)
+    wxd = np.array(wav_dec_unpacked)
+
+    for k in range(n):
+        threshold = fixed_threshold * s[k, :]
+        thresholds[k, :] = threshold
+        wxd[k, 1, :] = threshold_wavelets(
+            wav_dec_unpacked[k, 1, :], hard_thresholding, threshold)
+
+    # # Wavelet reconstruction
+    ecg_reconstructd = pywt.iswt(
+        [tuple(subband) for subband in wxd],
+        wavelet_type
+    )
+
+    # Return results
+    wav_dec = np.array(swc)
+    ecg_reconstructd = ecg_reconstructd[:n_samp]
+    thresholds = thresholds[:, :n_samp]
+    gate_bool_array = gate_bool_array[:n_samp]
+    emg_clean = emg_raw - ecg_reconstructd
+
+    return emg_clean, wav_dec, thresholds, gate_bool_array
