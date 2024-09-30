@@ -11,21 +11,21 @@ from scipy import signal
 from scipy.signal import savgol_filter
 
 
-def full_rolling_rms(data_emg, window_length):
+def full_rolling_rms(emg_raw, window_length):
     """This function computes a root mean squared envelope over an
-    array :code:`data_emg`.  To do this it uses number of sample values
+    array :code:`emg_raw`.  To do this it uses number of sample values
     :code:`window_length`.
 
-    :param data_emg: Samples from the EMG
-    :type data_emg: ~numpy.ndarray
+    :param emg_raw: Samples from the EMG
+    :type emg_raw: ~numpy.ndarray
     :param window_length: Length of the sample use as window for function
     :type window_length: int
 
     :returns: The root-mean-squared EMG sample data
     :rtype: ~numpy.ndarray
     """
-    data_emg_sqr = pd.Series(np.power(data_emg, 2))
-    emg_rms = np.sqrt(data_emg_sqr.rolling(
+    emg_raw_sqr = pd.Series(np.power(emg_raw, 2))
+    emg_rms = np.sqrt(emg_raw_sqr.rolling(
         window=window_length,
         min_periods=1,
         center=True).mean()).values
@@ -60,20 +60,20 @@ def hi_envelope(our_signal, dmax=24):
     return smoothed_interped
 
 
-def naive_rolling_rms(data_emg, window_length):
+def naive_rolling_rms(emg_raw, window_length):
     """This function computes a root mean squared envelope over an
-    array :code:`data_emg`. To do this it uses number of sample values
+    array :code:`emg_raw`. To do this it uses number of sample values
     :code:`window_length`.
 
-    :param data_emg: Samples from the EMG
-    :type data_emg: ~numpy.ndarray
+    :param emg_raw: Samples from the EMG
+    :type emg_raw: ~numpy.ndarray
     :param window_length: Length of the sample use as window for function
     :type window_length: int
 
     :returns: The root-mean-squared EMG sample data
     :rtype: ~numpy.ndarray
     """
-    x_c = np.cumsum(abs(data_emg)**2)
+    x_c = np.cumsum(abs(emg_raw)**2)
     emg_rms = np.sqrt((x_c[window_length:] - x_c[:-window_length])
                       / window_length)
     return emg_rms
@@ -90,21 +90,21 @@ def running_smoother(array):
     return smoothed_array
 
 
-def full_rolling_arv(data_emg, window_length):
+def full_rolling_arv(emg_raw, window_length):
     """This function computes an average rectified value envelope over an
-    array :code:`data_emg`.  To do this it uses number of sample values
+    array :code:`emg_raw`.  To do this it uses number of sample values
     :code:`window_length`.
 
-    :param data_emg: Samples from the EMG
-    :type data_emg: ~numpy.ndarray
+    :param emg_raw: Samples from the EMG
+    :type emg_raw: ~numpy.ndarray
     :param window_length: Length of the sample use as window for function
     :type window_length: int
 
     :returns: The arv envelope of the EMG sample data
     :rtype: ~numpy.ndarray
     """
-    data_emg_abs = pd.Series(np.abs(data_emg))
-    emg_arv = data_emg_abs.rolling(
+    emg_raw_abs = pd.Series(np.abs(emg_raw))
+    emg_arv = emg_raw_abs.rolling(
         window=window_length,
         min_periods=1,
         center=True).mean().values

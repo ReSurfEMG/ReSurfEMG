@@ -11,12 +11,12 @@ from scipy.signal import butter, lfilter
 import numpy as np
 
 
-def emg_bandpass_butter(data_emg, low_pass, high_pass, order=3):
+def emg_bandpass_butter(emg_raw, low_pass, high_pass, order=3):
     """The parameter taken in here is the Poly5 file. Output is
     the EMG after a bandpass as made here.
 
-    :param data_emg: Poly5 file with the samples to work over
-    :type data_emg: ~TMSiSDK.file_readers.Poly5Reader
+    :param emg_raw: Poly5 file with the samples to work over
+    :type emg_raw: ~TMSiSDK.file_readers.Poly5Reader
     :param low_pass: The number to cut off :code:`frequenciesabove`
     :type low_pass: int
     :param high_pass: The number to cut off :code:`frequenceisbelow`
@@ -31,16 +31,16 @@ def emg_bandpass_butter(data_emg, low_pass, high_pass, order=3):
         order,
         [low_pass, high_pass],
         'bandpass',
-        fs=data_emg.sample_rate,
+        fs=emg_raw.sample_rate,
         output='sos',
     )
     # sos (output parameter) is second order section  -> "stabilizes" ?
-    emg_filtered = signal.sosfiltfilt(sos, data_emg.samples)
+    emg_filtered = signal.sosfiltfilt(sos, emg_raw.samples)
     return emg_filtered
 
 
 def emg_bandpass_butter_sample(
-    data_emg_samp,
+    emg_raw_samp,
     low_pass,
     high_pass,
     fs,
@@ -49,8 +49,8 @@ def emg_bandpass_butter_sample(
 ):
     """Output is the EMG after a bandpass as made here.
 
-    :param data_emg_samp: The array in the sample
-    :type data_emg_samp: ~numpy.ndarray
+    :param emg_raw_samp: The array in the sample
+    :type emg_raw_samp: ~numpy.ndarray
     :param low_pass: The number to cut off :code:`frequenciesabove`
     :type low_pass: int
     :param high_pass: The number to cut off :code:`frequenceisbelow`
@@ -73,20 +73,20 @@ def emg_bandpass_butter_sample(
         output='sos',
     )
     # sos (output parameter)is second order section  -> "stabilizes" ?
-    emg_filtered = signal.sosfiltfilt(sos, data_emg_samp)
+    emg_filtered = signal.sosfiltfilt(sos, emg_raw_samp)
     return emg_filtered
 
 
 def emg_lowpass_butter_sample(
-    data_emg_samp,
+    emg_raw_samp,
     low_pass,
     fs,
     order=3,
 ):
     """Output is the EMG after a lowpass as made here.
 
-    :param data_emg_samp: The array in the sample
-    :type data_emg_samp: ~numpy.ndarray
+    :param emg_raw_samp: The array in the sample
+    :type emg_raw_samp: ~numpy.ndarray
     :param low_pass: The number to cut off :code:`frequenciesabove`
     :type low_pass: int
     :param low_pass: The number to cut off :code:`frequenciesabove`
@@ -104,12 +104,12 @@ def emg_lowpass_butter_sample(
         fs=fs,
         output='sos',
     )
-    emg_filtered = signal.sosfiltfilt(sos, data_emg_samp)
+    emg_filtered = signal.sosfiltfilt(sos, emg_raw_samp)
     return emg_filtered
 
 
 def emg_highpass_butter_sample(
-    data_emg_samp,
+    emg_raw_samp,
     high_pass,
     fs,
     order=3,
@@ -117,8 +117,8 @@ def emg_highpass_butter_sample(
 
     """Output is the EMG after a bandpass as made here.
 
-    :param data_emg_samp: The array in the sample
-    :type data_emg_samp: ~numpy.ndarray
+    :param emg_raw_samp: The array in the sample
+    :type emg_raw_samp: ~numpy.ndarray
     :param high_pass: The number to cut off :code:`frequenciesabove`
     :type high_pass: int
     :param order: The filter order
@@ -134,7 +134,7 @@ def emg_highpass_butter_sample(
         fs=fs,
         output='sos',
     )
-    emg_filtered = signal.sosfiltfilt(sos, data_emg_samp)
+    emg_filtered = signal.sosfiltfilt(sos, emg_raw_samp)
     return emg_filtered
 
 
@@ -170,12 +170,12 @@ def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
     return output_signal
 
 
-def emg_highpass_butter(data_emg, cut_above, fs, order=3):
+def emg_highpass_butter(emg_raw, cut_above, fs, order=3):
     """The parameter taken in here is the Poly5 file's samples or
     another array.  Output is the EMG after a bandpass as made here.
 
-    :param data_emg: Samples from the EMG
-    :type data_emg: ~numpy.ndarray
+    :param emg_raw: Samples from the EMG
+    :type emg_raw: ~numpy.ndarray
     :param cut_above: The number to cut off :code:`frequenceisbelow`
     :type cut_above: int
     :param fs: The sample rate i.e. Hertz
@@ -193,7 +193,7 @@ def emg_highpass_butter(data_emg, cut_above, fs, order=3):
         fs=fs,
         output='sos')
     # sos (output parameter)is second order section  -> "stabilizes" ?
-    emg_filtered = signal.sosfiltfilt(sos, data_emg)
+    emg_filtered = signal.sosfiltfilt(sos, emg_raw)
     return emg_filtered
 
 
