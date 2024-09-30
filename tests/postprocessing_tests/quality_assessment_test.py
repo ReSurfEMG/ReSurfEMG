@@ -18,7 +18,6 @@ sample_emg = os.path.join(
     'test_data',
     'emg_data_synth_quiet_breathing.Poly5',
 )
-
 # Dummy EMG signal
 fs_emg = 2048
 t_emg = np.array([s_t/fs_emg for s_t in range(10*fs_emg)])
@@ -58,136 +57,6 @@ for _idx, _ in enumerate(pocc_peaks_valid):
         -y_t_p_vent[pocc_starts[_idx]:pocc_ends[_idx]],
         dx=1/fs_vent
     )
-
-class TestBaseline(unittest.TestCase):
-    fs = 1000
-    t = np.arange(0, 10, 1/fs)
-    slow_component = np.sin(2 * np.pi * 0.1 * t)
-    fast_component = 0.5 * np.sin(2 * np.pi * 0.5 * t)
-    breathing_signal = np.abs(slow_component + fast_component)
-
-    def test_movingbaseline(self):
-        sinusbase = bl.moving_baseline(self.breathing_signal,
-                                    self.fs,
-                                    self.fs//5,
-                                    33)
-        self.assertEqual(
-            (len(self.breathing_signal)),
-            len(sinusbase),
-    )
-
-    def test_slopesum(self):
-        sinusbase, _, _, _ = bl.slopesum_baseline(
-            self.breathing_signal,
-            self.fs,
-            self.fs//5,
-            self.fs,
-            set_percentile=33,
-            augm_percentile=25)
-
-        self.assertEqual(
-            (len(self.breathing_signal)),
-            len(sinusbase),
-            )
-
-class TestEventDetection(unittest.TestCase):
-    fs = 1000
-    t = np.arange(0, 10, 1/fs)
-    slow_component = np.sin(2 * np.pi * 0.1 * t)
-    fast_component = 0.5 * np.sin(2 * np.pi * 0.5 * t)
-    breathing_signal = np.abs(slow_component + fast_component)
-
-    baseline = 0.5 * np.ones((len(breathing_signal), ))
-    treshold = 0
-    width = fs // 2
-    prominence = 0.5 * (np.nanpercentile(breathing_signal - baseline, 75)
-                        + np.nanpercentile(breathing_signal - baseline, 50))
-
-    peak_idxs, _ = scipy.signal.find_peaks(
-        breathing_signal,
-        height=treshold,
-        prominence=prominence,
-        width=width)
-
-    def test_baseline_crossing_starts(self):
-        peak_start_idxs, _, _, _, _ = evt.onoffpeak_baseline_crossing(
-             self.breathing_signal, self.baseline, self.peak_idxs)
-
-        self.assertEqual(
-            len(self.peak_idxs),
-            len(peak_start_idxs),
-            )
-
-    def test_baseline_crossing_ends(self):
-        _, peak_end_idxs, _, _, _ = evt.onoffpeak_baseline_crossing(
-             self.breathing_signal, self.baseline, self.peak_idxs)
-
-        self.assertEqual(
-            len(self.peak_idxs),
-            len(peak_end_idxs),
-            )
-
-    def test_slope_extrapolate_starts(self):
-        peak_start_idxs, _, _, _, _ = evt.onoffpeak_slope_extrapolation(
-             self.breathing_signal, self.fs, self.peak_idxs, self.fs//4)
-
-        self.assertEqual(
-            len(self.peak_idxs),
-            len(peak_start_idxs),
-            )
-
-    def test_slope_extrapolate_ends(self):
-        _, peak_end_idxs, _, _, _ = evt.onoffpeak_slope_extrapolation(
-             self.breathing_signal, self.fs, self.peak_idxs, self.fs//4)
-
-        self.assertEqual(
-            len(self.peak_idxs),
-            len(peak_end_idxs),
-            )
-
-    def test_detect_ventilator_breath(self):
-        ventilator_breath_idxs = evt.detect_ventilator_breath(
-            v_vent=self.breathing_signal,
-            start_idx=1,
-            end_idx=10000,
-            width_s=1
-            )
-        self.assertEqual(
-            len(ventilator_breath_idxs),
-            2,
-            )
-
-class TestPoccDetection(unittest.TestCase):
-    def test_baseline_crossing_starts(self):
-        peak_idxs_detected = evt.find_occluded_breaths(
-            p_vent=y_t_p_vent,
-            peep=0,
-            fs=fs_vent,
-        )
-
-        np.testing.assert_array_equal(
-            peak_idxs_detected,
-            pocc_peaks_valid,
-            )
-
-class TestFindLinkedPeaks(unittest.TestCase):
-    def test_find_linked_peaks(self):
-        t_1 = [10.0, 15.0, 20.0]
-        t_2 = [x + 0.2 for x in range(30)]
-        linked_peaks = evt.find_linked_peaks(t_1, t_2)
-        np.testing.assert_array_equal(
-            linked_peaks,
-            np.array([10, 15, 20])
-        )
-
-class TestDetectEmgBreaths(unittest.TestCase):
-    def test_detect_emg_breaths(self):
-        detected_peaks = evt.detect_emg_breaths(
-            y_env_emg, y_emg_baseline)
-        np.testing.assert_array_equal(
-            detected_peaks,
-            peaks_env
-        )
 
 class TestSnrPseudo(unittest.TestCase):
     fs_emg = 2048
@@ -282,53 +151,6 @@ class TestPoccQuality(unittest.TestCase):
             np.all(valid_manoeuvres_false)
         )
 
-class TestInterpeakMethods(unittest.TestCase):
-    def test_interpeak_dist(self):
-        sim_ECG=np.arange(1, 11)
-        sim_EMG=np.linspace(1, 10, 4)
-        valid_interpeak = qa.interpeak_dist(sim_ECG, sim_EMG, threshold=1.1)
-
-        self.assertTrue(valid_interpeak, "The interpeak_dist function"
-                        "did not return True as expected.")
-
-
-class TestTimeProduct(unittest.TestCase):
-    # Define signal
-    fs_emg = 2048
-    t_emg = np.array([s_t/fs_emg for s_t in range(15*fs_emg)])
-
-    y_block = np.array(
-        3*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
-    y_block[y_block < 0] = 0
-
-    peak_idxs = [(5//2 + x*5) * 2048 for x in range(3)]
-    start_idxs = [(5 + x*5*4) * 2048 //4 for x in range(3)]
-    end_idxs = [(15 + x*5*4) * 2048 //4 - 1 for x in range(3)]
-
-    y_baseline = np.ones(y_block.shape)
-
-    def test_timeproduct(self):
-        aob = feat.time_product(
-            self.y_block,
-            self.fs_emg,
-            self.start_idxs,
-            self.end_idxs,
-            self.y_baseline,
-        )
-        self.assertAlmostEqual(np.median(aob), 5.0, 2)
-
-    def test_area_under_baseline(self):
-        aub, _ = feat.area_under_baseline(
-            self.y_block,
-            self.fs_emg,
-            self.peak_idxs,
-            self.start_idxs,
-            self.end_idxs,
-            aub_window_s=self.fs_emg*5,
-            baseline=self.y_baseline,
-            ref_signal=self.y_block,
-        )
-        self.assertAlmostEqual(np.median(aub), 2.5, 2)
 
 class TestAreaUnderBaselineQuality(unittest.TestCase):
     # Define signal
@@ -400,6 +222,16 @@ class TestBellFit(unittest.TestCase):
             np.abs(percentage_bell_error - 5) < 5,
             np.array([True, True, True, True, True])
         )
+
+
+class TestInterpeakMethods(unittest.TestCase):
+    def test_interpeak_dist(self):
+        sim_ECG=np.arange(1, 11)
+        sim_EMG=np.linspace(1, 10, 4)
+        valid_interpeak = qa.interpeak_dist(sim_ECG, sim_EMG, threshold=1.1)
+
+        self.assertTrue(valid_interpeak, "The interpeak_dist function"
+                        "did not return True as expected.")
 
 if __name__ == '__main__':
     unittest.main(argv=[''], exit=False)
