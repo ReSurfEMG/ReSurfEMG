@@ -1,17 +1,13 @@
-#sanity tests for the preprocessing functions, including filtering,
-#ecg removal and envelope calculation
-
+"""sanity tests for the preprocessing.ecg_removal functions"""
 
 import unittest
 import os
 import scipy
 import numpy as np
-from scipy.signal import find_peaks
 
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 from resurfemg.preprocessing import filtering as filt
 from resurfemg.preprocessing import ecg_removal as ecg_rm
-from resurfemg.preprocessing import envelope as evl
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(
@@ -26,87 +22,6 @@ synth_pocc_emg = os.path.join(
     'emg_data_synth_quiet_breathing.Poly5',
 )
 
-class TestFilteringMethods(unittest.TestCase):
-    def test_emg_band_pass_butter(self):
-        sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = filt.emg_bandpass_butter(sample_read, 1, 10)
-        self.assertEqual(
-            (len(sample_emg_filtered[0])),
-            len(sample_read.samples[0]) ,
-        )
-    def test_emg_band_pass_butter_sample(self):
-        sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = filt.emg_bandpass_butter_sample(
-            sample_read.samples, 1, 10, 2048)
-        self.assertEqual(
-            (len(sample_emg_filtered[0])),
-            len(sample_read.samples[0]) ,
-        )
-    def test_emg_lowpass_butter(self):
-        sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = filt.emg_lowpass_butter(sample_read.samples, 5, 2048)
-        self.assertEqual(
-            (len(sample_emg_filtered[0])),
-            len(sample_read.samples[0]) ,
-        )
-
-    def test_notch_filter(self):
-        sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = filt.notch_filter(sample_read.samples, 2048, 80,2)
-        self.assertEqual(
-            (len(sample_emg_filtered[0])),
-            len(sample_read.samples[0]) ,
-        )
-
-class TestRmsMethods(unittest.TestCase):
-    fs_emg = 2048
-    t_emg = np.array(range(3*fs_emg))/fs_emg
-    x_sin = np.sin(t_emg * 2 * np.pi)
-    x_sin[x_sin < 0] = 0
-    x_rand = np.random.normal(0, 1, size=len(x_sin))
-    x_t = x_sin * x_rand
-    peak_idxs_source, _ = find_peaks(x_sin, prominence=0.1)
-    def test_full_rolling_rms_length(self):
-        x_rms = evl.full_rolling_rms(self.x_t, self.fs_emg//5)
-        self.assertEqual(
-            (len(self.x_t)),
-            len(x_rms) ,
-        )
-    def test_full_rolling_rms_time_shift(self):
-        x_rms = evl.full_rolling_rms(self.x_t, self.fs_emg//5)
-        peaks_rms, _ = find_peaks(x_rms, prominence=0.1)
-        peak_errors = np.abs(
-            (self.t_emg[peaks_rms] - self.t_emg[self.peak_idxs_source]))
-
-        self.assertFalse(
-            np.any(peak_errors > 0.05)
-        )
-
-
-class TestArvMethods(unittest.TestCase):
-    fs_emg = 2048
-    t_emg = np.array(range(3*fs_emg))/fs_emg
-    x_sin = np.sin(t_emg * 2 * np.pi)
-    x_sin[x_sin < 0] = 0
-    x_rand = np.random.normal(0, 1, size=len(x_sin))
-    x_t = x_sin * x_rand
-    peak_idxs_source, _ = find_peaks(x_sin, prominence=0.1)
-    def test_full_rolling_arv_length(self):
-        x_arv = evl.full_rolling_arv(self.x_t, self.fs_emg//5)
-        self.assertEqual(
-            (len(self.x_t)),
-            len(x_arv) ,
-        )
-
-    def test_full_rolling_arv_time_shift(self):
-        x_arv = evl.full_rolling_arv(self.x_t, self.fs_emg//5)
-        peaks_arv, _ = find_peaks(x_arv, prominence=0.1)
-        peak_errors = np.abs(
-            (self.t_emg[peaks_arv] - self.t_emg[self.peak_idxs_source]))
-
-        self.assertFalse(
-            np.any(peak_errors > 0.05)
-        )
 
 class TestComponentPickingMethods(unittest.TestCase):
 
