@@ -9,12 +9,9 @@ import numpy as np
 from scipy.signal import find_peaks
 
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
-from resurfemg.preprocessing.filtering import (
-    emg_bandpass_butter, emg_bandpass_butter_sample,
-    notch_filter, emg_lowpass_butter)
+from resurfemg.preprocessing import filtering as filt
 from resurfemg.preprocessing import ecg_removal as ecg_rm
-from resurfemg.preprocessing.envelope import (
-    full_rolling_rms, full_rolling_arv)
+from resurfemg.preprocessing import envelope as evl
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -30,14 +27,14 @@ synth_pocc_emg = os.path.join(
 class TestFilteringMethods(unittest.TestCase):
     def test_emg_band_pass_butter(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered = filt.emg_bandpass_butter(sample_read, 1, 10)
         self.assertEqual(
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,
         )
     def test_emg_band_pass_butter_sample(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter_sample(
+        sample_emg_filtered = filt.emg_bandpass_butter_sample(
             sample_read.samples, 1, 10, 2048)
         self.assertEqual(
             (len(sample_emg_filtered[0])),
@@ -45,7 +42,7 @@ class TestFilteringMethods(unittest.TestCase):
         )
     def test_emg_lowpass_butter(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_lowpass_butter(sample_read.samples, 5, 2048)
+        sample_emg_filtered = filt.emg_lowpass_butter(sample_read.samples, 5, 2048)
         self.assertEqual(
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,
@@ -53,7 +50,7 @@ class TestFilteringMethods(unittest.TestCase):
 
     def test_notch_filter(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = notch_filter(sample_read.samples, 2048, 80,2)
+        sample_emg_filtered = filt.notch_filter(sample_read.samples, 2048, 80,2)
         self.assertEqual(
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,
@@ -68,13 +65,13 @@ class TestRmsMethods(unittest.TestCase):
     x_t = x_sin * x_rand
     peak_idxs_source, _ = find_peaks(x_sin, prominence=0.1)
     def test_full_rolling_rms_length(self):
-        x_rms = full_rolling_rms(self.x_t, self.fs_emg//5)
+        x_rms = evl.full_rolling_rms(self.x_t, self.fs_emg//5)
         self.assertEqual(
             (len(self.x_t)),
             len(x_rms) ,
         )
     def test_full_rolling_rms_time_shift(self):
-        x_rms = full_rolling_rms(self.x_t, self.fs_emg//5)
+        x_rms = evl.full_rolling_rms(self.x_t, self.fs_emg//5)
         peaks_rms, _ = find_peaks(x_rms, prominence=0.1)
         peak_errors = np.abs(
             (self.t_emg[peaks_rms] - self.t_emg[self.peak_idxs_source]))
@@ -93,14 +90,14 @@ class TestArvMethods(unittest.TestCase):
     x_t = x_sin * x_rand
     peak_idxs_source, _ = find_peaks(x_sin, prominence=0.1)
     def test_full_rolling_arv_length(self):
-        x_arv = full_rolling_arv(self.x_t, self.fs_emg//5)
+        x_arv = evl.full_rolling_arv(self.x_t, self.fs_emg//5)
         self.assertEqual(
             (len(self.x_t)),
             len(x_arv) ,
         )
 
     def test_full_rolling_arv_time_shift(self):
-        x_arv = full_rolling_arv(self.x_t, self.fs_emg//5)
+        x_arv = evl.full_rolling_arv(self.x_t, self.fs_emg//5)
         peaks_arv, _ = find_peaks(x_arv, prominence=0.1)
         peak_errors = np.abs(
             (self.t_emg[peaks_arv] - self.t_emg[self.peak_idxs_source]))
@@ -113,7 +110,7 @@ class TestComponentPickingMethods(unittest.TestCase):
 
     def test_pick_more_peaks_array(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered = filt.emg_bandpass_butter(sample_read, 1, 10)
         sample_emg_filtered = sample_emg_filtered[:, :30*2048]
         t = np.array([x/2048 for x in range(len(sample_emg_filtered[0]))])
         sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
@@ -129,7 +126,7 @@ class TestComponentPickingMethods(unittest.TestCase):
 
     def test_pick_lowest_correlation_array(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered = filt.emg_bandpass_butter(sample_read, 1, 10)
         sample_emg_filtered = sample_emg_filtered[:, :30*2048]
         t = np.array([x/2048 for x in range(len(sample_emg_filtered[0]))])
         sample_emg_filtered[1] = sample_emg_filtered[0]
@@ -152,7 +149,7 @@ class TestComponentPickingMethods(unittest.TestCase):
 
     def test_pick_highest_correlation_array_multi(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered = filt.emg_bandpass_butter(sample_read, 1, 10)
         sample_emg_filtered = sample_emg_filtered[:, :30*2048]
         t = np.array([x/2048 for x in range(len(sample_emg_filtered[0]))])
         sample_emg_filtered[1] = sample_emg_filtered[0]
@@ -184,7 +181,7 @@ class TestComponentPickingMethods(unittest.TestCase):
 class TestPickingMethods(unittest.TestCase):
     def test_compute_ica_two_comp(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered = filt.emg_bandpass_butter(sample_read, 1, 10)
         sample_emg_filtered = sample_emg_filtered[:, :30*2048]
         t = np.array([x/2048 for x in range(len(sample_emg_filtered[0]))])
         sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
@@ -199,7 +196,7 @@ class TestPickingMethods(unittest.TestCase):
 
     def test_compute_ica_two_comp_multi(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered = filt.emg_bandpass_butter(sample_read, 1, 10)
         sample_emg_filtered = sample_emg_filtered[:, :30*2048]
         t = np.array([x/2048 for x in range(len(sample_emg_filtered[0]))])
         sample_emg_filtered[1]= sample_emg_filtered[0]*1.5
@@ -214,7 +211,7 @@ class TestPickingMethods(unittest.TestCase):
 
     def test_compute_ica_two_comp_selective(self):
         sample_read = Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered = filt.emg_bandpass_butter(sample_read, 1, 10)
         sample_emg_filtered = sample_emg_filtered[:, :30*2048]
         t = np.array([x/2048 for x in range(len(sample_emg_filtered[0]))])
         sample_emg_filtered[1] = sample_emg_filtered[0]*1.5
@@ -251,7 +248,7 @@ class TestEcgPeakDetection(unittest.TestCase):
 
 class TestGating(unittest.TestCase):
     sample_read= Poly5Reader(sample_emg)
-    sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
+    sample_emg_filtered = -filt.emg_bandpass_butter(sample_read, 1, 500)
     sample_emg_filtered = sample_emg_filtered[:30*2048]
     ecg_peaks, _  = scipy.signal.find_peaks(sample_emg_filtered[0, :])
 
@@ -309,7 +306,7 @@ class TestGating(unittest.TestCase):
 class TestWaveletDenoising(unittest.TestCase):
     sample_read = Poly5Reader(sample_emg)
     fs = sample_read.sample_rate
-    sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
+    sample_emg_filtered = -filt.emg_bandpass_butter(sample_read, 1, 500)
     sample_emg_filtered = sample_emg_filtered[:30*2048]
     ecg_peaks, _  = scipy.signal.find_peaks(sample_emg_filtered[0, :])
 

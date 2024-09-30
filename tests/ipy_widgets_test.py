@@ -23,6 +23,7 @@ class TestIpyWidgets(unittest.TestCase):
             folder_levels=None,
             verbose=False
         )
+        files.sort_values(by='files', inplace=True)
         button_list = ipy_widgets.file_select(
             files=files,
             folder_levels=['files'],
