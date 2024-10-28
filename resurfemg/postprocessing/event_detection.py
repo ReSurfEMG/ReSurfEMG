@@ -301,21 +301,21 @@ def detect_ventilator_breath(
 
     v_t_slice = v_vent[int(start_idx):int(end_idx)]
     if threshold is None:
-        treshold = 0.25 * np.percentile(v_t_slice, 90)
+        threshold = 0.25 * np.percentile(v_t_slice, 90)
     if prominence is None:
         prominence = 0.10 * np.percentile(v_t_slice, 90)
 
     resp_eff, _ = scipy.signal.find_peaks(
-        v_t_slice, height=treshold, prominence=prominence, width=width_s)
+        v_t_slice, height=threshold, prominence=prominence, width=width_s)
 
     if threshold_new is None:
-        treshold_new = 0.5 * np.percentile(v_t_slice[resp_eff], 90)
+        threshold_new = 0.5 * np.percentile(v_t_slice[resp_eff], 90)
     if prominence_new is None:
         prominence_new = 0.5 * np.percentile(v_t_slice, 90)
 
     ventilator_breath_idxs, _ = scipy.signal.find_peaks(
         v_t_slice,
-        height=treshold_new,
+        height=threshold_new,
         prominence=prominence_new,
         width=width_s
     )
@@ -382,9 +382,9 @@ def find_linked_peaks(
     :returns: Peaks indices of signal 2 closest to the peaks in signal 1
     :rtype: ~numpy.ndarray[int]
     """
-    if ~isinstance(signal_1_t_peaks, np.ndarray):
+    if not isinstance(signal_1_t_peaks, np.ndarray):
         signal_1_t_peaks = np.array(signal_1_t_peaks)
-    if ~isinstance(signal_2_t_peaks, np.ndarray):
+    if not isinstance(signal_2_t_peaks, np.ndarray):
         signal_2_t_peaks = np.array(signal_2_t_peaks)
     peaks_idxs_signal_1_in_2 = np.zeros(signal_1_t_peaks.shape, dtype=int)
     for idx, signal_1_t_peak in enumerate(signal_1_t_peaks):
