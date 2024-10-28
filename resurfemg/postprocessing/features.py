@@ -5,13 +5,7 @@ Licensed under the Apache License, version 2.0. See LICENSE for details.
 This file contains functions to extract features from preprocessed EMG arrays.
 """
 
-# import collections
-# import math
 import warnings
-# import logging
-# import scipy
-# from scipy.signal import savgol_filter
-# from scipy.stats import entropy
 from scipy.integrate import trapezoid
 import numpy as np
 
@@ -19,7 +13,7 @@ from resurfemg.helper_functions.math_operations import running_smoother
 
 
 def times_under_curve(
-    array,
+    emg_env,
     start_index,
     end_index,
 ):
@@ -27,8 +21,8 @@ def times_under_curve(
     This function is meant to calculate the length of time to peak in
     an absolute and relative sense
 
-    :param array: an array e.g. single lead EMG recording
-    :type array: np.array
+    :param emg_env: an single lead EMG envelope
+    :type emg_env: np.array
     :param start_index: which index number the breath starts on
     :type start_index: int
     :param end_index: which index number the breath ends on
@@ -37,7 +31,7 @@ def times_under_curve(
     :returns: times; a tuple of absolute and relative times
     :rtype: tuple
     """
-    breath_arc = array[start_index:end_index]
+    breath_arc = emg_env[start_index:end_index]
     smoothed_breath = running_smoother(breath_arc)
     abs_time = smoothed_breath.argmax()
     percent_time = abs_time / len(breath_arc)
@@ -46,21 +40,20 @@ def times_under_curve(
 
 
 def pseudo_slope(
-    array,
+    emg_env,
     start_index,
     end_index,
     smoothing=True,
 ):
     """
-    This is a function to get the shape/slope of the take-off angle
-    of the resp. surface EMG signal, however we are returning values of
-    mV divided by samples (in abs values), not a true slope
-    and the number will depend on sampling rate
-    and pre-processing, therefore it is recommended
-    only to compare across the same single sample run
+    This is a function to get the shape/slope of the take-off angle of the
+    EMG signal. However, the slope is returned in units/samples (in abs values)
+    , not a true slope. The slope will depend on sampling rate and pre-
+    processing. Therefore, only comparison across the same sample is
+    recommended.
 
-    :param array: an array e.g. single lead EMG recording
-    :type array: np.array
+    :param emg_env: an single lead EMG envelope
+    :type emg_env: np.array
     :param start_index: which index number the breath starts on
     :type start_index: int
     :param end_index: which index number the breath ends on
@@ -71,7 +64,7 @@ def pseudo_slope(
     :returns: pseudoslope
     :rtype: float
     """
-    breath_arc = array[start_index:end_index]
+    breath_arc = emg_env[start_index:end_index]
     pos_arc = abs(breath_arc)
     if smoothing:
         smoothed_breath = running_smoother(pos_arc)
@@ -178,7 +171,7 @@ def area_under_baseline(
             # Positively deflected signal: Baseline below peak
             y_ref = min(ref_signal[ref_start_idx:ref_end_idx])
             y_delta = baseline[start_idx:end_idx+1] - y_ref
-        elif np.median(np.sign(y_delta_curve[1:]) <= 0):
+        else:
             # Negatively deflected signal: Baseline above peak
             y_ref = max(ref_signal[ref_start_idx:ref_end_idx])
             y_delta = y_ref - baseline[start_idx:end_idx+1]
