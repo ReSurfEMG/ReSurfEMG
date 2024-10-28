@@ -103,8 +103,13 @@ def full_rolling_arv(emg_raw, window_length):
     :returns: The arv envelope of the EMG sample data
     :rtype: ~numpy.ndarray
     """
+<<<<<<< HEAD
     emg_raw_abs = pd.Series(np.abs(emg_raw))
     emg_arv = emg_raw_abs.rolling(
+=======
+    data_emg_abs = pd.Series(np.abs(data_emg))
+    emg_arv = data_emg_abs.rolling(
+>>>>>>> release_0_3_2
         window=window_length,
         min_periods=1,
         center=True).mean().values
