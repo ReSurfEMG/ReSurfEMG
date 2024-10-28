@@ -15,7 +15,7 @@ import warnings
 from scipy.integrate import trapezoid
 import numpy as np
 
-from resurfemg.preprocessing.envelope import running_smoother
+from resurfemg.helper_functions.math_operations import running_smoother
 
 
 def times_under_curve(

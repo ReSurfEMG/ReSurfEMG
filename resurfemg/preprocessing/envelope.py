@@ -33,10 +33,9 @@ def full_rolling_rms(emg_raw, window_length):
     return emg_rms
 
 
-def hi_envelope(our_signal, dmax=24):
+def hi_envelope(emg_raw, dmax=24):
     """
-    Takes a 1d signal array, and extracts 'high'envelope,
-    then makes high envelope, based on connecting peaks
+    Takes a 1d signal array, and extracts 'high' based on connecting peaks
     dmax: int, size of chunks,
 
     :param our_signal: 1d signal array usually of emg
@@ -47,17 +46,15 @@ def hi_envelope(our_signal, dmax=24):
     :returns: src_signal_gated, the gated result
     :rtype: ~numpy.ndarray
     """
-    # locals max is lmax
-    lmax = (np.diff(np.sign(np.diff(our_signal))) < 0).nonzero()[0] + 1
-    lmax = lmax[
-        [i+np.argmax(
-            our_signal[lmax[i:i+dmax]]
-        ) for i in range(0, len(lmax), dmax)]
-    ]
-    smoothed = savgol_filter(our_signal[lmax], int(0.8 * (len(lmax))), 3)
-    smoothed_interped = signal.resample(smoothed, len(our_signal))
+    # local maximum: lmax
+    lmax = (np.diff(np.sign(np.diff(emg_raw))) < 0).nonzero()[0] + 1
+    lmax = lmax[[
+        i+np.argmax(emg_raw[lmax[i:i+dmax]]) for i in range(0, len(lmax), dmax)
+    ]]
+    smoothed = savgol_filter(emg_raw[lmax], int(0.8 * (len(lmax))), 3)
+    emg_high = signal.resample(smoothed, len(emg_raw))
 
-    return smoothed_interped
+    return emg_high
 
 
 def naive_rolling_rms(emg_raw, window_length):
@@ -77,17 +74,6 @@ def naive_rolling_rms(emg_raw, window_length):
     emg_rms = np.sqrt((x_c[window_length:] - x_c[:-window_length])
                       / window_length)
     return emg_rms
-
-
-def running_smoother(array):
-    """
-    This is the smoother to use in time calculations
-    """
-    n_samples = len(array) // 10
-    new_list = np.convolve(abs(array), np.ones(n_samples), "valid") / n_samples
-    zeros = np.zeros(n_samples - 1)
-    smoothed_array = np.hstack((new_list, zeros))
-    return smoothed_array
 
 
 def full_rolling_arv(emg_raw, window_length):

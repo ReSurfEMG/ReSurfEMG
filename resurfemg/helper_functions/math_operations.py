@@ -356,3 +356,14 @@ def bell_curve(x, a, b, c):
     :rtype: ~numpy.ndarray
     """
     return a * np.exp(-(x - b) ** 2 / c ** 2)
+
+
+def running_smoother(array):
+    """
+    This is the smoother to use in time calculations
+    """
+    n_samples = len(array) // 10
+    new_list = np.convolve(abs(array), np.ones(n_samples), "valid") / n_samples
+    zeros = np.zeros(n_samples - 1)
+    smoothed_array = np.hstack((new_list, zeros))
+    return smoothed_array
