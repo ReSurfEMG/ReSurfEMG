@@ -180,3 +180,32 @@ def area_under_baseline(
         y_refs[idx] = y_ref
 
     return aubs, y_refs
+
+
+def respiratory_rate(
+    breath_idxs,
+    fs,
+    outlier_percentile = 33,
+    outlier_factor = 3
+):
+    """ Estimate respiratory rate based from breath indices. Breath-by-breath
+    respiratory rate larger than the outlier_percentile * outlier_factor are
+    excluded.
+    :param breath_idxs: breath indices
+    :type breath_idxs: ~numpy.ndarray[int]
+    :param fs: sampling frequency
+    :type fs: ~int
+    :param outlier_percentile: Respiratory rate outlier percentile
+    :type outlier_percentile: ~float
+    :param outlier_percentile: Respiratory rate outlier factor
+    :type outlier_percentile: ~float
+    :returns: median respiratory rate, breath-to-breath respiratory rate.
+    :rtype: (~float, ~numpy.ndarray[~float]
+    """
+    breath_interval = breath_idxs[1:] - breath_idxs[:-1]
+    rr_b2b = 60 * fs / breath_interval
+    outlier_threshold = outlier_factor * np.prctile(rr_b2b, outlier_percentile)
+    rr_b2b[rr_b2b > outlier_threshold] = np.nan
+    rr_median = np.nanmedian(rr_b2b)
+
+    return rr_median, rr_b2b
