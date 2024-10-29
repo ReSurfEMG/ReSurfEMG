@@ -204,8 +204,8 @@ def respiratory_rate(
     """
     breath_interval = breath_idxs[1:] - breath_idxs[:-1]
     rr_b2b = 60 * fs / breath_interval
-    outlier_threshold = outlier_factor * np.prctile(rr_b2b, outlier_percentile)
+    outlier_threshold = outlier_factor * np.percentile(rr_b2b, outlier_percentile)
     rr_b2b[rr_b2b > outlier_threshold] = np.nan
-    rr_median = np.nanmedian(rr_b2b)
+    rr_median = float(np.nanmedian(rr_b2b))
 
     return rr_median, rr_b2b
