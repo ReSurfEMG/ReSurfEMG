@@ -82,7 +82,7 @@ def amplitude(
     baseline=None,
 ):
     """
-    Calculate the peak height of signal and the baseline for the windows 
+    Calculate the peak height of signal and the baseline for the windows
     at the peak_idxs relative to the baseline. If no baseline is provided, the
     peak height relative to zero is determined.
     :param signal: signal to determine the peak heights in
@@ -91,7 +91,7 @@ def amplitude(
     :type peak_idxs: ~np.ndarray
     :param baseline: running baseline of the signal
     :type baseline: ~numpy.ndarray
-    :returns amplitudes: list of peak amplitudes 
+    :returns amplitudes: list of peak amplitudes
     :rtype: ~np.ndarray
     """
     if baseline is None:
