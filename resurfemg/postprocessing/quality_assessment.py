@@ -203,6 +203,28 @@ def percentage_under_baseline(
     return valid_timeproducts, percentages_aub, y_refs
 
 
+def detect_local_high_aub(
+    aubs,
+    threshold_percentile=75.0,
+    threshold_factor=4.0,
+):
+    """
+    Detect local upward deflections in the area under the baseline.
+    param aubs: List of area under the baseline values. See postprocessing.
+    :features.area_under_baseline
+    :type aubs: ~numpy.ndarray[~float]
+    :param threshold_percentile: percentile for detecting high baseline
+    :type threshold_percentile: ~float
+    :param threshold_factor: multiplication factor for threshold_percentile
+    :type threshold_factor: ~float
+    :returns valid_aubs: Boolean list of aub values under threshold
+    :rtype: numpy.ndarray[bool]
+    """
+    threshold = threshold_factor * np.percentile(aubs, threshold_percentile)
+    valid_aubs = (aubs < threshold)
+    return valid_aubs
+
+
 def detect_non_consecutive_manoeuvres(
     ventilator_breath_idxs,
     manoeuvres_idxs

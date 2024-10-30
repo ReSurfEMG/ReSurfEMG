@@ -41,6 +41,14 @@ etps = feat.time_product(
     fs=fs_emg,
     start_idxs=emg_start_idxs,
     end_idxs=emg_end_idxs)
+aubs = feat.area_under_baseline(
+    signal=y_env_emg,
+    fs=fs_emg,
+    peak_idxs=peaks_env,
+    start_idxs=emg_start_idxs,
+    end_idxs=emg_end_idxs,
+    baseline=y_emg_baseline,
+    aub_window_s=5*fs_emg)
 
 # Dummy Pocc signal
 fs_vent = 100
@@ -201,6 +209,14 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
         )
 
         self.assertFalse(np.all(valid_timeproducts))
+    
+    def test_detect_local_high_aub(self):
+        valid_aubs = qa.detect_local_high_aub(
+            aubs=aubs,
+            threshold_percentile=75,
+            threshold_factor=4,
+        )
+        self.assertTrue(np.all(valid_aubs))
 
 
 class TestBellFit(unittest.TestCase):
