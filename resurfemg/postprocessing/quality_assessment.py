@@ -24,15 +24,15 @@ def snr_pseudo(
     on the peak height relative to the baseline.
 
     :param signal: Signal to evaluate
-    :type signal: ~numpy.ndarray
+    :type signal: ~numpy.ndarray[float]
     :param peaks: list of individual peak indices
-    :type gate_peaks: ~list
+    :type gate_peaks: ~list[int]
     :param baseline: Baseline signal to evaluate SNR to.
-    :type baseline: ~numpy.ndarray
+    :type baseline: ~numpy.ndarray[float]
     :param fs: sampling rate
     :type fs: int
-    :returns: snr_peaks, the SNR per peak
-    :rtype: ~numpy.ndarray
+    :returns snr_peaks: the SNR per peak
+    :rtype snr_peaks: ~numpy.ndarray[float]
     """
 
     peak_heights = np.zeros((len(peaks),))

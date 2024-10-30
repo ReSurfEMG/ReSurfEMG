@@ -63,11 +63,11 @@ for _idx, _ in enumerate(pocc_peaks_valid):
     )
 
 class TestArrayMath(unittest.TestCase):
-    def test_times_under_curve(self):
+    def test_time_to_peak(self):
         sample_array= np.array(
             [0,1,2,3,1,5,6,-5,8,9,20,11,12,13,4,5,6,1,1,1,0]
         )
-        counted = feat.times_under_curve(sample_array,0,20)
+        counted = feat.time_to_peak(sample_array,[0],[20])
         self.assertEqual(
             counted,
             ((10,0.5)),
@@ -77,7 +77,7 @@ class TestArrayMath(unittest.TestCase):
         test_arr_1 = np.array(
             [0,9,8,7,10,11,13,15,12,16,13,17,18,6,5,4,3,2,1,0,0,0,0,0]
         )
-        slope = feat.pseudo_slope(test_arr_1,0,17)
+        slope = feat.pseudo_slope(test_arr_1,[0],[17])
         self.assertEqual(
             slope,
             1.5
