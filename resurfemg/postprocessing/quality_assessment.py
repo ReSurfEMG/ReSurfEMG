@@ -408,7 +408,7 @@ def evaluate_respiratory_rates(
     :type vent_rr: ~float
     :param min_fraction: Required minimum detected fraction of EMG breaths
     :type min_fraction: ~numpy.ndarray
-    :returns: detected_fraction: detected fraction of EMG breahts, 
+    :returns: detected_fraction: detected fraction of EMG breahts
     :rtype: (~float, ~bool)
     """
     detected_fraction = float(len(emg_breath_idxs)/(rr_vent * t_emg/60))
