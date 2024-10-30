@@ -122,5 +122,15 @@ class TestTimeProduct(unittest.TestCase):
         )
         self.assertAlmostEqual(np.median(aub), 2.5, 2)
 
+
+class TestRespiratoryRate(unittest.TestCase):
+    peak_idxs = [(5//2 + x*5) * 2048 for x in range(3)]
+    def test_rr(self):
+        rr_median, _ = feat.respiratory_rate(
+            self.peak_idxs,
+            fs_emg)
+        self.assertAlmostEqual(rr_median, 12, 2)
+
+
 if __name__ == '__main__':
     unittest.main()

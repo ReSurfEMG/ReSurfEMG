@@ -202,7 +202,7 @@ def respiratory_rate(
     :returns: median respiratory rate, breath-to-breath respiratory rate.
     :rtype: (~float, ~numpy.ndarray[~float]
     """
-    breath_interval = breath_idxs[1:] - breath_idxs[:-1]
+    breath_interval = np.array(breath_idxs[1:]) - np.array(breath_idxs[:-1])
     rr_b2b = 60 * fs / breath_interval
     outlier_threshold = outlier_factor * np.percentile(
         rr_b2b, outlier_percentile)
