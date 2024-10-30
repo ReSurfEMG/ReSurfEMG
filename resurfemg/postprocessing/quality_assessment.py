@@ -333,3 +333,29 @@ def evaluate_bell_curve_error(
 
     return (valid_peak, bell_error, percentage_bell_error, y_min,
             fitted_parameters)
+
+
+def evaluate_respiratory_rates(
+    emg_breath_idxs,
+    t_emg,
+    rr_vent,
+    min_fraction=0.1,
+):
+    """
+    This function evaluates fraction of detected EMG breaths relative to the
+    ventilatory respiratory rate.
+
+    :param emg_breath_idxs: EMG breath indices
+    :type emg_breath_idxs: ~numpy.ndarray
+    :param t_emg: Recording time in seconds
+    :type t_emg: ~float
+    :param vent_rr: ventilatory respiratory rate (breath/min)
+    :type vent_rr: ~float
+    :param min_fraction: Required minimum detected fraction of EMG breaths
+    :type min_fraction: ~numpy.ndarray
+    :returns: detected_fraction: detected fraction of EMG breahts, 
+    :rtype: (~float, ~bool)
+    """
+    detected_fraction = float(len(emg_breath_idxs)/(rr_vent * t_emg/60))
+    criterium_met = (detected_fraction >= min_fraction)
+    return (detected_fraction, criterium_met)

@@ -20,8 +20,11 @@ sample_emg = os.path.join(
 )
 # Dummy EMG signal
 fs_emg = 2048
+rr = 30
+t_r = 60/rr
+f_r = 1/t_r
 t_emg = np.array([s_t/fs_emg for s_t in range(10*fs_emg)])
-y_sin = np.cos((0.5* t_emg - 0.5)* 2 * np.pi)
+y_sin = np.cos((f_r* t_emg - 0.5)* 2 * np.pi)
 y_sin[y_sin < 0] = 0
 y_rand = np.random.normal(0, 1, size=len(y_sin))
 y_rand_baseline = np.random.normal(0, 1, size=len(y_sin)) / 10
@@ -34,15 +37,15 @@ peaks_env, _ = scipy.signal.find_peaks(y_env_emg, prominence=0.1)
 emg_start_idxs, emg_end_idxs, *_ = evt.onoffpeak_baseline_crossing(
              y_env_emg, y_emg_baseline, peaks_env)
 etps = feat.time_product(
-    signal=y_env_emg, fs=fs_emg, start_idxs=emg_start_idxs, end_idxs=emg_end_idxs)
+    signal=y_env_emg,
+    fs=fs_emg,
+    start_idxs=emg_start_idxs,
+    end_idxs=emg_end_idxs)
 
 # Dummy Pocc signal
 fs_vent = 100
 s_vent = np.array([(s_t) for s_t in range(10*fs_vent)])
 t_vent = (s_vent + 1)/fs_vent
-rr = 12
-t_r = 60/rr
-f_r = 1/t_r
 y_sin = np.sin((f_r* t_vent)* 2 * np.pi)
 y_sin[y_sin > 0] = 0
 y_t_p_vent = 5 * y_sin
@@ -232,6 +235,18 @@ class TestInterpeakMethods(unittest.TestCase):
 
         self.assertTrue(valid_interpeak, "The interpeak_dist function"
                         "did not return True as expected.")
+
+class TestEvaluateRespiratoryRates(unittest.TestCase):
+    def test_evaluate_respiratory_rates(self):
+        print(rr, peaks_env)
+        fraction_emg_breaths, crit_met = qa.evaluate_respiratory_rates(
+            emg_breath_idxs=peaks_env,
+            t_emg=max(t_emg),
+            rr_vent=rr,
+        )
+        self.assertAlmostEqual(fraction_emg_breaths, 1.0, 2)
+        self.assertTrue(crit_met)
+
 
 if __name__ == '__main__':
     unittest.main(argv=[''], exit=False)
