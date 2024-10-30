@@ -209,7 +209,7 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
         )
 
         self.assertFalse(np.all(valid_timeproducts))
-    
+
     def test_detect_local_high_aub(self):
         valid_aubs = qa.detect_local_high_aub(
             aubs=aubs,
@@ -217,6 +217,16 @@ class TestAreaUnderBaselineQuality(unittest.TestCase):
             threshold_factor=4,
         )
         self.assertTrue(np.all(valid_aubs))
+
+    def test_detect_extreme_time_products(self):
+        valid_etps = qa.detect_extreme_time_products(
+            etps,
+            upper_percentile=95.0,
+            upper_factor=10.0,
+            lower_percentile=5.0,
+            lower_factor=.1,
+        )
+        self.assertTrue(np.all(valid_etps))
 
 
 class TestBellFit(unittest.TestCase):

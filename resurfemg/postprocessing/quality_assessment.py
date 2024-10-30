@@ -225,6 +225,39 @@ def detect_local_high_aub(
     return valid_aubs
 
 
+def detect_extreme_time_products(
+    time_products,
+    upper_percentile=95.0,
+    upper_factor=10.0,
+    lower_percentile=5.0,
+    lower_factor=.1,
+):
+    """
+    Detect extreme (high or low) time product values. See postprocessing.
+    features.time_product
+    :param time_products: List of time_productsvalues.
+    :type time_products: ~numpy.ndarray[~float]
+    :param upper_percentile: percentile for detecting high time products
+    :type upper_percentile: ~float
+    :param upper_factor: multiplication factor for upper_percentile
+    :type upper_factor: ~float
+    :param lower_percentile: percentile for detecting low time products
+    :type lower_percentile: ~float
+    :param lower_factor: multiplication factor for lower_percentile
+    :type lower_factor: ~float
+    :returns valid_time_product: Boolean list of time product values within
+    bounds
+    :rtype: numpy.ndarray[bool]
+    """
+    upper_threshold = upper_factor * np.percentile(
+        time_products, upper_percentile)
+    lower_threshold = lower_factor * np.percentile(
+        time_products, lower_percentile)
+    valid_aubs = np.all(np.array([[time_products < upper_threshold],
+                                  [time_products > lower_threshold]]), axis=0)
+    return valid_aubs
+
+
 def detect_non_consecutive_manoeuvres(
     ventilator_breath_idxs,
     manoeuvres_idxs
