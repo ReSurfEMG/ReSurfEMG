@@ -123,6 +123,29 @@ class TestTimeProduct(unittest.TestCase):
         self.assertAlmostEqual(np.median(aub), 2.5, 2)
 
 
+class TestAmplitudes(unittest.TestCase):
+    fs_emg = 2048
+    t_emg = np.array([s_t/fs_emg for s_t in range(15*fs_emg)])
+
+    y_block = np.array(
+        3*scipy.signal.square((t_emg - 1.25)/5 * 2 * np.pi, duty=0.5))
+    y_block[y_block < 0] = 0
+    y_baseline = np.ones(y_block.shape)
+
+    peak_idxs = [(5//2 + x*5) * 2048 for x in range(3)]
+    def test_amplitude(self):
+        amplitudes = feat.amplitude(
+            signal=self.y_block,
+            peak_idxs=self.peak_idxs,
+            baseline=self.y_baseline,
+        )
+        np.testing.assert_array_almost_equal(
+            amplitudes,
+            np.array([2., 2., 2.]),
+            6
+        )
+
+
 class TestRespiratoryRate(unittest.TestCase):
     peak_idxs = [(5//2 + x*5) * 2048 for x in range(3)]
     def test_rr(self):

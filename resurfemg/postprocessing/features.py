@@ -76,6 +76,31 @@ def pseudo_slope(
     return pseudoslope
 
 
+def amplitude(
+    signal,
+    peak_idxs,
+    baseline=None,
+):
+    """
+    Calculate the peak height of signal and the baseline for the windows 
+    at the peak_idxs relative to the baseline. If no baseline is provided, the
+    peak height relative to zero is determined.
+    :param signal: signal to determine the peak heights in
+    :type signal: ~numpy.ndarray
+    :param peak_idxs: list of individual peak start indices
+    :type peak_idxs: ~np.ndarray
+    :param baseline: running baseline of the signal
+    :type baseline: ~numpy.ndarray
+    :returns amplitudes: list of peak amplitudes 
+    :rtype: ~np.ndarray
+    """
+    if baseline is None:
+        baseline = np.zeros(signal.shape)
+    amplitudes = np.array(signal[peak_idxs] - baseline[peak_idxs])
+
+    return amplitudes
+
+
 def time_product(
     signal,
     fs,
