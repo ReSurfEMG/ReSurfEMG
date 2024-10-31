@@ -40,7 +40,7 @@ class TestFilteringMethods(unittest.TestCase):
     def test_emg_lowpass_butter(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = filt.emg_lowpass_butter(
-            sample_read.samples, 5, 2048)
+            sample_read.samples, 5.0, 2048)
         self.assertEqual(
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,

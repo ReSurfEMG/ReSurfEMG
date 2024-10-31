@@ -67,7 +67,7 @@ def emg_lowpass_butter(
     """
     sos = signal.butter(
         order,
-        [low_pass],
+        low_pass,
         'lowpass',
         fs=fs_emg,
         output='sos',
@@ -99,7 +99,7 @@ def emg_highpass_butter(
     """
     sos = signal.butter(
         order,
-        [high_pass],
+        high_pass,
         'highpass',
         fs=fs_emg,
         output='sos',
