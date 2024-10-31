@@ -400,9 +400,9 @@ def evaluate_event_timing(
     Evaluate whether the timing of the events in `t_events_1` preceeds the
     events in `t_events_2` minimally by `delta_min` and maximally by
     `delta_max`. `t_events_1` and `t_events_2` should be the same length.
-    :param t_events_1: Timing of the events that should happen first 
+    :param t_events_1: Timing of the events that should happen first
     :type t_events_1: ~numpy.ndarray[float]
-    :param t_events_2: Timing of the events that should happen second 
+    :param t_events_2: Timing of the events that should happen second
     :type t_events_2: ~numpy.ndarray[float]
     :param delta_min: The delta time event 1 should at least preceed event 2.
     :type delta_min: ~float
