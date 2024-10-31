@@ -246,7 +246,7 @@ def simulate_emg_with_occlusions(
     white_noise = np.random.normal(0,
                                    drift_amp,
                                    size=(len(t_emg)+int(1/f_high)*fs_emg, ))
-    part_drift_tmp = filt.emg_lowpass_butter_sample(
+    part_drift_tmp = filt.emg_lowpass_butter(
         white_noise, f_high, fs_emg, order=3)
     part_drift = part_drift_tmp[int(1/f_high)*fs_emg:] / f_high
 

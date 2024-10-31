@@ -22,7 +22,8 @@ class TestArrayMath(unittest.TestCase):
 
     def test_scale_arrays(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
+        sample_emg_filtered = emg_bandpass_butter(
+            sample_read.samples, 1, 500, sample_read.sample_rate)
         new_emg = mo.scale_arrays(sample_emg_filtered , 3,0)
         self.assertEqual(
             (new_emg.shape),
@@ -31,8 +32,10 @@ class TestArrayMath(unittest.TestCase):
 
     def test_zero_one_for_jumps_base(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = emg_bandpass_butter(sample_read, 1, 500)
-        new_emg = mo.zero_one_for_jumps_base(sample_emg_filtered[0] , sample_emg_filtered[0].mean())
+        sample_emg_filtered = emg_bandpass_butter(
+            sample_read.samples, 1, 500, sample_read.sample_rate)
+        new_emg = mo.zero_one_for_jumps_base(
+            sample_emg_filtered[0] , sample_emg_filtered[0].mean())
         new_emg = np.array(np.vstack((new_emg, new_emg)))
         self.assertEqual(
             (new_emg.shape[1]),

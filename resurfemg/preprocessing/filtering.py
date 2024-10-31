@@ -7,270 +7,180 @@ This file contains functions to filter EMG arrays.
 """
 
 from scipy import signal
-from scipy.signal import butter, lfilter
 import numpy as np
 
 
-def emg_bandpass_butter(emg_raw, low_pass, high_pass, order=3):
-    """The parameter taken in here is the Poly5 file. Output is
-    the EMG after a bandpass as made here.
-
-    :param emg_raw: Poly5 file with the samples to work over
-    :type emg_raw: ~TMSiSDK.file_readers.Poly5Reader
-    :param low_pass: The number to cut off :code:`frequenciesabove`
-    :type low_pass: int
-    :param high_pass: The number to cut off :code:`frequenceisbelow`
-    :type high_pass: int
-    :param order: The filter order
-    :type order: int
-
-    :returns: The bandpass filtered EMG sample data
-    :rtype: ~numpy.ndarray
-    """
-    sos = signal.butter(
-        order,
-        [low_pass, high_pass],
-        'bandpass',
-        fs=emg_raw.sample_rate,
-        output='sos',
-    )
-    # sos (output parameter) is second order section  -> "stabilizes" ?
-    emg_filtered = signal.sosfiltfilt(sos, emg_raw.samples)
-    return emg_filtered
-
-
-def emg_bandpass_butter_sample(
-    emg_raw_samp,
-    low_pass,
+def emg_bandpass_butter(
+    emg_raw,
     high_pass,
-    fs,
+    low_pass,
+    fs_emg,
     order=3,
-    output='sos'
 ):
-    """Output is the EMG after a bandpass as made here.
+    """Bandpass filter for EMG signal
 
-    :param emg_raw_samp: The array in the sample
-    :type emg_raw_samp: ~numpy.ndarray
-    :param low_pass: The number to cut off :code:`frequenciesabove`
-    :type low_pass: int
-    :param high_pass: The number to cut off :code:`frequenceisbelow`
-    :type high_pass: int
-    :param fs: The sample rate i.e. Hertz
-    :type fs: int
+    :param emg_raw: The raw EMG signal
+    :type emg_raw: ~numpy.ndarray
+    :param high_pass: High pass cut-off frequency :code:`frequenceisabove`
+    :type high_pass: ~float
+    :param low_pass: Low pass cut-off frequency :code:`frequenciesbelow`
+    :type low_pass: ~float
+    :param fs_emg: Sampling frequency
+    :type fs_emg: int
     :param order: The filter order
     :type order: int
-    :param output: The type of sampling stabilizor
-    :type high_pass: str
 
-    :returns: The bandpass filtered EMG sample data
-    :rtype: ~numpy.ndarray
+    :returns emg_filt: The bandpass filtered EMG data
+    :rtype emg_filt: ~numpy.ndarray
     """
     sos = signal.butter(
         order,
-        [low_pass, high_pass],
+        [high_pass, low_pass],
         'bandpass',
-        fs=fs,
+        fs=fs_emg,
         output='sos',
     )
     # sos (output parameter)is second order section  -> "stabilizes" ?
-    emg_filtered = signal.sosfiltfilt(sos, emg_raw_samp)
-    return emg_filtered
+    emg_filt = signal.sosfiltfilt(sos, emg_raw)
+    return emg_filt
 
 
-def emg_lowpass_butter_sample(
-    emg_raw_samp,
+def emg_lowpass_butter(
+    emg_raw,
     low_pass,
-    fs,
+    fs_emg,
     order=3,
 ):
-    """Output is the EMG after a lowpass as made here.
+    """Lowpass filter for EMG signal
 
-    :param emg_raw_samp: The array in the sample
-    :type emg_raw_samp: ~numpy.ndarray
-    :param low_pass: The number to cut off :code:`frequenciesabove`
-    :type low_pass: int
-    :param low_pass: The number to cut off :code:`frequenciesabove`
-    :type low_pass: int
+    :param emg_raw: The raw EMG signal
+    :type emg_raw: ~numpy.ndarray
+    :param low_pass: Low pass cut-off frequency :code:`frequenciesbelow`
+    :type low_pass: ~float
+    :param fs_emg: Sampling frequency
+    :type fs_emg: int
     :param order: The filter order
     :type order: int
 
-    :returns: The bandpass filtered EMG sample data
+    :returns emg_filt: The lowpass filtered EMG data
     :rtype: ~numpy.ndarray
     """
     sos = signal.butter(
         order,
         [low_pass],
         'lowpass',
-        fs=fs,
+        fs=fs_emg,
         output='sos',
     )
-    emg_filtered = signal.sosfiltfilt(sos, emg_raw_samp)
-    return emg_filtered
+    emg_filt = signal.sosfiltfilt(sos, emg_raw)
+    return emg_filt
 
 
-def emg_highpass_butter_sample(
-    emg_raw_samp,
+def emg_highpass_butter(
+    emg_raw,
     high_pass,
-    fs,
+    fs_emg,
     order=3,
 ):
 
-    """Output is the EMG after a bandpass as made here.
+    """Highpass filter for EMG signal
 
-    :param emg_raw_samp: The array in the sample
-    :type emg_raw_samp: ~numpy.ndarray
-    :param high_pass: The number to cut off :code:`frequenciesabove`
-    :type high_pass: int
+    :param emg_raw: The raw EMG signal
+    :type emg_raw: ~numpy.ndarray
+    :param high_pass: High pass cut-off frequency :code:`frequenceisabove`
+    :type high_pass: ~float
+    :param fs_emg: Sampling frequency
+    :type fs_emg: int
     :param order: The filter order
     :type order: int
 
-    :returns: The bandpass filtered EMG sample data
-    :rtype: ~numpy.ndarray
+    :returns emg_filt: The highpass filtered EMG data
+    :rtype emg_filt: ~numpy.ndarray
     """
     sos = signal.butter(
         order,
         [high_pass],
         'highpass',
-        fs=fs,
+        fs=fs_emg,
         output='sos',
     )
-    emg_filtered = signal.sosfiltfilt(sos, emg_raw_samp)
-    return emg_filtered
+    emg_filt = signal.sosfiltfilt(sos, emg_raw)
+    return emg_filt
 
 
-def notch_filter(sample, sample_frequ, freq_to_pull, quality_factor_q):
-    """This is a filter designed to take out a specific frequency.  In
-    the EU in some data electrical cords can interfere at around 50
-    Hertz.  In some other locations the interference is at 60 Hertz.
-    The specificities of a local power grid may neccesitate notch
-    filtering.
+def notch_filter(emg_raw, f_notch, fs_emg, q):
+    """This is a filter designed to take out a specific frequency band.
 
-    :param sample: Percentage variation tolerance to allow without cutting
-    :type sample: int
-    :param sample_frequ: The frequency at which the sample was captured
-    :type sample_frequ: int
-    :param freq_to_pull: The frequency you desire to remove from the signal
-    :type freq_to_pull: int
-    :param quality_factor_q: How high the quality of the removal is
-    :type quality_factor_q: int
+    :param emg_raw: Percentage variation tolerance to allow without cutting
+    :type emg_raw: int
+    :param f_notch: The frequency to remove from the signal
+    :type f_notch: float
+    :param fs_emg: Sampling frequency
+    :type fs_emg: int
+    :param q: Quality factor of notch filter, Q = f_notch/band_width of band-
+    stop, see scipy.signal.iirnotch
+    :type q: float
 
-    :return: The filterered sample data
-    :rtype: ~numpy.ndarray
+    :returns emg_filt: The notch filtered EMG data
+    :rtype emg_filt: ~numpy.ndarray
 
     """
-    # create notch filter
-    # design a notch filter using signal.iirnotch
     b_notch, a_notch = signal.iirnotch(
-        freq_to_pull,
-        quality_factor_q,
-        sample_frequ)
+        f_notch,
+        q,
+        fs_emg)
 
-    # make the output signal
-    output_signal = signal.filtfilt(b_notch, a_notch, sample)
+    output_signal = signal.filtfilt(b_notch, a_notch, emg_raw)
     return output_signal
 
 
-def emg_highpass_butter(emg_raw, cut_above, fs, order=3):
-    """The parameter taken in here is the Poly5 file's samples or
-    another array.  Output is the EMG after a bandpass as made here.
-
-    :param emg_raw: Samples from the EMG
-    :type emg_raw: ~numpy.ndarray
-    :param cut_above: The number to cut off :code:`frequenceisbelow`
-    :type cut_above: int
-    :param fs: The sample rate i.e. Hertz
-    :type fs: int
-    :param order: The filter order
-    :type order: int
-
-    :returns: The bandpass filtered EMG sample data
-    :rtype: ~numpy.ndarray
-    """
-    sos = signal.butter(
-        order,
-        cut_above,
-        'highpass',
-        fs=fs,
-        output='sos')
-    # sos (output parameter)is second order section  -> "stabilizes" ?
-    emg_filtered = signal.sosfiltfilt(sos, emg_raw)
-    return emg_filtered
-
-
 def compute_power_loss(
-    original_signal,
-    original_signal_sampling_frequency,
-    processed_signal,
-    processed_signal_sampling_frequency
+    signal_original,
+    fs_original,
+    signal_processed,
+    fs_processed,
+    n_segment=None,
+    percent_overlap=25,
 ):
     """This function computes the percentage of power loss after the
-    processing of a signal. Inputs include the original_signal (signal
-    before the processing), :code:`original_signal_sampling_frequency`
-    (sampling frequency of the signal before processing),
-    :code:`processed_signal` (signal after processing),
-    :code:`processed_signal_sampling_frequency` (sampling frequency of
-    the signal after processing).
+    processing.
 
-    Output is the percentage of power loss.
-
-    :param original_signal: Array.
-    :type  original_signal: ~numpy.ndarray
-    :param original_signal_sampling_frequency: Sampling freq. original signal
+    :param signal_original: Original signal
+    :type  signal_original: ~numpy.ndarray
+    :param fs_original: Sampling frequency of orginal signal
     :type original_signal_sampling_frequency: int
-    :param processed_signal: Array.
-    :type  processed_signal: ~numpy.ndarray
-    :param processed_signal_sampling_frequency: Sampling frequency processed
-        signal
-    :type processed_signal_sampling_frequency: int
+    :param signal_processed: Array.
+    :type  signal_processed: ~numpy.ndarray
+    :param fs_processed: Sampling frequency of orginal signal
+    :type fs_processed: int
+    :param n_segment: Pwelch window width
+    :type n_segment: int
+    :param percent_overlap: Pwelch window overlap percentage
+    :type percent_overlap: float
 
-    :returns: Power loss
-    :rtype: float
+    :returns power_loss: Percentage of power loss
+    :rtype power_loss: float
     """
-    nperseg = 1024
-    noverlap = 512
+    if n_segment is None:
+        n_segment = fs_original // 2
+
+    noverlap = int(percent_overlap/100 * fs_original)
 
     # power spectrum density of the original and
     # processed signals using Welch method
-    Pxx_den_orig = signal.welch(  # as per Lu et al. 2009
-        original_signal,
-        original_signal_sampling_frequency,
-        nperseg=nperseg,
+    pxx_den_orig = signal.welch(  # as per Lu et al. 2009
+        signal_original,
+        fs_original,
+        nperseg=n_segment,
         noverlap=noverlap,
     )
-    Pxx_den_processed = signal.welch(
-        processed_signal,
-        processed_signal_sampling_frequency,
-        nperseg=nperseg,
-        noverlap=noverlap,)
+    pxx_den_processed = signal.welch(
+        signal_processed,
+        fs_processed,
+        nperseg=n_segment,
+        noverlap=noverlap,
+    )
     # compute the percentage of power loss
-    power_loss = 100*(1-(np.sum(Pxx_den_processed)/np.sum(Pxx_den_orig)))
+    power_loss = 100*(1-(np.sum(pxx_den_orig)/np.sum(pxx_den_processed)))
 
     return power_loss
-
-
-def helper_lowpass(cutoff, fs, order=5):
-    """
-    This is a helper function inside the butter_lowpass_filter function.
-    """
-    return butter(order, cutoff, fs=fs, btype='low', analog=False)
-
-
-def emg_lowpass_butter(array, cutoff, fs, order=5):
-    """
-    This is a lowpass filter of butterworth design.
-
-    :param array: 1d signal array usually of EMG
-    :type array: ~numpy.ndarray
-    :param cutoff: frequency above which to filter out
-    :type cutoff: int
-    :param fs: frequency array sampled at in Hertz
-    :type fs: int
-    :param order: order of the filter
-    :type order: int
-
-    :returns: signal_filtered
-    :rtype: ~numpy.ndarray
-    """
-    b, a = helper_lowpass(cutoff, fs, order=order)
-    signal_filtered = lfilter(b, a, array)
-    return signal_filtered

@@ -42,7 +42,8 @@ class TestEcgPeakDetection(unittest.TestCase):
 
 class TestGating(unittest.TestCase):
     sample_read= Poly5Reader(sample_emg)
-    sample_emg_filtered = -filt.emg_bandpass_butter(sample_read, 1, 500)
+    sample_emg_filtered = -filt.emg_bandpass_butter(
+        sample_read.samples, 1, 500, 2048)
     sample_emg_filtered = sample_emg_filtered[:30*2048]
     ecg_peaks, _  = scipy.signal.find_peaks(sample_emg_filtered[0, :])
 
@@ -100,7 +101,8 @@ class TestGating(unittest.TestCase):
 class TestWaveletDenoising(unittest.TestCase):
     sample_read = Poly5Reader(sample_emg)
     fs = sample_read.sample_rate
-    sample_emg_filtered = -filt.emg_bandpass_butter(sample_read, 1, 500)
+    sample_emg_filtered = -filt.emg_bandpass_butter(
+        sample_read.samples, 1, 500, fs)
     sample_emg_filtered = sample_emg_filtered[:30*2048]
     ecg_peaks, _  = scipy.signal.find_peaks(sample_emg_filtered[0, :])
 

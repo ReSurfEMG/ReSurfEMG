@@ -23,15 +23,16 @@ synth_pocc_emg = os.path.join(
 class TestFilteringMethods(unittest.TestCase):
     def test_emg_band_pass_butter(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = filt.emg_bandpass_butter(sample_read, 1, 10)
+        sample_emg_filtered = filt.emg_bandpass_butter(
+            sample_read.samples, 1, 10, sample_read.sample_rate)
         self.assertEqual(
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,
         )
     def test_emg_band_pass_butter_sample(self):
         sample_read= Poly5Reader(sample_emg)
-        sample_emg_filtered = filt.emg_bandpass_butter_sample(
-            sample_read.samples, 1, 10, 2048)
+        sample_emg_filtered = filt.emg_bandpass_butter(
+            sample_read.samples, high_pass=1, low_pass=10, fs_emg=2048)
         self.assertEqual(
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,
@@ -48,7 +49,7 @@ class TestFilteringMethods(unittest.TestCase):
     def test_notch_filter(self):
         sample_read= Poly5Reader(sample_emg)
         sample_emg_filtered = filt.notch_filter(
-            sample_read.samples, 2048, 80,2)
+            sample_read.samples, 80, 2048, 2)
         self.assertEqual(
             (len(sample_emg_filtered[0])),
             len(sample_read.samples[0]) ,

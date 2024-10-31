@@ -21,7 +21,8 @@ class TestVisualizationMethods(unittest.TestCase):
     def setUp(self):
         # Common setup for all tests
         sample_read = Poly5Reader(sample_emg)
-        self.sample_emg_filtered = -emg_bandpass_butter(sample_read, 1, 500)
+        self.sample_emg_filtered = -emg_bandpass_butter(
+            sample_read.samples, 1, 500, sample_read.sample_rate)
         self.sample_emg_filtered = self.sample_emg_filtered[:30*2048]
 
 

@@ -5,6 +5,7 @@ Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 This file contains functions to perform default procedures.
 """
+import resurfemg.preprocessing.filtering as filt
 import resurfemg.preprocessing.ecg_removal as ecg_rm
 
 

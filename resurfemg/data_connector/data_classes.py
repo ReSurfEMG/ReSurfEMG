@@ -291,15 +291,19 @@ class TimeSeries:
     ):
         """
         Filter raw EMG signal to remove baseline wander and high frequency
-        components. See preprocessing.emg_bandpass_butter_sample submodule.
+        components. See preprocessing.emg_bandpass_butter submodule.
 
         :returns: None
         :rtype: None
         """
         y_data = self.signal_type_data(signal_type=signal_type)
         # Eliminate the baseline wander from the data using a band-pass filter
-        self.y_clean = filt.emg_bandpass_butter_sample(
-            y_data, hp_cf, lp_cf, self.fs, order=order, output='sos')
+        self.y_clean = filt.emg_bandpass_butter(
+            y_data,
+            high_pass=hp_cf,
+            low_pass=lp_cf,
+            fs_emg=self.fs,
+            order=order)
 
     def gating(
         self,
@@ -321,8 +325,8 @@ class TimeSeries:
         if ecg_peak_idxs is None:
             if ecg_raw is None:
                 lp_cf = min([500.0, self.fs / 2])
-                ecg_raw = filt.emg_bandpass_butter_sample(
-                    self.y_raw, 1, lp_cf, self.fs, output='sos')
+                ecg_raw = filt.emg_bandpass_butter(
+                    self.y_raw, high_pass=1, low_pass=lp_cf, fs_emg=self.fs)
 
             ecg_peak_idxs = ecg_rm.detect_ecg_peaks(
                 ecg_raw=ecg_raw,
