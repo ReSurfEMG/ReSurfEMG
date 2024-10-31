@@ -262,6 +262,53 @@ class TestInterpeakMethods(unittest.TestCase):
         self.assertTrue(valid_interpeak, "The interpeak_dist function"
                         "did not return True as expected.")
 
+
+class TestEvaluateEventTiming(unittest.TestCase):
+    def test_evaluate_event_timing_correct(self):
+        t_emg_peaks = [(i + .2) * 1/f_r for i in range(int(10*f_r))]
+        t_vent_peaks = [(i + .25) * 1/f_r for i in range(int(10*f_r))]
+        (correct_timing, delta_time) = qa.evaluate_event_timing(
+            t_events_1=t_emg_peaks,
+            t_events_2=t_vent_peaks,
+            delta_min=-0.5,
+            delta_max=0.5*60/rr,
+        )
+        np.testing.assert_array_almost_equal(
+            delta_time,
+            [0.1, 0.1, 0.1, 0.1, 0.1],
+            6)
+        self.assertTrue(np.all(correct_timing))
+
+    def test_evaluate_event_timing_incorrect_too_late(self):
+        t_emg_peaks = [(i + .55) * 1/f_r for i in range(int(10*f_r))]
+        t_vent_peaks = [(i + .25) * 1/f_r for i in range(int(10*f_r))]
+        (correct_timing, delta_time) = qa.evaluate_event_timing(
+            t_events_1=t_emg_peaks,
+            t_events_2=t_vent_peaks,
+            delta_min=-0.5,
+            delta_max=0.5*60/rr,
+        )
+        np.testing.assert_array_almost_equal(
+            delta_time,
+            5*[-0.6],
+            6)
+        self.assertTrue(np.all(~correct_timing))
+
+    def test_evaluate_event_timing_incorrect_too_early(self):
+        t_emg_peaks = [(i + .05) * 1/f_r for i in range(int(10*f_r))]
+        t_vent_peaks = [(i + .6) * 1/f_r for i in range(int(10*f_r))]
+        (correct_timing, delta_time) = qa.evaluate_event_timing(
+            t_events_1=t_emg_peaks,
+            t_events_2=t_vent_peaks,
+            delta_min=-0.5,
+            delta_max=0.5*60/rr,
+        )
+        np.testing.assert_array_almost_equal(
+            delta_time,
+            5*[1.1],
+            6)
+        self.assertTrue(np.all(~correct_timing))
+
 class TestEvaluateRespiratoryRates(unittest.TestCase):
     def test_evaluate_respiratory_rates(self):
         print(rr, peaks_env)

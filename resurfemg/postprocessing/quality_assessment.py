@@ -390,6 +390,38 @@ def evaluate_bell_curve_error(
             fitted_parameters)
 
 
+def evaluate_event_timing(
+    t_events_1,
+    t_events_2,
+    delta_min=0,
+    delta_max=None,
+):
+    """
+    Evaluate whether the timing of the events in `t_events_1` preceeds the
+    events in `t_events_2` minimally by `delta_min` and maximally by
+    `delta_max`. `t_events_1` and `t_events_2` should be the same length.
+    :param t_events_1: Timing of the events that should happen first 
+    :type t_events_1: ~numpy.ndarray[float]
+    :param t_events_2: Timing of the events that should happen second 
+    :type t_events_2: ~numpy.ndarray[float]
+    :param delta_min: The delta time event 1 should at least preceed event 2.
+    :type delta_min: ~float
+    :param delta_max: The delta time event 1 should maximally preceed event 2.
+    :type delta_max: ~float
+    :returns correct_timing, delta_time: List of correctly timed events, and
+    delta timing between both events.
+    :rtype correct_timing, delta_time: (numpy.array[bool], numpy.array[float])
+    """
+    delta_time = (np.array(t_events_2) - np.array(t_events_1))
+    min_crit = delta_time >= delta_min
+    if delta_max is not None:
+        max_crit = delta_time <= delta_max
+        correct_timing = np.all(np.array([min_crit, max_crit]), axis=0)
+    else:
+        correct_timing = min_crit
+    return correct_timing, delta_time
+
+
 def evaluate_respiratory_rates(
     emg_breath_idxs,
     t_emg,
