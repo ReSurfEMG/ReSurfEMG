@@ -12,68 +12,100 @@ import numpy as np
 from resurfemg.helper_functions.math_operations import running_smoother
 
 
-def times_under_curve(
+def time_to_peak(
     emg_env,
-    start_index,
-    end_index,
+    start_idxs,
+    end_idxs,
 ):
     """
-    This function is meant to calculate the length of time to peak in
-    an absolute and relative sense
+    Calculates the absolute and relative time to peak
 
     :param emg_env: an single lead EMG envelope
     :type emg_env: np.array
-    :param start_index: which index number the breath starts on
-    :type start_index: int
-    :param end_index: which index number the breath ends on
-    :type end_index: int
+    :param start_idxs: list of individual peak start indices
+    :type start_idxs: ~[int]
+    :param end_idxs: list of individual peak end indices
+    :type end_idxs: ~[int]
 
-    :returns: times; a tuple of absolute and relative times
-    :rtype: tuple
+    :returns: (abs_times, percent_times); absolute and relative time-to_peak
+    :rtype: (numpy.ndarray, numpy.ndarray)
     """
-    breath_arc = emg_env[start_index:end_index]
-    smoothed_breath = running_smoother(breath_arc)
-    abs_time = smoothed_breath.argmax()
-    percent_time = abs_time / len(breath_arc)
-    times = ((abs_time, percent_time))
-    return times
+    start_idxs = np.array(start_idxs)
+    end_idxs = np.array(end_idxs)
+    abs_times = np.zeros(start_idxs.shape)
+    percent_times = np.zeros(start_idxs.shape)
+    for idx, (start_idx, end_idx) in enumerate(zip(start_idxs, end_idxs)):
+        breath_arc = emg_env[start_idx:end_idx]
+        smoothed_breath = running_smoother(breath_arc)
+        abs_times[idx] = smoothed_breath.argmax()
+        percent_times[idx] = abs_times[idx] / len(breath_arc)
+
+    return abs_times, percent_times
 
 
 def pseudo_slope(
     emg_env,
-    start_index,
-    end_index,
+    start_idxs,
+    end_idxs,
     smoothing=True,
 ):
     """
     This is a function to get the shape/slope of the take-off angle of the
-    EMG signal. However, the slope is returned in units/samples (in abs values)
-    , not a true slope. The slope will depend on sampling rate and pre-
-    processing. Therefore, only comparison across the same sample is
-    recommended.
+    EMG signal. The slope is returned in units/samples (in abs values), not
+    true slope. The true slope will depend on sampling rate and pre-
+    processing. Therefore, only within sample comparison is recommended.
 
     :param emg_env: an single lead EMG envelope
     :type emg_env: np.array
-    :param start_index: which index number the breath starts on
-    :type start_index: int
-    :param end_index: which index number the breath ends on
-    :type end_index: int
+    :param start_idxs: list of individual peak start indices
+    :type start_idxs: ~[int]
+    :param end_idxs: list of individual peak end indices
+    :type end_idxs: ~[int]
     :param smoothing: smoothing which can or can not run before calculations
     :type smoothing: bool
 
-    :returns: pseudoslope
-    :rtype: float
+    :returns pseudoslope: initial slope of the peak
+    :rtype: np.ndarray[float]
     """
-    breath_arc = emg_env[start_index:end_index]
-    pos_arc = abs(breath_arc)
-    if smoothing:
-        smoothed_breath = running_smoother(pos_arc)
-        abs_time = smoothed_breath.argmax()
-    else:
-        abs_time = pos_arc.argmax()
-    abs_height = pos_arc[abs_time]
-    pseudoslope = abs_height / abs_time
-    return pseudoslope
+    start_idxs = np.array(start_idxs)
+    end_idxs = np.array(end_idxs)
+    pseudoslopes = np.zeros(start_idxs.shape)
+    for idx, (start_idx, end_idx) in enumerate(zip(start_idxs, end_idxs)):
+        breath_arc = emg_env[start_idx:end_idx]
+        pos_arc = abs(breath_arc)
+        if smoothing:
+            smoothed_breath = running_smoother(pos_arc)
+            abs_time = smoothed_breath.argmax()
+        else:
+            abs_time = pos_arc.argmax()
+        abs_height = pos_arc[abs_time]
+        pseudoslopes[idx] = abs_height / abs_time
+    return pseudoslopes
+
+
+def amplitude(
+    signal,
+    peak_idxs,
+    baseline=None,
+):
+    """
+    Calculate the peak height of signal and the baseline for the windows
+    at the peak_idxs relative to the baseline. If no baseline is provided, the
+    peak height relative to zero is determined.
+    :param signal: signal to determine the peak heights in
+    :type signal: ~numpy.ndarray[float]
+    :param peak_idxs: list of individual peak start indices
+    :type peak_idxs: ~np.ndarray[int]
+    :param baseline: running baseline of the signal
+    :type baseline: ~numpy.ndarray[float]
+    :returns amplitudes: list of peak amplitudes
+    :rtype: ~np.ndarray[float]
+    """
+    if baseline is None:
+        baseline = np.zeros(signal.shape)
+    amplitudes = np.array(signal[peak_idxs] - baseline[peak_idxs])
+
+    return amplitudes
 
 
 def time_product(
@@ -87,17 +119,17 @@ def time_product(
     Calculate the time product between the signal and the baseline for the
     windows defined by the start_idx and end_idx sample pairs.
     :param signal: signal to calculate the time product over
-    :type signal: ~numpy.ndarray
+    :type signal: ~numpy.ndarray[float]
     :param fs: sampling frequency
     :type fs: ~int
     :param start_idxs: list of individual peak start indices
-    :type start_idxs: ~list
+    :type start_idxs: ~list[int]
     :param end_idxs: list of individual peak end indices
-    :type end_idxs: ~list
+    :type end_idxs: ~list[int]
     :param baseline: running Baseline of the signal
-    :type baseline: ~numpy.ndarray
+    :type baseline: ~numpy.ndarray[float]
     :returns: time_products
-    :rtype: list
+    :rtype: numpy.ndarray[float]
     """
     if baseline is None:
         baseline = np.zeros(signal.shape)
@@ -131,24 +163,25 @@ def area_under_baseline(
     reference signal in the aub_window_s for the windows defined by the
     start_idx and end_idx sample pairs.
     :param signal: signal to calculate the time product over
-    :type signal: ~numpy.ndarray
+    :type signal: ~numpy.ndarray[float]
     :param fs: sampling frequency
     :type fs: ~int
     :param peak_idxs: list of individual peak indices
-    :type peak_idxs: ~list
+    :type peak_idxs: ~list[int]
     :param start_idxs: list of individual peak start indices
-    :type start_idxs: ~list
+    :type start_idxs: ~list[int]
     :param end_idxs: list of individual peak end indices
-    :type end_idxs: ~list
+    :type end_idxs: ~list[int]
     :param aub_window_s: number of samples before and after peak_idxs to look
     for the nadir
     :type aub_window_s: ~int
     :param baseline: running baseline of the signal
-    :type baseline: ~numpy.ndarray
+    :type baseline: ~numpy.ndarray[float]
     :param ref_signal: signal in which the nadir is searched
-    :type ref_signal: ~numpy.ndarray
-    :returns: aubs
-    :rtype: list
+    :type ref_signal: ~numpy.ndarray[float]
+    :returns aubs, y_ref: the calculated areas under the baseline and reference
+    signal
+    :rtype: numpy.ndarray[float]
     """
     if ref_signal is None:
         ref_signal = signal
@@ -199,7 +232,8 @@ def respiratory_rate(
     :type outlier_percentile: ~float
     :param outlier_percentile: Respiratory rate outlier factor
     :type outlier_percentile: ~float
-    :returns: median respiratory rate, breath-to-breath respiratory rate.
+    :returns rr_median, rr_b2b: median respiratory rate, breath-to-breath
+    respiratory rate.
     :rtype: (~float, ~numpy.ndarray[~float]
     """
     breath_interval = np.array(breath_idxs[1:]) - np.array(breath_idxs[:-1])
