@@ -14,7 +14,7 @@ import logging
 from argparse import ArgumentParser
 
 from resurfemg.helper_functions.config import Config
-from resurfemg.helper_functions.config import make_realistic_syn_emg_cli
+from resurfemg.data_connector.synthetic_data import make_realistic_syn_emg_cli
 from resurfemg.data_connector.converter_functions import save_j_as_np
 
 
@@ -66,7 +66,7 @@ def make_parser():
         action='store_true',
         default=False,
         help='''
-        Write over previously preprpocessed data.
+        Overwrite previously preprocessed data.
         ''',
     )
     acquire.add_argument(
@@ -132,7 +132,6 @@ def main(argv):
 
     if parsed.action == 'synth':
         try:
-
             make_realistic_syn_emg_cli(
                 path_in,
                 parsed.number,

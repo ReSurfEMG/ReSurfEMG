@@ -155,29 +155,16 @@ def simulate_ventilator_with_occlusions(
     y_vent = np.vstack((p_vent, v_dot_vent, v_vent))
     return y_vent
 
-
-def simulate_emg_with_occlusions(
-    t_p_occs,
-    t_start=0,
+def respiratory_pattern_generator(
     t_end=7*60,
     fs_emg=2048,
     rr=22,
     ie_ratio=1/2,
-    tau_mus_up=0.3,
-    tau_mus_down=0.3,
-    emg_amp=5,
-    drift_amp=100,
-    noise_amp=2
+    t_p_occs=None,
 ):
     """
-    This function simulates an surface respiratory emg with no ecg
-    component but with occlusion manuevers. An ECG component can be added and
-    mixed in later.
-
-    :param t_p_occs: Timing of occlusions (s)
-    :type t_p_occs: float
-    :param t_start: start time
-    :type t_start: float
+    This function simulates an on/off respiratory muscle activiation pattern
+    for generating a synthetic EMG.
     :param t_end: end time
     :type t_end: float
     :param fs_emg: emg sampling rate (Hz)
@@ -186,12 +173,83 @@ def simulate_emg_with_occlusions(
     :type rr: float
     :param ie_ratio: Ratio between inspiratory and expiratory time
     :type ie_ratio: float
-    :param p_mus_max: Maximal respiratory muscle pressure (cmH2O)
-    :type p_mus_max: float
+    :param t_p_occs: Timing of occlusions (s)
+    :type t_p_occs: float
+    :returns respiratory_pattern: The simulated on/off respiratory muscle
+    pattern.
+    :rtype respiratory_pattern: ~np.array[float]
+    """
+    ie_fraction = ie_ratio/(ie_ratio + 1)
+    if t_p_occs is None:
+        t_occs = np.array([])
+    else:
+        t_occs = np.floor(np.array(t_p_occs)*rr/60)*60/rr
+
+    for _, t_occ in enumerate(t_occs):
+        if t_end < (t_occ + 60/rr):
+            print('t=' + str(t_occ) + ':t_occ'
+                  + 'should be at least a full respiratory cycle from t_end.')
+    # time axis
+    t_emg = np.array(
+        [i/fs_emg for i in range(0, int(t_end*fs_emg))]
+    )
+
+    # reference signal pattern generator
+    respiratory_pattern = (
+        signal.square(t_emg*rr/60*2*np.pi + 0.5, ie_fraction)+1)/2
+    for _, t_occ in enumerate(t_occs):
+        i_occ = int(t_occ*fs_emg)
+        blocker = np.arange(int(fs_emg*60/rr)+1)/fs_emg*rr/60*2*np.pi
+        squared_wave = (signal.square(blocker, ie_fraction)+1)/2
+        respiratory_pattern[i_occ:i_occ+int(fs_emg*60/rr)+1] = squared_wave
+    return respiratory_pattern
+
+def simulate_muscle_dynamics(
+    block_pattern,
+    fs_emg=2048,
+    tau_mus_up=0.3,
+    tau_mus_down=0.3,
+):
+    """
+    This function simulates an respiratory muscle activation dynamics for
+    generating a synthetic EMG.
+    :param block_pattern: Simulated on/off respiratory muscle pattern.
+    :type block_pattern: ~np.array[float]
     :param tau_mus_up: Muscle contraction time constant (s)
     :type tau_mus_up: float
-    :param tau_mus_down: Muscle release time constant (s)
+    :param tau_mus_down: Muscle relaxation time constant (s)
     :type tau_mus_down: float
+
+    :returns: muscle_activation: The simulated muscle activation pattern.
+    :rtype: ~np.array[float]
+    """
+    # simulate up- and downslope dynamics of EMG
+    muscle_activation = np.zeros((len(block_pattern),))
+    for i in range(1, len(block_pattern)):
+        pat = muscle_activation[i-1]
+        if (block_pattern[i-1]-pat) > 0:
+            muscle_activation[i] = pat + ((block_pattern[i-1] - pat) /
+                                        (tau_mus_up * fs_emg))
+        else:
+            muscle_activation[i] = pat + ((block_pattern[i-1] - pat) /
+                                        (tau_mus_down * fs_emg))
+    return muscle_activation
+
+
+def simulate_emg(
+    muscle_activation,
+    fs_emg=2048,
+    emg_amp=5,
+    drift_amp=100,
+    noise_amp=2
+):
+    """
+    This function simulates an surface respiratory emg based on the provided
+    `muscle_activation` and adds noise and drift to the signal. No ecg 
+    component is included, but can be added later.
+
+    :param muscle_activation: The muscle activation pattern
+    :type muscle_activation: float
     :param emg_amp: Approximate EMG-RMS amplitude (uV)
     :type emg_amp: float
     :param drift_amp: Approximate drift RMS amplitude (uV)
@@ -199,60 +257,29 @@ def simulate_emg_with_occlusions(
     :param noise_amp: Approximate baseline noise RMS amplitude (uV)
     :type noise_amp: float
 
-    :returns: y_vent: np.array([p_vent, f_vent, v_vent])
-    :rtype: ~np.array
+    :returns: emg_raw: The raw synthetic EMG without the ECG added.
+    :rtype: ~np.array[float]
     """
-    ie_fraction = ie_ratio/(ie_ratio + 1)
-    occs_times = np.array(t_p_occs)
-    t_occs = np.floor(occs_times*rr/60)*60/rr
-    for i, t_occ in enumerate(t_occs):
-        if t_end < (t_occ + 60/rr):
-            printable1 = 't=' + str(t_occ) + ':t_occ'
-            printable2 = 'should be at least a full resp. cycle from t_end'
-            print(printable1 + printable2)
-    # time axis
-    t_emg = np.array(
-        [i/fs_emg for i in range(int(t_start*fs_emg), int(t_end*fs_emg))]
-    )
-
-    # reference signal pattern generator
-    emg_block = (signal.square(t_emg*rr/60*2*np.pi + 0.5, ie_fraction)+1)/2
-    for i, t_occ in enumerate(t_occs):
-        i_occ = int(t_occ*fs_emg)
-        blocker = np.arange(int(fs_emg*60/rr)+1)/fs_emg*rr/60*2*np.pi
-        squared_wave = (signal.square(blocker, ie_fraction)+1)/2
-        emg_block[i_occ:i_occ+int(fs_emg*60/rr)+1] = squared_wave
-
-    # simulate up- and downslope dynamics of EMG
-    pattern_gen_emg = np.zeros((len(t_emg),))
-
-    for i in range(1, len(t_emg)):
-        pat = pattern_gen_emg[i-1]
-        if (emg_block[i-1]-pat) > 0:
-            pattern_gen_emg[i] = pat + ((emg_block[i-1] - pat) /
-                                        (tau_mus_up * fs_emg))
-        else:
-            pattern_gen_emg[i] = pat + ((emg_block[i-1] - pat) /
-                                        (tau_mus_down * fs_emg))
-
+    n_samp = len(muscle_activation)
     # make respiratory EMG component
-    part_emg = pattern_gen_emg * np.random.normal(0, 2, size=(len(t_emg), ))
+    part_emg = muscle_activation * np.random.normal(
+        0, 2, size=(n_samp, ))
 
     # make noise and drift components
-    part_noise = np.random.normal(0, 2*noise_amp, size=(len(t_emg), ))
-    part_drift = np.zeros((len(t_emg),))
+    part_noise = np.random.normal(0, 2*noise_amp, size=(n_samp, ))
+    part_drift = np.zeros((n_samp,))
 
     f_high = 0.05
     white_noise = np.random.normal(0,
                                    drift_amp,
-                                   size=(len(t_emg)+int(1/f_high)*fs_emg, ))
+                                   size=(n_samp+int(1/f_high)*fs_emg, ))
     part_drift_tmp = filt.emg_lowpass_butter(
         white_noise, f_high, fs_emg, order=3)
     part_drift = part_drift_tmp[int(1/f_high)*fs_emg:] / f_high
 
     # mix channels, could be remixed with an ecg
-    y_emg = emg_amp * part_emg + part_drift + part_noise
-    return y_emg
+    emg_raw = emg_amp * part_emg + part_drift + part_noise
+    return emg_raw
 
 
 def make_realistic_syn_emg(loaded_ecg, n_emg):
@@ -293,32 +320,3 @@ def make_realistic_syn_emg(loaded_ecg, n_emg):
         t_emg[2] = ecg_out + np.array(8 * emg_stack[2], dtype='float64')
         list_emg_raw.append(t_emg)
     return list_emg_raw
-
-
-def make_realistic_syn_emg_cli(file_directory, n_emg, output_directory):
-    """
-    This function works with the cli
-    module to makes realistic synthetic respiratory EMG data
-    through command line.
-
-    :param file_directory: file directory where synthetic ecg are
-    :type file_directory: str
-    :param n_emg: number of EMGs to simulate
-    :type n_emg: int
-    :param output_directory: file directory where synthetic emg will be put
-    :type output_directory: str
-    """
-    file_directory_list = glob.glob(
-        os.path.join(file_directory, '*.npy'),
-        recursive=True,
-    )
-    file = file_directory_list[0]
-    loaded = np.load(file)
-    synthetics = make_realistic_syn_emg(loaded, n_emg)
-    number_end = 0
-    for single_synth in synthetics:
-        out_fname = os.path.join(output_directory, str(number_end))
-        if not os.path.exists(output_directory):
-            os.mkdir(output_directory)
-        np.save(out_fname, single_synth)
-        number_end += 1

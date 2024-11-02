@@ -5,7 +5,7 @@ import unittest
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 from resurfemg.preprocessing.ecg_removal  import (
     detect_ecg_peaks)
-from resurfemg.pipelines.pipelines import ecg_removal_gating
+from resurfemg.pipelines.processing import ecg_removal_gating
 
 synth_pocc_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(

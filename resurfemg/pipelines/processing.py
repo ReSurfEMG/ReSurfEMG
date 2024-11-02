@@ -3,7 +3,7 @@
 Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
-This file contains functions to perform default procedures.
+This file contains functions to perform default signal processing procedures.
 """
 import matplotlib.pyplot as plt
 
@@ -108,3 +108,4 @@ def ecg_removal_gating(
         method=method)
 
     return emg_gated
+    

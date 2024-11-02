@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from resurfemg.helper_functions import math_operations as mo
 from resurfemg.preprocessing import filtering as filt
 from resurfemg.preprocessing import ecg_removal as ecg_rm
-from resurfemg.pipelines.pipelines import ecg_removal_gating
+from resurfemg.pipelines.processing import ecg_removal_gating
 from resurfemg.preprocessing import envelope as evl
 from resurfemg.postprocessing.baseline import (
     moving_baseline, slopesum_baseline)
