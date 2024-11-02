@@ -6,6 +6,9 @@ Licensed under the Apache License, version 2.0. See LICENSE for details.
 This file contains functions to generate mixed (signal and noise) synthetic
 data.
 """
+import os
+import math
+
 import numpy as np
 import neurokit2 as nk
 import resurfemg.data_connector.synthetic_data as synth
@@ -18,7 +21,7 @@ def simulate_raw_emg(
     **kwargs
 ):
     """
-    Generate realistic synthetic respiratory EMG data remixed with EMG
+    Generate realistic synthetic respiratory EMG data remixed with ECG
     :param t_end: length of synthetic EMG tracing in seconds
     :type t_end: int
     :param fs_emg:
@@ -51,8 +54,8 @@ def simulate_raw_emg(
         if key in sim_parameters.keys():
             sim_parameters[key] = value
         else:
-            raise UserWarning('kwarg `{0}` not available.'.format(key))
-            
+            raise UserWarning(f"kwarg `{key}` not available.")
+
     respiratory_pattern = synth.respiratory_pattern_generator(
         t_end=t_end,
         fs_emg=fs_emg,
@@ -75,7 +78,7 @@ def simulate_raw_emg(
     )
     sim_hr = sim_parameters['heart_rate']/sim_parameters['ecg_acceleration']
     fs_ecg = int(fs_emg*sim_parameters['ecg_acceleration'])
-    ecg_t_end = int(t_end / sim_parameters['ecg_acceleration'])
+    ecg_t_end = int(math.ceil(t_end / sim_parameters['ecg_acceleration']))
     ecg_sim = nk.ecg_simulate(
         duration=ecg_t_end,
         sampling_rate=fs_ecg,
@@ -86,11 +89,10 @@ def simulate_raw_emg(
     return emg_raw
 
 
-def synthetic_emg_cli(file_directory, n_emg, output_directory):
+def synthetic_emg_cli(n_emg, output_directory, **kwargs):
     """
-    This function works with the cli
-    module to makes realistic synthetic respiratory EMG data
-    through command line.
+    Generate realistic synthetic respiratory EMG data remixed with ECG through
+    command line using the cli.
 
     :param file_directory: file directory where synthetic ecg are
     :type file_directory: str
@@ -99,17 +101,31 @@ def synthetic_emg_cli(file_directory, n_emg, output_directory):
     :param output_directory: file directory where synthetic emg will be put
     :type output_directory: str
     """
-    file_directory_list = glob.glob(
-        os.path.join(file_directory, '*.npy'),
-        recursive=True,
-    )
-    file = file_directory_list[0]
-    loaded = np.load(file)
-    synthetics = make_realistic_syn_emg(loaded, n_emg)
-    number_end = 0
-    for single_synth in synthetics:
-        out_fname = os.path.join(output_directory, str(number_end))
+    sim_parameters = {
+        't_end': 7*60,
+        'fs_emg': 2048,   # hertz
+        'rr': 22,         # respiratory rate /min
+        'ie_ratio': 1/2,  # ratio btw insp + expir phase
+        'tau_mus_up': 0.3,
+        'tau_mus_down': 0.3,
+        't_p_occs': [],
+        'drift_amp': 100,
+        'noise_amp': 2,
+        'heart_rate':80,
+        'ecg_acceleration': 1.5,
+        'ecg_amplitude':200,
+    }
+    for key, value in kwargs.items():
+        if key in sim_parameters.keys():
+            sim_parameters[key] = value
+        else:
+            raise UserWarning(f"kwarg `{key}` not available.")
+
+    for i in range(n_emg):
+        emg_raw = simulate_raw_emg(
+            **sim_parameters
+        )
+        out_fname = os.path.join(output_directory, str(i))
         if not os.path.exists(output_directory):
             os.mkdir(output_directory)
-        np.save(out_fname, single_synth)
-        number_end += 1
+        np.save(out_fname, emg_raw)
