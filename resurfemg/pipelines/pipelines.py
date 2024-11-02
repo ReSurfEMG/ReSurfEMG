@@ -5,7 +5,63 @@ Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 This file contains functions to perform default procedures.
 """
+import matplotlib.pyplot as plt
+
+import resurfemg.preprocessing.filtering as filt
 import resurfemg.preprocessing.ecg_removal as ecg_rm
+import resurfemg.preprocessing.envelope as evl
+import resurfemg.helper_functions.visualization as vis
+
+
+def quick_look(
+    emg_raw,
+    fs_emg,
+    plot_raw=False,
+    plot_clean=True,
+    plot_env=True,
+    plot_power_spectrum=True,
+):
+    """
+    Method for quick inspection of EMG data based on high-pass filtering @80Hz.
+    :param emg_raw: raw single channel EMG data
+    :type emg_raw: ~numpy.ndarray
+    :param fs_emg: sampling frequency
+    :type fs_emg: ~int
+    :param plot_raw: Plot the raw signal
+    :type plot_raw: bool
+    :param plot_clean: Plot the filtered signal
+    :type plot_clean: bool
+    :param plot_env: Plot the envelope of the signal
+    :type plot_env: bool
+    :param plot_power_spectrum: Plot the powerspectrum of the raw signal
+    :type plot_power_spectrum: bool
+    :returns emg_filt, emg_env: filtered and enveloped EMG data
+    :rtype emg_filt, emg_env: (numpy.ndarray[float], numpy.ndarray[float])
+    """
+    emg_filt = filt.emg_bandpass_butter(
+        emg_raw=emg_raw,
+        high_pass=80,
+        low_pass=min([fs_emg//2, 500]),
+        fs_emg=fs_emg,
+    )
+    emg_env = evl.full_rolling_arv(emg_filt, fs_emg // 2)
+    if any([plot_raw, plot_clean, plot_env]):
+        t_emg = [i/fs_emg for i in range(len(emg_raw))]
+        _, axis_t = plt.subplots()
+        if plot_raw:
+            axis_t.plot(t_emg, emg_raw, color='tab:cyan')
+        if plot_clean:
+            axis_t.plot(t_emg, emg_filt, color='tab:blue')
+        if plot_env:
+            axis_t.plot(t_emg, emg_env, color='tab:red')
+        axis_t.grid(True)
+        plt.show()
+    if plot_power_spectrum:
+        _, axis_f = plt.subplots()
+        vis.show_my_power_spectrum(
+            emg_raw, fs_emg, t_emg[-1], signal_unit='uV')
+        axis_f.grid(True)
+    return emg_filt, emg_env
 
 
 def ecg_removal_gating(

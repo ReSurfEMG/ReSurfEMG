@@ -9,7 +9,7 @@ preprocessed EMG arrays.
 import numpy as np
 from scipy.optimize import curve_fit
 from scipy.integrate import trapezoid
-import resurfemg.helper_functions.helper_functions as hf
+import resurfemg.helper_functions.math_operations as mo
 import resurfemg.postprocessing.features as feat
 
 
@@ -24,15 +24,15 @@ def snr_pseudo(
     on the peak height relative to the baseline.
 
     :param signal: Signal to evaluate
-    :type signal: ~numpy.ndarray
+    :type signal: ~numpy.ndarray[float]
     :param peaks: list of individual peak indices
-    :type gate_peaks: ~list
+    :type gate_peaks: ~list[int]
     :param baseline: Baseline signal to evaluate SNR to.
-    :type baseline: ~numpy.ndarray
+    :type baseline: ~numpy.ndarray[float]
     :param fs: sampling rate
     :type fs: int
-    :returns: snr_peaks, the SNR per peak
-    :rtype: ~numpy.ndarray
+    :returns snr_peaks: the SNR per peak
+    :rtype snr_peaks: ~numpy.ndarray[float]
     """
 
     peak_heights = np.zeros((len(peaks),))
@@ -203,6 +203,61 @@ def percentage_under_baseline(
     return valid_timeproducts, percentages_aub, y_refs
 
 
+def detect_local_high_aub(
+    aubs,
+    threshold_percentile=75.0,
+    threshold_factor=4.0,
+):
+    """
+    Detect local upward deflections in the area under the baseline.
+    param aubs: List of area under the baseline values. See postprocessing.
+    :features.area_under_baseline
+    :type aubs: ~numpy.ndarray[~float]
+    :param threshold_percentile: percentile for detecting high baseline
+    :type threshold_percentile: ~float
+    :param threshold_factor: multiplication factor for threshold_percentile
+    :type threshold_factor: ~float
+    :returns valid_aubs: Boolean list of aub values under threshold
+    :rtype: numpy.ndarray[bool]
+    """
+    threshold = threshold_factor * np.percentile(aubs, threshold_percentile)
+    valid_aubs = (aubs < threshold)
+    return valid_aubs
+
+
+def detect_extreme_time_products(
+    time_products,
+    upper_percentile=95.0,
+    upper_factor=10.0,
+    lower_percentile=5.0,
+    lower_factor=.1,
+):
+    """
+    Detect extreme (high or low) time product values. See postprocessing.
+    features.time_product
+    :param time_products: List of time_productsvalues.
+    :type time_products: ~numpy.ndarray[~float]
+    :param upper_percentile: percentile for detecting high time products
+    :type upper_percentile: ~float
+    :param upper_factor: multiplication factor for upper_percentile
+    :type upper_factor: ~float
+    :param lower_percentile: percentile for detecting low time products
+    :type lower_percentile: ~float
+    :param lower_factor: multiplication factor for lower_percentile
+    :type lower_factor: ~float
+    :returns valid_time_product: Boolean list of time product values within
+    bounds
+    :rtype: numpy.ndarray[bool]
+    """
+    upper_threshold = upper_factor * np.percentile(
+        time_products, upper_percentile)
+    lower_threshold = lower_factor * np.percentile(
+        time_products, lower_percentile)
+    valid_aubs = np.all(np.array([[time_products < upper_threshold],
+                                  [time_products > lower_threshold]]), axis=0)
+    return valid_aubs
+
+
 def detect_non_consecutive_manoeuvres(
     ventilator_breath_idxs,
     manoeuvres_idxs
@@ -311,7 +366,7 @@ def evaluate_bell_curve_error(
 
         try:
             popt, *_ = curve_fit(
-                hf.bell_curve, x_data, y_data,
+                mo.bell_curve, x_data, y_data,
                 bounds=([0., t[peak_idx] - 0.5, 0.],
                         [np.inf, t[peak_idx] + 0.5, np.inf])
             )
@@ -323,7 +378,7 @@ def evaluate_bell_curve_error(
 
         bell_error[idx] = trapezoid(
             np.abs((signal[start_idx:end_i + 1] - (
-                hf.bell_curve(t[start_idx:end_i + 1], *popt) + y_min[idx]))),
+                mo.bell_curve(t[start_idx:end_i + 1], *popt) + y_min[idx]))),
             dx=1 / fs
         )
         percentage_bell_error[idx] = bell_error[idx] / tp * 100
@@ -333,3 +388,61 @@ def evaluate_bell_curve_error(
 
     return (valid_peak, bell_error, percentage_bell_error, y_min,
             fitted_parameters)
+
+
+def evaluate_event_timing(
+    t_events_1,
+    t_events_2,
+    delta_min=0,
+    delta_max=None,
+):
+    """
+    Evaluate whether the timing of the events in `t_events_1` preceeds the
+    events in `t_events_2` minimally by `delta_min` and maximally by
+    `delta_max`. `t_events_1` and `t_events_2` should be the same length.
+    :param t_events_1: Timing of the events that should happen first
+    :type t_events_1: ~numpy.ndarray[float]
+    :param t_events_2: Timing of the events that should happen second
+    :type t_events_2: ~numpy.ndarray[float]
+    :param delta_min: The delta time event 1 should at least preceed event 2.
+    :type delta_min: ~float
+    :param delta_max: The delta time event 1 should maximally preceed event 2.
+    :type delta_max: ~float
+    :returns correct_timing, delta_time: List of correctly timed events, and
+    delta timing between both events.
+    :rtype correct_timing, delta_time: (numpy.array[bool], numpy.array[float])
+    """
+    delta_time = (np.array(t_events_2) - np.array(t_events_1))
+    min_crit = delta_time >= delta_min
+    if delta_max is not None:
+        max_crit = delta_time <= delta_max
+        correct_timing = np.all(np.array([min_crit, max_crit]), axis=0)
+    else:
+        correct_timing = min_crit
+    return correct_timing, delta_time
+
+
+def evaluate_respiratory_rates(
+    emg_breath_idxs,
+    t_emg,
+    rr_vent,
+    min_fraction=0.1,
+):
+    """
+    This function evaluates fraction of detected EMG breaths relative to the
+    ventilatory respiratory rate.
+
+    :param emg_breath_idxs: EMG breath indices
+    :type emg_breath_idxs: ~numpy.ndarray
+    :param t_emg: Recording time in seconds
+    :type t_emg: ~float
+    :param vent_rr: ventilatory respiratory rate (breath/min)
+    :type vent_rr: ~float
+    :param min_fraction: Required minimum detected fraction of EMG breaths
+    :type min_fraction: ~numpy.ndarray
+    :returns: detected_fraction: detected fraction of EMG breahts
+    :rtype: (~float, ~bool)
+    """
+    detected_fraction = float(len(emg_breath_idxs)/(rr_vent * t_emg/60))
+    criterium_met = (detected_fraction >= min_fraction)
+    return (detected_fraction, criterium_met)

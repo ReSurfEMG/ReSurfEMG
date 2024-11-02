@@ -2,18 +2,188 @@
 Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
-This file contains functions to work with various EMG file types
+This file contains standardized functions to work with various EMG file types
 from various hardware/software combinations, and convert them down to
-an array that can be further processed with helper_functions or other modules.
+an array that can be further processed with other modules.
 """
 
-
 import os
+import platform
 import glob
 import pandas as pd
 import numpy as np
 import scipy.io as sio
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
+
+
+def load_file(
+    file_path,
+    key_name=None,
+    channels=None,
+    drop_channels=None,
+    force_col_reading=False,
+    verbose=True
+):
+    """
+    :returns: loaded_file
+    :rtype: ~numpy.ndarray
+    """
+
+    if not isinstance(file_path, str):
+        raise ValueError('file_path should be a str.')
+
+    if platform.system() == 'Windows':
+        path_sep = "\\"
+    else:
+        path_sep = '/'
+
+    file_name = file_path.split(path_sep)[-1]
+    file_dir = os.path.join(*file_path.split(path_sep)[:-1])
+    file_extension = file_name.split('.')[-1]
+
+    # 1. Load File types: .poly5, .mat, .csv,
+    metadata = dict()
+    if file_extension.lower() == 'poly5':
+        print('Detected .Poly5')
+        data_df, metadata = load_poly5(file_path, verbose=verbose)
+    elif file_extension.lower() == 'mat':
+        print('Detected .mat')
+        data_df = load_mat(file_path, key_name, verbose)
+    elif file_extension.lower() == 'csv':
+        print('Detected .csv')
+        data_df, metadata = load_csv(
+            file_path, force_col_reading, verbose)
+
+    metadata['file_name'] = file_name
+    metadata['file_dir'] = file_dir
+    metadata['file_extension'] = file_extension
+    if isinstance(channels, list) and len(channels) == data_df.shape[1]:
+        if not all(isinstance(channel, str) for channel in channels):
+            raise TypeError('All channel names should be str')
+        if len(channels) != len(set(channels)):
+            raise UserWarning('Channel names should be unique')
+        if verbose:
+            print('Renamed channels:', *zip(data_df.columns, channels), '...')
+        data_df.columns = channels
+
+    # 2. Drop channels
+    if isinstance(drop_channels, list):
+        if all(channel in data_df.columns for channel in drop_channels):
+            data_df.drop(columns=drop_channels, inplace=True)
+            metadata['dropped_channels'] = drop_channels
+            if verbose:
+                print('Dropped channels:', drop_channels)
+        elif all((isinstance(channel, int) and channel < len(data_df.columns)
+                  for channel in drop_channels)):
+            data_df.drop(columns=data_df.columns[drop_channels], inplace=True)
+            metadata['dropped_channels'] = data_df.columns[
+                drop_channels].values
+            if verbose:
+                print('Dropped channels:',
+                      metadata['dropped_channels'], '...')
+        else:
+            raise UserWarning('drop_channels should be a list of channel '
+                              + 'indices (int) or names (str).')
+    else:
+        metadata['dropped_channels'] = []
+
+    # 3. Convert remaining float channels to numpy array
+    float_data_df = data_df.select_dtypes(include=float)
+    np_float_data = np.rot90(float_data_df.to_numpy())
+    metadata['float_channels'] = float_data_df.columns.values
+    if verbose:
+        print('Loaded channels as np.array:',
+              metadata['float_channels'], '...')
+
+    return np_float_data, data_df, metadata
+
+
+def load_poly5(file_path, verbose=True):
+    if verbose:
+        print('Loading .Poly5 ...')
+    poly5_data = Poly5Reader(file_path)
+    if verbose:
+        print('Loaded .Poly5, extracting data ...')
+    n_samples = poly5_data.num_samples
+    loaded_data = poly5_data.samples[:, :n_samples]
+    metadata = dict()
+    metadata['fs'] = poly5_data.sample_rate
+    metadata['loaded_channels'] = poly5_data.ch_names
+    metadata['units'] = poly5_data.ch_unit_names
+    data_df = pd.DataFrame(loaded_data.T, columns=metadata['loaded_channels'])
+    if verbose:
+        print('Loading data completed')
+
+    return data_df, metadata
+
+
+def load_mat(file_path, key_name, verbose=True):
+    if verbose:
+        print('Loading .mat ...')
+    mat_dict = sio.loadmat(file_path, mdict=None, appendmat=False)
+    if verbose:
+        print('Loaded .mat, extracting data ...')
+    if isinstance(key_name, str):
+        loaded_data = mat_dict[key_name]
+        if loaded_data.shape[0] > loaded_data.shape[1]:
+            loaded_data = np.rot90(loaded_data)
+            if verbose:
+                print('Transposed loaded data.')
+        data_df = pd.DataFrame(loaded_data.T)
+        print('Loading data completed')
+    else:
+        raise ValueError('No key_name provided.')
+
+    return data_df
+
+
+def load_csv(file_path, force_col_reading, verbose=True):
+    def has_header(file_path, nrows=20):
+        df = pd.read_csv(file_path, header=None, nrows=nrows)
+        df_header = pd.read_csv(file_path, nrows=nrows)
+        return tuple(df.dtypes) != tuple(df_header.dtypes)
+
+    def chech_row_wise(file_path, nrows=20):
+        with open(file_path, 'r') as f:
+            n_lines = sum(1 for _ in f)
+
+        with open(file_path, 'r') as f:
+            col_lg_row = 0
+            i = 0
+            for line in f:
+                if len(line) > n_lines:
+                    col_lg_row += 1
+                i += 1
+                if i > nrows or col_lg_row > nrows:
+                    break
+            if col_lg_row > nrows // 2 or col_lg_row == n_lines:
+                row_wise = False
+            else:
+                row_wise = True
+            return row_wise
+
+    if verbose:
+        print('Loading .csv ...')
+    row_wise = chech_row_wise(file_path, nrows=20)
+    if (row_wise is False) and (force_col_reading is not True):
+        raise UserWarning('The provided .csv is row based. This could yield '
+                          + 'significant loading durations. If you want to '
+                          + 'proceed, set force_col_reading=True')
+    else:
+        metadata = dict()
+        if row_wise and has_header(file_path):
+            data_df = pd.read_csv(file_path)
+            if verbose:
+                print('Loaded .csv, extracting data ...')
+            metadata['loaded_channels'] = data_df.columns.values
+        else:
+            if verbose:
+                print('Loaded .csv, extracting data ...')
+            csv_data = pd.read_csv(file_path, header=None)
+            data_df = pd.DataFrame(csv_data.to_numpy())
+        print('Loading data completed')
+
+    return data_df, metadata
 
 
 def poly5unpad(to_be_read):

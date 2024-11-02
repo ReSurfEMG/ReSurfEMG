@@ -11,21 +11,21 @@ from scipy import signal
 from scipy.signal import savgol_filter
 
 
-def full_rolling_rms(data_emg, window_length):
+def full_rolling_rms(emg_raw, window_length):
     """This function computes a root mean squared envelope over an
-    array :code:`data_emg`.  To do this it uses number of sample values
+    array :code:`emg_raw`.  To do this it uses number of sample values
     :code:`window_length`.
 
-    :param data_emg: Samples from the EMG
-    :type data_emg: ~numpy.ndarray
+    :param emg_raw: Samples from the EMG
+    :type emg_raw: ~numpy.ndarray
     :param window_length: Length of the sample use as window for function
     :type window_length: int
 
     :returns: The root-mean-squared EMG sample data
     :rtype: ~numpy.ndarray
     """
-    data_emg_sqr = pd.Series(np.power(data_emg, 2))
-    emg_rms = np.sqrt(data_emg_sqr.rolling(
+    emg_raw_sqr = pd.Series(np.power(emg_raw, 2))
+    emg_rms = np.sqrt(emg_raw_sqr.rolling(
         window=window_length,
         min_periods=1,
         center=True).mean()).values
@@ -33,10 +33,9 @@ def full_rolling_rms(data_emg, window_length):
     return emg_rms
 
 
-def hi_envelope(our_signal, dmax=24):
+def hi_envelope(emg_raw, dmax=24):
     """
-    Takes a 1d signal array, and extracts 'high'envelope,
-    then makes high envelope, based on connecting peaks
+    Takes a 1d signal array, and extracts 'high' based on connecting peaks
     dmax: int, size of chunks,
 
     :param our_signal: 1d signal array usually of emg
@@ -47,64 +46,51 @@ def hi_envelope(our_signal, dmax=24):
     :returns: src_signal_gated, the gated result
     :rtype: ~numpy.ndarray
     """
-    # locals max is lmax
-    lmax = (np.diff(np.sign(np.diff(our_signal))) < 0).nonzero()[0] + 1
-    lmax = lmax[
-        [i+np.argmax(
-            our_signal[lmax[i:i+dmax]]
-        ) for i in range(0, len(lmax), dmax)]
-    ]
-    smoothed = savgol_filter(our_signal[lmax], int(0.8 * (len(lmax))), 3)
-    smoothed_interped = signal.resample(smoothed, len(our_signal))
+    # local maximum: lmax
+    lmax = (np.diff(np.sign(np.diff(emg_raw))) < 0).nonzero()[0] + 1
+    lmax = lmax[[
+        i+np.argmax(emg_raw[lmax[i:i+dmax]]) for i in range(0, len(lmax), dmax)
+    ]]
+    smoothed = savgol_filter(emg_raw[lmax], int(0.8 * (len(lmax))), 3)
+    emg_high = signal.resample(smoothed, len(emg_raw))
 
-    return smoothed_interped
+    return emg_high
 
 
-def naive_rolling_rms(data_emg, window_length):
+def naive_rolling_rms(emg_raw, window_length):
     """This function computes a root mean squared envelope over an
-    array :code:`data_emg`. To do this it uses number of sample values
+    array :code:`emg_raw`. To do this it uses number of sample values
     :code:`window_length`.
 
-    :param data_emg: Samples from the EMG
-    :type data_emg: ~numpy.ndarray
+    :param emg_raw: Samples from the EMG
+    :type emg_raw: ~numpy.ndarray
     :param window_length: Length of the sample use as window for function
     :type window_length: int
 
     :returns: The root-mean-squared EMG sample data
     :rtype: ~numpy.ndarray
     """
-    x_c = np.cumsum(abs(data_emg)**2)
+    x_c = np.cumsum(abs(emg_raw)**2)
     emg_rms = np.sqrt((x_c[window_length:] - x_c[:-window_length])
                       / window_length)
     return emg_rms
 
 
-def running_smoother(array):
-    """
-    This is the smoother to use in time calculations
-    """
-    n_samples = len(array) // 10
-    new_list = np.convolve(abs(array), np.ones(n_samples), "valid") / n_samples
-    zeros = np.zeros(n_samples - 1)
-    smoothed_array = np.hstack((new_list, zeros))
-    return smoothed_array
-
-
-def full_rolling_arv(data_emg, window_length):
+def full_rolling_arv(emg_raw, window_length):
     """This function computes an average rectified value envelope over an
-    array :code:`data_emg`.  To do this it uses number of sample values
+    array :code:`emg_raw`.  To do this it uses number of sample values
     :code:`window_length`.
 
-    :param data_emg: Samples from the EMG
-    :type data_emg: ~numpy.ndarray
+    :param emg_raw: Samples from the EMG
+    :type emg_raw: ~numpy.ndarray
     :param window_length: Length of the sample use as window for function
     :type window_length: int
 
     :returns: The arv envelope of the EMG sample data
     :rtype: ~numpy.ndarray
     """
-    data_emg_abs = pd.Series(np.abs(data_emg))
-    emg_arv = data_emg_abs.rolling(
+    emg_raw_abs = pd.Series(np.abs(emg_raw))
+    emg_arv = emg_raw_abs.rolling(
         window=window_length,
         min_periods=1,
         center=True).mean().values
