@@ -31,9 +31,14 @@ def snr_pseudo(
     :type baseline: ~numpy.ndarray[float]
     :param fs: sampling rate
     :type fs: int
+<<<<<<< HEAD
 
     :returns snr_peaks: the SNR per peak
     :rtype snr_peaks: numpy.ndarray[float]
+=======
+    :returns snr_peaks: the SNR per peak
+    :rtype snr_peaks: ~numpy.ndarray[float]
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     """
 
     peak_heights = np.zeros((len(peaks),))
@@ -217,18 +222,27 @@ def detect_local_high_aub(
 ):
     """
     Detect local upward deflections in the area under the baseline.
+<<<<<<< HEAD
     param aubs: List of area under the baseline values. See
     resurfemg.postprocessing.features.area_under_baseline
     ---------------------------------------------------------------------------
+=======
+    param aubs: List of area under the baseline values. See postprocessing.
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     :features.area_under_baseline
     :type aubs: ~numpy.ndarray[~float]
     :param threshold_percentile: percentile for detecting high baseline
     :type threshold_percentile: ~float
     :param threshold_factor: multiplication factor for threshold_percentile
     :type threshold_factor: ~float
+<<<<<<< HEAD
 
     :returns valid_aubs: Boolean list of aub values under threshold
     :rtype valid_aubs: numpy.ndarray[bool]
+=======
+    :returns valid_aubs: Boolean list of aub values under threshold
+    :rtype: numpy.ndarray[bool]
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     """
     threshold = threshold_factor * np.percentile(aubs, threshold_percentile)
     valid_aubs = (aubs < threshold)
@@ -245,7 +259,10 @@ def detect_extreme_time_products(
     """
     Detect extreme (high or low) time product values. See postprocessing.
     features.time_product
+<<<<<<< HEAD
     ---------------------------------------------------------------------------
+=======
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     :param time_products: List of time_productsvalues.
     :type time_products: ~numpy.ndarray[~float]
     :param upper_percentile: percentile for detecting high time products
@@ -256,17 +273,29 @@ def detect_extreme_time_products(
     :type lower_percentile: ~float
     :param lower_factor: multiplication factor for lower_percentile
     :type lower_factor: ~float
+<<<<<<< HEAD
 
     :returns valid_etps: Boolean list of time product values within bounds
     :rtype valid_etps: numpy.ndarray[bool]
+=======
+    :returns valid_time_product: Boolean list of time product values within
+    bounds
+    :rtype: numpy.ndarray[bool]
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     """
     upper_threshold = upper_factor * np.percentile(
         time_products, upper_percentile)
     lower_threshold = lower_factor * np.percentile(
         time_products, lower_percentile)
+<<<<<<< HEAD
     valid_etps = np.all(np.array([time_products < upper_threshold,
                                   time_products > lower_threshold]), axis=0)
     return valid_etps
+=======
+    valid_aubs = np.all(np.array([[time_products < upper_threshold],
+                                  [time_products > lower_threshold]]), axis=0)
+    return valid_aubs
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
 
 
 def detect_non_consecutive_manoeuvres(
@@ -420,7 +449,10 @@ def evaluate_event_timing(
     Evaluate whether the timing of the events in `t_events_1` preceeds the
     events in `t_events_2` minimally by `delta_min` and maximally by
     `delta_max`. `t_events_1` and `t_events_2` should be the same length.
+<<<<<<< HEAD
     ---------------------------------------------------------------------------
+=======
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     :param t_events_1: Timing of the events that should happen first
     :type t_events_1: ~numpy.ndarray[float]
     :param t_events_2: Timing of the events that should happen second
@@ -429,11 +461,17 @@ def evaluate_event_timing(
     :type delta_min: ~float
     :param delta_max: The delta time event 1 should maximally preceed event 2.
     :type delta_max: ~float
+<<<<<<< HEAD
 
     :returns correct_timing: Boolean list of correct timing
     :rtype correct_timing: numpy.ndarray[bool]
     :returns delta_time: List of delta times between the events
     :rtype delta_time: numpy.ndarray[float]
+=======
+    :returns correct_timing, delta_time: List of correctly timed events, and
+    delta timing between both events.
+    :rtype correct_timing, delta_time: (numpy.array[bool], numpy.array[float])
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     """
     delta_time = (np.array(t_events_2) - np.array(t_events_1))
     min_crit = delta_time >= delta_min
@@ -454,7 +492,11 @@ def evaluate_respiratory_rates(
     """
     This function evaluates fraction of detected EMG breaths relative to the
     ventilatory respiratory rate.
+<<<<<<< HEAD
     ---------------------------------------------------------------------------
+=======
+
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     :param emg_breath_idxs: EMG breath indices
     :type emg_breath_idxs: ~numpy.ndarray
     :param t_emg: Recording time in seconds
@@ -463,11 +505,16 @@ def evaluate_respiratory_rates(
     :type vent_rr: ~float
     :param min_fraction: Required minimum detected fraction of EMG breaths
     :type min_fraction: ~numpy.ndarray
+<<<<<<< HEAD
 
     :returns detected_fraction: Fraction of detected EMG breaths
     :rtype detected_fraction: float
     :returns criterium_met: Boolean if the fraction is above the minimum
     :rtype criterium_met: bool
+=======
+    :returns: detected_fraction: detected fraction of EMG breahts
+    :rtype: (~float, ~bool)
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     """
     detected_fraction = float(len(emg_breath_idxs)/(rr_vent * t_emg/60))
     criterium_met = (detected_fraction >= min_fraction)

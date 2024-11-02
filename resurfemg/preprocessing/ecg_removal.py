@@ -2,7 +2,12 @@
 Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
+<<<<<<< HEAD
 This file contains functions to eliminate ECG artifacts from EMG arrays.
+=======
+This file contains functions to eliminate ECG artifacts from with various EMG
+arrays.
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
 """
 
 import copy
@@ -10,6 +15,10 @@ import numpy as np
 import scipy
 import pywt
 import pandas as pd
+<<<<<<< HEAD
+=======
+from scipy.signal import find_peaks
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
 
 from resurfemg.preprocessing import envelope as evl
 import resurfemg.preprocessing.filtering as filt
@@ -53,7 +62,11 @@ def detect_ecg_peaks(
         peak_distance = fs // 3
 
     if bp_filter:
+<<<<<<< HEAD
         lp_cf = min([500, 0.95 * fs / 2])
+=======
+        lp_cf = min([500, fs//2])
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
         ecg_filt = filt.emg_bandpass_butter(
             ecg_raw, high_pass=1, low_pass=lp_cf, fs_emg=fs)
         ecg_rms = evl.full_rolling_rms(ecg_filt, fs // 200)
@@ -88,7 +101,11 @@ def gating(
     2: Fill with average of prior segment if exists
     otherwise fill with post segment
     3: Fill with running average of RMS (default)
+<<<<<<< HEAD
     ---------------------------------------------------------------------------
+=======
+
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     :param emg_raw: Signal to process
     :type emg_raw: ~numpy.ndarray
     :param peak_idxs: list of individual peak index places to be gated
@@ -98,8 +115,13 @@ def gating(
     :param method: filling method of gate
     :type method: int
 
+<<<<<<< HEAD
     :returns emg_raw_gated: the gated result
     :rtype emg_raw_gated: numpy.ndarray
+=======
+    :returns: emg_raw_gated, the gated result
+    :rtype: ~numpy.ndarray
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     """
     emg_raw_gated = copy.deepcopy(emg_raw)
     max_sample = emg_raw_gated.shape[0]
@@ -205,6 +227,7 @@ def gating(
     return emg_raw_gated
 
 
+<<<<<<< HEAD
 def wavelet_denoising(
     emg_raw,
     ecg_peak_idxs,
@@ -214,6 +237,9 @@ def wavelet_denoising(
     wavelet_type='db2',
     fixed_threshold=4.5
 ):
+=======
+def find_peaks_in_ecg(ecg_raw, lower_border_percent=50):
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     """
     Shrinkage Denoising using a-trous wavelet decomposition (SWT). NB: This
     function assumes that the emg_raw has already been preprocessed for
@@ -234,6 +260,7 @@ def wavelet_denoising(
     :param wavelet_type: wavelet type (default: 'db2', see pywt.swt help)
     :type wavelet_type: str
 
+<<<<<<< HEAD
     :returns emg_clean: cleaned EMG signal
     :rtype emg_clean: numpy.ndarray
     :returns wav_dec: wavelet decomposition
@@ -246,6 +273,12 @@ def wavelet_denoising(
     Copyright 2019 Institute for Electrical Engineering in Medicine,
     University of Luebeck
     Jan Graßhoff
+=======
+    :param ecg_raw: frequency array sampled at in Hertz
+    :type ecg_raw: ~numpy.ndarray
+    :param low_border_percent: percentage max below which no peaks expected
+    :type low_border_percent: int
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -265,6 +298,7 @@ def wavelet_denoising(
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
     DEALINGS IN THE SOFTWARE.
     """
+<<<<<<< HEAD
     def estimate_noise(signal, window_length):
         """
         Estimate noise level
@@ -382,6 +416,187 @@ def wavelet_denoising(
         [tuple(subband) for subband in wxd],
         wavelet_type
     )
+=======
+    # TODO: Eliminate. Not robust to +/- deflections.
+    ecg_raw = abs(ecg_raw)
+    max_peak = ecg_raw.max() - ecg_raw.min()
+    set_ecg_peaks = find_peaks(
+        ecg_raw,
+        prominence=(max_peak*lower_border_percent/100, max_peak)
+    )
+    return set_ecg_peaks
+
+
+def wavelet_denoising(
+    emg_raw,
+    ecg_peak_idxs,
+    fs,
+    hard_thresholding=True,
+    n=4,
+    wavelet_type='db2',
+    fixed_threshold=4.5
+):
+    """
+    Shrinkage Denoising using a-trous wavelet decomposition (SWT). NB: This
+    function assumes that the emg_raw has already been preprocessed for
+    removal of baseline, powerline, and aliasing. N.B. This is a Python
+    implementation of the SWT, as previously implemented in MATLAB by Jan
+    Graßhoff. See Copyright notice below.
+
+    :param emg_raw: 1D raw EMG data
+    :type emg_raw: numpy.ndarray
+    :param ecg_peak_idxs: list of R-peaks indices
+    :type ecg_peak_idxs: numpy.ndarray
+    :param fs: Sampling rate of emg_raw
+    :type fs: int
+    :param hard_thresholding: True: hard (default), False: soft
+    :type hard_thresholding: bool
+    :param n: True: decomposition level (default: 4)
+    :type n: int
+    :param wavelet_type: wavelet type (default: 'db2', see pywt.swt help)
+    :type wavelet_type: str
+
+    :returns: (cleansed EMG, wavelet decomposition, thresholds, gate_windows)
+    :rtype: tuple(numpy.ndarray, list(tuples), numpy.ndarray, numpy.ndarray)
+
+    --------------------------------------------------------------------------
+    Copyright 2019 Institute for Electrical Engineering in Medicine,
+    University of Luebeck
+    Jan Graßhoff
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+    """
+    def estimate_noise(signal, window_length):
+        """
+        Estimate noise level
+        :param signal: wavelet-decomposed signal
+        :type signal: numpy.ndarray
+        :param window_length: window length for noise estimation
+        :type window_length: int
+
+        :returns: estimated noise level
+        :rtype: numpy.ndarray(~float)
+        """
+        nb_level = signal.shape[0]
+        std_estimated = np.zeros(signal.shape)
+
+        for k in range(nb_level):
+            # Estimate std from MAD: std ~ MAD/0.6745
+            std_estimated[k, :] = pd.Series(np.abs(signal[k, :])).rolling(
+                window=window_length,
+                min_periods=1,
+                center=True).median().values / 0.6745
+
+            # Correct on- and offset effects
+            std_estimated[k, :window_length // 2] = std_estimated[
+                k, window_length // 2]
+            std_estimated[k, -window_length // 2:] = std_estimated[
+                k, -window_length // 2]
+        return std_estimated
+
+    def get_gate_windows(rpeak_bool_vec, window_length):
+        """
+        Generate gate windows for the peaks
+        :param rpeak_bool_vec: 1D raw, where R-peak location == 1
+        :type rpeak_bool_vec: numpy.ndarray
+        :param window_length: number of samples to gate around peaks
+        :type window_length: int
+
+        :returns: gated signal based on R-peaks, where gate == 1
+        :rtype: numpy.ndarray(int)
+        """
+        window_length = int(np.floor(window_length / 2) * 2)
+        rpeak_idxs = np.where(rpeak_bool_vec == 1)[0]
+
+        gate_windows = np.zeros_like(rpeak_bool_vec)
+        for _, rpeak_idx in enumerate(rpeak_idxs):
+            gate_windows[
+                max(rpeak_idx - window_length // 2, 0):
+                min(rpeak_idx + window_length // 2, len(rpeak_bool_vec))
+            ] = 1
+
+        return gate_windows
+
+    def threshold_wavelets(data, hard_thresholding, threshold):
+        """
+        Apply thresholding to data based on 'soft' or 'hard' option
+        :param data: input data
+        :type data: numpy.ndarray
+        :param hard_thresholding: True: hard (default), False: soft
+        :type hard_thresholding: bool
+        :param threshold: threshold value
+        :type threshold: ~float
+
+        :returns: thresholded data
+        :rtype: numpy.ndarray
+        """
+        if hard_thresholding is True:
+            # Hard thresholding
+            data[np.abs(data) < threshold] = 0
+        elif hard_thresholding is False:
+            # Soft thresholding
+            data = np.sign(data) * np.maximum(np.abs(data) - threshold, 0)
+        return data
+
+    # Calculate gate windows
+    r_peak_bool = np.zeros(emg_raw.shape)
+    r_peak_bool[ecg_peak_idxs] = 1
+    gate_bool_array = get_gate_windows(r_peak_bool, fs//10)
+
+    # Signal Extension by zero padding
+    pow_2_n = 2 ** n
+    n_samp = len(emg_raw)
+    n_samp_extended = int(np.ceil(n_samp / pow_2_n) * pow_2_n)
+    zero_padding = np.zeros(n_samp_extended - n_samp)
+    emg_raw_zero_padded = np.concatenate((emg_raw, zero_padding))
+    gate_bool_array = np.concatenate((gate_bool_array, zero_padding))
+
+    # Wavelet decomposition of emg_raw using Stationary Wavelet Transform (SWT)
+    wav_dec = pywt.swt(emg_raw_zero_padded, wavelet_type, level=n)
+    wav_dec_unpacked = np.array(
+        [[subband[0], subband[1]] for subband in wav_dec])
+    swc = np.vstack((wav_dec_unpacked[:, 1, :], wav_dec_unpacked[n-1, 0, :]))
+
+    # Gate out R-peaks in wavelet subbands
+    wav_dec_gated = np.array(swc)
+    wav_dec_gated[:, gate_bool_array == 1] = np.nan
+
+    # Custom threshold coefficients
+    window_length = 15 * fs
+    # win_len = 15000
+    s = estimate_noise(wav_dec_gated[:-1], window_length)
+
+    thresholds = np.zeros_like(swc)
+    wxd = np.array(wav_dec_unpacked)
+
+    for k in range(n):
+        threshold = fixed_threshold * s[k, :]
+        thresholds[k, :] = threshold
+        wxd[k, 1, :] = threshold_wavelets(
+            wav_dec_unpacked[k, 1, :], hard_thresholding, threshold)
+
+    # # Wavelet reconstruction
+    ecg_reconstructd = pywt.iswt(
+        [tuple(subband) for subband in wxd],
+        wavelet_type
+    )
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
 
     # Return results
     wav_dec = np.array(swc)

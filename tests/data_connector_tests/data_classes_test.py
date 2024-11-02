@@ -118,6 +118,10 @@ class TestTimeSeriesGroup(unittest.TestCase):
             len(self.emg_timeseries.channels[0].t_data),
             len(self.y_emg[0, :])
         )
+<<<<<<< HEAD
+=======
+    print(emg_timeseries.fs)
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     emg_timeseries.filter()
     def test_filtered_data(self):
         self.assertEqual(

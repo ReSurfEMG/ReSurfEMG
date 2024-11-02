@@ -6,7 +6,11 @@ from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 from resurfemg.preprocessing.filtering import emg_bandpass_butter
 from resurfemg.helper_functions.visualization import show_psd_welch
 from resurfemg.helper_functions.visualization import show_periodogram
+<<<<<<< HEAD
 from resurfemg.helper_functions.visualization import show_power_spectrum
+=======
+from resurfemg.helper_functions.visualization import show_my_power_spectrum
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(

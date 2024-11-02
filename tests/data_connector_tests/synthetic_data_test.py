@@ -2,6 +2,7 @@
 
 import numpy as np
 from unittest import TestCase
+<<<<<<< HEAD
 import resurfemg.data_connector.synthetic_data as synth
 
 class TestSyntheticEmgData(TestCase):
@@ -133,3 +134,12 @@ class TestSyntheticVentilatorData(TestCase):
         self.assertEqual(
             self.y_vent.shape[1],
             self.fs_vent *self.t_end)
+=======
+from resurfemg.data_connector.synthetic_data import make_realistic_syn_emg
+
+class TestSyntheticData(TestCase):
+    def test_make_realistic_syn_emg(self):
+        x_ecg = np.zeros((10,307200))
+        made = make_realistic_syn_emg(x_ecg,2)
+        self.assertEqual(len(made),2)
+>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
