@@ -78,7 +78,6 @@ class Config:
             by specifying it in the config.json file.
 
             "root_data" is expected to exist.
-            
             The "patient_data", "simulated_data", "preprocessed", "output"
             directories need not exist.  They will be created if missing.
             '''
