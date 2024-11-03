@@ -130,6 +130,7 @@ def synthetic_emg_cli(n_emg, output_directory, **kwargs):
         if not os.path.exists(output_directory):
             os.mkdir(output_directory)
         np.save(out_fname, emg_raw)
+        print(f"File(s) saved to {output_directory}.")
 
 
 def simulate_ventilator_data(

@@ -113,15 +113,14 @@ def main(argv):
     if (path_in is None) or (path_out is None):
         try:
             config = Config(parsed.config)
-            path_in = config.get_directory('data', path_in)
-            path_out = config.get_directory('preprocessed', path_out)
+            path_in = config.get_directory('test_data', path_in)
+            path_out = config.get_directory('simulated_data', path_out)
         except Exception as e:
             logging.exception(e)
             return 1
 
     if parsed.action == 'save_np':
         try:
-
             save_j_as_np(
                 path_in,
                 path_out,
@@ -130,11 +129,10 @@ def main(argv):
             logging.exception(e)
             return 1
 
-    if parsed.action == 'simulate':
+    if parsed.action == 'simulate_EMG':
         try:
-            simulate.simulate_raw_emg(
-                path_in,
-                parsed.number,
+            simulate.synthetic_emg_cli(
+                int(parsed.number),
                 path_out,
             )
         except Exception as e:

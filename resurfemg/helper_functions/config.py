@@ -37,7 +37,7 @@ class Config:
         'test_data': '{}/test_data',
         'patient_data': '{}/not_pushed/patient_data',
         'simulated_data': '{}/not_pushed/simulated',
-        'preprocessed': '{}/not_pushed/preprocessed',
+        'preprocessed_data': '{}/not_pushed/preprocessed',
         'output': '{}/not_pushed/output',
     }
 
