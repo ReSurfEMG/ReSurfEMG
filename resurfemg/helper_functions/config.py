@@ -2,12 +2,10 @@
 Copyright 2022 Netherlands eScience Center and Twente University.
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
-This file contains one method to let the user configure
-all paths for data instead of hard-coding them, as well
-as methods to check data integrity.
-The data integrity can be checked because this file contains
-hash functions to track data. Synthetic data can be made
-with several methods.
+This file contains one method to let the user configure all paths for data
+instead of hard-coding them, as well as methods to check data integrity.
+The data integrity can be checked because this file contains hash functions
+to track data. Synthetic data can be made with several methods.
 """
 
 import json
@@ -35,15 +33,15 @@ class Config:
     )
 
     default_layout = {
-        'root_emg_directory': '{}',
+        'root_data': '{}/not_pushed',
         'test_data': '{}/test_data',
-        'synthetic_data': '{}',
-        'preprocessed': '{}/preprocessed',
-        'models': '{}/models',
-        'output': '{}/output',
+        'patient_data': '{}/not_pushed/patient_data',
+        'simulated_data': '{}/not_pushed/simulated',
+        'preprocessed': '{}/not_pushed/preprocessed',
+        'output': '{}/not_pushed/output',
     }
 
-    required_directories = ['root_emg_directory']
+    required_directories = ['root_data']
 
     def __init__(self, location=None):
         self._raw = None
@@ -69,7 +67,8 @@ class Config:
             directory as follows:
 
             {{
-                "root_emg_directory": "/path/to/storage"
+                "root_data": "/path/to/storage"
+                "test_data": "/path/to/storage"
             }}
 
             The default directory layout is expected to be based on the above
@@ -78,9 +77,10 @@ class Config:
             You can override any individual directory (or subdirectory)
             by specifying it in the config.json file.
 
-            "root_emg_directory" is expected to exist.
-            The "models" and "preprocessed" directories need not
-            exist.  They will be created if missing.
+            "root_data" is expected to exist.
+            
+            The "patient_data", "simulated_data", "preprocessed", "output"
+            directories need not exist.  They will be created if missing.
             '''
         ).format('\n'.join(self.default_locations))
 
@@ -99,11 +99,11 @@ class Config:
         else:
             raise ValueError(self.usage())
 
-        root = self._raw.get('root_emg_directory')
+        root = self._raw.get('root_data')
         self._loaded = dict(self._raw)
         if root is None:
             required = dict(self.default_layout)
-            del required['root_emg_directory']
+            del required['root_data']
             for directory in required.keys():
                 if directory not in self._raw:
                     raise ValueError(self.usage())

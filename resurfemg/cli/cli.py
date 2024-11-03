@@ -14,7 +14,7 @@ import logging
 from argparse import ArgumentParser
 
 from resurfemg.helper_functions.config import Config
-from resurfemg.data_connector.synthetic_data import make_realistic_syn_emg_cli
+import resurfemg.pipelines.synthetic_data as simulate
 from resurfemg.data_connector.converter_functions import save_j_as_np
 
 
@@ -81,15 +81,15 @@ def make_parser():
     )
     common(acquire)
 
-    synth = subparsers.add_parser('synth')
-    synth.set_defaults(action='synth')
-    common(synth)
-    synth.add_argument(
+    sim = subparsers.add_parser('simulate')
+    sim.set_defaults(action='simulate')
+    common(sim)
+    sim.add_argument(
         '-N',
         '--number',
         default=1,
         help='''
-        Number of synthetic EMG to be made.
+        Number of synthetic EMG to be generated.
         '''
     )
 
@@ -130,9 +130,9 @@ def main(argv):
             logging.exception(e)
             return 1
 
-    if parsed.action == 'synth':
+    if parsed.action == 'simulate':
         try:
-            make_realistic_syn_emg_cli(
+            simulate.simulate_raw_emg(
                 path_in,
                 parsed.number,
                 path_out,
