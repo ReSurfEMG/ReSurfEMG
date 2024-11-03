@@ -53,6 +53,9 @@ def load_file(
         print('Detected .csv')
         data_df, metadata = load_csv(
             file_path, force_col_reading, verbose)
+    else:
+        raise UserWarning("No methods availabe for file extension"
+                          + f"{file_extension}.")
 
     metadata['file_name'] = file_name
     metadata['file_dir'] = file_dir

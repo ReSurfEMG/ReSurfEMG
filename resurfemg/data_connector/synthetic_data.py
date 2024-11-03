@@ -11,126 +11,9 @@ from scipy import signal
 from resurfemg.preprocessing import filtering as filt
 
 
-def simulate_ventilator_with_occlusions(
-    t_p_occs,
-    t_start=0,
-    t_end=7*60,
-    fs_vent=2048,
-    rr=22,
-    ie_ratio=1/2,
-    p_mus_max=5,
-    tau_mus_up=0.3,
-    tau_mus_down=0.3,
-    c=.050,
-    r=5,
-    peep=5,
-    dp=5
-):
-    """
-    This function simulates ventilator data with occlusion manuevers.
-
-    :param t_p_occs: Timing of occlusions (s)
-    :type t_p_occs: float
-    :param t_start: start time
-    :type t_start: float
-    :param t_end: end time
-    :type t_end: float
-    :param fs_vent: ventilator sampling rate (Hz)
-    :type fs_vent: int
-    :param rr: respiratory rate (/min)
-    :type rr: float
-    :param ie_ratio: Ratio between inspiratory and expiratory time
-    :type ie_ratio: float
-    :param p_mus_max: Maximal respiratory muscle pressure (cmH2O)
-    :type p_mus_max: float
-    :param tau_mus_up: Muscle contraction time constant (s)
-    :type tau_mus_up: float
-    :param tau_mus_down: Muscle release time constant (s)
-    :type tau_mus_down: float
-    :param c: Respiratory system compliance (L/cmH2O)
-    :type c: float
-    :param r: Respiratory system resistance (cmH2O/L/s)
-    :type r: float
-    :param peep: Positive end-expiratory pressure (cmH2O)
-    :type peep: float
-    :type dp: float
-    :param dp: Driving pressure above PEEP (cmH2O)
-
-    :returns: y_vent: np.array([p_vent, f_vent, v_vent])
-    :rtype: ~np.array
-    """
-    # Parse input parameters
-    ie_fraction = ie_ratio/(ie_ratio + 1)
-
-    # Time axis
-    t_vent = np.array(
-        [i/fs_vent for i in range(int(t_start*fs_vent), int(t_end*fs_vent))])
-
-    # Reference signal/Pattern generator
-    occs_times = np.array(t_p_occs)
-
-    t_occs = np.floor(occs_times*rr/60)*60/rr
-    p_mus_block = (signal.square(t_vent*rr/60*2*np.pi + 0.1, ie_fraction)+1)/2
-
-    # Simulate up- and downslope dynamics of respiratory muscle pressure
-    pattern_gen_mus = np.zeros((len(t_vent),))
-    for i in range(1, len(t_vent)):
-        if (p_mus_block[i-1]-pattern_gen_mus[i-1]) > 0:
-            pattern_gen_mus[i] = (pattern_gen_mus[i-1]
-                                  + (p_mus_block[i-1]-pattern_gen_mus[i-1])
-                                  / (tau_mus_up * fs_vent))
-        else:
-            pattern_gen_mus[i] = (pattern_gen_mus[i-1]
-                                  + (p_mus_block[i-1] - pattern_gen_mus[i-1])
-                                  / (tau_mus_down * fs_vent))
-
-    p_mus = p_mus_max * pattern_gen_mus
-
-    # Simulate up- and downslope dynamics of airway pressure
-    p_block = dp * (signal.square(t_vent*rr/60*2*np.pi, ie_fraction)+1)/2
-    tau_dp_up = 10
-    tau_dp_down = 5
-
-    p_noise = np.random.normal(0, 2, size=(len(t_vent), ))
-    p_noise_series = pd.Series(p_noise)
-    p_noise_ma = p_noise_series.rolling(fs_vent, min_periods=1,
-                                        center=True).mean().values
-
-    p_dp = -p_mus
-    for i in range(1, len(t_vent)):
-        dp_step = p_block[i-1]-(p_dp[i-1] + p_noise_ma[i-1])
-        if np.any((((t_occs*fs_vent)-i) <= 0)
-                  & ((((t_occs+60/rr)*fs_vent+1)-i) > 0)):
-            # Occlusion pressure results into negative airway pressure:
-            dp_step = (-np.mean(p_mus[i-int(1*fs_vent/2):int(i-1)])
-                       - p_dp[i-1])
-            p_dp[i] = p_dp[i-1]+dp_step/(tau_dp_up)
-        elif (p_block[i-1]-p_dp[i-1]) > 0:
-            p_dp[i] = p_dp[i-1]+dp_step/tau_dp_up
-        else:
-            p_dp[i] = p_dp[i-1]+dp_step/tau_dp_down
-
-    p_vent = peep + p_dp
-
-    # Calculate flows and volumes from equation of motion:
-    v_dot_vent = np.zeros((len(t_vent),))
-    v_vent = np.zeros((len(t_vent),))
-    for i in range(len(t_vent)-1):
-        if np.any((((t_occs*fs_vent)-i-1) <= 0)
-                  & ((((t_occs+60/rr)*fs_vent)-i) > 0)):
-            # During occlusion manoeuvre: flow and volume are zero
-            v_dot_vent[i+1] = 0
-            v_vent[i+1] = 0
-        else:
-            v_dot_vent[i+1] = ((p_dp[i] + p_mus[i]) - v_vent[i] / c)/r
-            v_vent[i+1] = v_vent[i] + v_dot_vent[i+1] * 1/fs_vent
-
-    y_vent = np.vstack((p_vent, v_dot_vent, v_vent))
-    return y_vent
-
 def respiratory_pattern_generator(
     t_end=7*60,
-    fs_emg=2048,
+    fs=2048,
     rr=22,
     ie_ratio=1/2,
     t_p_occs=None,
@@ -140,9 +23,9 @@ def respiratory_pattern_generator(
     for generating a synthetic EMG.
     :param t_end: end time
     :type t_end: float
-    :param fs_emg: emg sampling rate (Hz)
-    :type fs_emg: int
-    :param rr: respiratory rate (/min)
+    :param fs: Sampling rate
+    :type fs: int
+    :param rr: Respiratory rate (/min)
     :type rr: float
     :param ie_ratio: Ratio between inspiratory and expiratory time
     :type ie_ratio: float
@@ -164,22 +47,23 @@ def respiratory_pattern_generator(
                   + 'should be at least a full respiratory cycle from t_end.')
     # time axis
     t_emg = np.array(
-        [i/fs_emg for i in range(0, int(t_end*fs_emg))]
+        [i/fs for i in range(0, int(t_end*fs))]
     )
 
     # reference signal pattern generator
     respiratory_pattern = (
         signal.square(t_emg*rr/60*2*np.pi + 0.5, ie_fraction)+1)/2
     for _, t_occ in enumerate(t_occs):
-        i_occ = int(t_occ*fs_emg)
-        blocker = np.arange(int(fs_emg*60/rr)+1)/fs_emg*rr/60*2*np.pi
+        i_occ = int(t_occ * fs)
+        blocker = np.arange(int(fs * 60/rr) + 1)/fs*rr/60*2*np.pi
         squared_wave = (signal.square(blocker, ie_fraction)+1)/2
-        respiratory_pattern[i_occ:i_occ+int(fs_emg*60/rr)+1] = squared_wave
+        respiratory_pattern[i_occ:i_occ+int(fs*60/rr)+1] = squared_wave
     return respiratory_pattern
+
 
 def simulate_muscle_dynamics(
     block_pattern,
-    fs_emg=2048,
+    fs=2048,
     tau_mus_up=0.3,
     tau_mus_down=0.3,
 ):
@@ -188,6 +72,8 @@ def simulate_muscle_dynamics(
     generating a synthetic EMG.
     :param block_pattern: Simulated on/off respiratory muscle pattern.
     :type block_pattern: ~np.array[float]
+    :param fs: Sampling rate
+    :type fs: int
     :param tau_mus_up: Muscle contraction time constant (s)
     :type tau_mus_up: float
     :param tau_mus_down: Muscle relaxation time constant (s)
@@ -200,113 +86,139 @@ def simulate_muscle_dynamics(
     muscle_activation = np.zeros((len(block_pattern),))
     for i in range(1, len(block_pattern)):
         pat = muscle_activation[i-1]
-        if (block_pattern[i-1]-pat) > 0:
+        if (block_pattern[i-1] - pat) > 0:
             muscle_activation[i] = pat + ((block_pattern[i-1] - pat) /
-                                        (tau_mus_up * fs_emg))
+                                          (tau_mus_up * fs))
         else:
             muscle_activation[i] = pat + ((block_pattern[i-1] - pat) /
-                                        (tau_mus_down * fs_emg))
+                                          (tau_mus_down * fs))
     return muscle_activation
 
 
 def simulate_ventilator_data(
-    muscle_activation,
-    t_start=0,
-    t_end=7*60,
+    p_mus,
     fs_vent=100,
-    rr=22,
-    ie_ratio=1/2,
-    p_mus_max=5,
-    c=.050,
-    r=5,
-    peep=5,
-    dp=5
+    t_occ_bool=None,
+    **kwargs
 ):
     """
-    This function simulates ventilator data with occlusion manuevers.
-    This function simulates an surface respiratory emg based on the provided
-    `muscle_activation` and adds noise to the signal.
+    This function simulates ventilator data with occlusion manouevers based on
+    the provided `p_mus` and adds noise to the signal.
 
-    :param t_p_occs: Timing of occlusions (s)
-    :type t_p_occs: float
-    :param t_start: start time
-    :type t_start: float
-    :param t_end: end time
-    :type t_end: float
-    :param fs_vent: ventilator sampling rate (Hz)
+    :param p_mus: Respiratory muscle pressure
+    :type p_mus: numpy.ndarray[float]
+    :param fs_vent: Ventilator sampling rate
     :type fs_vent: int
-    :param rr: respiratory rate (/min)
-    :type rr: float
-    :param ie_ratio: Ratio between inspiratory and expiratory time
-    :type ie_ratio: float
-    :param p_mus_max: Maximal respiratory muscle pressure (cmH2O)
-    :type p_mus_max: float
-    :param tau_mus_up: Muscle contraction time constant (s)
-    :type tau_mus_up: float
-    :param tau_mus_down: Muscle release time constant (s)
-    :type tau_mus_down: float
-    :param c: Respiratory system compliance (L/cmH2O)
-    :type c: float
-    :param r: Respiratory system resistance (cmH2O/L/s)
-    :type r: float
-    :param peep: Positive end-expiratory pressure (cmH2O)
-    :type peep: float
-    :type dp: float
-    :param dp: Driving pressure above PEEP (cmH2O)
+    :param t_occ_bool: Boolean array. Is true when a Pocc manoeuver is done
+    :type t_occ_bool: numpy.ndarray[bool]
 
     :returns: y_vent: np.array([p_vent, f_vent, v_vent])
     :rtype: ~np.array
     """
-    # Time axis
-    t_vent = np.array(
-        [i/fs_vent for i in range(int(t_start*fs_vent), int(t_end*fs_vent))])
+    def evaluate_ventilator_status(
+        idx,
+        y_vent,
+        vent_settings,
+        vent_status,
+    ):
+        """
+        Define the ventilator status (active support, sensitive for trigger)
+        based on the ventilator settings and ventilator flow:
+        :param idx: The index to evaluate the ventilator status
+        :type idx: int
+        :param y_vent: The ventilator pressure, flow and volume
+        :type y_vent: numpy.ndarray
+        :param vent_settings: The ventilator settings
+        :type vent_settings: dict
+        :param vent_status: The current ventilator status
+        :type vent_status: dict
+        :returns vent_status: The new ventilator status
+        :rtype vent_status: dict
+        """
+        if ((vent_status['sensitive'] is True)
+                and (60 * y_vent[1, idx] > vent_settings['flow_trigger'])):
+            vent_status['active'] = True
+            vent_status['sensitive'] = False
 
-    # Reference signal/Pattern generator
-    t_occs = np.floor(np.array(t_p_occs)*rr/60)*60/rr
+        if vent_status['active'] and y_vent[1, idx] > vent_status['F_max']:
+            vent_status['p_set'] = vent_settings['dp']
+            vent_status['F_max'] = y_vent[1, idx]
+        elif (y_vent[1, idx] < vent_settings['flow_cycle'] *
+              vent_status['F_max']) and vent_status['active']:
+            vent_status['active'] = False
+            vent_status['p_set'] = 0
+        return vent_status
 
-    p_mus = p_mus_max * muscle_activation
+    lung_mechanics = {
+        'c': .050,
+        'r': 5,
+    }
+    vent_settings = {
+        'dp': 5,
+        'peep': 5,
+        'flow_cycle': 0.25,  # Fraction F_max
+        'flow_trigger': 2,   # L/min
+        'tau_dp_up': 10,
+        'tau_dp_down': 5,
+    }
+    for key, value in kwargs.items():
+        if key in lung_mechanics.keys():
+            lung_mechanics[key] = value
+        elif key in vent_settings.keys():
+            vent_settings[key] = value
+        else:
+            raise UserWarning(f"kwarg `{key}` not available.")
+
+    if t_occ_bool is None:
+        t_occ_bool = np.zeros(p_mus.shape, dtype=bool)
 
     # Simulate up- and downslope dynamics of airway pressure
-    p_block = dp * (signal.square(
-        t_vent*rr/60*2*np.pi,ie_ratio/(ie_ratio + 1)) + 1) / 2
-    tau_dp_up = 10
-    tau_dp_down = 5
+    p_noise_ma = 0 * pd.Series(
+        np.random.normal(0, 2, size=(len(p_mus), ))).rolling(
+            fs_vent, min_periods=1, center=True).mean().values
 
-    p_noise = np.random.normal(0, 2, size=(len(t_vent), ))
-    p_noise_series = pd.Series(p_noise)
-    p_noise_ma = p_noise_series.rolling(fs_vent, min_periods=1,
-                                        center=True).mean().values
-
+    vent_status = {
+        'p_set': 0,
+        'active': False,
+        'sensitive': True,
+        'F_max': 0,
+    }
     p_dp = -p_mus
-    for i in range(1, len(t_vent)):
-        dp_step = p_block[i-1]-(p_dp[i-1] + p_noise_ma[i-1])
-        if np.any((((t_occs*fs_vent)-i) <= 0)
-                  & ((((t_occs+60/rr)*fs_vent+1)-i) > 0)):
+    y_vent = np.zeros((3, len(p_mus)))
+    for i in range(1, len(p_mus)):
+        vent_status = evaluate_ventilator_status(
+            idx=i-1,
+            y_vent=y_vent,
+            vent_settings=vent_settings,
+            vent_status=vent_status,
+        )
+        dp_step = vent_status['p_set'] - (p_dp[i-1] + p_noise_ma[i-1])
+        if t_occ_bool[i]:
+            vent_status['active'] = False
+            vent_status['sensitive'] = False
+            vent_status['p_set'] = 0
+            vent_status['F_max'] = 0
+
             # Occlusion pressure results into negative airway pressure:
             dp_step = (-np.mean(p_mus[i-int(1*fs_vent/2):int(i-1)])
                        - p_dp[i-1])
-            p_dp[i] = p_dp[i-1]+dp_step/(tau_dp_up)
-        elif (p_block[i-1]-p_dp[i-1]) > 0:
-            p_dp[i] = p_dp[i-1]+dp_step/tau_dp_up
-        else:
-            p_dp[i] = p_dp[i-1]+dp_step/tau_dp_down
-
-    p_vent = peep + p_dp
-
-    # Calculate flows and volumes from equation of motion:
-    v_dot_vent = np.zeros((len(t_vent),))
-    v_vent = np.zeros((len(t_vent),))
-    for i in range(len(t_vent)-1):
-        if np.any((((t_occs*fs_vent)-i-1) <= 0)
-                  & ((((t_occs+60/rr)*fs_vent)-i) > 0)):
+            p_dp[i] = p_dp[i-1] + dp_step/(vent_settings['tau_dp_up'])
             # During occlusion manoeuvre: flow and volume are zero
-            v_dot_vent[i+1] = 0
-            v_vent[i+1] = 0
+            y_vent[1:2, i] = 0
         else:
-            v_dot_vent[i+1] = ((p_dp[i] + p_mus[i]) - v_vent[i] / c)/r
-            v_vent[i+1] = v_vent[i] + v_dot_vent[i+1] * 1/fs_vent
+            if (vent_status['p_set'] - p_dp[i-1]) > 0:
+                p_dp[i] = p_dp[i-1] + dp_step / vent_settings['tau_dp_up']
+            else:
+                p_dp[i] = p_dp[i-1] + dp_step / vent_settings['tau_dp_down']
+            # Calculate flows and volumes from equation of motion:
+            y_vent[1, i] = ((p_dp[i-1] + p_mus[i-1]) - y_vent[2, i-1] /
+                            lung_mechanics['c'])/lung_mechanics['r']
+            y_vent[2, i] = y_vent[2, i-1] + y_vent[1, i] * 1/fs_vent
+            if (vent_status['sensitive'] is False) and (y_vent[1, i] < 0):
+                vent_status['sensitive'] = True
+                vent_status['F_max'] = 0
+    y_vent[0, :] = vent_settings['peep'] + p_dp
 
-    y_vent = np.vstack((p_vent, v_dot_vent, v_vent))
     return y_vent
 
 
@@ -319,7 +231,7 @@ def simulate_emg(
 ):
     """
     This function simulates an surface respiratory emg based on the provided
-    `muscle_activation` and adds noise and drift to the signal. No ecg 
+    `muscle_activation` and adds noise and drift to the signal. No ecg
     component is included, but can be added later.
 
     :param muscle_activation: The muscle activation pattern

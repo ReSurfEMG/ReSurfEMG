@@ -108,4 +108,3 @@ def ecg_removal_gating(
         method=method)
 
     return emg_gated
-    

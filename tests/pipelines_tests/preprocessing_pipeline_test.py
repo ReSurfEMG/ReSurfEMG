@@ -5,7 +5,7 @@ import unittest
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 from resurfemg.preprocessing.ecg_removal  import (
     detect_ecg_peaks)
-from resurfemg.pipelines.processing import ecg_removal_gating
+from resurfemg.pipelines import processing as pipe 
 
 synth_pocc_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(
@@ -24,7 +24,7 @@ class TestGatingPipeline(unittest.TestCase):
         bp_filter=True,
     )
     def test_gating_pipeline(self):
-        emg_di_gated = ecg_removal_gating(
+        emg_di_gated = pipe.ecg_removal_gating(
             emg_raw=self.y_emg[1, :],
             ecg_peaks_idxs=self.ecg_peaks,
             gate_width_samples=self.fs_emg // 10,
@@ -35,6 +35,28 @@ class TestGatingPipeline(unittest.TestCase):
             self.y_emg.shape[1]
         )
 
+
+class TestQuickLookPipeline(unittest.TestCase):
+    data_emg = Poly5Reader(synth_pocc_emg)
+    y_emg = data_emg.samples[:data_emg.num_samples]
+    fs_emg = data_emg.sample_rate
+    def test_gating_pipeline(self):
+        emg_filt, emg_env = pipe.quick_look(
+            emg_raw=self.y_emg[1, :],
+            fs_emg=self.fs_emg,
+            plot_raw=False,
+            plot_clean=False,
+            plot_env=False,
+            plot_power_spectrum=False,
+        )
+        self.assertEqual(
+            len(emg_filt),
+            self.y_emg.shape[1]
+        )
+        self.assertEqual(
+            len(emg_env),
+            self.y_emg.shape[1]
+        )
 
 if __name__ == '__main__':
     unittest.main()
