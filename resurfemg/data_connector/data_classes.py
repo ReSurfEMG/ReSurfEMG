@@ -649,14 +649,17 @@ class TimeSeries:
     ):
         """
         Test EMG PeaksSet according to quality criteria in Warnaar et al.
-        (2024). Peak validity is updated in the PeaksSet object.
+        (2024), extended with relative area under the baseline and relative ETP
+        evaluation. Peak validity is updated in the PeaksSet object.
 
         :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param cutoff: Cut-off criteria for passing the tests, including
         ratio between ECG and EMG interpeak time (interpeak_distance), signal-
-        to-noise ratio (snr), percentage area under the baseline (aub), and
-        percentage miss fit with bell curve (curve_fit). 'tolerant' and
+        to-noise ratio (snr), percentage area under the baseline (aub),
+        percentage miss fit with bell curve (curve_fit), the aub relative to
+        all detected aubs (relative_aub), and the electrical time product (ETP)
+        relative to all ETPs (relative_ETP). 'tolerant' and
         'strict' can also be provided instead of a dict to use the respective
         values from Warnaar et al.
         :type cutoff: dict
@@ -671,61 +674,112 @@ class TimeSeries:
         :returns: None
         :rtype: None
         """
-        if peak_set_name in self.peaks.keys():
-            peak_set = self.peaks[peak_set_name]
-        else:
-            raise KeyError("Non-existent PeaksSet key")
+        def initialize(
+            self,
+            peak_set_name,
+            cutoff,
+            skip_tests,
+            parameter_names
+        ):
+            """Initialize local parameters"""
+            if peak_set_name in self.peaks.keys():
+                peak_set = self.peaks[peak_set_name]
+            else:
+                raise KeyError("Non-existent PeaksSet key")
 
-        if skip_tests is None:
-            skip_tests = []
+            if skip_tests is None:
+                skip_tests = []
 
-        if (cutoff is None
-                or (isinstance(cutoff, str) and cutoff == 'tolerant')):
-            cutoff = dict()
-            cutoff['interpeak_distance'] = 1.1
-            cutoff['snr'] = 1.4
-            cutoff['aub'] = 40
-            cutoff['curve_fit'] = 30
-            cutoff['aub_window_s'] = 5*self.fs
-            cutoff['bell_window_s'] = 5*self.fs
-        elif (isinstance(cutoff, str) and cutoff == 'strict'):
-            cutoff = dict()
-            cutoff['interpeak_distance'] = 1.1
-            cutoff['snr'] = 1.75
-            cutoff['aub'] = 30
-            cutoff['curve_fit'] = 25
-            cutoff['aub_window_s'] = 5*self.fs
-            cutoff['bell_window_s'] = 5*self.fs
-        elif isinstance(cutoff, dict):
-            tests = ['interpeak_distance', 'snr', 'aub', 'curve_fit']
-            for _, test in enumerate(tests):
-                if test not in skip_tests:
-                    if test not in cutoff.keys():
-                        raise KeyError(
-                            'No cut-off value provided for: ' + test)
-                    elif isinstance(cutoff, float):
-                        raise ValueError(
-                            'Invalid cut-off value provided for: ' + test)
+            if (cutoff is None
+                    or (isinstance(cutoff, str) and cutoff == 'tolerant')):
+                cutoff = {
+                    'interpeak_distance': 1.1,
+                    'snr': 1.4,
+                    'aub': 40,
+                    'curve_fit': 30,
+                    'aub_window_s': 5*self.fs,
+                    'bell_window_s': 5*self.fs,
+                    'relative_aub_percentile': 75.0,
+                    'relative_aub_factor': 4.0,
+                    'relative_etp_upper_percentile': 95.0,
+                    'relative_etp_upper_factor': 10.0,
+                    'relative_etp_lower_percentile': 5.0,
+                    'relative_etp_lower_factor': 0.1,
+                }
+            elif (isinstance(cutoff, str) and cutoff == 'strict'):
+                cutoff = {
+                    'interpeak_distance': 1.1,
+                    'snr': 1.75,
+                    'aub': 30,
+                    'curve_fit': 25,
+                    'aub_window_s': 5*self.fs,
+                    'bell_window_s': 5*self.fs,
+                    'relative_aub_percentile': 75.0,
+                    'relative_aub_factor': 2.0,
+                    'relative_etp_upper_percentile': 95.0,
+                    'relative_etp_upper_factor': 10.0,
+                    'relative_etp_lower_percentile': 5.0,
+                    'relative_etp_lower_factor': 0.1,
+                }
+            elif isinstance(cutoff, dict):
+                tests = [
+                    'interpeak_distance', 'snr', 'aub', 'curve_fit', ]
+                for _, test in enumerate(tests):
+                    if test not in skip_tests:
+                        if test not in cutoff.keys():
+                            raise KeyError(
+                                'No cut-off value provided for: ' + test)
+                        elif isinstance(cutoff, float):
+                            raise ValueError(
+                                'Invalid cut-off value provided for: ' + test)
 
-            if 'aub' not in skip_tests and 'aub_window_s' not in cutoff.keys():
-                raise KeyError('No area under the baseline window provided '
-                               + 'for: ' + test)
+                if 'aub' not in skip_tests and 'aub_window_s' not in cutoff:
+                    raise KeyError('No area under the baseline window provided'
+                                    + ' for: ' + test)
+                if 'relative_aub' not in skip_tests:
+                    if 'relative_aub_percentile' not in cutoff:
+                        raise KeyError('No relative area under the baseline '
+                                        + 'percentile provided for: '
+                                        + 'relative_aub')
+                    if 'relative_aub_factor' not in cutoff:
+                        raise KeyError('No relative area under the baseline'
+                                    + 'factor provided for: relative_aub')
+                if 'relative_etp' not in skip_tests:
+                    _params = [
+                        'upper_percentile', 'upper_factor', 'lower_percentile',
+                        'lower_factor']
+                    for _param in _params:
+                        if ('relative_etp_' + _param) not in cutoff:
+                            raise KeyError(f"No relative_etp_{_param} "
+                                           + "provided for: relative_aub")
 
-        if parameter_names is None:
-            parameter_names = dict()
+            if parameter_names is None:
+                parameter_names = dict()
 
-        for parameter in ['ecg', 'time_product']:
-            if parameter not in parameter_names.keys():
-                parameter_names[parameter] = parameter
+            for parameter in ['ecg', 'time_product']:
+                if parameter not in parameter_names.keys():
+                    parameter_names[parameter] = parameter
 
-        n_peaks = len(peak_set.peak_df['peak_idx'].to_numpy())
-        quality_values_df = pd.DataFrame(data=peak_set.peak_df['peak_idx'],
-                                         columns=['peak_idx'])
-        quality_outcomes_df = pd.DataFrame(data=peak_set.peak_df['peak_idx'],
-                                           columns=['peak_idx'])
+            n_peaks = len(peak_set.peak_df['peak_idx'].to_numpy())
+            quality_values_df = pd.DataFrame(
+                data=peak_set.peak_df['peak_idx'], columns=['peak_idx'])
+            quality_outcomes_df = pd.DataFrame(
+                data=peak_set.peak_df['peak_idx'], columns=['peak_idx'])
+            output = (
+                skip_tests,
+                cutoff,
+                peak_set,
+                parameter_names,
+                n_peaks,
+                quality_values_df,
+                quality_outcomes_df
+            )
+            return output
 
-        if 'interpeak_dist' not in skip_tests:
-            if 'ecg' not in self.peaks.keys():
+        def test_interpeak_distance(
+                self, peak_set, quality_outcomes_df, n_peaks):
+            """Test interpeak distance"""
+            if 'ecg' not in self.peaks:
                 raise ValueError('ECG peaks not determined, but required for '
                                  + ' interpeak distance evaluation.')
             ecg_peaks = self.peaks['ecg'].peak_df['peak_idx'].to_numpy()
@@ -736,8 +790,9 @@ class TimeSeries:
 
             valid_interpeak_vec = np.array(n_peaks * [valid_interpeak])
             quality_outcomes_df['interpeak_distance'] = valid_interpeak_vec
+            return quality_outcomes_df
 
-        if 'snr' not in skip_tests:
+        def test_snr(self, peak_set, quality_outcomes_df):
             if self.baseline is None:
                 raise ValueError('Baseline not determined, but required for '
                                  + ' SNR evaluaton.')
@@ -750,8 +805,10 @@ class TimeSeries:
             quality_values_df['snr'] = snr_peaks
             valid_snr = snr_peaks > cutoff['snr']
             quality_outcomes_df['snr'] = valid_snr
+            return(quality_outcomes_df)
 
-        if 'aub' not in skip_tests:
+        def test_aub(self, peak_set, quality_outcomes_df, quality_values_df):
+            """Test percentage area under the baseline"""
             if self.baseline is None:
                 raise ValueError('Baseline not determined, but required for '
                                  + ' area under the baseline (AUB) evaluaton.')
@@ -772,12 +829,16 @@ class TimeSeries:
                 ref_signal=None,
                 aub_threshold=cutoff['aub'],
             )
+            
             (valid_timeproducts, percentages_aub, y_refs) = outputs
             quality_values_df['aub'] = percentages_aub
             quality_values_df['aub_y_refs'] = y_refs
             quality_outcomes_df['aub'] = valid_timeproducts
+            return quality_outcomes_df, quality_values_df
 
-        if 'curve_fit' not in skip_tests:
+        def test_curve_fits(
+                self, peak_set, quality_outcomes_df, quality_values_df):
+            """Test curve fit"""
             if self.baseline is None:
                 raise ValueError('Baseline not determined, but required for '
                                  + ' area under the baseline (AUB) evaluaton.')
@@ -813,7 +874,73 @@ class TimeSeries:
 
             quality_values_df['bell'] = percentage_bell_error
             quality_outcomes_df['bell'] = valid_bell_shape
+            return quality_outcomes_df, quality_values_df, peak_set
 
+        def test_relative_aub(peak_set, quality_outcomes_df):
+            """Test the relative area under the baseline"""
+            if 'AUB' not in peak_set.peak_df.columns:
+                raise ValueError('AUB not determined, but required for '
+                                 +'relative area under the baseline (AUB) '
+                                 +'evaluaton.')
+            valid_relative_aubs = qa.detect_local_high_aub(
+                aubs=peak_set.peak_df['AUB'].to_numpy(),
+                threshold_percentile=cutoff['relative_aub_percentile'],
+                threshold_factor=cutoff['relative_aub_factor'],
+            )
+            quality_outcomes_df['relative_aub'] = valid_relative_aubs
+            return quality_outcomes_df
+
+        def test_relative_etp(peak_set, quality_outcomes_df):
+            if parameter_names['time_product'] not in peak_set.peak_df.columns:
+                raise ValueError('ETPs not determined, but required for curve '
+                                 + 'fit evaluaton.')
+            print(peak_set.peak_df[
+                    parameter_names['time_product']].to_numpy().shape)
+            valid_etps = qa.detect_extreme_time_products(
+                time_products=peak_set.peak_df[
+                    parameter_names['time_product']].to_numpy(),
+                upper_percentile=cutoff['relative_etp_upper_percentile'],
+                upper_factor=cutoff['relative_etp_upper_factor'],
+                lower_percentile=cutoff['relative_etp_lower_percentile'],
+                lower_factor=cutoff['relative_etp_lower_factor'],
+            )
+            quality_outcomes_df['relative_etp'] = valid_etps
+            return quality_outcomes_df
+
+        output = initialize(
+            self,
+            peak_set_name,
+            cutoff,
+            skip_tests,
+            parameter_names
+        )
+        (skip_tests, cutoff, peak_set, parameter_names, n_peaks,
+         quality_values_df, quality_outcomes_df) = output
+
+        if 'interpeak_dist' not in skip_tests:
+            quality_outcomes_df = test_interpeak_distance(
+                self, peak_set, quality_outcomes_df, n_peaks)
+
+        if 'snr' not in skip_tests:
+            quality_outcomes_df = test_snr(
+                self, peak_set, quality_outcomes_df)
+
+        if 'aub' not in skip_tests:
+            quality_outcomes_df, quality_values_df = test_aub(
+                self, peak_set, quality_outcomes_df, quality_values_df)
+
+        if 'curve_fit' not in skip_tests:
+            quality_outcomes_df, quality_values_df, peak_set = test_curve_fits(
+                self, peak_set, quality_outcomes_df, quality_values_df)
+
+        if 'relative_aub' not in skip_tests:
+            quality_outcomes_df = test_relative_aub(
+                peak_set, quality_outcomes_df)
+
+        if 'relative_etp' not in skip_tests:
+            quality_outcomes_df = test_relative_etp(
+                peak_set, quality_outcomes_df)
+            
         peak_set.update_test_outcomes(quality_values_df)
         peak_set.evaluate_validity(quality_outcomes_df)
         if verbose:
@@ -939,6 +1066,16 @@ class TimeSeries:
             print(peak_set.quality_values_df)
             print('Test outcomes:')
             print(peak_set.quality_outcomes_df)
+    
+    # def test_linked_peak_sets(
+        
+    # ):
+    #     evaluate_event_timing(
+    #         t_events_1,
+    #         t_events_2,
+    #         delta_min=0,
+    #         delta_max=None,
+    #     )
 
     def plot_full(self, axis=None, signal_type=None,
                   colors=None, baseline_bool=True):

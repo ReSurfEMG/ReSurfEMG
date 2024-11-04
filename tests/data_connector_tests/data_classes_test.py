@@ -116,7 +116,6 @@ class TestTimeSeriesGroup(unittest.TestCase):
             len(self.emg_timeseries.channels[0].t_data),
             len(self.y_emg[0, :])
         )
-    print(emg_timeseries.fs)
     emg_timeseries.filter()
     emg_timeseries.gating()
     def test_clean_data(self):

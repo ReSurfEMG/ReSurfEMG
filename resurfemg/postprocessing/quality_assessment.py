@@ -245,17 +245,16 @@ def detect_extreme_time_products(
     :type lower_percentile: ~float
     :param lower_factor: multiplication factor for lower_percentile
     :type lower_factor: ~float
-    :returns valid_time_product: Boolean list of time product values within
-    bounds
+    :returns valid_etps: Boolean list of time product values within bounds
     :rtype: numpy.ndarray[bool]
     """
     upper_threshold = upper_factor * np.percentile(
         time_products, upper_percentile)
     lower_threshold = lower_factor * np.percentile(
         time_products, lower_percentile)
-    valid_aubs = np.all(np.array([[time_products < upper_threshold],
-                                  [time_products > lower_threshold]]), axis=0)
-    return valid_aubs
+    valid_etps = np.all(np.array([time_products < upper_threshold,
+                                  time_products > lower_threshold]), axis=0)
+    return valid_etps
 
 
 def detect_non_consecutive_manoeuvres(
