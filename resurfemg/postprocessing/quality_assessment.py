@@ -261,7 +261,6 @@ def detect_non_consecutive_manoeuvres(
     ventilator_breath_idxs,
     manoeuvres_idxs
 ):
-
     """
     Detect manoeuvres (for example Pocc) with no supported breaths
     in between. Input are the ventilator breaths, to be detected with the

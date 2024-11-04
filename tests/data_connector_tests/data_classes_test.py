@@ -42,7 +42,8 @@ class TestTimeSeriesGroup(unittest.TestCase):
 
     # Find occlusion pressures
     vent_timeseries.find_occluded_breaths(
-        vent_timeseries.p_vent_idx, start_idx=360*vent_timeseries.fs)
+        vent_timeseries.p_vent_idx,
+        start_idx=360*vent_timeseries.param['fs'])
     p_vent = vent_timeseries.channels[vent_timeseries.p_vent_idx]
     p_vent.peaks['Pocc'].detect_on_offset(baseline=p_vent.y_baseline)
     def test_find_occluded_breaths(self):
@@ -158,7 +159,8 @@ class TestTimeSeriesGroup(unittest.TestCase):
         )
 
     # Link ventilator Pocc peaks to EMG breaths
-    t_pocc_peaks_vent = p_vent.peaks['Pocc'].peak_df['peak_idx']/p_vent.fs
+    t_pocc_peaks_vent = (p_vent.peaks['Pocc'].peak_df['peak_idx'] /
+                         p_vent.param['fs'])
     emg_di.link_peak_set(
         peak_set_name='breaths',
         t_reference_peaks=t_pocc_peaks_vent,

@@ -8,189 +8,27 @@ automation.
 import warnings
 
 import numpy as np
-import pandas as pd
 import scipy
 import matplotlib.pyplot as plt
 
 from resurfemg.helper_functions import math_operations as mo
+from resurfemg.helper_functions import \
+    data_classes_quality_assessment as data_qa
 from resurfemg.preprocessing import filtering as filt
 from resurfemg.preprocessing import ecg_removal as ecg_rm
 from resurfemg.pipelines.processing import ecg_removal_gating
 from resurfemg.preprocessing import envelope as evl
-from resurfemg.postprocessing.baseline import (
-    moving_baseline, slopesum_baseline)
+from resurfemg.postprocessing import baseline as bl
 from resurfemg.postprocessing import event_detection as evt
-from resurfemg.postprocessing.event_detection import (
-    onoffpeak_baseline_crossing, onoffpeak_slope_extrapolation,
-    find_occluded_breaths, detect_emg_breaths
-)
 from resurfemg.postprocessing import features as feat
-from resurfemg.postprocessing import quality_assessment as qa
+
+from resurfemg.data_connector.peakset_class import PeaksSet
 
 
 class TimeSeries:
     """
     Data class to store, process, and plot single channel time series data
     """
-    class PeaksSet:
-        """
-        Data class to store, and process peak information.
-        """
-        def __init__(self, signal, t_data, peak_idxs=None):
-            """
-            :param signal: 1-dimensional signal data
-            :type signal: ~numpy.ndarray
-            :param t_data: time axis data
-            :type t_data: ~numpy.ndarray
-            :param peak_idxs: Indices of peaks
-            :type peak_idxs: ~numpy.ndarray
-            """
-            if isinstance(signal, np.ndarray):
-                self.signal = signal
-            else:
-                raise ValueError("Invalid signal type: 'signal_type'.")
-
-            if isinstance(t_data, np.ndarray):
-                self.t_data = t_data
-            else:
-                raise ValueError("Invalid t_data type: 't_data'.")
-
-            if peak_idxs is None:
-                peak_idxs = np.array([])
-            elif (isinstance(peak_idxs, np.ndarray)
-                    and len(np.array(peak_idxs).shape) == 1):
-                pass
-            elif isinstance(peak_idxs, list):
-                peak_idxs = np.array(peak_idxs)
-            else:
-                raise ValueError("Invalid peak indices: 'peak_s'.")
-
-            self.peak_df = pd.DataFrame(
-                data=peak_idxs, columns=['peak_idx'])
-            self.quality_values_df = pd.DataFrame(
-                data=peak_idxs, columns=['peak_idx'])
-            self.quality_outcomes_df = pd.DataFrame(
-                data=peak_idxs, columns=['peak_idx'])
-            self.time_products = None
-
-        def detect_on_offset(
-            self,
-            baseline=None,
-            method='default',
-            fs=None,
-            slope_window_s=None
-        ):
-            """
-            Detect the peak on- and offsets. See postprocessing.event_detection
-            submodule.
-            """
-            if baseline is None:
-                baseline = np.zeros(self.signal.shape)
-
-            peak_idxs = self.peak_df['peak_idx'].to_numpy()
-
-            if method == 'default' or method == 'baseline_crossing':
-                (start_idxs, end_idxs,
-                 _, _, valid_list) = onoffpeak_baseline_crossing(
-                    self.signal,
-                    baseline,
-                    peak_idxs)
-
-            elif method == 'slope_extrapolation':
-                if fs is None:
-                    raise ValueError('Sampling rate is not defined.')
-
-                if slope_window_s is None:
-                    # TODO Insert valid default slope window
-                    slope_window_s = fs // 5
-
-                (start_idxs, end_idxs, _, _,
-                 valid_list) = onoffpeak_slope_extrapolation(
-                    self.signal, fs, peak_idxs, slope_window_s)
-            else:
-                raise KeyError('Detection algorithm does not exist.')
-
-            self.peak_df['start_idx'] = start_idxs
-            self.peak_df['end_idx'] = end_idxs
-            self.peak_df['valid'] = valid_list
-            quality_outcomes_df = self.quality_outcomes_df
-            quality_outcomes_df['baseline_detection'] = valid_list
-
-            self.evaluate_validity(quality_outcomes_df)
-
-        def update_test_outcomes(self, tests_df_new):
-            """
-            Add new peak quality test to self.quality_outcomes_df, and update
-            existing entries.
-
-            :param tests_df_new: Dataframe of test parameters per peak
-            :type tests_df_new: pandas.DataFrame
-
-            :returns: None
-            :rtype: None
-            """
-            if self.quality_values_df is not None:
-                df_old = self.quality_values_df
-                pre_existing_keys = list(
-                    set(tests_df_new.keys()) & set(df_old.keys()))
-                pre_existing_keys.pop(pre_existing_keys.index('peak_idx'))
-                df_old = df_old.drop(columns=pre_existing_keys)
-                tests_df_new = df_old.merge(
-                    tests_df_new,
-                    left_on='peak_idx',
-                    right_on='peak_idx',
-                    suffixes=(False, False))
-                self.quality_values_df = tests_df_new
-            else:
-                self.quality_values_df = tests_df_new
-
-        def evaluate_validity(self, tests_df_new):
-            """
-            Update peak validity based on previously and newly executed tests
-            in self.quality_outcomes_df.
-
-            :param tests_df_new: Dataframe of passed tests per peak
-            :type tests_df_new: pandas.DataFrame
-
-            :returns: None
-            :rtype: None
-            """
-            if self.quality_outcomes_df is not None:
-                df_old = self.quality_outcomes_df
-                pre_existing_keys = list(
-                    set(tests_df_new.keys()) & set(df_old.keys()))
-                pre_existing_keys.pop(pre_existing_keys.index('peak_idx'))
-                df_old = df_old.drop(columns=pre_existing_keys)
-                tests_df_new = df_old.merge(
-                    tests_df_new,
-                    left_on='peak_idx',
-                    right_on='peak_idx',
-                    suffixes=(False, False))
-                self.quality_outcomes_df = tests_df_new
-            else:
-                self.quality_outcomes_df = tests_df_new
-
-            test_keys = list(tests_df_new.keys())
-            test_keys.pop(test_keys.index('peak_idx'))
-            passed_tests = np.all(
-                tests_df_new.loc[:, test_keys].to_numpy(), axis=1)
-            self.peak_df['valid'] = passed_tests
-
-        def sanitize(self):
-            """
-            Delete invalid peak entries (self.peak_df['valid'] is False) from
-            self.peak_df, self.quality_values_df, and self.quality_outcomes_df.
-
-            :returns: None
-            :rtype: None
-            """
-            valid_idxs = np.argwhere(self.peak_df['valid'])
-
-            self.peak_df = self.peak_df.loc[valid_idxs].reset_index(drop=True)
-            self.quality_outcomes_df = \
-                self.quality_outcomes_df.loc[valid_idxs].reset_index(drop=True)
-            self.quality_values_df = \
-                self.quality_values_df.loc[valid_idxs].reset_index(drop=True)
 
     def __init__(self, y_raw, t_data=None, fs=None, label=None, units=None):
         """
@@ -205,37 +43,40 @@ class TimeSeries:
         :param units: channel signal units
         :type units: str
         """
-        self.fs = fs
+        self.param = dict()
+        self.param['fs'] = fs
         data_shape = list(np.array(y_raw).shape)
         data_dims = len(data_shape)
         if data_dims == 1:
-            self.n_samp = len(y_raw)
-            self.n_channel = 1
+            self.param['n_samp'] = len(y_raw)
+            self.param['n_channel'] = 1
             self.y_raw = np.array(y_raw)
         elif data_dims == 2:
-            self.n_samp = data_shape[np.argmax(data_shape)]
+            self.param['n_samp'] = data_shape[np.argmax(data_shape)]
             if np.argmin(data_shape) == 0:
-                self.y_raw = np.array(y_raw).reshape(self.n_samp)
+                self.y_raw = np.array(y_raw).reshape(self.param['n_samp'])
             else:
                 self.y_raw = np.array(y_raw)
         else:
             raise ValueError("Invalid y_raw dimensions")
 
         self.peaks = dict()
+        self.y_filt = None
         self.y_clean = None
         self.y_env = None
         self.y_baseline = None
 
         if t_data is None and fs is None:
-            self.t_data = np.arange(self.n_samp)
+            self.t_data = np.arange(self.param['n_samp'])
         elif t_data is not None:
             if len(np.array(t_data).shape) > 1:
                 raise ValueError
             self.t_data = np.array(t_data)
             if fs is None:
-                self.fs = int(1/(t_data[1:]-t_data[:-1]))
+                self.param['fs'] = int(1/(t_data[1:]-t_data[:-1]))
         else:
-            self.t_data = np.array([x_i/fs for x_i in range(self.n_samp)])
+            self.t_data = np.array(
+                [x_i/fs for x_i in range(self.param['n_samp'])])
 
         if label is None:
             self.label = ''
@@ -264,6 +105,8 @@ class TimeSeries:
                 y_data = self.y_env
             elif self.y_clean is not None:
                 y_data = self.y_clean
+            elif self.y_filt is not None:
+                y_data = self.y_filt
             else:
                 y_data = self.y_raw
         elif signal_type == 'env':
@@ -277,6 +120,13 @@ class TimeSeries:
                 y_data = self.y_raw
             else:
                 y_data = self.y_clean
+        elif signal_type == 'filt':
+            if self.y_filt is None:
+                warnings.warn("Warning: No filtered data availabe, using raw"
+                              + "data instead.")
+                y_data = self.y_raw
+            else:
+                y_data = self.y_filt
         else:
             y_data = self.y_raw
 
@@ -297,17 +147,18 @@ class TimeSeries:
         :rtype: None
         """
         y_data = self.signal_type_data(signal_type=signal_type)
+        print(y_data, signal_type)
         # Eliminate the baseline wander from the data using a band-pass filter
-        self.y_clean = filt.emg_bandpass_butter(
+        self.y_filt = filt.emg_bandpass_butter(
             y_data,
             high_pass=hp_cf,
             low_pass=lp_cf,
-            fs_emg=self.fs,
+            fs_emg=self.param['fs'],
             order=order)
 
     def gating(
         self,
-        signal_type='clean',
+        signal_type='filt',
         gate_width_samples=None,
         ecg_peak_idxs=None,
         ecg_raw=None,
@@ -324,13 +175,16 @@ class TimeSeries:
         y_data = self.signal_type_data(signal_type=signal_type)
         if ecg_peak_idxs is None:
             if ecg_raw is None:
-                lp_cf = min([500.0, self.fs / 2])
+                lp_cf = min([500.0, self.param['fs'] / 2])
                 ecg_raw = filt.emg_bandpass_butter(
-                    self.y_raw, high_pass=1, low_pass=lp_cf, fs_emg=self.fs)
+                    self.y_raw,
+                    high_pass=1,
+                    low_pass=lp_cf,
+                    fs_emg=self.param['fs'])
 
             ecg_peak_idxs = ecg_rm.detect_ecg_peaks(
                 ecg_raw=ecg_raw,
-                fs=self.fs,
+                fs=self.param['fs'],
                 bp_filter=bp_filter,
             )
 
@@ -341,7 +195,7 @@ class TimeSeries:
         )
 
         if gate_width_samples is None:
-            gate_width_samples = self.fs // 10
+            gate_width_samples = self.param['fs'] // 10
 
         self.y_clean = ecg_removal_gating(
             y_data,
@@ -365,11 +219,11 @@ class TimeSeries:
         :rtype: None
         """
         if env_window is None:
-            if self.fs is None:
+            if 'fs' not in self.param:
                 raise ValueError(
                     'Evelope window and sampling rate are not defined.')
             else:
-                env_window = int(0.2 * self.fs)
+                env_window = int(0.2 * self.param['fs'])
 
         y_data = self.signal_type_data(signal_type=signal_type)
         if env_type == 'rms' or env_type is None:
@@ -398,38 +252,38 @@ class TimeSeries:
         :rtype: None
         """
         if window_s is None:
-            if self.fs is None:
+            if 'fs' not in self.param:
                 raise ValueError(
                     'Baseline window and sampling rate are not defined.')
             else:
-                window_s = int(7.5 * self.fs)
+                window_s = int(7.5 * self.param['fs'])
 
         if step_s is None:
-            if self.fs is None:
+            if 'fs' not in self.param:
                 step_s = 1
             else:
-                step_s = self.fs // 5
+                step_s = self.param['fs'] // 5
 
         if signal_type is None:
             signal_type = 'env'
 
         y_baseline_data = self.signal_type_data(signal_type=signal_type)
         if method == 'default' or method == 'moving_baseline':
-            self.y_baseline = moving_baseline(
+            self.y_baseline = bl.moving_baseline(
                 y_baseline_data,
                 window_s=window_s,
                 step_s=step_s,
                 set_percentile=percentile,
             )
         elif method == 'slopesum_baseline':
-            if self.fs is None:
+            if 'fs' not in self.param:
                 raise ValueError(
                     'Sampling rate is not defined.')
-            self.y_baseline, _, _, _ = slopesum_baseline(
+            self.y_baseline, _, _, _ = bl.slopesum_baseline(
                     y_baseline_data,
                     window_s=window_s,
                     step_s=step_s,
-                    fs=self.fs,
+                    fs=self.param['fs'],
                     set_percentile=percentile,
                     augm_percentile=augm_percentile,
                     ma_window=ma_window,
@@ -450,7 +304,7 @@ class TimeSeries:
         :returns: None
         :rtype: None
         """
-        self.peaks[peak_set_name] = self.PeaksSet(
+        self.peaks[peak_set_name] = PeaksSet(
             peak_idxs=peak_idxs,
             t_data=self.t_data,
             signal=signal)
@@ -494,9 +348,9 @@ class TimeSeries:
             raise ValueError('End index higher than sample length.')
 
         if min_peak_width_s is None:
-            min_peak_width_s = self.fs // 5
+            min_peak_width_s = self.param['fs'] // 5
 
-        peak_idxs = detect_emg_breaths(
+        peak_idxs = evt.detect_emg_breaths(
             self.y_env[start_idx:end_idx],
             y_baseline[start_idx:end_idx],
             threshold=threshold,
@@ -538,12 +392,13 @@ class TimeSeries:
         if linked_peak_set_name is None:
             linked_peak_set_name = peak_set_name + '_linked'
 
-        t_PeaksSet_peaks = peak_set.peak_df['peak_idx'].to_numpy() / self.fs
+        t_PeaksSet_peaks = (peak_set.peak_df['peak_idx'].to_numpy() /
+                            self.param['fs'])
         link_peak_nrs = evt.find_linked_peaks(
             t_reference_peaks,
             t_PeaksSet_peaks,
         )
-        self.peaks[linked_peak_set_name] = self.PeaksSet(
+        self.peaks[linked_peak_set_name] = PeaksSet(
             peak_set.signal, peak_set.t_data, peak_idxs=None
         )
         self.peaks[linked_peak_set_name].peak_df = \
@@ -575,7 +430,7 @@ class TimeSeries:
         :param include_aub: Include the area under the baseline in the
         time product
         :type include_aub: bool
-        :param signal_type: one of 'env', 'clean', or 'raw'
+        :param signal_type: one of 'env', 'clean', 'filt', or 'raw'
         :type signal_type: str
         :param aub_window_s: window length in samples in which the local
         extreme is sought.
@@ -609,7 +464,7 @@ class TimeSeries:
 
         time_products = feat.time_product(
             signal=peak_set.signal,
-            fs=self.fs,
+            fs=self.param['fs'],
             start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
             end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
             baseline=baseline,
@@ -617,12 +472,12 @@ class TimeSeries:
 
         if include_aub:
             if aub_window_s is None:
-                aub_window_s = 5 * self.fs
+                aub_window_s = 5 * self.param['fs']
             if aub_reference_signal is None:
                 aub_reference_signal = peak_set.signal
             aub, y_refs = feat.area_under_baseline(
                 signal=peak_set.signal,
-                fs=self.fs,
+                fs=self.param['fs'],
                 start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
                 peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
                 end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
@@ -674,240 +529,7 @@ class TimeSeries:
         :returns: None
         :rtype: None
         """
-        def initialize(
-            self,
-            peak_set_name,
-            cutoff,
-            skip_tests,
-            parameter_names
-        ):
-            """Initialize local parameters"""
-            if peak_set_name in self.peaks.keys():
-                peak_set = self.peaks[peak_set_name]
-            else:
-                raise KeyError("Non-existent PeaksSet key")
-
-            if skip_tests is None:
-                skip_tests = []
-
-            if (cutoff is None
-                    or (isinstance(cutoff, str) and cutoff == 'tolerant')):
-                cutoff = {
-                    'interpeak_distance': 1.1,
-                    'snr': 1.4,
-                    'aub': 40,
-                    'curve_fit': 30,
-                    'aub_window_s': 5*self.fs,
-                    'bell_window_s': 5*self.fs,
-                    'relative_aub_percentile': 75.0,
-                    'relative_aub_factor': 4.0,
-                    'relative_etp_upper_percentile': 95.0,
-                    'relative_etp_upper_factor': 10.0,
-                    'relative_etp_lower_percentile': 5.0,
-                    'relative_etp_lower_factor': 0.1,
-                }
-            elif (isinstance(cutoff, str) and cutoff == 'strict'):
-                cutoff = {
-                    'interpeak_distance': 1.1,
-                    'snr': 1.75,
-                    'aub': 30,
-                    'curve_fit': 25,
-                    'aub_window_s': 5*self.fs,
-                    'bell_window_s': 5*self.fs,
-                    'relative_aub_percentile': 75.0,
-                    'relative_aub_factor': 2.0,
-                    'relative_etp_upper_percentile': 95.0,
-                    'relative_etp_upper_factor': 10.0,
-                    'relative_etp_lower_percentile': 5.0,
-                    'relative_etp_lower_factor': 0.1,
-                }
-            elif isinstance(cutoff, dict):
-                tests = [
-                    'interpeak_distance', 'snr', 'aub', 'curve_fit', ]
-                for _, test in enumerate(tests):
-                    if test not in skip_tests:
-                        if test not in cutoff.keys():
-                            raise KeyError(
-                                'No cut-off value provided for: ' + test)
-                        elif isinstance(cutoff, float):
-                            raise ValueError(
-                                'Invalid cut-off value provided for: ' + test)
-
-                if 'aub' not in skip_tests and 'aub_window_s' not in cutoff:
-                    raise KeyError('No area under the baseline window provided'
-                                    + ' for: ' + test)
-                if 'relative_aub' not in skip_tests:
-                    if 'relative_aub_percentile' not in cutoff:
-                        raise KeyError('No relative area under the baseline '
-                                        + 'percentile provided for: '
-                                        + 'relative_aub')
-                    if 'relative_aub_factor' not in cutoff:
-                        raise KeyError('No relative area under the baseline'
-                                    + 'factor provided for: relative_aub')
-                if 'relative_etp' not in skip_tests:
-                    _params = [
-                        'upper_percentile', 'upper_factor', 'lower_percentile',
-                        'lower_factor']
-                    for _param in _params:
-                        if ('relative_etp_' + _param) not in cutoff:
-                            raise KeyError(f"No relative_etp_{_param} "
-                                           + "provided for: relative_aub")
-
-            if parameter_names is None:
-                parameter_names = dict()
-
-            for parameter in ['ecg', 'time_product']:
-                if parameter not in parameter_names.keys():
-                    parameter_names[parameter] = parameter
-
-            n_peaks = len(peak_set.peak_df['peak_idx'].to_numpy())
-            quality_values_df = pd.DataFrame(
-                data=peak_set.peak_df['peak_idx'], columns=['peak_idx'])
-            quality_outcomes_df = pd.DataFrame(
-                data=peak_set.peak_df['peak_idx'], columns=['peak_idx'])
-            output = (
-                skip_tests,
-                cutoff,
-                peak_set,
-                parameter_names,
-                n_peaks,
-                quality_values_df,
-                quality_outcomes_df
-            )
-            return output
-
-        def test_interpeak_distance(
-                self, peak_set, quality_outcomes_df, n_peaks):
-            """Test interpeak distance"""
-            if 'ecg' not in self.peaks:
-                raise ValueError('ECG peaks not determined, but required for '
-                                 + ' interpeak distance evaluation.')
-            ecg_peaks = self.peaks['ecg'].peak_df['peak_idx'].to_numpy()
-            valid_interpeak = qa.interpeak_dist(
-                ECG_peaks=ecg_peaks,
-                EMG_peaks=peak_set.peak_df['peak_idx'].to_numpy(),
-                threshold=cutoff['interpeak_distance'])
-
-            valid_interpeak_vec = np.array(n_peaks * [valid_interpeak])
-            quality_outcomes_df['interpeak_distance'] = valid_interpeak_vec
-            return quality_outcomes_df
-
-        def test_snr(self, peak_set, quality_outcomes_df):
-            if self.baseline is None:
-                raise ValueError('Baseline not determined, but required for '
-                                 + ' SNR evaluaton.')
-            snr_peaks = qa.snr_pseudo(
-                src_signal=peak_set.signal,
-                peaks=peak_set.peak_df['peak_idx'].to_numpy(),
-                baseline=self.y_baseline,
-                fs=self.fs,
-            )
-            quality_values_df['snr'] = snr_peaks
-            valid_snr = snr_peaks > cutoff['snr']
-            quality_outcomes_df['snr'] = valid_snr
-            return(quality_outcomes_df)
-
-        def test_aub(self, peak_set, quality_outcomes_df, quality_values_df):
-            """Test percentage area under the baseline"""
-            if self.baseline is None:
-                raise ValueError('Baseline not determined, but required for '
-                                 + ' area under the baseline (AUB) evaluaton.')
-            if 'start_idx' not in peak_set.peak_df.columns:
-                raise ValueError('start_idxs not determined, but required for '
-                                 + ' area under the baseline (AUB) evaluaton.')
-            if 'end_idx' not in peak_set.peak_df.columns:
-                raise ValueError('end_idxs not determined, but required for '
-                                 + ' area under the baseline (AUB) evaluaton.')
-            outputs = qa.percentage_under_baseline(
-                signal=peak_set.signal,
-                fs=self.fs,
-                peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
-                start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
-                end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
-                baseline=self.y_baseline,
-                aub_window_s=None,
-                ref_signal=None,
-                aub_threshold=cutoff['aub'],
-            )
-            
-            (valid_timeproducts, percentages_aub, y_refs) = outputs
-            quality_values_df['aub'] = percentages_aub
-            quality_values_df['aub_y_refs'] = y_refs
-            quality_outcomes_df['aub'] = valid_timeproducts
-            return quality_outcomes_df, quality_values_df
-
-        def test_curve_fits(
-                self, peak_set, quality_outcomes_df, quality_values_df):
-            """Test curve fit"""
-            if self.baseline is None:
-                raise ValueError('Baseline not determined, but required for '
-                                 + ' area under the baseline (AUB) evaluaton.')
-            if 'start_idx' not in peak_set.peak_df.columns:
-                raise ValueError('start_idxs not determined, but required for '
-                                 + ' curve fit evaluaton.')
-            if 'end_idx' not in peak_set.peak_df.columns:
-                raise ValueError('end_idxs not determined, but required for '
-                                 + ' curve fit evaluaton.')
-            if parameter_names['time_product'] not in peak_set.peak_df.columns:
-                raise ValueError('ETPs not determined, but required for curve '
-                                 + 'fit evaluaton.')
-            outputs = qa.evaluate_bell_curve_error(
-                peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
-                start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
-                end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
-                signal=peak_set.signal,
-                fs=self.fs,
-                time_products=peak_set.peak_df[
-                    parameter_names['time_product']].to_numpy(),
-                bell_window_s=cutoff['bell_window_s'],
-                bell_threshold=cutoff['curve_fit'],
-            )
-            (valid_bell_shape,
-             _,
-             percentage_bell_error,
-             y_min,
-             parameters) = outputs
-
-            peak_set.peak_df['bell_y_min'] = y_min
-            for idx, parameter in enumerate(['a', 'b', 'c']):
-                peak_set.peak_df['bell_' + parameter] = parameters[:, idx]
-
-            quality_values_df['bell'] = percentage_bell_error
-            quality_outcomes_df['bell'] = valid_bell_shape
-            return quality_outcomes_df, quality_values_df, peak_set
-
-        def test_relative_aub(peak_set, quality_outcomes_df):
-            """Test the relative area under the baseline"""
-            if 'AUB' not in peak_set.peak_df.columns:
-                raise ValueError('AUB not determined, but required for '
-                                 +'relative area under the baseline (AUB) '
-                                 +'evaluaton.')
-            valid_relative_aubs = qa.detect_local_high_aub(
-                aubs=peak_set.peak_df['AUB'].to_numpy(),
-                threshold_percentile=cutoff['relative_aub_percentile'],
-                threshold_factor=cutoff['relative_aub_factor'],
-            )
-            quality_outcomes_df['relative_aub'] = valid_relative_aubs
-            return quality_outcomes_df
-
-        def test_relative_etp(peak_set, quality_outcomes_df):
-            if parameter_names['time_product'] not in peak_set.peak_df.columns:
-                raise ValueError('ETPs not determined, but required for curve '
-                                 + 'fit evaluaton.')
-            print(peak_set.peak_df[
-                    parameter_names['time_product']].to_numpy().shape)
-            valid_etps = qa.detect_extreme_time_products(
-                time_products=peak_set.peak_df[
-                    parameter_names['time_product']].to_numpy(),
-                upper_percentile=cutoff['relative_etp_upper_percentile'],
-                upper_factor=cutoff['relative_etp_upper_factor'],
-                lower_percentile=cutoff['relative_etp_lower_percentile'],
-                lower_factor=cutoff['relative_etp_lower_factor'],
-            )
-            quality_outcomes_df['relative_etp'] = valid_etps
-            return quality_outcomes_df
-
-        output = initialize(
+        output = data_qa.initialize_emg_tests(
             self,
             peak_set_name,
             cutoff,
@@ -918,29 +540,31 @@ class TimeSeries:
          quality_values_df, quality_outcomes_df) = output
 
         if 'interpeak_dist' not in skip_tests:
-            quality_outcomes_df = test_interpeak_distance(
-                self, peak_set, quality_outcomes_df, n_peaks)
+            quality_outcomes_df = data_qa.test_interpeak_distance(
+                self, peak_set, quality_outcomes_df, n_peaks, cutoff)
 
         if 'snr' not in skip_tests:
-            quality_outcomes_df = test_snr(
-                self, peak_set, quality_outcomes_df)
+            quality_outcomes_df = data_qa.test_snr(
+                self, peak_set, quality_outcomes_df, quality_values_df, cutoff)
 
         if 'aub' not in skip_tests:
-            quality_outcomes_df, quality_values_df = test_aub(
-                self, peak_set, quality_outcomes_df, quality_values_df)
+            quality_outcomes_df, quality_values_df = data_qa.test_aub(
+                self, peak_set, quality_outcomes_df, quality_values_df, cutoff)
 
         if 'curve_fit' not in skip_tests:
-            quality_outcomes_df, quality_values_df, peak_set = test_curve_fits(
-                self, peak_set, quality_outcomes_df, quality_values_df)
+            quality_outcomes_df, quality_values_df, peak_set = \
+                data_qa.test_curve_fits(
+                    self, peak_set, quality_outcomes_df, quality_values_df,
+                    cutoff, parameter_names)
 
         if 'relative_aub' not in skip_tests:
-            quality_outcomes_df = test_relative_aub(
-                peak_set, quality_outcomes_df)
+            quality_outcomes_df = data_qa.test_relative_aub(
+                peak_set, quality_outcomes_df, cutoff)
 
         if 'relative_etp' not in skip_tests:
-            quality_outcomes_df = test_relative_etp(
-                peak_set, quality_outcomes_df)
-            
+            quality_outcomes_df = data_qa.test_relative_etp(
+                peak_set, quality_outcomes_df, cutoff, parameter_names)
+
         peak_set.update_test_outcomes(quality_values_df)
         peak_set.evaluate_validity(quality_outcomes_df)
         if verbose:
@@ -981,83 +605,24 @@ class TimeSeries:
         :returns: None
         :rtype: None
         """
-        if peak_set_name in self.peaks.keys():
-            peak_set = self.peaks[peak_set_name]
-        else:
-            raise KeyError("Non-existent PeaksSet key")
-
-        if skip_tests is None:
-            skip_tests = []
-
-        if (cutoff is None
-                or (isinstance(cutoff, str) and cutoff == 'tolerant')
-                or (isinstance(cutoff, str) and cutoff == 'strict')):
-            cutoff = dict()
-            cutoff['consecutive_poccs'] = 0
-            cutoff['dP_up_10'] = 0.0
-            cutoff['dP_up_90'] = 2.0
-            cutoff['dP_up_90_norm'] = 0.8
-        elif isinstance(cutoff, dict):
-            tests = ['consecutive_poccs', 'pocc_upslope']
-            tests_crit = dict()
-            tests_crit['consecutive_poccs'] = ['consecutive_poccs']
-            tests_crit['pocc_upslope'] = [
-                'dP_up_10', 'dP_up_90', 'dP_up_90_norm']
-
-            for _, test in enumerate(tests):
-                if test not in skip_tests:
-                    for test_crit in tests_crit[test]:
-                        if test_crit not in cutoff.keys():
-                            raise KeyError(
-                                'No cut-off value provided for: ' + test)
-
-        if parameter_names is None:
-            parameter_names = dict()
-
-        for parameter in ['ventilator_breaths', 'time_product', 'AUB']:
-            if parameter not in parameter_names.keys():
-                parameter_names[parameter] = parameter
-
-        quality_values_df = pd.DataFrame(data=peak_set.peak_df['peak_idx'],
-                                         columns=['peak_idx'])
-        quality_outcomes_df = pd.DataFrame(data=peak_set.peak_df['peak_idx'],
-                                           columns=['peak_idx'])
+        output = data_qa.initialize_pocc_tests(
+            self,
+            peak_set_name,
+            cutoff,
+            skip_tests,
+            parameter_names
+        )
+        (skip_tests, cutoff, peak_set, parameter_names, _,
+         quality_values_df, quality_outcomes_df) = output
 
         if 'consecutive_poccs' not in skip_tests:
-            if parameter_names['ventilator_breaths'] not in self.peaks.keys():
-                raise ValueError('Ventilator breaths not determined, but '
-                                 + 'required for consecutive Pocc evaluation.')
-            vent_breaths = parameter_names['ventilator_breaths']
-            ventilator_breath_idxs = \
-                self.peaks[vent_breaths].peak_df['peak_idx'].to_numpy()
-            valid_manoeuvres = qa.detect_non_consecutive_manoeuvres(
-                ventilator_breath_idxs=ventilator_breath_idxs,
-                manoeuvres_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
-            )
-            quality_outcomes_df['consecutive_poccs'] = valid_manoeuvres
+            quality_outcomes_df = data_qa.test_consecutive_poccs(
+                self, peak_set, quality_outcomes_df, parameter_names)
 
         if 'pocc_upslope' not in skip_tests:
-            if 'end_idx' not in peak_set.peak_df.columns:
-                raise ValueError('Pocc end_idx not determined, but required '
-                                 + 'for Pocc upslope evaluaton.')
-            if parameter_names['time_product'] not in peak_set.peak_df.columns:
-                raise ValueError('PTPs not determined, but required for Pocc '
-                                 + 'upslope evaluaton.')
-            valid_poccs, criteria_matrix = qa.pocc_quality(
-                p_vent_signal=self.y_raw,
-                pocc_peaks=peak_set.peak_df['peak_idx'].to_numpy(),
-                pocc_ends=peak_set.peak_df['end_idx'].to_numpy(),
-                ptp_occs=peak_set.peak_df[
-                    parameter_names['time_product']].to_numpy(),
-                dp_up_10_threshold=cutoff['dP_up_10'],
-                dp_up_90_threshold=cutoff['dP_up_90'],
-                dp_up_90_norm_threshold=cutoff['dP_up_90_norm'],
-            )
-            quality_values_df['dP_up_10'] = criteria_matrix[0, :]
-            quality_values_df['dP_up_90'] = criteria_matrix[1, :]
-            quality_values_df['dP_up_90_norm'] = criteria_matrix[2, :]
-
-            quality_outcomes_df['pocc_upslope'] = valid_poccs
+            quality_outcomes_df, quality_values_df = data_qa.test_pocc_upslope(
+                self, peak_set, quality_outcomes_df, quality_values_df, cutoff,
+                parameter_names)
 
         peak_set.update_test_outcomes(quality_values_df)
         peak_set.evaluate_validity(quality_outcomes_df)
@@ -1066,29 +631,28 @@ class TimeSeries:
             print(peak_set.quality_values_df)
             print('Test outcomes:')
             print(peak_set.quality_outcomes_df)
-    
-    # def test_linked_peak_sets(
-        
-    # ):
-    #     evaluate_event_timing(
-    #         t_events_1,
-    #         t_events_2,
-    #         delta_min=0,
-    #         delta_max=None,
-    #     )
+
+    def test_linked_peak_sets(
+    ):
+        evaluate_event_timing(
+            t_events_1,
+            t_events_2,
+            delta_min=0,
+            delta_max=None,
+        )
 
     def plot_full(self, axis=None, signal_type=None,
                   colors=None, baseline_bool=True):
         """
         Plot the indicated signals in the provided axes. By default the most
-        advanced signal type (envelope > clean > raw) is plotted in the
+        advanced signal type (envelope > clean > filt > raw) is plotted in the
         provided colours.
 
         :param axis: matplotlib Axis object. If none provided, a new figure is
         created.
         :type axis: matplotlib.Axis
         :type channel_idxs: list
-        :param signal_type: the signal ('env', 'clean', 'raw') to plot
+        :param signal_type: the signal ('env', 'clean', 'filt', 'raw') to plot
         :type signal_type: str
         :param colors: list of colors to plot the 1) signal, 2) the baseline
         :type colors: list
@@ -1241,7 +805,7 @@ class TimeSeries:
                    baseline_bool=True):
         """
         Plot the indicated peaks in the provided axes. By default the most
-        advanced signal type (envelope > clean > raw) is plotted in the
+        advanced signal type (envelope > clean > filt > raw) is plotted in the
         provided colours.
 
         :param peak_set_name: The name of the peak_set to be plotted.
@@ -1249,7 +813,7 @@ class TimeSeries:
         :param axes: matplotlib Axes object. If none provided, a new figure is
         created.
         :type axes: matplotlib.Axes
-        :param signal_type: the signal ('envelope', 'clean', 'raw') to plot
+        :param signal_type: the signal ('env', 'clean', 'filt' 'raw') to plot
         :type signal_type: str
         :param margin_s: margins in samples plotted before the peak onset and
         after the peak offset
@@ -1288,7 +852,7 @@ class TimeSeries:
             y_data = self.signal_type_data(signal_type=signal_type)
 
         if margin_s is None:
-            m_s = self.fs // 2
+            m_s = self.param['fs'] // 2
         else:
             m_s = margin_s
 
@@ -1392,7 +956,7 @@ class TimeSeries:
         :param axes: matplotlib Axes object. If none provided, a new figure is
         created.
         :type axes: matplotlib.Axes
-        :param signal_type: the signal ('env', 'clean', 'raw') to plot
+        :param signal_type: the signal ('env', 'clean', 'filt', 'raw') to plot
         :type signal_type: str
         :param valid_only: when True, only valid peaks are plotted.
         :type valid_only: bool
@@ -1479,16 +1043,17 @@ class TimeSeriesGroup:
         :rtype: None
         """
         self.channels = []
-        self.fs = fs
+        self.param = dict()
+        self.param['fs'] = fs
         data_shape = list(np.array(y_raw).shape)
         data_dims = len(data_shape)
         if data_dims == 1:
-            self.n_samp = len(y_raw)
-            self.n_channel = 1
-            y_raw = np.array(y_raw).reshape((1, self.n_samp))
+            self.param['n_samp'] = len(y_raw)
+            self.param['n_channel'] = 1
+            y_raw = np.array(y_raw).reshape((1, self.param['n_samp']))
         elif data_dims == 2:
-            self.n_samp = data_shape[np.argmax(data_shape)]
-            self.n_channel = data_shape[np.argmin(data_shape)]
+            self.param['n_samp'] = data_shape[np.argmax(data_shape)]
+            self.param['n_channel'] = data_shape[np.argmin(data_shape)]
             if np.argmin(data_shape) == 0:
                 y_raw = np.array(y_raw)
             else:
@@ -1497,7 +1062,7 @@ class TimeSeriesGroup:
             raise ValueError('Invalid data dimensions')
 
         if t_data is None and fs is None:
-            t_data = np.arange(self.n_samp)
+            t_data = np.arange(self.param['n_samp'])
         elif t_data is not None:
             if len(np.array(t_data).shape) > 1:
                 raise ValueError('Invalid time data dimensions')
@@ -1505,24 +1070,25 @@ class TimeSeriesGroup:
             if fs is None:
                 fs = int(1/(t_data[1:]-t_data[:-1]))
         else:
-            t_data = np.array([x_i/fs for x_i in range(self.n_samp)])
+            t_data = np.array(
+                [x_i/fs for x_i in range(self.param['n_samp'])])
 
         if labels is None:
-            self.labels = self.n_channel * [None]
+            self.labels = self.param['n_channel'] * [None]
         else:
-            if len(labels) != self.n_channel:
+            if len(labels) != self.param['n_channel']:
                 raise ValueError('Number of labels does not match the number'
                                  + ' of data channels.')
             self.labels = labels
 
         if units is None:
-            self.units = self.n_channel * ['N/A']
+            self.units = self.param['n_channel'] * ['N/A']
         else:
-            if len(labels) != self.n_channel:
+            if len(labels) != self.param['n_channel']:
                 raise ValueError
             self.units = units
 
-        for idx in range(self.n_channel):
+        for idx in range(self.param['n_channel']):
             new_timeseries = TimeSeries(
                 y_raw=y_raw[idx, :],
                 t_data=t_data,
@@ -1547,7 +1113,7 @@ class TimeSeriesGroup:
         :rtype: None
         """
         if channel_idxs is None:
-            channel_idxs = np.arange(self.n_channel)
+            channel_idxs = np.arange(self.param['n_channel'])
         elif isinstance(channel_idxs, int):
             channel_idxs = np.array([channel_idxs])
 
@@ -1578,7 +1144,7 @@ class TimeSeriesGroup:
         :rtype: None
         """
         if channel_idxs is None:
-            channel_idxs = np.arange(self.n_channel)
+            channel_idxs = np.arange(self.param['n_channel'])
         elif isinstance(channel_idxs, int):
             channel_idxs = np.array([channel_idxs])
 
@@ -1598,7 +1164,7 @@ class TimeSeriesGroup:
                   colors=None, baseline_bool=True):
         """
         Plot the indicated signals in the provided axes. By default the most
-        advanced signal type (envelope > clean > raw) is plotted in the
+        advanced signal type (envelope > clean > filt > raw) is plotted in the
         provided colours. See TimeSeries.plot_full.
 
         :param axes: matplotlib Axes object. If none provided, a new figure is
@@ -1607,7 +1173,7 @@ class TimeSeriesGroup:
         :param channel_idxs: list of which channels indices to plot. If none
         provided, all channels are plot.
         :type channel_idxs: list
-        :param signal_type: the signal ('env', 'clean', 'raw') to plot
+        :param signal_type: the signal ('env', 'clean', 'filt', 'raw') to plot
         :type signal_type: str
         :param colors: list of colors to plot the 1) signal, 2) the baseline
         :type colors: list
@@ -1618,7 +1184,7 @@ class TimeSeriesGroup:
         :rtype: None
         """
         if channel_idxs is None:
-            channel_idxs = np.arange(self.n_channel)
+            channel_idxs = np.arange(self.param['n_channel'])
         elif isinstance(channel_idxs, int):
             channel_idxs = np.array([channel_idxs])
 
@@ -1647,8 +1213,8 @@ class TimeSeriesGroup:
                    colors=None, baseline_bool=True):
         """
         Plot the indicated peaks for all provided channels in the provided
-        axes. By default the most advanced signal type (env > clean > raw)
-        is plotted in the provided colours. See TimeSeries.plot_peaks
+        axes. By default the most advanced signal type (env > clean > filt >
+        raw) is plotted in the provided colours. See TimeSeries.plot_peaks
 
         :param peak_set_name: The name of the peak_set to be plotted.
         :type peak_set_name: str
@@ -1658,7 +1224,7 @@ class TimeSeriesGroup:
         :param channel_idxs: list of which channels indices to plot. If none
         provided, all channels are plot.
         :type channel_idxs: list
-        :param signal_type: the signal ('envelope', 'clean', 'raw') to plot
+        :param signal_type: the signal ('env', 'clean', 'filt', 'raw') to plot
         :type signal_type: str
         :param margin_s: margins in samples plotted before the peak onset and
         after the peak offset
@@ -1675,7 +1241,7 @@ class TimeSeriesGroup:
         """
 
         if channel_idxs is None:
-            channel_idxs = np.arange(self.n_channel)
+            channel_idxs = np.arange(self.param['n_channel'])
         elif isinstance(channel_idxs, int):
             channel_idxs = np.array([channel_idxs])
 
@@ -1734,7 +1300,7 @@ class TimeSeriesGroup:
         """
 
         if channel_idxs is None:
-            channel_idxs = np.arange(self.n_channel)
+            channel_idxs = np.arange(self.param['n_channel'])
         elif isinstance(channel_idxs, int):
             channel_idxs = np.array([channel_idxs])
 
@@ -1795,7 +1361,7 @@ class EmgDataGroup(TimeSeriesGroup):
         :rtype: None
         """
         if channel_idxs is None:
-            channel_idxs = np.arange(self.n_channel)
+            channel_idxs = np.arange(self.param['n_channel'])
         elif isinstance(channel_idxs, int):
             channel_idxs = np.array([channel_idxs])
 
@@ -1809,7 +1375,7 @@ class EmgDataGroup(TimeSeriesGroup):
 
     def gating(
         self,
-        signal_type='clean',
+        signal_type='filt',
         gate_width_samples=None,
         ecg_peak_idxs=None,
         ecg_raw=None,
@@ -1822,7 +1388,7 @@ class EmgDataGroup(TimeSeriesGroup):
         TimeSeries.gating.
         """
         if channel_idxs is None:
-            channel_idxs = np.arange(self.n_channel)
+            channel_idxs = np.arange(self.param['n_channel'])
         elif isinstance(channel_idxs, int):
             channel_idxs = np.array([channel_idxs])
 
@@ -1830,7 +1396,9 @@ class EmgDataGroup(TimeSeriesGroup):
             if self.ecg_idx is not None:
                 ecg_raw = self.channels[self.ecg_idx].y_raw
                 print('Auto-detected ECG channel from labels.')
-
+            else:
+                raise UserWarning("No ECG index or signal provided.")
+        
         for _, channel_idx in enumerate(channel_idxs):
             self.channels[channel_idx].gating(
                 signal_type=signal_type,
@@ -1930,9 +1498,9 @@ class VentilatorDataGroup(TimeSeriesGroup):
         elif peep is None:
             peep = self.peep
 
-        peak_idxs = find_occluded_breaths(
+        peak_idxs = evt.find_occluded_breaths(
             p_vent=self.channels[pressure_idx].y_raw,
-            fs=self.fs,
+            fs=self.param['fs'],
             peep=peep,
             start_idx=start_idx,
             end_idx=end_idx,
@@ -1982,7 +1550,7 @@ class VentilatorDataGroup(TimeSeriesGroup):
             end_idx = len(self.channels[volume_idx].y_raw) - 1
 
         if width_s is None:
-            width_s = self.fs // 4
+            width_s = self.param['fs'] // 4
 
         peak_idxs = evt.detect_ventilator_breath(
             v_vent=self.channels[volume_idx].y_raw,
