@@ -65,17 +65,19 @@ class Config:
         self._loaded = None
         self.example = 'config_example_resurfemg.json'
         self.repo_root = find_repo_root(self.example)
+        self.created_config = False
+        # In the ResurfEMG project, the test data is stored in ./test_data
+        test_path = os.path.join(self.repo_root, 'test_data')
+        if len(glob.glob(test_path)) == 1:
+            test_data_path = os.path.join(self.repo_root, 'test_data')
+        else:
+            test_data_path = '{}/test_data'
         if self.repo_root is None:
             self.default_locations = (
                 './config.json',
                 os.path.expanduser('~/.resurfemg/config.json'),
                 '/etc/resurfemg/config.json',
             )
-            # In the ResurfEMG project, the test data is stored in ./test_data
-            if len(glob.glob(os.path.join(self.repo_root, 'test_data'))) == 1:
-                test_data_path = os.path.join(self.repo_root, 'test_data')
-            else:
-                test_data_path = '{}/test_data'
         else:
             self.default_locations = (
                 './config.json',
@@ -83,7 +85,6 @@ class Config:
                 '/etc/resurfemg/config.json',
                 os.path.join(self.repo_root, 'config.json'),
             )
-            test_data_path = '{}/test_data'
         self.default_layout = {
                 'root_data': '{}/not_pushed',
                 'test_data': test_data_path,
@@ -161,16 +162,17 @@ class Config:
                     os.path.join(self.repo_root, self.example))
                 with open(os.path.join(self.repo_root, 'config.json')) as f:
                     self._raw = json.load(f)
+                self.created_config = True
             else:
                 raise ValueError(self.usage())
 
         root = self._raw.get('root_data')
         self._loaded = dict(self._raw)
+        config_path = os.path.abspath(_path.replace('config.json', ''))
         if isinstance(root, str) and root.startswith('.'):
-            config_path = _path.replace('config.json', '')
-            root = root.replace('.', os.path.abspath(config_path), 1)
-            root = convert_to_os_path(root)
-            self._loaded['root_data'] = root
+            root = root.replace('.', config_path, 1)
+        root = convert_to_os_path(root)
+        self._loaded['root_data'] = root
         if root is None:
             required = dict(self.default_layout)
             del required['root_data']
@@ -179,7 +181,6 @@ class Config:
                     raise ValueError(self.usage())
             # User specified all required directories.
         else:
-            config_path = _path.replace('config.json', '')
             for key, value in self._raw.items():
                 if isinstance(value, str) and value.startswith('.'):
                     new_value = value.replace('.', config_path, 1)
@@ -194,18 +195,25 @@ class Config:
                 self._loaded[m] = convert_to_os_path(
                     self.default_layout[m].format(root))
 
-        if verbose:
-            print(f'Loaded config from {_path}:')
+        if self.created_config:
+            print(f'Created config at:\n {_path}\n')
+        elif verbose:
+            print(f'Loaded config from:\n {_path}\n')
+        if verbose or self.created_config:
+            print('The following paths were configured:')
+            print(79*'-')
+            print(f' {"Name": <15}\t{"Path": <50}')
+            print(79*'-')
+            print(f' {"root": <15}\t{root: <50}')
             for key, value in self._loaded.items():
-                if key == 'root_data':
-                    print(f' {key: <15}\t{root: <50}')
-                else:
+                if key != 'root_data':
                     print(f' {key: <15}\t{value: <50}')
 
     def validate(self):
         for req_dir in self.required_directories:
             if not os.path.isdir(self._loaded[req_dir]):
-                logging.error('Directory %s must exist', self._loaded[req_dir])
+                logging.error('Required directory %s does not exist',
+                              self._loaded[req_dir])
                 raise ValueError(self.usage())
 
     def get_directory(self, directory, value=None):
