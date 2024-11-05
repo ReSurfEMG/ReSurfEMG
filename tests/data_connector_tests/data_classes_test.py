@@ -201,8 +201,8 @@ class TestTimeSeriesGroup(unittest.TestCase):
     emg_di.test_emg_quality(
         'Pocc', verbose=False, parameter_names=parameter_names)
 
-    def test_test_linked_peak_sets(self):
-        tests = ['detected_fraction', 'event_timing']
+    def test_emg_quality_assessment(self):
+        tests = ['interpeak_distance', 'snr', 'aub', 'bell']
         for test in tests:
             self.assertIn(
                 test,
@@ -237,10 +237,17 @@ class TestTimeSeriesGroup(unittest.TestCase):
         cutoff=cutoff,
         parameter_names=parameter_names,
     )
-    def test_clean_data(self):
-        self.assertEqual(
-            len(self.emg_timeseries.channels[0].y_clean),
-            len(self.y_emg[0, :])
+    def test_test_linked_peak_sets(self):
+        tests = ['detected_fraction', 'event_timing']
+        for test in tests:
+            self.assertIn(
+                test,
+                self.emg_di.peaks['Pocc'].quality_outcomes_df.columns.values
+            )
+
+        np.testing.assert_array_equal(
+            self.emg_di.peaks['Pocc'].peak_df['valid'].values,
+            np.array([True, True, True])
         )
 
     def test_plot_full(self):
