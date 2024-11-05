@@ -6,7 +6,7 @@ Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 This file contains functions designed to help with command line
 interface for reproduction of previous work. Here we are building
-APIs for pre-processing and machine learning at speed.
+APIs for pre-, and post-processing.
 """
 
 import logging
@@ -113,7 +113,7 @@ def main(argv):
     if (path_in is None) or (path_out is None):
         try:
             config = Config(parsed.config)
-            path_in = config.get_directory('test_data', path_in)
+            path_in = config.get_directory('root_data', path_in)
             path_out = config.get_directory('simulated_data', path_out)
         except Exception as e:
             logging.exception(e)

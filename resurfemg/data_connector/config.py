@@ -17,43 +17,88 @@ import glob
 import pandas as pd
 
 
+def convert_to_os_path(
+    path: str,
+):
+    """
+    This function converts a path to a os readable path.
+    :param path: The path to convert.
+    :type path: str
+    """
+    readable_path = path.replace(
+        os.sep if os.altsep is None else os.altsep, os.sep)
+    return readable_path
+
+
+def find_repo_root(marker_file='config_example.json'):
+    """
+    Find the root directory of the repository by looking for a marker file.
+    :param marker_file: The marker file to look for (default is
+    'config_example.json').
+    :return: The absolute path to the root directory of the repository.
+    """
+    current_dir = os.path.abspath(os.path.dirname(__file__))
+
+    while True:
+        if os.path.exists(os.path.join(current_dir, marker_file)):
+            return current_dir
+        parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
+        if parent_dir == current_dir:
+            print(f"Marker file '{marker_file}' not found in any parent "
+                  + "directory.")
+            return None
+        current_dir = parent_dir
+
+
 class Config:
     """
-    This class allows configuration on the home computer
-    or remote workspace, of a file setup for data,
-    which is then processed into a variable. Essentially
-    by setting up and modifying a .json file in the appropriate directory
-    users can avoid the need for any hardcoded paths to data.
+    This class allows configuration on the home computer or remote workspace,
+    of a file setup for data, which is then processed into a variable.
+    Essentially by setting up and modifying a .json file in the appropriate
+    directory users can avoid the need for any hardcoded paths to data.
     """
-
-    default_locations = (
-        './config.json',
-        os.path.expanduser('~/.resurfemg/config.json'),
-        '/etc/resurfemg/config.json',
-    )
-
-    default_layout = {
-        'root_data': '{}/not_pushed',
-        'test_data': '{}/test_data',
-        'patient_data': '{}/not_pushed/patient_data',
-        'simulated_data': '{}/not_pushed/simulated',
-        'preprocessed_data': '{}/not_pushed/preprocessed',
-        'output': '{}/not_pushed/output',
-    }
 
     required_directories = ['root_data']
 
-    def __init__(self, location=None):
+    def __init__(self, location=None, verbose=False):
         self._raw = None
         self._loaded = None
-        self.load(location)
+        self.example = 'config_example_resurfemg.json'
+        self.repo_root = find_repo_root(self.example)
+        if self.repo_root is None:
+            self.default_locations = (
+                './config.json',
+                os.path.expanduser('~/.resurfemg/config.json'),
+                '/etc/resurfemg/config.json',
+            )
+            # In the ResurfEMG project, the test data is stored in ./test_data
+            if len(glob.glob(os.path.join(self.repo_root, 'test_data'))) == 1:
+                test_data_path = os.path.join(self.repo_root, 'test_data')
+            else:
+                test_data_path = '{}/test_data'
+        else:
+            self.default_locations = (
+                './config.json',
+                os.path.expanduser('~/.resurfemg/config.json'),
+                '/etc/resurfemg/config.json',
+                os.path.join(self.repo_root, 'config.json'),
+            )
+            test_data_path = '{}/test_data'
+        self.default_layout = {
+                'root_data': '{}/not_pushed',
+                'test_data': test_data_path,
+                'patient_data': '{}/patient_data',
+                'simulated_data': '{}/simulated',
+                'preprocessed_data': '{}/preprocessed',
+                'output_data': '{}/output',
+            }
+        self.load(location, verbose=verbose)
         self.validate()
 
     def usage(self):
         """
-        This is essentally a corrective error message if the computer
-        does not have paths configured or files made so that
-        the data paths of config.json can be used
+        Provide feedback if the paths are not configured or not configured
+        correctly. It contains instructions on how to configure the paths.
         """
         return textwrap.dedent(
             '''
@@ -67,58 +112,100 @@ class Config:
             directory as follows:
 
             {{
-                "root_data": "/path/to/storage"
-                "test_data": "/path/to/storage"
+                "root_data": "{}"
             }}
 
             The default directory layout is expected to be based on the above
-            and adding subdirectories.
+            `root_data` directory and adding subdirectories.
 
-            You can override any individual directory (or subdirectory)
-            by specifying it in the config.json file.
+            You can override any individual directory (or subdirectory) by
+            specifying it in the config.json file.
 
             "root_data" is expected to exist.
-            The "patient_data", "simulated_data", "preprocessed", "output"
-            directories need not exist.  They will be created if missing.
+            The "patient_data", "simulated_data", "preprocessed_data",
+            "output_data" are optional. They will be created if missing.
             '''
-        ).format('\n'.join(self.default_locations))
+        ).format(convert_to_os_path('\n'.join(self.default_locations)),
+                 convert_to_os_path('/path/to/storage'))
 
-    def load(self, location):
+    def create_config_from_example(
+        self,
+        location: str,
+    ):
+        """
+        This function creates a config file from an example file.
+        :param location: The location of the example file.
+        :type location: str
+        """
+        config_path = location.replace(self.example, 'config.json')
+        with open(location, 'r') as f:
+            example = json.load(f)
+        with open(config_path, 'w') as f:
+            json.dump(example, f, indent=4, sort_keys=True)
+
+    def load(self, location, verbose=False):
         locations = (
             [location] if location is not None else self.default_locations
         )
 
-        for p in locations:
+        for _path in locations:
             try:
-                with open(p) as f:
+                with open(_path) as f:
                     self._raw = json.load(f)
                     break
             except Exception as e:
-                logging.info('Failed to load %s: %s', p, e)
+                logging.info('Failed to load %s: %s', _path, e)
         else:
-            raise ValueError(self.usage())
+            if self.repo_root is not None:
+                self.create_config_from_example(
+                    os.path.join(self.repo_root, self.example))
+                with open(os.path.join(self.repo_root, 'config.json')) as f:
+                    self._raw = json.load(f)
+            else:
+                raise ValueError(self.usage())
 
         root = self._raw.get('root_data')
         self._loaded = dict(self._raw)
+        if isinstance(root, str) and root.startswith('.'):
+            config_path = _path.replace('config.json', '')
+            root = root.replace('.', os.path.abspath(config_path), 1)
+            root = convert_to_os_path(root)
+            self._loaded['root_data'] = root
         if root is None:
             required = dict(self.default_layout)
             del required['root_data']
-            for directory in required.keys():
+            for directory in required:
                 if directory not in self._raw:
                     raise ValueError(self.usage())
-            # User specified all concrete directories.  Nothing for us to
-            # do here.
+            # User specified all required directories.
         else:
+            config_path = _path.replace('config.json', '')
+            for key, value in self._raw.items():
+                if isinstance(value, str) and value.startswith('.'):
+                    new_value = value.replace('.', config_path, 1)
+                    self._loaded[key] = convert_to_os_path(new_value)
+                else:
+                    self._loaded[key] = convert_to_os_path(value)
+            # User possibly specified only a subset of optional directories.
+            # The missing directories will be back-filled with the default
+            # layout relative to the root directory.
             missing = set(self.default_layout.keys()) - set(self._raw.keys())
-            # User possibly specified only a subset of directories.  We'll
-            # back-fill all the not-specified directories.
             for m in missing:
-                self._loaded[m] = self.default_layout[m].format(root)
+                self._loaded[m] = convert_to_os_path(
+                    self.default_layout[m].format(root))
+
+        if verbose:
+            print(f'Loaded config from {_path}:')
+            for key, value in self._loaded.items():
+                if key == 'root_data':
+                    print(f' {key: <15}\t{root: <50}')
+                else:
+                    print(f' {key: <15}\t{value: <50}')
 
     def validate(self):
-        for d in self.required_directories:
-            if not os.path.isdir(self._loaded[d]):
-                logging.error('Directory %s must exist', self._loaded[d])
+        for req_dir in self.required_directories:
+            if not os.path.isdir(self._loaded[req_dir]):
+                logging.error('Directory %s must exist', self._loaded[req_dir])
                 raise ValueError(self.usage())
 
     def get_directory(self, directory, value=None):
