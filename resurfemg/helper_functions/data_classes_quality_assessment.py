@@ -9,15 +9,15 @@ from resurfemg.postprocessing import quality_assessment as qa
 
 
 def initialize_emg_tests(
-    self,
+    timeseries,
     peak_set_name,
     cutoff,
     skip_tests,
     parameter_names
 ):
     """Initialize local parameters"""
-    if peak_set_name in self.peaks.keys():
-        peak_set = self.peaks[peak_set_name]
+    if peak_set_name in timeseries.peaks.keys():
+        peak_set = timeseries.peaks[peak_set_name]
     else:
         raise KeyError("Non-existent PeaksSet key")
 
@@ -31,8 +31,8 @@ def initialize_emg_tests(
             'snr': 1.4,
             'aub': 40,
             'curve_fit': 30,
-            'aub_window_s': 5*self.param['fs'],
-            'bell_window_s': 5*self.param['fs'],
+            'aub_window_s': 5*timeseries.param['fs'],
+            'bell_window_s': 5*timeseries.param['fs'],
             'relative_aub_percentile': 75.0,
             'relative_aub_factor': 4.0,
             'relative_etp_upper_percentile': 95.0,
@@ -46,8 +46,8 @@ def initialize_emg_tests(
             'snr': 1.75,
             'aub': 30,
             'curve_fit': 25,
-            'aub_window_s': 5*self.param['fs'],
-            'bell_window_s': 5*self.param['fs'],
+            'aub_window_s': 5*timeseries.param['fs'],
+            'bell_window_s': 5*timeseries.param['fs'],
             'relative_aub_percentile': 75.0,
             'relative_aub_factor': 2.0,
             'relative_etp_upper_percentile': 95.0,
@@ -111,12 +111,12 @@ def initialize_emg_tests(
 
 
 def test_interpeak_distance(
-        self, peak_set, quality_outcomes_df, n_peaks, cutoff):
+        timeseries, peak_set, quality_outcomes_df, n_peaks, cutoff):
     """Test interpeak distance"""
-    if 'ecg' not in self.peaks:
+    if 'ecg' not in timeseries.peaks:
         raise ValueError('ECG peaks not determined, but required for interpeak'
                          + ' distance evaluation.')
-    ecg_peaks = self.peaks['ecg'].peak_df['peak_idx'].to_numpy()
+    ecg_peaks = timeseries.peaks['ecg'].peak_df['peak_idx'].to_numpy()
     valid_interpeak = qa.interpeak_dist(
         ECG_peaks=ecg_peaks,
         EMG_peaks=peak_set.peak_df['peak_idx'].to_numpy(),
@@ -127,16 +127,17 @@ def test_interpeak_distance(
     return quality_outcomes_df
 
 
-def test_snr(self, peak_set, quality_outcomes_df, quality_values_df, cutoff):
+def test_snr(
+        timeseries, peak_set, quality_outcomes_df, quality_values_df, cutoff):
     """Test signal-to-noise ratio"""
-    if self.baseline is None:
+    if timeseries.baseline is None:
         raise ValueError('Baseline not determined, but required for '
                          + ' SNR evaluaton.')
     snr_peaks = qa.snr_pseudo(
         src_signal=peak_set.signal,
         peaks=peak_set.peak_df['peak_idx'].to_numpy(),
-        baseline=self.y_baseline,
-        fs=self.param['fs'],
+        baseline=timeseries.y_baseline,
+        fs=timeseries.param['fs'],
     )
     quality_values_df['snr'] = snr_peaks
     valid_snr = snr_peaks > cutoff['snr']
@@ -144,9 +145,10 @@ def test_snr(self, peak_set, quality_outcomes_df, quality_values_df, cutoff):
     return quality_outcomes_df
 
 
-def test_aub(self, peak_set, quality_outcomes_df, quality_values_df, cutoff):
+def test_aub(
+        timeseries, peak_set, quality_outcomes_df, quality_values_df, cutoff):
     """Test percentage area under the baseline"""
-    if self.baseline is None:
+    if timeseries.baseline is None:
         raise ValueError('Baseline not determined, but required for '
                          + ' area under the baseline (AUB) evaluaton.')
     if 'start_idx' not in peak_set.peak_df.columns:
@@ -157,11 +159,11 @@ def test_aub(self, peak_set, quality_outcomes_df, quality_values_df, cutoff):
                          + ' area under the baseline (AUB) evaluaton.')
     outputs = qa.percentage_under_baseline(
         signal=peak_set.signal,
-        fs=self.param['fs'],
+        fs=timeseries.param['fs'],
         peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
         start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
         end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
-        baseline=self.y_baseline,
+        baseline=timeseries.y_baseline,
         aub_window_s=None,
         ref_signal=None,
         aub_threshold=cutoff['aub'],
@@ -175,10 +177,10 @@ def test_aub(self, peak_set, quality_outcomes_df, quality_values_df, cutoff):
 
 
 def test_curve_fits(
-        self, peak_set, quality_outcomes_df, quality_values_df, cutoff,
+        timeseries, peak_set, quality_outcomes_df, quality_values_df, cutoff,
         parameter_names):
     """Test curve fit"""
-    if self.baseline is None:
+    if timeseries.baseline is None:
         raise ValueError('Baseline not determined, but required for '
                          + ' area under the baseline (AUB) evaluaton.')
     if 'start_idx' not in peak_set.peak_df.columns:
@@ -195,7 +197,7 @@ def test_curve_fits(
         start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
         end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
         signal=peak_set.signal,
-        fs=self.param['fs'],
+        fs=timeseries.param['fs'],
         time_products=peak_set.peak_df[
             parameter_names['time_product']].to_numpy(),
         bell_window_s=cutoff['bell_window_s'],
@@ -235,8 +237,6 @@ def test_relative_etp(peak_set, quality_outcomes_df, cutoff, parameter_names):
     if parameter_names['time_product'] not in peak_set.peak_df.columns:
         raise ValueError('ETPs not determined, but required for curve '
                          + 'fit evaluaton.')
-    print(peak_set.peak_df[
-            parameter_names['time_product']].to_numpy().shape)
     valid_etps = qa.detect_extreme_time_products(
         time_products=peak_set.peak_df[
             parameter_names['time_product']].to_numpy(),
@@ -250,14 +250,14 @@ def test_relative_etp(peak_set, quality_outcomes_df, cutoff, parameter_names):
 
 
 def initialize_pocc_tests(
-    self,
+    timeseries,
     peak_set_name,
     cutoff,
     skip_tests,
     parameter_names
 ):
-    if peak_set_name in self.peaks.keys():
-        peak_set = self.peaks[peak_set_name]
+    if peak_set_name in timeseries.peaks.keys():
+        peak_set = timeseries.peaks[peak_set_name]
     else:
         raise KeyError("Non-existent PeaksSet key")
 
@@ -353,4 +353,116 @@ def test_pocc_upslope(
     quality_values_df['dP_up_90_norm'] = criteria_matrix[2, :]
 
     quality_outcomes_df['pocc_upslope'] = valid_poccs
+    return quality_outcomes_df, quality_values_df
+
+
+def initialize_linked_peaks_tests(
+    timeseries,
+    peak_set_name,
+    linked_timeseries,
+    linked_peak_set_name,
+    cutoff,
+    skip_tests,
+    parameter_names,
+):
+    """Initialize local parameters"""
+    if peak_set_name in timeseries.peaks.keys():
+        peak_set = timeseries.peaks[peak_set_name]
+    else:
+        raise KeyError("Non-existent PeaksSet key")
+
+    if linked_peak_set_name in linked_timeseries.peaks.keys():
+        linked_peak_set = linked_timeseries.peaks[linked_peak_set_name]
+    else:
+        raise KeyError("Non-existent linked PeaksSet key")
+
+    if skip_tests is None:
+        skip_tests = []
+
+    if (cutoff is None) or (isinstance(cutoff, str) and cutoff == 'tolerant'):
+        cutoff = dict()
+        cutoff['fraction_emg_breaths'] = 0.1
+        cutoff['delta_min'] = -0.5
+        cutoff['delta_max'] = 2.0
+    elif (isinstance(cutoff, str) and cutoff == 'strict'):
+        cutoff['fraction_emg_breaths'] = 0.5
+        cutoff['delta_min'] = -0.5
+        cutoff['delta_max'] = 2.0
+    elif isinstance(cutoff, dict):
+        tests = ['fraction_emg_breaths', 'event_timing']
+        tests_crit = dict()
+        tests_crit['fraction_emg_breaths'] = ['fraction_emg_breaths']
+        tests_crit['event_timing'] = ['delta_min', 'delta_max']
+
+        for _, test in enumerate(tests):
+            if test not in skip_tests:
+                for crit in tests_crit[test]:
+                    if crit not in cutoff:
+                        raise KeyError(
+                            'No cut-off value provided for: ' + test)
+
+    if parameter_names is None:
+        parameter_names = dict()
+
+    for parameter in ['ventilator_breaths', 'rr']:
+        if parameter not in parameter_names:
+            parameter_names[parameter] = parameter
+
+    n_peaks = len(peak_set.peak_df['peak_idx'].to_numpy())
+    quality_values_df = pd.DataFrame(data=peak_set.peak_df['peak_idx'],
+                                     columns=['peak_idx'])
+    quality_outcomes_df = pd.DataFrame(data=peak_set.peak_df['peak_idx'],
+                                       columns=['peak_idx'])
+    output = (
+        skip_tests,
+        cutoff,
+        peak_set,
+        linked_peak_set,
+        parameter_names,
+        n_peaks,
+        quality_values_df,
+        quality_outcomes_df
+    )
+    return output
+
+
+def test_fraction_detected_breaths(
+    native_peak_set, linked_time_series, quality_outcomes_df,
+    quality_values_df, n_peaks, cutoff, parameter_names
+):
+    """Test detected peak fraction"""
+    native_peak_idxs = native_peak_set.peak_df['peak_idx'].to_numpy()
+
+    fraction_emg_breaths, _ = qa.evaluate_respiratory_rates(
+        emg_breath_idxs=native_peak_idxs,
+        t_emg=max(native_peak_set.t_data),
+        rr_vent=linked_time_series.param[parameter_names['rr']],
+    )
+    valid_fraction = fraction_emg_breaths > cutoff['fraction_emg_breaths']
+    fraction_emg_breaths_vec = np.array(n_peaks * [fraction_emg_breaths])
+    valid_fraction_vec = np.array(n_peaks * [valid_fraction])
+    quality_outcomes_df['detected_fraction'] = valid_fraction_vec
+    quality_values_df['detected_fraction'] = fraction_emg_breaths_vec
+    return quality_outcomes_df, quality_values_df
+
+
+def test_event_timing(
+    timeseries, native_peak_set, linked_timeseries, linked_peak_set,
+    quality_outcomes_df, quality_values_df, cutoff
+):
+    """Test event timing relative to other peak_set"""
+    native_peak_idxs = native_peak_set.peak_df['peak_idx'].to_numpy()
+    linked_peak_idxs = linked_peak_set.peak_df['peak_idx'].to_numpy()
+
+    t_events_1 = native_peak_idxs / timeseries.param['fs']
+    t_events_2 = linked_peak_idxs / linked_timeseries.param['fs']
+
+    correct_timing, delta_time = qa.evaluate_event_timing(
+        t_events_1,
+        t_events_2,
+        delta_min=cutoff['delta_min'],
+        delta_max=cutoff['delta_max']
+    )
+    quality_outcomes_df['event_timing'] = correct_timing
+    quality_values_df['event_delta_time'] = delta_time
     return quality_outcomes_df, quality_values_df

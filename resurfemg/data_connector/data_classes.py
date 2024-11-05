@@ -147,7 +147,6 @@ class TimeSeries:
         :rtype: None
         """
         y_data = self.signal_type_data(signal_type=signal_type)
-        print(y_data, signal_type)
         # Eliminate the baseline wander from the data using a band-pass filter
         self.y_filt = filt.emg_bandpass_butter(
             y_data,
@@ -633,13 +632,45 @@ class TimeSeries:
             print(peak_set.quality_outcomes_df)
 
     def test_linked_peak_sets(
+        self,
+        peak_set_name,
+        linked_timeseries,
+        linked_peak_set_name,
+        parameter_names=None,
+        cutoff=None,
+        skip_tests=None,
+        verbose=True,
     ):
-        evaluate_event_timing(
-            t_events_1,
-            t_events_2,
-            delta_min=0,
-            delta_max=None,
+        output = data_qa.initialize_linked_peaks_tests(
+            self,
+            peak_set_name,
+            linked_timeseries,
+            linked_peak_set_name,
+            cutoff,
+            skip_tests,
+            parameter_names,
         )
+        (skip_tests, cutoff, native_peak_set, linked_peak_set, parameter_names,
+         n_peaks, quality_values_df, quality_outcomes_df) = output
+
+        if 'fraction_emg_breaths' not in skip_tests:
+            quality_outcomes_df, quality_values_df = \
+                data_qa.test_fraction_detected_breaths(
+                    native_peak_set, linked_timeseries, quality_outcomes_df,
+                    quality_values_df, n_peaks, cutoff, parameter_names)
+
+        if 'event_timing' not in skip_tests:
+            quality_outcomes_df, quality_values_df = data_qa.test_event_timing(
+                self, native_peak_set, linked_timeseries, linked_peak_set,
+                quality_outcomes_df, quality_values_df, cutoff)
+
+        native_peak_set.update_test_outcomes(quality_values_df)
+        native_peak_set.evaluate_validity(quality_outcomes_df)
+        if verbose:
+            print('Test values:')
+            print(native_peak_set.quality_values_df)
+            print('Test outcomes:')
+            print(native_peak_set.quality_outcomes_df)
 
     def plot_full(self, axis=None, signal_type=None,
                   colors=None, baseline_bool=True):
@@ -736,12 +767,12 @@ class TimeSeries:
             y_vals_end = n_peaks * [None]
 
         if valid_only and 'valid' in peak_set.peak_df.columns:
-            x_vals_peak = x_vals_peak[peak_set.valid]
-            y_vals_peak = y_vals_peak[peak_set.valid]
-            x_vals_start = x_vals_start[peak_set.valid]
-            y_vals_start = y_vals_start[peak_set.valid]
-            x_vals_end = x_vals_end[peak_set.valid]
-            y_vals_end = y_vals_end[peak_set.valid]
+            x_vals_peak = x_vals_peak[peak_set.peak_df['valid']]
+            y_vals_peak = y_vals_peak[peak_set.peak_df['valid']]
+            x_vals_start = x_vals_start[peak_set.peak_df['valid']]
+            y_vals_start = y_vals_start[peak_set.peak_df['valid']]
+            x_vals_end = x_vals_end[peak_set.peak_df['valid']]
+            y_vals_end = y_vals_end[peak_set.peak_df['valid']]
 
         if colors is None:
             colors = 'tab:red'
@@ -1398,7 +1429,7 @@ class EmgDataGroup(TimeSeriesGroup):
                 print('Auto-detected ECG channel from labels.')
             else:
                 raise UserWarning("No ECG index or signal provided.")
-        
+
         for _, channel_idx in enumerate(channel_idxs):
             self.channels[channel_idx].gating(
                 signal_type=signal_type,

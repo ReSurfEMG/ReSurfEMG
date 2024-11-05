@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 from resurfemg.data_connector.data_classes import (
     VentilatorDataGroup, EmgDataGroup)
+from resurfemg.postprocessing import features as feat
 
 synth_pocc_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(
@@ -118,6 +119,11 @@ class TestTimeSeriesGroup(unittest.TestCase):
             len(self.y_emg[0, :])
         )
     emg_timeseries.filter()
+    def test_filtered_data(self):
+        self.assertEqual(
+            len(self.emg_timeseries.channels[0].y_filt),
+            len(self.y_emg[0, :])
+        )
     emg_timeseries.gating()
     def test_clean_data(self):
         self.assertEqual(
@@ -194,17 +200,47 @@ class TestTimeSeriesGroup(unittest.TestCase):
     }
     emg_di.test_emg_quality(
         'Pocc', verbose=False, parameter_names=parameter_names)
-    def test_emg_quality_assessment(self):
-        tests = ['baseline_detection', 'interpeak_distance', 'snr', 'aub']
+
+    def test_test_linked_peak_sets(self):
+        tests = ['detected_fraction', 'event_timing']
         for test in tests:
             self.assertIn(
                 test,
                 self.emg_di.peaks['Pocc'].quality_outcomes_df.columns.values
             )
 
-        np.testing.assert_array_almost_equal(
+        np.testing.assert_array_equal(
             self.emg_di.peaks['Pocc'].peak_df['valid'].values,
             np.array([True, True, True])
+        )
+
+    # Test the ventilatory Pocc peaks against the EMG peaks
+    rr_vent, _ = feat.respiratory_rate(
+        v_vent.peaks['ventilator_breaths'].peak_df['peak_idx'].to_numpy(),
+        v_vent.param['fs'])
+    p_vent.param['rr_occ'] = 60*len(
+        p_vent.peaks['Pocc'].peak_df)/(p_vent.t_data[-1])
+    cutoff = {
+        'fraction_emg_breaths': 0.1,
+        'delta_min': 0.5*rr_vent/60,
+        'delta_max': 0.6
+    }
+    parameter_names = {
+        'rr': 'rr_occ'
+    }
+
+    emg_di.test_linked_peak_sets(
+        peak_set_name='Pocc',
+        linked_timeseries=p_vent,
+        linked_peak_set_name='Pocc',
+        verbose=True,
+        cutoff=cutoff,
+        parameter_names=parameter_names,
+    )
+    def test_clean_data(self):
+        self.assertEqual(
+            len(self.emg_timeseries.channels[0].y_clean),
+            len(self.y_emg[0, :])
         )
 
     def test_plot_full(self):
