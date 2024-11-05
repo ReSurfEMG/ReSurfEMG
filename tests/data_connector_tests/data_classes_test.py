@@ -124,8 +124,15 @@ class TestTimeSeriesGroup(unittest.TestCase):
             len(self.emg_timeseries.channels[0].y_filt),
             len(self.y_emg[0, :])
         )
-    emg_timeseries.gating()
-    def test_clean_data(self):
+    emg_timeseries.wavelet_denoising(overwrite=True)
+    def test_clean_data_wavelet_denosing(self):
+        self.assertEqual(
+            len(self.emg_timeseries.channels[0].y_clean),
+            len(self.y_emg[0, :])
+        )
+
+    emg_timeseries.gating(overwrite=True)
+    def test_clean_data_gating(self):
         self.assertEqual(
             len(self.emg_timeseries.channels[0].y_clean),
             len(self.y_emg[0, :])

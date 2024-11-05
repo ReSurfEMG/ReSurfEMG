@@ -155,24 +155,27 @@ class TimeSeries:
             fs_emg=self.param['fs'],
             order=order)
 
-    def gating(
+    def get_ecg_peaks(
         self,
-        signal_type='filt',
-        gate_width_samples=None,
-        ecg_peak_idxs=None,
         ecg_raw=None,
         bp_filter=True,
-        fill_method=3,
+        overwrite=False,
     ):
         """
-        Eliminate ECG artifacts from the provided signal. See
-        preprocessing.ecg_removal and pipelines.ecg_removal_gating submodules.
-
+        Detect ECG peaks in the provided signal. See preprocessing.ecg_removal
+        submodule.
+        :param ecg_raw: ECG signal, if None, the raw signal is used
+        :type ecg_raw: ~numpy.ndarray
+        :bp_filter: Apply band-pass filter to the ECG signal
+        :type bp_filter: bool
+        :overwrite: Overwrite existing peaks
+        :type overwrite: bool
         :returns: None
         :rtype: None
         """
-        y_data = self.signal_type_data(signal_type=signal_type)
-        if ecg_peak_idxs is None:
+        if 'ecg' in self.peaks.keys() and not overwrite:
+            raise UserWarning('ECG peaks already detected. Use overwrite=True')
+        else:
             if ecg_raw is None:
                 lp_cf = min([500.0, self.param['fs'] / 2])
                 ecg_raw = filt.emg_bandpass_butter(
@@ -187,11 +190,34 @@ class TimeSeries:
                 bp_filter=bp_filter,
             )
 
-        self.set_peaks(
-            signal=ecg_raw,
-            peak_idxs=ecg_peak_idxs,
-            peak_set_name='ecg',
-        )
+            self.set_peaks(
+                signal=ecg_raw,
+                peak_idxs=ecg_peak_idxs,
+                peak_set_name='ecg',
+            )
+
+    def gating(
+        self,
+        signal_type='filt',
+        gate_width_samples=None,
+        ecg_peak_idxs=None,
+        ecg_raw=None,
+        bp_filter=True,
+        fill_method=3,
+        overwrite=False,
+    ):
+        """
+        Eliminate ECG artifacts from the provided signal. See
+        preprocessing.ecg_removal and pipelines.ecg_removal_gating submodules.
+
+        :returns: None
+        :rtype: None
+        """
+        y_data = self.signal_type_data(signal_type=signal_type)
+        if ecg_peak_idxs is None:
+            self.get_ecg_peaks(
+                ecg_raw=ecg_raw, bp_filter=bp_filter, overwrite=overwrite)
+            ecg_peak_idxs = self.peaks['ecg'].peak_df['peak_idx'].to_numpy()
 
         if gate_width_samples is None:
             gate_width_samples = self.param['fs'] // 10
@@ -202,6 +228,45 @@ class TimeSeries:
             gate_width_samples,
             ecg_shift=10,
             method=fill_method,
+        )
+
+    def wavelet_denoising(
+        self,
+        signal_type='filt',
+        ecg_peak_idxs=None,
+        ecg_raw=None,
+        n=None,
+        fixed_threshold=None,
+        bp_filter=True,
+        overwrite=False,
+    ):
+        """
+        Eliminate ECG artifacts from the provided signal. See
+        preprocessing.wavelet_denoising submodules.
+
+        :returns: None
+        :rtype: None
+        """
+        y_data = self.signal_type_data(signal_type=signal_type)
+        if ecg_peak_idxs is None:
+            self.get_ecg_peaks(
+                ecg_raw=ecg_raw, bp_filter=bp_filter, overwrite=overwrite)
+            ecg_peak_idxs = self.peaks['ecg'].peak_df['peak_idx'].to_numpy()
+
+        if n is None:
+            n = int(np.log(self.param['fs']/20) // np.log(2))
+
+        if fixed_threshold is None:
+            fixed_threshold = 4.5
+
+        self.y_clean, *_ = ecg_rm.wavelet_denoising(
+            y_data,
+            ecg_peak_idxs,
+            fs=self.param['fs'],
+            hard_thresholding=True,
+            n=n,
+            fixed_threshold=fixed_threshold,
+            wavelet_type='db2',
         )
 
     def envelope(
@@ -1413,6 +1478,7 @@ class EmgDataGroup(TimeSeriesGroup):
         bp_filter=True,
         fill_method=3,
         channel_idxs=None,
+        overwrite=False,
     ):
         """
         Eliminate ECG artifacts from the provided signal. See
@@ -1438,6 +1504,45 @@ class EmgDataGroup(TimeSeriesGroup):
                 ecg_raw=ecg_raw,
                 bp_filter=bp_filter,
                 fill_method=fill_method,
+                overwrite=overwrite,
+            )
+
+    def wavelet_denoising(
+        self,
+        signal_type='filt',
+        ecg_peak_idxs=None,
+        ecg_raw=None,
+        bp_filter=True,
+        n=None,
+        fixed_threshold=None,
+        channel_idxs=None,
+        overwrite=False,
+    ):
+        """
+        Eliminate ECG artifacts from the provided signal. See
+        TimeSeries.wavelet_denoising.
+        """
+        if channel_idxs is None:
+            channel_idxs = np.arange(self.param['n_channel'])
+        elif isinstance(channel_idxs, int):
+            channel_idxs = np.array([channel_idxs])
+
+        if ecg_raw is None and ecg_peak_idxs is None:
+            if self.ecg_idx is not None:
+                ecg_raw = self.channels[self.ecg_idx].y_raw
+                print('Auto-detected ECG channel from labels.')
+            else:
+                raise UserWarning("No ECG index or signal provided.")
+
+        for _, channel_idx in enumerate(channel_idxs):
+            self.channels[channel_idx].wavelet_denoising(
+                signal_type=signal_type,
+                ecg_peak_idxs=ecg_peak_idxs,
+                ecg_raw=ecg_raw,
+                bp_filter=bp_filter,
+                n=n,
+                fixed_threshold=fixed_threshold,
+                overwrite=overwrite,
             )
 
 
