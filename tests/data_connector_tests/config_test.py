@@ -3,7 +3,7 @@ import os
 import json
 from unittest import TestCase
 from tempfile import TemporaryDirectory
-from resurfemg.helper_functions.config import Config
+from resurfemg.data_connector.config import Config
 
 class TestConfig(TestCase):
 

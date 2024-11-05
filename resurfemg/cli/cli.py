@@ -13,7 +13,7 @@ import logging
 
 from argparse import ArgumentParser
 
-from resurfemg.helper_functions.config import Config
+from resurfemg.data_connector.config import Config
 import resurfemg.pipelines.synthetic_data as simulate
 from resurfemg.data_connector.converter_functions import save_j_as_np
 
