@@ -23,7 +23,7 @@ def find_files(
     `file_name_regex`.`extension_regex` starting from the provided base_path
     according to the provided folder_leves. If `folder_levels` is None, all
     files matching the name pattern included, no matter the data organisation.
-
+    ---------------------------------------------------------------------------
     :param base_path: Path to starting directory
     :type base_path: str
     :param file_name_regex: file name pattern, see Python Regex docs
@@ -102,7 +102,7 @@ def find_folders(
     Find folders up to the depth of the provided folder_levels starting from
     the provided base_path. If `folder_levels` is None, all folders in the
     provided are included, no matter the data organisation.
-
+    ---------------------------------------------------------------------------
     :param base_path: Path to starting directory
     :type base_path: str
     :param folder_levels: data directory organisation, e.g. ['patient', 'date']
@@ -113,7 +113,6 @@ def find_folders(
     :returns folders: Folder paths tabled by the folder_levels
     :rtype folders: pd.DataFrame
     """
-
     if not os.path.isdir(base_path):
         raise ValueError('Specified base_path cannot be found.')
 
