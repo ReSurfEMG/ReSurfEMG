@@ -7,7 +7,6 @@ reproduction of previous work. Here we are building APIs for pre-, and post-
 processing.
 """
 
-import os
 import logging
 
 from argparse import ArgumentParser
@@ -27,7 +26,7 @@ def set_common_args(parser):
         '--input',
         default=None,
         help='''
-        Directory containing files to be worked on
+        Directory containing the input files
         ''',
     )
     parser.add_argument(
@@ -69,10 +68,10 @@ def make_parser():
         '''
     )
     # Parser for simulating Ventilator data
-    sim_vent = subparsers.add_parser('simulate_emg')
-    sim_vent.set_defaults(action='simulate')
-    set_common_args(sim_emg)
-    sim_emg.add_argument(
+    sim_vent = subparsers.add_parser('simulate_ventilator')
+    sim_vent.set_defaults(action='simulate_ventilator')
+    set_common_args(sim_vent)
+    sim_vent.add_argument(
         '-N',
         '--number',
         default=1,
@@ -105,6 +104,7 @@ def main(argv):
             path_in = config.get_directory('root_data', path_in)
             path_out = config.get_directory('output_data', path_out)
         except Exception as e:
+            print(e)
             logging.exception(e)
             return 1
 
@@ -115,6 +115,7 @@ def main(argv):
                 path_out,
             )
         except Exception as e:
+            print(e)
             logging.exception(e)
             return 1
 
@@ -125,6 +126,7 @@ def main(argv):
                 path_out,
             )
         except Exception as e:
+            print(e)
             logging.exception(e)
             return 1
 
@@ -135,6 +137,7 @@ def main(argv):
                 path_out,
             )
         except Exception as e:
+            print(e)
             logging.exception(e)
             return 1
 
