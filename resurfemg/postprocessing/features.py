@@ -19,7 +19,7 @@ def time_to_peak(
 ):
     """
     Calculates the absolute and relative time to peak
-
+    ---------------------------------------------------------------------------
     :param emg_env: an single lead EMG envelope
     :type emg_env: np.array
     :param start_idxs: list of individual peak start indices
@@ -27,8 +27,10 @@ def time_to_peak(
     :param end_idxs: list of individual peak end indices
     :type end_idxs: ~[int]
 
-    :returns: (abs_times, percent_times); absolute and relative time-to_peak
-    :rtype: (numpy.ndarray, numpy.ndarray)
+    :returns abs_times: absolute time-to_peak
+    :rtype abs_times: numpy.ndarray[int]
+    :returns percent_times: relative time-to_peak
+    :rtype percent_times: numpy.ndarray[float]
     """
     start_idxs = np.array(start_idxs)
     end_idxs = np.array(end_idxs)
@@ -54,7 +56,7 @@ def pseudo_slope(
     EMG signal. The slope is returned in units/samples (in abs values), not
     true slope. The true slope will depend on sampling rate and pre-
     processing. Therefore, only within sample comparison is recommended.
-
+    ---------------------------------------------------------------------------
     :param emg_env: an single lead EMG envelope
     :type emg_env: np.array
     :param start_idxs: list of individual peak start indices
@@ -65,7 +67,7 @@ def pseudo_slope(
     :type smoothing: bool
 
     :returns pseudoslope: initial slope of the peak
-    :rtype: np.ndarray[float]
+    :rtype pseudoslope: np.ndarray[float]
     """
     start_idxs = np.array(start_idxs)
     end_idxs = np.array(end_idxs)
@@ -92,14 +94,16 @@ def amplitude(
     Calculate the peak height of signal and the baseline for the windows
     at the peak_idxs relative to the baseline. If no baseline is provided, the
     peak height relative to zero is determined.
+    ---------------------------------------------------------------------------
     :param signal: signal to determine the peak heights in
     :type signal: ~numpy.ndarray[float]
     :param peak_idxs: list of individual peak start indices
     :type peak_idxs: ~np.ndarray[int]
     :param baseline: running baseline of the signal
     :type baseline: ~numpy.ndarray[float]
+
     :returns amplitudes: list of peak amplitudes
-    :rtype: ~np.ndarray[float]
+    :rtype amplitudes: ~np.ndarray[float]
     """
     if baseline is None:
         baseline = np.zeros(signal.shape)
@@ -118,6 +122,7 @@ def time_product(
     """
     Calculate the time product between the signal and the baseline for the
     windows defined by the start_idx and end_idx sample pairs.
+    ---------------------------------------------------------------------------
     :param signal: signal to calculate the time product over
     :type signal: ~numpy.ndarray[float]
     :param fs: sampling frequency
@@ -128,8 +133,9 @@ def time_product(
     :type end_idxs: ~list[int]
     :param baseline: running Baseline of the signal
     :type baseline: ~numpy.ndarray[float]
-    :returns: time_products
-    :rtype: numpy.ndarray[float]
+
+    :returns time_products: the calculated time products
+    :rtype time_products: numpy.ndarray[float]
     """
     if baseline is None:
         baseline = np.zeros(signal.shape)
@@ -162,6 +168,7 @@ def area_under_baseline(
     Calculate the time product between the baseline and the nadir of the
     reference signal in the aub_window_s for the windows defined by the
     start_idx and end_idx sample pairs.
+    ---------------------------------------------------------------------------
     :param signal: signal to calculate the time product over
     :type signal: ~numpy.ndarray[float]
     :param fs: sampling frequency
@@ -179,8 +186,10 @@ def area_under_baseline(
     :type baseline: ~numpy.ndarray[float]
     :param ref_signal: signal in which the nadir is searched
     :type ref_signal: ~numpy.ndarray[float]
-    :returns aubs, y_ref: the calculated areas under the baseline and reference
-    signal
+
+    :returns aubs: the calculated areas under the baseline
+    :rtype: numpy.ndarray[float]
+    :returns y_ref: the reference signal
     :rtype: numpy.ndarray[float]
     """
     if ref_signal is None:
@@ -224,6 +233,7 @@ def respiratory_rate(
     """ Estimate respiratory rate based from breath indices. Breath-by-breath
     respiratory rate larger than the outlier_percentile * outlier_factor are
     excluded.
+    ---------------------------------------------------------------------------
     :param breath_idxs: breath indices
     :type breath_idxs: ~numpy.ndarray[int]
     :param fs: sampling frequency
@@ -232,9 +242,12 @@ def respiratory_rate(
     :type outlier_percentile: ~float
     :param outlier_percentile: Respiratory rate outlier factor
     :type outlier_percentile: ~float
-    :returns rr_median, rr_b2b: median respiratory rate, breath-to-breath
-    respiratory rate.
-    :rtype: (~float, ~numpy.ndarray[~float]
+
+    :returns rr_median: median respiratory rate
+    :rtype: ~float
+    :returns rr_b2b: breath-to-breath respiratory rate
+    :rtype rr_b2b: numpy.ndarray[~float]
+
     """
     breath_interval = np.array(breath_idxs[1:]) - np.array(breath_idxs[:-1])
     rr_b2b = 60 * fs / breath_interval

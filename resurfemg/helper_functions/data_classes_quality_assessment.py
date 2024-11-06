@@ -123,8 +123,8 @@ def test_interpeak_distance(
                          + ' distance evaluation.')
     ecg_peaks = timeseries.peaks['ecg'].peak_df['peak_idx'].to_numpy()
     valid_interpeak = qa.interpeak_dist(
-        ECG_peaks=ecg_peaks,
-        EMG_peaks=peak_set.peak_df['peak_idx'].to_numpy(),
+        ecg_peak_idxs=ecg_peaks,
+        emg_peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
         threshold=cutoff['interpeak_distance'])
 
     valid_interpeak_vec = np.array(n_peaks * [valid_interpeak])

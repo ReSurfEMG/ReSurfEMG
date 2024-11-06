@@ -22,7 +22,7 @@ def snr_pseudo(
     """
     Approximate the signal-to-noise ratio (SNR) of the signal based
     on the peak height relative to the baseline.
-
+    ---------------------------------------------------------------------------
     :param signal: Signal to evaluate
     :type signal: ~numpy.ndarray[float]
     :param peaks: list of individual peak indices
@@ -31,8 +31,9 @@ def snr_pseudo(
     :type baseline: ~numpy.ndarray[float]
     :param fs: sampling rate
     :type fs: int
+
     :returns snr_peaks: the SNR per peak
-    :rtype snr_peaks: ~numpy.ndarray[float]
+    :rtype snr_peaks: numpy.ndarray[float]
     """
 
     peak_heights = np.zeros((len(peaks),))
@@ -63,6 +64,7 @@ def pocc_quality(
     happen in the upslope (first decile < 0), or if the upslope is to steep
     (high absolute or relative 9th decile), indicating occlusion release before
     the patient's inspiriratory effort has ended.
+    ---------------------------------------------------------------------------
     :param signal: Airway pressure signal
     :type signal: ~numpy.ndarray
     :param pocc_peaks: list of individual peak indices
@@ -78,8 +80,11 @@ def pocc_quality(
     :param dp_up_90_norm_threshold: Maximum 9th decile of upslope after the
     (negative) occlusion pressure peak
     :type dp_up_90_norm_threshold: ~float
-    :returns: valid_poccs, criteria_matrix
-    :rtype: list, ~numpy.ndarray
+
+    :returns valid_poccs: boolean list of valid Pocc peaks
+    :rtype valid_poccs: numpy.ndarray[bool]
+    :returns criteria_matrix: matrix of the calculated criteria
+    :rtype criteria_matrix: numpy.ndarray
     """
     dp_up_10 = np.zeros((len(pocc_peaks),))
     dp_up_90 = np.zeros((len(pocc_peaks),))
@@ -105,30 +110,28 @@ def pocc_quality(
     return valid_poccs, criteria_matrix
 
 
-def interpeak_dist(ECG_peaks, EMG_peaks, threshold=1.1):
+def interpeak_dist(ecg_peak_idxs, emg_peak_idxs, threshold=1.1):
     """
-    Calculate the median interpeak distances for ECG and EMG and
-    check if their ratio is above the given threshold, i.e. if cardiac
-    frequency is higher than respiratory frequency (TRUE)
-
-    :param t_emg: Time points array
-    :type t_emg: ~list
-    :param ECG_peaks: Indices of ECG peaks
-    :type ECG_peaks: ~numpy.ndarray
-    :param EMG_peaks: Indices of EMG peaks
-    :type EMG_peaks: ~numpy.ndarray
+    Calculate the median interpeak distances for ECG and EMG and check if their
+    ratio is above the given threshold, i.e. if cardiac frequency is higher
+    than respiratory frequency (True)
+    ---------------------------------------------------------------------------
+    :param ecg_peak_idxs: Indices of ECG peaks
+    :type ecg_peak_idxs: ~numpy.ndarray
+    :param emg_peak_idxs: Indices of EMG peaks
+    :type emg_peak_idxs: ~numpy.ndarray
     :param threshold: The threshold value to compare against. Default is 1.1
     :type threshold: ~float
-    :returns: valid_interpeak
-    :rtype: bool
-    """
 
+    :returns valid_interpeak: Boolean value if the interpeak distance is valid
+    :rtype valid_interpeak: bool
+    """
     # Calculate median interpeak distance for ECG
-    t_delta_ecg_med = np.median(np.array(ECG_peaks[1:])
-                                - np.array(ECG_peaks[:-1]))
+    t_delta_ecg_med = np.median(np.array(ecg_peak_idxs[1:])
+                                - np.array(ecg_peak_idxs[:-1]))
     # # Calculate median interpeak distance for EMG
-    t_delta_emg_med = np.median(np.array(EMG_peaks[1:])
-                                - np.array(EMG_peaks[:-1]))
+    t_delta_emg_med = np.median(np.array(emg_peak_idxs[1:])
+                                - np.array(emg_peak_idxs[:-1]))
     # Check if each median interpeak distance is above the threshold
     t_delta_relative = t_delta_emg_med / t_delta_ecg_med
 
@@ -151,6 +154,7 @@ def percentage_under_baseline(
     """
     Calculate the percentage area under the baseline, in accordance with
     Warnaar et al. (2024).
+    ---------------------------------------------------------------------------
     :param signal: signal in which the peaks are detected
     :type signal: ~numpy.ndarray
     :param fs: sampling frequency
@@ -170,8 +174,11 @@ def percentage_under_baseline(
     :type ref_signal: ~numpy.ndarray
     :param aub_threshold: maximum aub error percentage for a peak
     :type aub_threshold: ~float
-    :returns: valid_timeproducts, percentages_aub
-    :rtype: list, list
+
+    :returns valid_timeproducts: boolean list of valid time products
+    :rtype valid_timeproducts: numpy.ndarray[bool]
+    :returns percentages_aub: list of calculated aub percentages
+    :rtype percentages_aub: numpy.ndarray[float]
     """
     if aub_window_s is None:
         aub_window_s = 5*fs
@@ -210,15 +217,18 @@ def detect_local_high_aub(
 ):
     """
     Detect local upward deflections in the area under the baseline.
-    param aubs: List of area under the baseline values. See postprocessing.
+    param aubs: List of area under the baseline values. See
+    resurfemg.postprocessing.features.area_under_baseline
+    ---------------------------------------------------------------------------
     :features.area_under_baseline
     :type aubs: ~numpy.ndarray[~float]
     :param threshold_percentile: percentile for detecting high baseline
     :type threshold_percentile: ~float
     :param threshold_factor: multiplication factor for threshold_percentile
     :type threshold_factor: ~float
+
     :returns valid_aubs: Boolean list of aub values under threshold
-    :rtype: numpy.ndarray[bool]
+    :rtype valid_aubs: numpy.ndarray[bool]
     """
     threshold = threshold_factor * np.percentile(aubs, threshold_percentile)
     valid_aubs = (aubs < threshold)
@@ -235,6 +245,7 @@ def detect_extreme_time_products(
     """
     Detect extreme (high or low) time product values. See postprocessing.
     features.time_product
+    ---------------------------------------------------------------------------
     :param time_products: List of time_productsvalues.
     :type time_products: ~numpy.ndarray[~float]
     :param upper_percentile: percentile for detecting high time products
@@ -245,8 +256,9 @@ def detect_extreme_time_products(
     :type lower_percentile: ~float
     :param lower_factor: multiplication factor for lower_percentile
     :type lower_factor: ~float
+
     :returns valid_etps: Boolean list of time product values within bounds
-    :rtype: numpy.ndarray[bool]
+    :rtype valid_etps: numpy.ndarray[bool]
     """
     upper_threshold = upper_factor * np.percentile(
         time_products, upper_percentile)
@@ -264,18 +276,19 @@ def detect_non_consecutive_manoeuvres(
     """
     Detect manoeuvres (for example Pocc) with no supported breaths
     in between. Input are the ventilator breaths, to be detected with the
-    function event_detecton.detect_supported_breaths(...)
+    function post_processing.event_detecton.detect_supported_breaths
     If no supported breaths are detected in between two manoeuvres,
-    valid_manoeuvres is 'true'
+    valid_manoeuvres is 'True'.
     Note: fs of both signals should be equal.
+    ---------------------------------------------------------------------------
     :param ventilator_breath_idxs: list of supported breath indices
     :type ventilator_breath_idxs: ~list
     :param manoeuvres_idxs : list of manoeuvres indices
     :type manoeuvres_idxs: ~list
-    :returns: valid_manoeuvres
-    :return type: list
-    """
 
+    :returns valid_manoeuvres: Boolean list of valid manoeuvres
+    :rtype valid_manoeuvres: numpy.ndarray[bool]
+    """
     consecutive_manoeuvres = np.zeros(len(manoeuvres_idxs), dtype=bool)
     for idx, _ in enumerate(manoeuvres_idxs):
         if idx > 0:
@@ -309,10 +322,10 @@ def evaluate_bell_curve_error(
     bell_window_s=None,
     bell_threshold=40,
 ):
-
     """
-    This function calculates the bell-curve error of signal peaks, in
-    accordance with Warnaar et al. (2024).
+    Calculate the bell-curve error of signal peaks, in accordance with Warnaar
+    et al. (2024).
+    ---------------------------------------------------------------------------
     :param signal: filtered signal
     :type signal: ~numpy.ndarray
     :param peak_idxs: list of peak indices
@@ -330,8 +343,17 @@ def evaluate_bell_curve_error(
     :type bell_window_s: ~int
     :param bell_threshold: maximum bell error percentage for a valid peak
     :type bell_threshold: ~float
-    :returns: bell_error
-    :rtype: ~numpy.ndarray
+
+    :returns valid_peak: boolean list of valid peaks
+    :rtype valid_peak: numpy.ndarray[bool]
+    :returns percentage_bell_error: calculated bell errors in percentage
+    :rtype: numpy.ndarray[float]
+    :returns bell_error: calculated bell errors
+    :rtype: numpy.ndarray[float]
+    :returns y_min: minimum value of the baseline
+    :rtype: numpy.ndarray[float]
+    :returns fitted_parameters: fitted bell curve parameters
+    :rtype: numpy.ndarray[float]
     """
     if bell_window_s is None:
         bell_window_s = fs * 5
@@ -380,7 +402,7 @@ def evaluate_bell_curve_error(
             dx=1 / fs
         )
         percentage_bell_error[idx] = bell_error[idx] / tp * 100
-        fitted_parameters[idx, :] = (popt)
+        fitted_parameters[idx, :] = popt
 
     valid_peak = percentage_bell_error <= bell_threshold
 
@@ -398,6 +420,7 @@ def evaluate_event_timing(
     Evaluate whether the timing of the events in `t_events_1` preceeds the
     events in `t_events_2` minimally by `delta_min` and maximally by
     `delta_max`. `t_events_1` and `t_events_2` should be the same length.
+    ---------------------------------------------------------------------------
     :param t_events_1: Timing of the events that should happen first
     :type t_events_1: ~numpy.ndarray[float]
     :param t_events_2: Timing of the events that should happen second
@@ -406,9 +429,11 @@ def evaluate_event_timing(
     :type delta_min: ~float
     :param delta_max: The delta time event 1 should maximally preceed event 2.
     :type delta_max: ~float
-    :returns correct_timing, delta_time: List of correctly timed events, and
-    delta timing between both events.
-    :rtype correct_timing, delta_time: (numpy.array[bool], numpy.array[float])
+
+    :returns correct_timing: Boolean list of correct timing
+    :rtype correct_timing: numpy.ndarray[bool]
+    :returns delta_time: List of delta times between the events
+    :rtype delta_time: numpy.ndarray[float]
     """
     delta_time = (np.array(t_events_2) - np.array(t_events_1))
     min_crit = delta_time >= delta_min
@@ -429,7 +454,7 @@ def evaluate_respiratory_rates(
     """
     This function evaluates fraction of detected EMG breaths relative to the
     ventilatory respiratory rate.
-
+    ---------------------------------------------------------------------------
     :param emg_breath_idxs: EMG breath indices
     :type emg_breath_idxs: ~numpy.ndarray
     :param t_emg: Recording time in seconds
@@ -438,8 +463,11 @@ def evaluate_respiratory_rates(
     :type vent_rr: ~float
     :param min_fraction: Required minimum detected fraction of EMG breaths
     :type min_fraction: ~numpy.ndarray
-    :returns: detected_fraction: detected fraction of EMG breahts
-    :rtype: (~float, ~bool)
+
+    :returns detected_fraction: Fraction of detected EMG breaths
+    :rtype detected_fraction: float
+    :returns criterium_met: Boolean if the fraction is above the minimum
+    :rtype criterium_met: bool
     """
     detected_fraction = float(len(emg_breath_idxs)/(rr_vent * t_emg/60))
     criterium_met = (detected_fraction >= min_fraction)

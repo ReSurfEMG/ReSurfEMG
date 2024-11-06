@@ -27,7 +27,7 @@ def find_occluded_breaths(
     The prominence_factor, min_width_s, and distance_s specify the minimal
     peak prominence relative to the PEEP level, peak width in samples, and
     distance to other peaks.
-
+    ---------------------------------------------------------------------------
     :param p_vent: ventilator pressure signal
     :type p_vent: ~nd.array
     :param fs: sampling rate
@@ -83,7 +83,7 @@ def onoffpeak_baseline_crossing(
 ):
     """This function calculates the peaks of each breath using the
     slopesum baseline of envelope data.
-
+    ---------------------------------------------------------------------------
     :param signal_env: envelope signal
     :type signal_env: ~numpy.ndarray
     :param baseline: baseline signal of EMG data for baseline detection
@@ -91,9 +91,16 @@ def onoffpeak_baseline_crossing(
     :param peak_idxs: list of peak indices for which to find on- and offset
     :type peak_idxs: ~numpy.ndarray
 
-    :returns: peak_start_idxs, peak_end_idxs, valid_starts_bools,
-    valid_ends_bools, valid_peaks
-    :rtype: (list[int], list[int], list[bool], list[bool])
+    :returns peak_start_idxs: list of start indices of the peaks
+    :rtype peak_start_idxs: ~numpy.ndarray[int]
+    :returns peak_end_idxs: list of end indices of the peaks
+    :rtype peak_end_idxs: ~numpy.ndarray[int]
+    :returns valid_starts_bools: list of boolean values for valid starts
+    :rtype valid_starts_bools: ~numpy.ndarray[bool]
+    :returns valid_ends_bools: list of boolean values for valid ends
+    :rtype valid_ends_bools: ~numpy.ndarray[bool]
+    :returns valid_peaks: list of boolean values for valid peaks
+    :rtype valid_peaks: ~numpy.ndarray[bool]
     """
 
     # Detect the sEAdi on- and offsets
@@ -166,8 +173,8 @@ def onoffpeak_slope_extrapolation(
     polating the maximum slopes in de slope_window_s to the zero crossings.
     The validity arrays provide feedback on the validity of the detected on-
     and offsets, aiming to prevent onsets after peak indices, offsets before
-    peak.
-    indices, and overlapping peaks.
+    peak indices, and overlapping peaks.
+    ---------------------------------------------------------------------------
     :param signal_env: signal to identify on- and offsets in
     :type signal_env: ~numpy.ndarray
     :param fs: sampling rate
@@ -177,9 +184,17 @@ def onoffpeak_slope_extrapolation(
     :slope_window_s: how many samples on each side to use for the comparison
     to consider for detecting the local maximum slope
     :type fs: int
-    :returns: peak_start_idxs, peak_end_idxs, valid_starts_bools,
-    valid_ends_bools, valid_peaks
-    :rtype: (list[int], list[int], list[bool], list[bool], list[bool])
+
+    :returns peak_start_idxs: list of start indices of the peaks
+    :rtype peak_start_idxs: ~numpy.ndarray[int]
+    :returns peak_end_idxs: list of end indices of the peaks
+    :rtype peak_end_idxs: ~numpy.ndarray[int]
+    :returns valid_starts_bools: list of boolean values for valid starts
+    :rtype valid_starts_bools: ~numpy.ndarray[bool]
+    :returns valid_ends_bools: list of boolean values for valid ends
+    :rtype valid_ends_bools: ~numpy.ndarray[bool]
+    :returns valid_peaks: list of boolean values for valid peaks
+    :rtype valid_peaks: ~numpy.ndarray[bool]
     """
 
     dsignal_dt = derivative(signal_env, fs)
@@ -276,7 +291,7 @@ def detect_ventilator_breath(
     """Identify the breaths from the ventilator signal and return an array
     of ventilator peak breath indices, in two steps of peak detection.
     Input of threshold and prominence values is optional.
-
+    ---------------------------------------------------------------------------
     :param v_vent: Ventilator volume signal
     :type v_vent: ~numpy.ndarray
     :param start_idx: start sample of the window in which to be searched
@@ -295,8 +310,8 @@ def detect_ventilator_breath(
     :param prominence_new:
     :type prominence_new: ~int
 
-    :returns: ventilator_breath_idxs
-    :rtype: list[int]
+    :returns ventilator_breath_idxs: list of ventilator breath peak indices
+    :rtype ventilator_breath_idxs: list[int]
     """
 
     v_t_slice = v_vent[int(start_idx):int(end_idx)]
@@ -334,7 +349,7 @@ def detect_emg_breaths(
     Identify the electrophysiological breaths from the EMG envelope and return
     an array breath peak indices. Input of baseline threshold, peak prominence
     factor, and minimal peak width are optional.
-
+    ---------------------------------------------------------------------------
     :param emg_env: 1D EMG envelope signal
     :type emg_env: ~numpy.ndarray
     :param emg_baseline: EMG baseline. If none provided, 0 baseline is used.
@@ -348,8 +363,8 @@ def detect_emg_breaths(
     :param min_peak_width_s: required width of peak in samples
     :type min_peak_width_s: ~int
 
-    :returns: peak_idxs
-    :rtype: list[int]
+    :returns peak_idxs: list of EMG breath peak indices
+    :rtype peak_idxs: list[int]
     """
     if emg_baseline is None:
         emg_baseline = np.zeros(emg_env.shape)
@@ -379,8 +394,9 @@ def find_linked_peaks(
     :param signal_2_t_peaks: list of timing of peaks in signal 2
     :type signal_2_t_peaks: ~numpy.ndarray
 
-    :returns: Peaks indices of signal 2 closest to the peaks in signal 1
-    :rtype: ~numpy.ndarray[int]
+    :returns peaks_idxs_signal_1_in_2: Peak indices of signal 2 closest to the
+    peaks in signal 1
+    :rtype peaks_idxs_signal_1_in_2: ~numpy.ndarray[int]
     """
     if not isinstance(signal_1_t_peaks, np.ndarray):
         signal_1_t_peaks = np.array(signal_1_t_peaks)

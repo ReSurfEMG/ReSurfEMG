@@ -3,8 +3,7 @@ Copyright 2024 University of Twente Licensed under the Apache License, version
  2.0. See LICENSE for details.
 
 This file contains functions to calculate moving baselines from a filtered
- EMG envelope. First the moving baseline (from Graßhoff et al. (2021)) and
- then the augmented version of a slope sum baseline
+EMG envelope.
 """
 import numpy as np
 import pandas as pd
@@ -20,7 +19,7 @@ def moving_baseline(
     """
     This function calculates a moving baseline from a envelope data in
     accordance with Graßhoff et al. (2021)
-
+    ---------------------------------------------------------------------------
     :param emg_env: envelope signal
     :type emg_env: ~numpy.ndarray
     :param window_s: window length in samples
@@ -30,10 +29,9 @@ def moving_baseline(
     :param: set_percentile
     :type: numpy percentile
 
-    :returns: The rolling baseline for the envelope signal
-    :rtype: ~numpy.ndarray
+    :returns rolling_baseline: The moving baseline for the signal envelope
+    :rtype rolling_baseline: numpy.ndarray
     """
-
     rolling_baseline = np.zeros((len(signal_env), ))
 
     for idx in range(0, len(signal_env), step_s):
@@ -60,7 +58,7 @@ def slopesum_baseline(
     """
     This function calculates the augmented version of the moving baseline over
     a signal envelope, using a slope sum.
-
+    ---------------------------------------------------------------------------
     :param signal_env: envelope signal
     :type signal_env: ~numpy.ndarray
     :param window_s: window length in seconds
@@ -77,10 +75,15 @@ def slopesum_baseline(
     baseline value
     :type perc_window: int
 
-    :returns: The slopesum baseline for the signal envelope
-    :rtype: ~numpy.ndarray
+    :returns _slopesum_baseline: The slopesum baseline for the signal envelope
+    :rtype: numpy.ndarray
+    :returns y_baseline_mean: The running mean baseline of the baseline
+    :rtype: numpy.ndarray
+    :returns y_baseline_std: The running standard deviation of the baseline
+    :rtype: numpy.ndarray
+    :returns y_baseline_series: The running baseline series
+    :rtype: pandas.Series
     """
-
     if ma_window is None:
 
         ma_window = fs//2

@@ -6,7 +6,7 @@ from resurfemg.data_connector.tmsisdk_lite import Poly5Reader
 from resurfemg.preprocessing.filtering import emg_bandpass_butter
 from resurfemg.helper_functions.visualization import show_psd_welch
 from resurfemg.helper_functions.visualization import show_periodogram
-from resurfemg.helper_functions.visualization import show_my_power_spectrum
+from resurfemg.helper_functions.visualization import show_power_spectrum
 
 sample_emg = os.path.join(
     os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(
@@ -27,8 +27,8 @@ class TestVisualizationMethods(unittest.TestCase):
 
 
     @patch('matplotlib.pyplot.show')
-    def test_show_my_power_spectrum(self, mock_show):
-        f,Pxx_den = show_my_power_spectrum(self.sample_emg_filtered[0, :],
+    def test_show_power_spectrum(self, mock_show):
+        f,Pxx_den = show_power_spectrum(self.sample_emg_filtered[0, :],
                                            2048, 1024)
         self.assertEqual(len(f),
                          len(self.sample_emg_filtered[0, :]))
