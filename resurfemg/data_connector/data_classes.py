@@ -181,7 +181,7 @@ class TimeSeries:
             raise UserWarning('ECG peaks already detected. Use overwrite=True')
         else:
             if ecg_raw is None:
-                lp_cf = min([500.0, self.param['fs'] / 2])
+                lp_cf = min([500.0, 0.95 * self.param['fs'] / 2])
                 ecg_raw = filt.emg_bandpass_butter(
                     self.y_raw,
                     high_pass=1,
