@@ -23,6 +23,7 @@ def simulate_raw_emg(
 ):
     """
     Generate realistic synthetic respiratory EMG data remixed with ECG
+    ---------------------------------------------------------------------------
     :param t_end: length of synthetic EMG tracing in seconds
     :type t_end: int
     :param fs_emg: Sampling rate
@@ -52,7 +53,7 @@ def simulate_raw_emg(
         'ecg_amplitude': 200,
     }
     for key, value in kwargs.items():
-        if key in sim_parameters.keys():
+        if key in sim_parameters:
             sim_parameters[key] = value
         else:
             raise UserWarning(f"kwarg `{key}` not available.")
@@ -94,13 +95,24 @@ def synthetic_emg_cli(n_emg, output_directory, **kwargs):
     """
     Generate realistic, single lead, synthetic respiratory EMG data remixed
     with ECG through command line using the cli.
-
+    ---------------------------------------------------------------------------
     :param file_directory: file directory where synthetic ecg are
     :type file_directory: str
     :param n_emg: number of EMGs to simulate
     :type n_emg: int
     :param output_directory: file directory where synthetic emg will be put
     :type output_directory: str
+
+    :param **kwargs: Optional arguments: t_end, fs_emg, emg_amp, rr, ie_ratio,
+    tau_mus_up, tau_mus_down, t_p_occs, drift_amp, noise_amp, heart_rate,
+    ecg_acceleration, ecg_amplitude. See data_connector.synthetic_data
+    respiratory_pattern_generator, simulate_muscle_dynamics, and simulate_emg
+    functions for specifics
+    :type **kwargs: float, float, float, float, float, float, float, list[int],
+    float, float, float, float, float
+
+    :returns: None
+    :rtype: None
     """
     sim_parameters = {
         't_end': 7*60,
@@ -143,6 +155,7 @@ def simulate_ventilator_data(
 ):
     """
     Generate realistic synthetic ventilator tracings
+    ---------------------------------------------------------------------------
     :param t_end: length of synthetic ventilator tracings in seconds
     :type t_end: int
     :param fs_vent: Sampling rate
@@ -158,8 +171,8 @@ def simulate_ventilator_data(
     :type **kwargs: float, float, float, list[int], float, float, float, float,
     float, float, float
 
-    :returns y_vent, p_mus: Ventilator data [Pvent, Fvent, Vvent], and Pmus
-    :rtype y_vent, p_mus: (numpy.ndarray[float], numpy.ndarray[float])
+    :returns (y_vent, p_mus): Ventilator data [Pvent, Fvent, Vvent], and Pmus
+    :rtype (y_vent, p_mus): (numpy.ndarray[float], numpy.ndarray[float])
     """
     sim_parameters = {
         'ie_ratio': 1/2,  # ratio btw insp + expir phase
@@ -231,13 +244,24 @@ def synthetic_ventilator_data_cli(n_datasets, output_directory, **kwargs):
     """
     Generate realistic synthetic respiratory EMG data remixed with ECG through
     command line using the cli.
-
+    ---------------------------------------------------------------------------
     :param file_directory: file directory where synthetic ecg are
     :type file_directory: str
     :param n_emg: number of EMGs to simulate
     :type n_emg: int
     :param output_directory: file directory where synthetic emg will be put
     :type output_directory: str
+
+    :param **kwargs: Optional arguments: t_end, fs_vent, p_mus_amp, rr, dp,
+    ie_ratio, tau_mus_up, tau_mus_down, t_p_occs, c, r, peep, flow_cycle,
+    flow_trigger, tau_dp_up, tau_dp_down. See data_connector.synthetic_data
+    respiratory_pattern_generator, simulate_muscle_dynamics,
+    simulate_ventilator_data functions for specifics
+    :type **kwargs: float, float, float, float, float, float, float, float,
+    list[int], float, float, float, float, float, float
+
+    :returns: None
+    :rtype: None
     """
     sim_parameters = {
         't_end': 7*60,
@@ -258,7 +282,7 @@ def synthetic_ventilator_data_cli(n_datasets, output_directory, **kwargs):
         'tau_dp_down': 5,
     }
     for key, value in kwargs.items():
-        if key in sim_parameters.keys():
+        if key in sim_parameters:
             sim_parameters[key] = value
         else:
             raise UserWarning(f"kwarg `{key}` not available.")

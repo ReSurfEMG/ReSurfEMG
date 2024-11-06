@@ -21,6 +21,7 @@ def file_select(
     """
     A widget for file selection for organised/nested data. default_value_select
     precedes default_idx_select in default value identification.
+    ---------------------------------------------------------------------------
     :param files: file paths tabled by the folder_levels
     :type files: pd.DataFrame
     :param folder_levels: data directory organisation, e.g. ['patient', 'date']
@@ -82,6 +83,7 @@ def file_select(
 
     @widgets.interact(**btn_dict)
     def update_select(**btn_dict):
+        """Update the dropdown options based on the previous selection."""
         for idx, dict_key in enumerate(btn_dict):
             btn_idx = folder_levels.index(dict_key)
             _btn = button_list[btn_idx]

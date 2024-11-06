@@ -23,6 +23,7 @@ def quick_look(
 ):
     """
     Method for quick inspection of EMG data based on high-pass filtering @80Hz.
+    ---------------------------------------------------------------------------
     :param emg_raw: raw single channel EMG data
     :type emg_raw: ~numpy.ndarray
     :param fs_emg: sampling frequency
@@ -35,8 +36,9 @@ def quick_look(
     :type plot_env: bool
     :param plot_power_spectrum: Plot the powerspectrum of the raw signal
     :type plot_power_spectrum: bool
-    :returns emg_filt, emg_env: filtered and enveloped EMG data
-    :rtype emg_filt, emg_env: (numpy.ndarray[float], numpy.ndarray[float])
+
+    :returns (emg_filt, emg_env): filtered and enveloped EMG data
+    :rtype (emg_filt, emg_env): (numpy.ndarray[float], numpy.ndarray[float])
     """
     emg_filt = filt.emg_bandpass_butter(
         emg_raw=emg_raw,
@@ -73,7 +75,7 @@ def ecg_removal_gating(
 ):
     """
     Eliminate the ECG peaks from the emg_raw signal.
-
+    ---------------------------------------------------------------------------
     :param emg_raw: 1 dimensional emg signal to gate
     :type emg_raw: ~numpy.ndarray
     :param ecg_peaks_idxs: List of ECG peak sample numbers to gate.
@@ -87,8 +89,8 @@ def ecg_removal_gating(
     :param ecg_shift: Shift gate windows relative to detected peaks in samples.
     :type ecg_shift: int
 
-    :returns: emg_gated
-    :rtype: ~numpy.ndarray
+    :returns emg_gated: The gated EMG signal
+    :rtype emg_gated: numpy.ndarray
     """
     if len(emg_raw.shape) > 1:
         raise ValueError('emg_raw should be a 1-D array')
