@@ -1,6 +1,7 @@
 """
 Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
+
 This file contains the quality assessment methods for data classes.
 """
 import numpy as np
@@ -15,7 +16,10 @@ def initialize_emg_tests(
     skip_tests,
     parameter_names
 ):
-    """Initialize local parameters"""
+    """
+    Initialize local parameters. See TimeSeries.test_emg_quality method in
+    resurfemg.data_connector.data_classes for more information.
+    """
     if peak_set_name in timeseries.peaks.keys():
         peak_set = timeseries.peaks[peak_set_name]
     else:
@@ -112,7 +116,8 @@ def initialize_emg_tests(
 
 def test_interpeak_distance(
         timeseries, peak_set, quality_outcomes_df, n_peaks, cutoff):
-    """Test interpeak distance"""
+    """Test interpeak distance. See TimeSeries.test_emg_quality method in
+    resurfemg.data_connector.data_classes for more information."""
     if 'ecg' not in timeseries.peaks:
         raise ValueError('ECG peaks not determined, but required for interpeak'
                          + ' distance evaluation.')
@@ -129,7 +134,8 @@ def test_interpeak_distance(
 
 def test_snr(
         timeseries, peak_set, quality_outcomes_df, quality_values_df, cutoff):
-    """Test signal-to-noise ratio"""
+    """Test signal-to-noise ratio. See TimeSeries.test_emg_quality method in
+    resurfemg.data_connector.data_classes for more information."""
     if timeseries.baseline is None:
         raise ValueError('Baseline not determined, but required for '
                          + ' SNR evaluaton.')
@@ -147,7 +153,8 @@ def test_snr(
 
 def test_aub(
         timeseries, peak_set, quality_outcomes_df, quality_values_df, cutoff):
-    """Test percentage area under the baseline"""
+    """Test percentage area under the baselineSee TimeSeries.test_emg_quality
+    method in resurfemg.data_connector.data_classes for more information."""
     if timeseries.baseline is None:
         raise ValueError('Baseline not determined, but required for '
                          + ' area under the baseline (AUB) evaluaton.')
@@ -179,7 +186,8 @@ def test_aub(
 def test_curve_fits(
         timeseries, peak_set, quality_outcomes_df, quality_values_df, cutoff,
         parameter_names):
-    """Test curve fit"""
+    """Test curve fit. See TimeSeries.test_emg_quality method in
+    resurfemg.data_connector.data_classes for more information."""
     if timeseries.baseline is None:
         raise ValueError('Baseline not determined, but required for '
                          + ' area under the baseline (AUB) evaluaton.')
@@ -219,7 +227,9 @@ def test_curve_fits(
 
 
 def test_relative_aub(peak_set, quality_outcomes_df, cutoff):
-    """Test the relative area under the baseline"""
+    """Test the relative area under the baseline. See
+    TimeSeries.test_emg_quality method in resurfemg.data_connector.data_classes
+    for more information."""
     if 'AUB' not in peak_set.peak_df.columns:
         raise ValueError('AUB not determined, but required for relative area '
                          + 'under the baseline (AUB) evaluaton.')
@@ -233,7 +243,9 @@ def test_relative_aub(peak_set, quality_outcomes_df, cutoff):
 
 
 def test_relative_etp(peak_set, quality_outcomes_df, cutoff, parameter_names):
-    """Evaluate extremely low and high timeproducts"""
+    """Evaluate extremely low and high timeproducts. See
+    TimeSeries.test_emg_quality method in resurfemg.data_connector.data_classes
+    for more information."""
     if parameter_names['time_product'] not in peak_set.peak_df.columns:
         raise ValueError('ETPs not determined, but required for curve '
                          + 'fit evaluaton.')
@@ -256,6 +268,9 @@ def initialize_pocc_tests(
     skip_tests,
     parameter_names
 ):
+    """Initialize local parameters. See TimeSeries.test_pocc_quality method in
+    resurfemg.data_connector.data_classes for more information.
+    """
     if peak_set_name in timeseries.peaks.keys():
         peak_set = timeseries.peaks[peak_set_name]
     else:
@@ -312,7 +327,8 @@ def initialize_pocc_tests(
 
 def test_consecutive_poccs(
         timeseries, peak_set, quality_outcomes_df, parameter_names):
-    """Test for consecutive Pocc manoeuvres"""
+    """Test for consecutive Pocc manoeuvres. See TimeSeries.test_pocc_quality
+    method in resurfemg.data_connector.data_classes for more information."""
     if parameter_names['ventilator_breaths'] not in timeseries.peaks.keys():
         raise ValueError('Ventilator breaths not determined, but required for '
                          + 'consecutive Pocc evaluation.')
@@ -331,7 +347,8 @@ def test_pocc_upslope(
     timeseries, peak_set, quality_outcomes_df, quality_values_df, cutoff,
     parameter_names
 ):
-    """Test for sudden Pocc release"""
+    """Test for sudden Pocc release. See TimeSeries.test_pocc_quality method in
+    resurfemg.data_connector.data_classes for more information."""
     if 'end_idx' not in peak_set.peak_df.columns:
         raise ValueError('Pocc end_idx not determined, but required for Pocc '
                          + 'upslope evaluaton.')
@@ -365,7 +382,8 @@ def initialize_linked_peaks_tests(
     skip_tests,
     parameter_names,
 ):
-    """Initialize local parameters"""
+    """Initialize local parameter. See TimeSeries.test_linked_peak_sets method
+    in resurfemg.data_connector.data_classes for more information."""
     if peak_set_name in timeseries.peaks.keys():
         peak_set = timeseries.peaks[peak_set_name]
     else:
@@ -430,7 +448,8 @@ def test_fraction_detected_breaths(
     native_peak_set, linked_time_series, quality_outcomes_df,
     quality_values_df, n_peaks, cutoff, parameter_names
 ):
-    """Test detected peak fraction"""
+    """Test detected peak fraction. See TimeSeries.test_linked_peak_sets method
+    in resurfemg.data_connector.data_classes for more information."""
     native_peak_idxs = native_peak_set.peak_df['peak_idx'].to_numpy()
 
     fraction_emg_breaths, _ = qa.evaluate_respiratory_rates(
@@ -450,7 +469,9 @@ def test_event_timing(
     timeseries, native_peak_set, linked_timeseries, linked_peak_set,
     quality_outcomes_df, quality_values_df, cutoff
 ):
-    """Test event timing relative to other peak_set"""
+    """Test event timing relative to other peak_set. See
+    TimeSeries.test_linked_peak_sets method in
+    resurfemg.data_connector.data_classes for more information."""
     native_peak_idxs = native_peak_set.peak_df['peak_idx'].to_numpy()
     linked_peak_idxs = linked_peak_set.peak_df['peak_idx'].to_numpy()
 
