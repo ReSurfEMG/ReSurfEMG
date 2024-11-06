@@ -1,7 +1,8 @@
 """
 Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
-This file contains data classes for standardized data storage and method
+
+This file contains data classes for standardized peak data storage and method
 automation.
 """
 
@@ -103,7 +104,7 @@ class PeaksSet:
         """
         Add new peak quality test to self.quality_outcomes_df, and update
         existing entries.
-
+        -----------------------------------------------------------------------
         :param tests_df_new: Dataframe of test parameters per peak
         :type tests_df_new: pandas.DataFrame
 
@@ -129,7 +130,7 @@ class PeaksSet:
         """
         Update peak validity based on previously and newly executed tests
         in self.quality_outcomes_df.
-
+        -----------------------------------------------------------------------
         :param tests_df_new: Dataframe of passed tests per peak
         :type tests_df_new: pandas.DataFrame
 
@@ -161,7 +162,7 @@ class PeaksSet:
         """
         Delete invalid peak entries (self.peak_df['valid'] is False) from
         self.peak_df, self.quality_values_df, and self.quality_outcomes_df.
-
+        -----------------------------------------------------------------------
         :returns: None
         :rtype: None
         """
