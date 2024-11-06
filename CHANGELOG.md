@@ -167,16 +167,155 @@
 ## Release 1.0.0
 
 * Major revision
+	- Refactor ReSurfEMG library
+		- cli
+		- data_connector
+			- config
+			- file_discovery
+			- converter_functions
+			- tmsisdk_lite
+			- synthetic_data
+			- data_classes
+			- peakset_classes
+		- preprocessing
+			- filtering
+			- ecg_removal
+			- envelope
+		- postprocesing
+			- baseline
+			- event_detection
+			- features
+			- quality_assessment
+		- pipelines
+			- processing
+			- ipy_widgets
+			- synthetic_data
+		- helper_functions
+			- math_operations
+			- visualization
+			- data_classes_quality_assessment
+	- Added new functions:
+		- data_connector.converter_functions
+			- load_file
+			- load_poly5
+			- load_csv
+			- load_mat
+			- load_npy
+		- data_connector.file_discovery
+			- find_files
+			- find_folders
+		- data_connector.data_classes
+			- TimeSeries
+			- TimeSeriesGroup
+			- EmgDataGroup
+			- VentilatorDataGroup
+		- data_connector.peakset_class
+			- PeakSet
+		- helper_functions.math_operations
+			- bell_curve
+		- helper_functions.visualization
+			- show_psd_welch
+			- show_periodogram
+		- pipelines.ipy_widgets
+			- file_select
+		- pipelines.processing
+			- quick_look
+		- pipelines.synthetic_data
+			- synthetic_ventilator_data_cli
+		- pipelines
+			- ipywidgets
+		- postprocessing.event_detection
+			- find_occluded_breaths
+			- detect_ventilator_breath
+			- detect_emg_breaths
+			- find_linked_peaks
+		- postprocessing.features
+			- amplitude
+			- respiratory_rate
+		- postprocessing.quality_assessment
+			- snr_pseudo
+			- pocc_quality
+			- interpeak_dist
+			- percentage_under_baseline
+			- detect_local_high_aub
+			- detect_extreme_time_products
+			- detect_non_consecutive_manoeuvres
+			- evaluate_bell_curve_error
+			- evaluate_event_timing
+			- evaluate_respiratory_rates
+		- preprocessing.ecg_removal
+			- wavelet_denoising
+		- preprocessing.envelope
+			- full_rolling_arv
+	- Renamed functions for clarity:
+		- times_under_curve --> time_to_peak
+		- simulate_ventilator_with_occlusions --> simulate_ventilator_data
+		- simulate_emg_with_occlusions --> simulate_emg
+		- find_peaks_in_ecg_signal --> detect_ecg_peaks
+		- show_my_power_spectrum --> show_power_spectrum
+	- Moved functions:
+		- config.config --> data_connector.synthetic_data
+			- simulate_ventilator_data
+			- simulate_emg
+		- preprocessing.envelope --> helper_functions.math_operations
+		- visualization.visualization --> helper_functions.visualization
+			- show_power_spectrum
+		- pipelines.pipelines --> pipelines.processing
+			- ecg_removal
+	- Rudimentary functions are discontinued:
+		- config.config
+			- make_synth_emg
+			- config.make_realistic_syn_emg
+			- make_realistic_syn_emg_cli
+		- data_connector.converter_functions
+			- save_j_as_np
+			- save_j_as_np_single
+		- helper_functions.helper_functions
+			- count_decision_array
+			- relative_levenshtein
+			- distance_matrix
+			- preprocess
+		- postprocessing.features
+			- simple_area_under_curve
+			- area_under_curve
+			- find_peak_in_breath
+			- variability_maker
+		- postprocessing.envelope
+			- smooth_for_baseline
+			- smooth_for_baseline_with_overlay
+			- vect_naive_rolling_rms
+		- preprocessing.ecg_removal
+			- compute_ica_two_comp
+			- compute_ica_two_comp_multi
+			- compute_ICA_two_comp_selective
+			- compute_ICA_n_comp
+			- pick_more_peaks_array
+			- pick_highest_correlation_array_multi
+			- compute_ICA_n_comp_selective_zeroing
+			- pick_lowest_correlation_array
+			- pick_highest_correlation_array
+		- preprocessing.envelope
+			- hi_envelope
+			- smooth_for_baseline
+			- smooth_for_baseline_with_overlay
+			- vect_naive_rolling_rms
+		- preprocessing.filtering
+			- emg_bandpass_butter_sample
+			- emg_highpass_butter_sample
+			- bad_end_cutter
+			- bad_end_cutter_for_samples
+			- bad_end_cutter_better
 	- Discontinue machine learning (ML) functionality
-		- machine_learning.ml.save_ml_output
-		- machine_learning.ml.applu_model
-		- pipelines.pipelines.working_pipe_multi
-		- pipelines.pipelines.alternative_a_pipeline_multi
-		- pipelines.pipelines.alternative_b_pipeline_multi
-		- pipelines.pipelines.working_pipeline_pre_ml_multi
-		- pipelines.pipelines.working_pipeline_exp
-		- pipelines.pipelines.working_pipeline_pre_ml
-		
+		- machine_learning.ml
+			- save_ml_output
+			- applu_model
+		- pipelines.pipelines
+			- working_pipe_multi
+			- alternative_a_pipeline_multi
+			- alternative_b_pipeline_multi
+			- working_pipeline_pre_ml_multi
+			- working_pipeline_exp
+			- working_pipeline_pre_ml
 	- Entropy functionality is moved to a legacy submodule (legacy.entropy), which is not included in the package:
 		- --> legacy.entropical
 		- --> legacy.entropy_scipy
@@ -185,23 +324,3 @@
 		- --> legacy.calc_closed_sampent
 		- --> legacy.calc_open_sampent
 		- --> legacy.entropy_maker
-	- Rudimentary functions are discontinued:
-		- helper_functions.count_decision_array
-		- helper_functions.relative_levenshtein
-		- helper_functions.distance_matrix
-		- helper_functions.preprocess
-		- postprocessing.features.simple_area_under_curve
-		- postprocessing.features.area_under_curve
-		- postprocessing.features.find_peak_in_breath
-		- postprocessing.features.variability_maker
-		- postprocessing.envelope.smooth_for_baseline
-		- postprocessing.envelope.smooth_for_baseline_with_overlay
-		- postprocessing.envelope.vect_naive_rolling_rms
-		- postprocessing.filtering.bad_end_cutter
-		- postprocessing.filtering.bad_end_cutter_for_samples
-		- postprocessing.filtering.bad_end_cutter_better
-
-
-
-
-

@@ -13,7 +13,6 @@ from argparse import ArgumentParser
 
 from resurfemg.data_connector.config import Config
 import resurfemg.pipelines.synthetic_data as simulate
-from resurfemg.data_connector.converter_functions import save_j_as_np
 
 
 def set_common_args(parser):
@@ -80,10 +79,6 @@ def make_parser():
         Number of synthetic EMG to be generated.
         '''
     )
-
-    save_to_numpy = subparsers.add_parser('save_to_numpy')
-    save_to_numpy.set_defaults(action='save_to_numpy')
-    set_common_args(save_to_numpy)
     return parser
 
 
@@ -112,17 +107,6 @@ def main(argv):
             config = Config(parsed.config)
             path_in = config.get_directory('root_data', path_in)
             path_out = config.get_directory('output_data', path_out)
-        except Exception as e:
-            print(e)
-            logging.exception(e)
-            return 1
-
-    if parsed.action == 'save_to_numpy':
-        try:
-            save_j_as_np(
-                path_in,
-                path_out,
-            )
         except Exception as e:
             print(e)
             logging.exception(e)
