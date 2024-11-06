@@ -13,11 +13,8 @@ import scipy
 import matplotlib.pyplot as plt
 
 from resurfemg.helper_functions import math_operations as mo
-<<<<<<< HEAD
 from resurfemg.helper_functions import \
     data_classes_quality_assessment as data_qa
-=======
->>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
 from resurfemg.preprocessing import filtering as filt
 from resurfemg.preprocessing import ecg_removal as ecg_rm
 from resurfemg.pipelines.processing import ecg_removal_gating
@@ -147,17 +144,12 @@ class TimeSeries:
         """
         Filter raw EMG signal to remove baseline wander and high frequency
         components. See preprocessing.emg_bandpass_butter submodule.
-<<<<<<< HEAD
         -----------------------------------------------------------------------
-=======
-
->>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
         :returns: None
         :rtype: None
         """
         y_data = self.signal_type_data(signal_type=signal_type)
         # Eliminate the baseline wander from the data using a band-pass filter
-<<<<<<< HEAD
         self.y_filt = filt.emg_bandpass_butter(
             y_data,
             high_pass=hp_cf,
@@ -207,14 +199,6 @@ class TimeSeries:
                 peak_idxs=ecg_peak_idxs,
                 peak_set_name='ecg',
             )
-=======
-        self.y_clean = filt.emg_bandpass_butter(
-            y_data,
-            high_pass=hp_cf,
-            low_pass=lp_cf,
-            fs_emg=self.fs,
-            order=order)
->>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
 
     def gating(
         self,
@@ -235,28 +219,9 @@ class TimeSeries:
         """
         y_data = self.signal_type_data(signal_type=signal_type)
         if ecg_peak_idxs is None:
-<<<<<<< HEAD
             self.get_ecg_peaks(
                 ecg_raw=ecg_raw, bp_filter=bp_filter, overwrite=overwrite)
             ecg_peak_idxs = self.peaks['ecg'].peak_df['peak_idx'].to_numpy()
-=======
-            if ecg_raw is None:
-                lp_cf = min([500.0, self.fs / 2])
-                ecg_raw = filt.emg_bandpass_butter(
-                    self.y_raw, high_pass=1, low_pass=lp_cf, fs_emg=self.fs)
-
-            ecg_peak_idxs = ecg_rm.detect_ecg_peaks(
-                ecg_raw=ecg_raw,
-                fs=self.fs,
-                bp_filter=bp_filter,
-            )
-
-        self.set_peaks(
-            signal=ecg_raw,
-            peak_idxs=ecg_peak_idxs,
-            peak_set_name='ecg',
-        )
->>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
 
         if gate_width_samples is None:
             gate_width_samples = self.param['fs'] // 10

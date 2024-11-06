@@ -365,15 +365,12 @@ def bell_curve(x, a, b, c):
 def running_smoother(array):
     """
     This is the smoother to use in time calculations
-<<<<<<< HEAD
     ---------------------------------------------------------------------------
     :param array: array to be smoothed
     :type array: ~numpy.ndarray
 
     :returns smoothed_array: smoothed array
     :rtype smoothed_array: ~numpy.ndarray
-=======
->>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     """
     n_samples = len(array) // 10
     new_list = np.convolve(abs(array), np.ones(n_samples), "valid") / n_samples

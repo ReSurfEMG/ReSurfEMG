@@ -11,14 +11,8 @@ import logging
 
 from argparse import ArgumentParser
 
-<<<<<<< HEAD
 from resurfemg.data_connector.config import Config
 import resurfemg.pipelines.synthetic_data as simulate
-=======
-from resurfemg.helper_functions.config import Config
-from resurfemg.helper_functions.config import make_realistic_syn_emg_cli
-from resurfemg.data_connector.converter_functions import save_j_as_np
->>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
 
 
 def set_common_args(parser):
