@@ -1,6 +1,7 @@
 """
 Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
+
 This file contains data classes for standardized data storage and method
 automation.
 """
@@ -28,6 +29,7 @@ from resurfemg.data_connector.peakset_class import PeaksSet
 class TimeSeries:
     """
     Data class to store, process, and plot single channel time series data
+    -----------------------------------------------------------------------
     """
 
     def __init__(self, y_raw, t_data=None, fs=None, label=None, units=None):
@@ -92,7 +94,7 @@ class TimeSeries:
         """
         Automatically select the most advanced data type eligible for a
         subprocess ('env' {=envelope} > 'clean' > 'raw')
-
+        -----------------------------------------------------------------------
         :param signal_type: one of 'env', 'clean', or 'raw'
         :type signal_type: str
 
@@ -142,7 +144,7 @@ class TimeSeries:
         """
         Filter raw EMG signal to remove baseline wander and high frequency
         components. See preprocessing.emg_bandpass_butter submodule.
-
+        -----------------------------------------------------------------------
         :returns: None
         :rtype: None
         """
@@ -164,12 +166,14 @@ class TimeSeries:
         """
         Detect ECG peaks in the provided signal. See preprocessing.ecg_removal
         submodule.
+        -----------------------------------------------------------------------
         :param ecg_raw: ECG signal, if None, the raw signal is used
         :type ecg_raw: ~numpy.ndarray
         :bp_filter: Apply band-pass filter to the ECG signal
         :type bp_filter: bool
         :overwrite: Overwrite existing peaks
         :type overwrite: bool
+
         :returns: None
         :rtype: None
         """
@@ -209,7 +213,7 @@ class TimeSeries:
         """
         Eliminate ECG artifacts from the provided signal. See
         preprocessing.ecg_removal and pipelines.ecg_removal_gating submodules.
-
+        -----------------------------------------------------------------------
         :returns: None
         :rtype: None
         """
@@ -243,7 +247,7 @@ class TimeSeries:
         """
         Eliminate ECG artifacts from the provided signal. See
         preprocessing.wavelet_denoising submodules.
-
+        -----------------------------------------------------------------------
         :returns: None
         :rtype: None
         """
@@ -278,7 +282,7 @@ class TimeSeries:
         """
         Derive the moving envelope of the provided signal. See
         preprocessing.envelope submodule.
-
+        -----------------------------------------------------------------------
         :returns: None
         :rtype: None
         """
@@ -311,7 +315,7 @@ class TimeSeries:
         """
         Derive the moving baseline of the provided signal. See
         postprocessing.baseline submodule.
-
+        -----------------------------------------------------------------------
         :returns: None
         :rtype: None
         """
@@ -332,7 +336,7 @@ class TimeSeries:
             signal_type = 'env'
 
         y_baseline_data = self.signal_type_data(signal_type=signal_type)
-        if method == 'default' or method == 'moving_baseline':
+        if method in ('default', 'moving_baseline'):
             self.y_baseline = bl.moving_baseline(
                 y_baseline_data,
                 window_s=window_s,
@@ -364,7 +368,7 @@ class TimeSeries:
     ):
         """
         Store a new PeaksSet object in the self.peaks dict
-
+        -----------------------------------------------------------------------
         :returns: None
         :rtype: None
         """
@@ -385,7 +389,7 @@ class TimeSeries:
         """
         Find breath peaks in provided EMG envelope signal. See
         postprocessing.event_detection submodule.
-
+        -----------------------------------------------------------------------
         :returns: None
         :rtype: None
         """
@@ -437,7 +441,7 @@ class TimeSeries:
         """
         Find the peaks in the PeaksSet with the peak_set_name closest in time
         to the provided peak timings in t_reference_peaks
-
+        -----------------------------------------------------------------------
         :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param t_reference_peaks: Refernce peak timings in t_reference_peaks
@@ -488,14 +492,13 @@ class TimeSeries:
         The results are stored as
         self.peaks[peak_set_name].peak_df[parameter_name]. If no parameter_name
         is provided, parameter_name = 'time_product'
-
+        -----------------------------------------------------------------------
         :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param include_aub: Include the area under the baseline in the
         time product
         :type include_aub: bool
         :param signal_type: one of 'env', 'clean', 'filt', or 'raw'
-        :type signal_type: str
         :param aub_window_s: window length in samples in which the local
         extreme is sought.
         :param aub_window_s: int
@@ -570,7 +573,7 @@ class TimeSeries:
         Test EMG PeaksSet according to quality criteria in Warnaar et al.
         (2024), extended with relative area under the baseline and relative ETP
         evaluation. Peak validity is updated in the PeaksSet object.
-
+        -----------------------------------------------------------------------
         :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param cutoff: Cut-off criteria for passing the tests, including
@@ -648,7 +651,7 @@ class TimeSeries:
         """
         Test EMG PeaksSet according to quality criteria in Warnaar et al.
         (2024). Peak validity is updated in the PeaksSet object.
-
+        -----------------------------------------------------------------------
         :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param cutoff: Cut-off criteria for passing the tests, including
@@ -706,6 +709,33 @@ class TimeSeries:
         skip_tests=None,
         verbose=True,
     ):
+        """
+        Test number of detected breaths in the native PeaksSet compared to
+        number of and timing peaks in the linked PeaksSet. Peak validity is
+        updated in the PeaksSet object.
+        -----------------------------------------------------------------------
+        :param peak_set_name: PeaksSet name in self.peaks dict
+        :type peak_set_name: str
+        :param linked_timeseries: TimeSeries object with linked signal
+        :type linked_timeseries: TimeSeries
+        :param linked_peak_set_name: PeaksSet name in linked_timeseries.peaks
+        :type linked_peak_set_name: str
+        :param parameter_names: Optionally refer to custom parameter names for
+        default PeaksSet and parameter names ('rr', )
+        :type parameter_names: dict
+        :param cutoff: Cut-off criteria for passing the tests, including
+        fraction of detected breaths (fraction_emg_breaths), and event timing
+        (event_timing). 'tolerant' and 'strict' can also be provided instead of
+        a dict to use the pre-defined values.
+        :type cutoff: dict
+        :param skip_tests: List of tests to skip.
+        :type skip_tests: list
+        :param verbose: Output the test values, and pass/fail to console.
+        :type verbose: bool
+
+        :returns: None
+        :rtype: None
+        """
         output = data_qa.initialize_linked_peaks_tests(
             self,
             peak_set_name,
@@ -743,11 +773,10 @@ class TimeSeries:
         Plot the indicated signals in the provided axes. By default the most
         advanced signal type (envelope > clean > filt > raw) is plotted in the
         provided colours.
-
+        -----------------------------------------------------------------------
         :param axis: matplotlib Axis object. If none provided, a new figure is
         created.
         :type axis: matplotlib.Axis
-        :type channel_idxs: list
         :param signal_type: the signal ('env', 'clean', 'filt', 'raw') to plot
         :type signal_type: str
         :param colors: list of colors to plot the 1) signal, 2) the baseline
@@ -781,7 +810,7 @@ class TimeSeries:
         """
         Plot the markers for the peak set in the provided axes in the
         provided colours using the provided markers.
-
+        -----------------------------------------------------------------------
         :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param axes: matplotlib Axes object. If none provided, a new figure is
@@ -903,7 +932,7 @@ class TimeSeries:
         Plot the indicated peaks in the provided axes. By default the most
         advanced signal type (envelope > clean > filt > raw) is plotted in the
         provided colours.
-
+        -----------------------------------------------------------------------
         :param peak_set_name: The name of the peak_set to be plotted.
         :type peak_set_name: str
         :param axes: matplotlib Axes object. If none provided, a new figure is
@@ -977,7 +1006,7 @@ class TimeSeries:
         """
         Plot the curve-fits for the peak set in the provided axes in the
         provided colours using the provided markers.
-
+        -----------------------------------------------------------------------
         :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param axes: matplotlib Axes object. If none provided, a new figure is
@@ -1046,7 +1075,7 @@ class TimeSeries:
         """
         Plot the area under the baseline (AUB) for the peak set in the provided
         axes in the provided colours using the provided markers.
-
+        -----------------------------------------------------------------------
         :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param axes: matplotlib Axes object. If none provided, a new figure is
@@ -1204,7 +1233,7 @@ class TimeSeriesGroup:
         """
         Derive the moving envelope of the provided signal. See
         TimeSeries.envelope.
-
+        -----------------------------------------------------------------------
         :returns: None
         :rtype: None
         """
@@ -1235,7 +1264,7 @@ class TimeSeriesGroup:
         """
         Derive the moving baseline of the provided signal. See
         TimeSeries.baseline.
-
+        -----------------------------------------------------------------------
         :returns: None
         :rtype: None
         """
@@ -1262,7 +1291,7 @@ class TimeSeriesGroup:
         Plot the indicated signals in the provided axes. By default the most
         advanced signal type (envelope > clean > filt > raw) is plotted in the
         provided colours. See TimeSeries.plot_full.
-
+        -----------------------------------------------------------------------
         :param axes: matplotlib Axes object. If none provided, a new figure is
         created.
         :type axes: ~numpy.ndarray
@@ -1311,7 +1340,7 @@ class TimeSeriesGroup:
         Plot the indicated peaks for all provided channels in the provided
         axes. By default the most advanced signal type (env > clean > filt >
         raw) is plotted in the provided colours. See TimeSeries.plot_peaks
-
+        -----------------------------------------------------------------------
         :param peak_set_name: The name of the peak_set to be plotted.
         :type peak_set_name: str
         :param axes: matplotlib Axes object. If none provided, a new figure is
@@ -1371,7 +1400,7 @@ class TimeSeriesGroup:
         Plot the indicated peak markers for all provided channels in the
         provided axes using the provided colours and markers.
         See TimeSeries.plot_markers
-
+        -----------------------------------------------------------------------
         :param peak_set_name: PeaksSet name in self.peaks dict
         :type peak_set_name: str
         :param axes: matplotlib Axes object. If none provided, a new figure is
@@ -1452,9 +1481,6 @@ class EmgDataGroup(TimeSeriesGroup):
         """
         Filter raw EMG signals to remove baseline wander and high frequency
         components. See TimeSeries.filter_emg.
-
-        :returns: None
-        :rtype: None
         """
         if channel_idxs is None:
             channel_idxs = np.arange(self.param['n_channel'])
@@ -1581,7 +1607,7 @@ class VentilatorDataGroup(TimeSeriesGroup):
     def find_peep(self, pressure_idx, volume_idx):
         """
         Calculate PEEP as the median value of p_vent at end-expiration.
-
+        -----------------------------------------------------------------------
         :param pressure_idx: Channel index of the ventilator pressure data
         :type pressure_idx: int
         :param volume_idx: Channel index of the ventilator volume data
@@ -1621,7 +1647,7 @@ class VentilatorDataGroup(TimeSeriesGroup):
         """
         Find end-expiratory occlusion manoeuvres in ventilator pressure
         timeseries data. See postprocessing.event_detection submodule.
-
+        -----------------------------------------------------------------------
         :param pressure_idx: Channel index of the ventilator pressure data
         :type pressure_idx: int
         For other arguments, see postprocessing.event_detection submodule.
@@ -1667,7 +1693,7 @@ class VentilatorDataGroup(TimeSeriesGroup):
         Find tidal-volume peaks in ventilator volume signal. Peaks are stored
         in PeaksSet named 'ventilator_breaths' in ventilator pressure and
         volume TimeSeries.
-
+        -----------------------------------------------------------------------
         :param volume_idx: Channel index of the ventilator volume data
         :type volume_idx: int
         For other arguments, see postprocessing.event_detection submodule.
