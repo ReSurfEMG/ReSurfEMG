@@ -7,7 +7,9 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   resurfemg.pipelines.pipelines
+   resurfemg.pipelines.ipy_widgets
+   resurfemg.pipelines.processing
+   resurfemg.pipelines.synthetic_data
 
 Module contents
 ---------------

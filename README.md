@@ -264,7 +264,7 @@ https://github.com/ReSurfEMG/ReSurfEMG-dashboard
 
 * `isort resurfemg --check --diff` checks that the imports are properly 
   formatted and sorted.
-* `setup.py apidoc` generates RST outlines necessary to generate
+* `python setup.py apidoc` generates RST outlines necessary to generate
   documentation.
 
 ### Testing
