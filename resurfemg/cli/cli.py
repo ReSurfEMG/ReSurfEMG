@@ -20,6 +20,7 @@ def set_common_args(parser):
     """
     This function defines some arguments that can be provided to any command
     line function to be defined. See the make_parser function for more details.
+    --------------------------------------------------------------------------
     """
     parser.add_argument(
         '-i',
@@ -41,7 +42,7 @@ def set_common_args(parser):
 
 def make_parser():
     """
-    This is the setting up parser for our CLI.
+    Set up the parser for the CLI.
     """
     parser = ArgumentParser('ReSurfEMG CLI')
     parser.add_argument(
@@ -90,6 +91,14 @@ def main(argv):
     """
     The main function is called from the command line interface. It runs the
     parser and subparsers specified in the make_parser function.
+    It can be run via the command line as follows:
+    python -m resurfemg.cli.cli <action> <options>
+    where <action> is one of the following:
+    - simulate_emg
+    - simulate_ventilator
+    - save_to_numpy
+    <options> are the options specific to the action.
+    --------------------------------------------------------------------------
     """
     parser = make_parser()
     parsed = parser.parse_args()

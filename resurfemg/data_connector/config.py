@@ -2,7 +2,7 @@
 Copyright 2022 Netherlands eScience Center and Twente University.
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
-This file contains one method to let the user configure all paths for data
+This file contains methods to let the user configure all paths for data
 instead of hard-coding them, as well as methods to check data integrity.
 The data integrity can be checked because this file contains hash functions
 to track data. Synthetic data can be made with several methods.
@@ -22,6 +22,7 @@ def convert_to_os_path(
 ):
     """
     This function converts a path to a os readable path.
+    -----------------------------------------------------------------------
     :param path: The path to convert.
     :type path: str
     """
@@ -35,7 +36,10 @@ def find_repo_root(marker_file='config_example.json'):
     Find the root directory of the repository by looking for a marker file.
     :param marker_file: The marker file to look for (default is
     'config_example.json').
+    -----------------------------------------------------------------------
+    :type marker_file: str
     :return: The absolute path to the root directory of the repository.
+    :rtype: str
     """
     current_dir = os.path.abspath(os.path.dirname(__file__))
 
@@ -56,6 +60,7 @@ class Config:
     of a file setup for data, which is then processed into a variable.
     Essentially by setting up and modifying a .json file in the appropriate
     directory users can avoid the need for any hardcoded paths to data.
+    -----------------------------------------------------------------------
     """
 
     required_directories = ['root_data']
@@ -100,6 +105,7 @@ class Config:
         """
         Provide feedback if the paths are not configured or not configured
         correctly. It contains instructions on how to configure the paths.
+        -----------------------------------------------------------------------
         """
         return textwrap.dedent(
             '''
@@ -135,8 +141,10 @@ class Config:
     ):
         """
         This function creates a config file from an example file.
+        -----------------------------------------------------------------------
         :param location: The location of the example file.
         :type location: str
+        :raises ValueError: If the example file is not found.
         """
         config_path = location.replace(self.example, 'config.json')
         with open(location, 'r') as f:
@@ -145,6 +153,20 @@ class Config:
             json.dump(example, f, indent=4, sort_keys=True)
 
     def load(self, location, verbose=False):
+        """
+        This function loads the configuration file. If no location is specified
+        it will try to load the configuration file from the default locations:
+        - ./config.json
+        - ~/.resurfemg/config.json
+        - /etc/resurfemg/config.json
+        - PROJECT_ROOT/config.json
+        -----------------------------------------------------------------------
+        :param location: The location of the configuration file.
+        :type location: str
+        :param verbose: A boolean to print the loaded configuration.
+        :type verbose: bool
+        :raises ValueError: If the configuration file is not found.
+        """
         locations = (
             [location] if location is not None else self.default_locations
         )
@@ -210,6 +232,12 @@ class Config:
                     print(f' {key: <15}\t{value: <50}')
 
     def validate(self):
+        """
+        This function validates the configuration file. It checks if the
+        required directories exist.
+        -----------------------------------------------------------------------
+        :raises ValueError: If a required directory does not exist.
+        """
         for req_dir in self.required_directories:
             if not os.path.isdir(self._loaded[req_dir]):
                 logging.error('Required directory %s does not exist',
@@ -217,6 +245,17 @@ class Config:
                 raise ValueError(self.usage())
 
     def get_directory(self, directory, value=None):
+        """
+        This function returns the directory specified in the configuration
+        file. If the directory is not specified, it will return the value.
+        -----------------------------------------------------------------------
+        :param directory: The directory to return.
+        :type directory: str
+        :param value: The value to return if the directory is not specified.
+        :type value: str
+        :return: The directory specified in the configuration file.
+        :rtype: str
+        """
         if value is None:
             return self._loaded[directory]
         return value
@@ -224,8 +263,8 @@ class Config:
 
 def hash_it_up_right_all(origin_directory, file_extension):
     """Hashing function to check files are not corrupted or to assure
-    files are changed.
-
+    files are changed. This function hashes all files in a directory.
+    -----------------------------------------------------------------------
     :param origin_directory: The string of the directory with files to hash
     :type origin_directory: str
     :param file_extension: File extension
