@@ -58,7 +58,7 @@ def quick_look(
         plt.show()
     if plot_power_spectrum:
         _, axis_f = plt.subplots()
-        vis.show_my_power_spectrum(
+        vis.show_power_spectrum(
             emg_raw, fs_emg, t_emg[-1], signal_unit='uV')
         axis_f.grid(True)
     return emg_filt, emg_env

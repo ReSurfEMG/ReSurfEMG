@@ -11,12 +11,13 @@ from scipy.fft import fft, fftfreq
 import matplotlib.pyplot as plt
 
 
-def show_my_power_spectrum(signal, fs_emg, t_window_s, axis_spec=1,
-                           signal_unit='uV'):
-    """This function plots a power spectrum of the frequencies
-    comtained in an EMG based on a Fourier transform.  It does not
-    return the graph, rather the values but plots the graph before it
-    return.  Sample should be one single row (1-dimensional array.)
+def show_power_spectrum(
+        signal, fs_emg, t_window_s, axis_spec=1, signal_unit='uV'):
+    """Plot the power spectrum of the frequencies comtained in an EMG based on
+    a Fourier transform.  It does not return the graph, rather the values but
+    plots the graph before it return.  Sample should be one single row
+    (1-dimensional array)
+    ---------------------------------------------------------------------------
     :param signal: The signal array
     :type signal: ~numpy.ndarray
     :param fs_emg: emg sampling rate
@@ -27,9 +28,9 @@ def show_my_power_spectrum(signal, fs_emg, t_window_s, axis_spec=1,
     :type axis_spec: int
     :param signal_unit: Unit of y-axis, default is uV
     :type signal_unit: str
-    :return: :code:`yf, xf` tuple of fourier transformed array and
-    frequencies (the values for plotting the power spectrum)
-    :rtype: Tuple[float, float]
+
+    :return (yf, xf): Fourier transformed array and frequencies axis
+    :rtype (yf, xf): (np.ndarray, np.ndarray)
     """
     n_samples = len(signal)
     # for our emgs sampling rate is usually 2048
@@ -56,10 +57,11 @@ def show_my_power_spectrum(signal, fs_emg, t_window_s, axis_spec=1,
 
 
 def show_psd_welch(signal, fs_emg, t_window_s, axis_spec=1, signal_unit='uV'):
-    """This function calculates the power spectrum density using the Welch
-    method. Tis method involves dividing the signal into overlapping segments,
-    copmuting a modified periodogram for each segment, and then averaging
-    these periodograms.
+    """Calculates the power spectrum density using the Welch method. This
+    method involves dividing the signal into overlapping segments, copmuting a
+    modified periodogram for each segment, and then averaging these
+    periodograms.
+    ---------------------------------------------------------------------------
     :param signal: the signal array
     :type signal: ~numpy.ndarray
     :param fs_emg: Number of samples per second
@@ -70,19 +72,21 @@ def show_psd_welch(signal, fs_emg, t_window_s, axis_spec=1, signal_unit='uV'):
     :type axis_spec: int
     :param signal_unit: Unit of signal for labeling the PSD axis, default uV
     :type signal_unit: str
-    :return: 'f, Pxx_den'
+
+    :return (f, Pxx_den): Frequencies and power spectral density
+    :rtype (f, Pxx_den): (np.ndarray, np.ndarray)
     """
     if signal.ndim != 1:
         raise ValueError("Sample array must be 1-dimensional")
 
     window = np.hanning(t_window_s)
-    f, Pxx_den = welch(signal, fs_emg, window=window, nperseg=t_window_s)
+    f, pxx_den = welch(signal, fs_emg, window=window, nperseg=t_window_s)
     psd_label = f'PSD [{signal_unit}**2/Hz]'
 
     if axis_spec == 1:
-        plt.semilogy(f, Pxx_den)
+        plt.semilogy(f, pxx_den)
     elif axis_spec == 0:
-        plt.plot(f, Pxx_den)
+        plt.plot(f, pxx_den)
     else:
         raise ValueError("Invalid axis_spec value. Please use 1 "
                          "for logarithmic axis or 0 for linear axis.")
@@ -92,12 +96,12 @@ def show_psd_welch(signal, fs_emg, t_window_s, axis_spec=1, signal_unit='uV'):
     plt.title('Power Spectral Density')
     plt.show()
 
-    return f, Pxx_den
+    return f, pxx_den
 
 
-def show_periodogram(signal, fs_emg, axis_spec=1,
-                     signal_unit='uV'):
-    """This function calculates the periodogram.
+def show_periodogram(signal, fs_emg, axis_spec=1, signal_unit='uV'):
+    """This function calculates and shows the periodogram.
+    ---------------------------------------------------------------------------
     :param signal: the signal array
     :type signal: ~numpy.ndarray
     :param fs_emg: emg sampling rate
@@ -106,7 +110,9 @@ def show_periodogram(signal, fs_emg, axis_spec=1,
     :type axis_spec: int
     :param signal_unit: Unit of y-axis, default is uV
     :type signl_unit: str
-    :return: 'f, Pxx_den'
+
+    :return (f, Pxx_den): Frequencies and power spectral density
+    :rtype (f, Pxx_den): (np.ndarray, np.ndarray)
     """
 
     f, Pxx_den = periodogram(signal, fs_emg)
