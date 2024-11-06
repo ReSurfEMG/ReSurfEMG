@@ -19,7 +19,7 @@ def show_my_power_spectrum(signal, fs_emg, t_window_s, axis_spec=1,
     return.  Sample should be one single row (1-dimensional array.)
     :param signal: The signal array
     :type signal: ~numpy.ndarray
-    :param fs_emg: Number of samples per second
+    :param fs_emg: emg sampling rate
     :type fs_emg: int
     :param t_window_s: The end of window over which values will be plotted
     :type t_window_s: int
@@ -100,7 +100,7 @@ def show_periodogram(signal, fs_emg, axis_spec=1,
     """This function calculates the periodogram.
     :param signal: the signal array
     :type signal: ~numpy.ndarray
-    :param fs_emg: Number of samples per second
+    :param fs_emg: emg sampling rate
     :type fs_emg: int
     :param axis_spec: 1 for logaritmic axis, 0 for linear axis
     :type axis_spec: int
