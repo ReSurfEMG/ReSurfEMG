@@ -17,21 +17,12 @@ def emg_bandpass_butter(
     order=3,
 ):
     """Bandpass filter for EMG signal
-<<<<<<< HEAD
     ---------------------------------------------------------------------------
     :param emg_raw: The raw EMG signal
     :type emg_raw: ~numpy.ndarray
     :param high_pass: High pass cut-off frequency `frequenceisabove`
     :type high_pass: ~float
     :param low_pass: Low pass cut-off frequency `frequenciesbelow`
-=======
-
-    :param emg_raw: The raw EMG signal
-    :type emg_raw: ~numpy.ndarray
-    :param high_pass: High pass cut-off frequency :code:`frequenceisabove`
-    :type high_pass: ~float
-    :param low_pass: Low pass cut-off frequency :code:`frequenciesbelow`
->>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     :type low_pass: ~float
     :param fs_emg: Sampling frequency
     :type fs_emg: int
@@ -60,17 +51,10 @@ def emg_lowpass_butter(
     order=3,
 ):
     """Lowpass filter for EMG signal
-<<<<<<< HEAD
     ---------------------------------------------------------------------------
     :param emg_raw: The raw EMG signal
     :type emg_raw: ~numpy.ndarray
     :param low_pass: Low pass cut-off frequency `frequenciesbelow`
-=======
-
-    :param emg_raw: The raw EMG signal
-    :type emg_raw: ~numpy.ndarray
-    :param low_pass: Low pass cut-off frequency :code:`frequenciesbelow`
->>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     :type low_pass: ~float
     :param fs_emg: Sampling frequency
     :type fs_emg: int
@@ -99,17 +83,10 @@ def emg_highpass_butter(
 ):
 
     """Highpass filter for EMG signal
-<<<<<<< HEAD
     ---------------------------------------------------------------------------
     :param emg_raw: The raw EMG signal
     :type emg_raw: ~numpy.ndarray
     :param high_pass: High pass cut-off frequency `frequenceisabove`
-=======
-
-    :param emg_raw: The raw EMG signal
-    :type emg_raw: ~numpy.ndarray
-    :param high_pass: High pass cut-off frequency :code:`frequenceisabove`
->>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     :type high_pass: ~float
     :param fs_emg: Sampling frequency
     :type fs_emg: int
@@ -131,31 +108,17 @@ def emg_highpass_butter(
 
 
 def notch_filter(emg_raw, f_notch, fs_emg, q):
-<<<<<<< HEAD
     """Filter to take out a specific frequency band.
     ---------------------------------------------------------------------------
-=======
-    """This is a filter designed to take out a specific frequency band.
-
->>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     :param emg_raw: Percentage variation tolerance to allow without cutting
     :type emg_raw: int
     :param f_notch: The frequency to remove from the signal
     :type f_notch: float
     :param fs_emg: Sampling frequency
     :type fs_emg: int
-<<<<<<< HEAD
     :param q: quality factor of notch filter, Q = f_notch/band_width of band-
     stop, see scipy.signal.iirnotch
     :type q: float
-=======
-    :param q: Quality factor of notch filter, Q = f_notch/band_width of band-
-    stop, see scipy.signal.iirnotch
-    :type q: float
-
-    :returns emg_filt: The notch filtered EMG data
-    :rtype emg_filt: ~numpy.ndarray
->>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
 
     :returns emg_filt: The notch filtered EMG data
     :rtype emg_filt: ~numpy.ndarray
@@ -177,14 +140,8 @@ def compute_power_loss(
     n_segment=None,
     percent_overlap=25,
 ):
-<<<<<<< HEAD
     """Compute the percentage of power loss after the processing.
     ---------------------------------------------------------------------------
-=======
-    """This function computes the percentage of power loss after the
-    processing.
-
->>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336))
     :param signal_original: Original signal
     :type  signal_original: ~numpy.ndarray
     :param fs_original: Sampling frequency of orginal signal
