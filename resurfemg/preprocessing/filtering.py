@@ -3,7 +3,6 @@ Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 This file contains functions to filter EMG arrays.
-
 """
 
 from scipy import signal
@@ -18,7 +17,7 @@ def emg_bandpass_butter(
     order=3,
 ):
     """Bandpass filter for EMG signal
-
+    ---------------------------------------------------------------------------
     :param emg_raw: The raw EMG signal
     :type emg_raw: ~numpy.ndarray
     :param high_pass: High pass cut-off frequency :code:`frequenceisabove`
@@ -52,7 +51,7 @@ def emg_lowpass_butter(
     order=3,
 ):
     """Lowpass filter for EMG signal
-
+    ---------------------------------------------------------------------------
     :param emg_raw: The raw EMG signal
     :type emg_raw: ~numpy.ndarray
     :param low_pass: Low pass cut-off frequency :code:`frequenciesbelow`
@@ -84,7 +83,7 @@ def emg_highpass_butter(
 ):
 
     """Highpass filter for EMG signal
-
+    ---------------------------------------------------------------------------
     :param emg_raw: The raw EMG signal
     :type emg_raw: ~numpy.ndarray
     :param high_pass: High pass cut-off frequency :code:`frequenceisabove`
@@ -109,21 +108,20 @@ def emg_highpass_butter(
 
 
 def notch_filter(emg_raw, f_notch, fs_emg, q):
-    """This is a filter designed to take out a specific frequency band.
-
+    """Filter to take out a specific frequency band.
+    ---------------------------------------------------------------------------
     :param emg_raw: Percentage variation tolerance to allow without cutting
     :type emg_raw: int
     :param f_notch: The frequency to remove from the signal
     :type f_notch: float
     :param fs_emg: Sampling frequency
     :type fs_emg: int
-    :param q: Quality factor of notch filter, Q = f_notch/band_width of band-
+    :param q: quality factor of notch filter, Q = f_notch/band_width of band-
     stop, see scipy.signal.iirnotch
     :type q: float
 
     :returns emg_filt: The notch filtered EMG data
     :rtype emg_filt: ~numpy.ndarray
-
     """
     b_notch, a_notch = signal.iirnotch(
         f_notch,
@@ -142,9 +140,8 @@ def compute_power_loss(
     n_segment=None,
     percent_overlap=25,
 ):
-    """This function computes the percentage of power loss after the
-    processing.
-
+    """Compute the percentage of power loss after the processing.
+    ---------------------------------------------------------------------------
     :param signal_original: Original signal
     :type  signal_original: ~numpy.ndarray
     :param fs_original: Sampling frequency of orginal signal
