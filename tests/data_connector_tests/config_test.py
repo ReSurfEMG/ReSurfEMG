@@ -3,12 +3,7 @@ import os
 import json
 from unittest import TestCase
 from tempfile import TemporaryDirectory
-<<<<<<<< HEAD:tests/data_connector_tests/config_test.py
 from resurfemg.data_connector.config import Config
-========
-from resurfemg.helper_functions.config import Config
->>>>>>>> 34c784f (Release 2 0 0/wavelet denoising (#336)):tests/helper_functions_tests/config_test.py
-
 class TestConfig(TestCase):
 
     required_directories = {
