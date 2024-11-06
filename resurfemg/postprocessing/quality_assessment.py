@@ -321,7 +321,7 @@ def evaluate_bell_curve_error(
     :type start_idxs: ~numpy.ndarray
     :param end_idxs: list of offsets indices
     :type end_idxs: ~numpy.ndarray
-    :param fs: sample rate
+    :param fs: sampling rate
     :type fs: int
     :param time_products: list of area under the curves per peak
     :type time_products: ~numpy.ndarray

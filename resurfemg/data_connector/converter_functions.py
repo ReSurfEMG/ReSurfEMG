@@ -25,6 +25,22 @@ def load_file(
     verbose=True
 ):
     """
+    This function loads a file from a given path and returns the data as a
+    numpy array. The function can handle .poly5, .mat, .csv, and .npy files.
+    The function can also rename channels and drop channels from the data.
+    --------------------------------------------------------------------------
+    :param file_path: Path to the file to be loaded
+    :type file_path: str
+    :param key_name: Key name for .mat files
+    :type key_name: str
+    :param channels: List of channel names to rename the loaded channels
+    :type channels: list
+    :param drop_channels: List of channel names or indices to drop
+    :type drop_channels: list
+    :param force_col_reading: Force column reading for row based .csv files
+    :type force_col_reading: bool
+    :param verbose: Print verbose output
+    :type verbose: bool
     :returns: loaded_file
     :rtype: ~numpy.ndarray
     """
@@ -53,6 +69,9 @@ def load_file(
         print('Detected .csv')
         data_df, metadata = load_csv(
             file_path, force_col_reading, verbose)
+    elif file_extension.lower() == 'npy':
+        print('Detected .npy')
+        data_df, metadata = load_npy(file_path, verbose)
     else:
         raise UserWarning("No methods availabe for file extension"
                           + f"{file_extension}.")
@@ -102,6 +121,19 @@ def load_file(
 
 
 def load_poly5(file_path, verbose=True):
+    """
+    This function loads a .Poly5 file and returns the data as a pandas
+    DataFrame. The function also returns metadata such as the sampling rate,
+    loaded channels, and units.
+    --------------------------------------------------------------------------
+    :param file_path: Path to the file to be loaded
+    :type file_path: str
+    :param verbose: Print verbose output
+    :type verbose: bool
+
+    :returns: data_df, metadata
+    :rtype: ~pandas.DataFrame, dict
+    """
     if verbose:
         print('Loading .Poly5 ...')
     poly5_data = Poly5Reader(file_path)
@@ -119,8 +151,22 @@ def load_poly5(file_path, verbose=True):
 
     return data_df, metadata
 
-
 def load_mat(file_path, key_name, verbose=True):
+    """
+    This function loads a .mat file and returns the data as a pandas
+    DataFrame. The function also returns metadata such as the sampling rate,
+    loaded channels, and units.
+    --------------------------------------------------------------------------
+    :param file_path: Path to the file to be loaded
+    :type file_path: str
+    :param key_name: Key name for .mat files
+    :type key_name: str
+    :param verbose: Print verbose output
+    :type verbose: bool
+
+    :returns: data_df
+    :rtype: ~pandas.DataFrame
+    """
     if verbose:
         print('Loading .mat ...')
     mat_dict = sio.loadmat(file_path, mdict=None, appendmat=False)
@@ -141,6 +187,20 @@ def load_mat(file_path, key_name, verbose=True):
 
 
 def load_csv(file_path, force_col_reading, verbose=True):
+    """
+    This function loads a .csv file and returns the data as a pandas
+    DataFrame. The function also returns metadata such as the loaded channels.
+    --------------------------------------------------------------------------
+    :param file_path: Path to the file to be loaded
+    :type file_path: str
+    :param force_col_reading: Force column reading for row based .csv files
+    :type force_col_reading: bool
+    :param verbose: Print verbose output
+    :type verbose: bool
+
+    :returns: data_df, metadata
+    :rtype: ~pandas.DataFrame, dict
+    """
     def has_header(file_path, nrows=20):
         df = pd.read_csv(file_path, header=None, nrows=nrows)
         df_header = pd.read_csv(file_path, nrows=nrows)
@@ -189,11 +249,34 @@ def load_csv(file_path, force_col_reading, verbose=True):
     return data_df, metadata
 
 
-def poly5unpad(to_be_read):
-    """This function converts a Poly5 read into an array without
-    padding. Note there is a quirk in the python Poly5 interface that
-    pads with zeros on the end.
+def load_npy(file_path, verbose=True):
+    """
+    This function loads a .npy file and returns the data as a numpy array.
+    --------------------------------------------------------------------------
+    :param file_path: Path to the file to be loaded
+    :type file_path: str
+    :param verbose: Print verbose output
+    :type verbose: bool
 
+    :returns: loaded_file
+    :rtype: ~numpy.ndarray
+    """
+    print('Loaded .npy, extracting data ...')
+    np_data = np.load(file_path)
+    if np_data.shape[0] > np_data.shape[1]:
+        np_data = np.rot90(np_data)
+        if verbose:
+            print('Transposed loaded data.')
+    data_df = pd.DataFrame(np_data)
+    metadata = dict()
+
+    return data_df, metadata
+
+
+def poly5unpad(to_be_read):
+    """Converts a Poly5 read into an array without padding. This padding is a
+    quirk in the python Poly5 interface that pads with zeros on the end.
+    --------------------------------------------------------------------------
     :param to_be_read: Filename of python read Poly5
     :type to_be_read: str
 
@@ -208,11 +291,11 @@ def poly5unpad(to_be_read):
 
 def matlab5_jkmn_to_array(file_name):
     """
-    This file reads matlab5 files as produced in the Jonkman
-    laboratory, on the Biopac system
-    and returns arrays in the format and shape
-    our functions, those in helper_functions work on.
-
+    LEGACY FUNCTION
+    This file reads matlab5 files as produced in the Jonkman laboratory, on the
+    Biopac system and returns arrays in the format and shape our the ReSurfEMG
+    functions work on.
+    --------------------------------------------------------------------------
     :param file_name: Filename of matlab5 files
     :type file_name: str
 
@@ -231,10 +314,10 @@ def matlab5_jkmn_to_array(file_name):
 
 def csv_from_jkmn_to_array(file_name):
     """
-    This function takes a file from the Jonkman
-    lab in csv format and changes it
-    into the shape the library functions work on.
-
+    LEGACY FUNCTION
+    This function takes a file from the Jonkman lab in csv format and changes
+    it into the shape the library functions work on.
+    --------------------------------------------------------------------------
     :param file_name: Filename of csv files
     :type file_name: str
 
@@ -248,73 +331,12 @@ def csv_from_jkmn_to_array(file_name):
     )
     arrayed = np.rot90(new_df)
     arrayed = np.flipud(arrayed)
-    return arrayed
-
-
-def save_j_as_np(
-    file_read_directory,
-    file_write_directory
-):
-    """
-    This is an implementation of the save_j_as_np_single function in the
-    same module which can be run from the commmand-line cli module.
-
-    :param file_read_directory: the directory with EMG files
-    :type file_read_directory: str
-    :param file_write_directory: the output directory
-    :type file_write_directory: str
-
-    :returns: None
-    """
-    file_read_directory_list = glob.glob(
-        os.path.join(file_read_directory, '**/*.csv'),
-        recursive=True,
-    )
-    for file_name in file_read_directory_list:
-        file = pd.read_csv(file_name)
-        new_df = (
-            file.T.reset_index().T.reset_index(drop=True)
-            .set_axis([f'lead.{i+1}' for i in range(file.shape[1])], axis=1)
-        )
-        arrayed = np.rot90(new_df)
-        arrayed = np.flipud(arrayed)
-
-        rel_fname = os.path.relpath(file_name, file_read_directory)
-        out_fname = os.path.join(file_write_directory, rel_fname)
-        # check the directory does not exist
-        if not (os.path.exists(file_write_directory)):
-            # create the directory you want to save to
-            os.mkdir(file_write_directory)
-
-        np.save(out_fname, arrayed)
-
-
-def save_j_as_np_single(file_name):
-    """
-    This function takes a file in csv format where teh sequence is top to
-    bottom and changes it into the shape the library functions work on, then
-    saves it as a numpy file
-
-    :param file_name: Filename of csv files
-    :type file_name: str
-
-    :returns: arrayed
-    :rtype: ~numpy.ndarray
-    """
-    file = pd.read_csv(file_name)
-    new_df = (
-        file.T.reset_index().T.reset_index(drop=True)
-        .set_axis([f'lead.{i+1}' for i in range(file.shape[1])], axis=1)
-    )
-    arrayed = np.rot90(new_df)
-    arrayed = np.flipud(arrayed)
-    np.save(file_name, arrayed)
-
     return arrayed
 
 
 def poly_dvrman(file_name):
     """
+    LEGACY FUNCTION
     This is a function to read in Duiverman type Poly5 files, which has 18
     layers/pseudo-leads, and return an array of the twelve  unprocessed leads
     for further pre-processing. The leads eliminated were RMS calculated on
@@ -326,7 +348,7 @@ def poly_dvrman(file_name):
     # 9 RR: respiratory rate I guess (very unreliable)
     # 10 HR: heart rate
     # 11 Tach: number of breath (not reliable)
-
+    --------------------------------------------------------------------------
     :param file_name: Filename of Poly5 Duiverman type file
     :type file_name: str
 
@@ -341,11 +363,11 @@ def poly_dvrman(file_name):
 
 def dvrmn_csv_to_array(file_name):
     """
-    This transformed an already preprocessed csv from the Duiverman lab
-    into an EMG in the format our other functions can work on it. Note that
-    some preprocessing steps are already applied so pipelines may
-    need adjusting.
-
+    LEGACY FUNCTION
+    Transform an already preprocessed csv from the Duiverman lab into an EMG
+    in the format our other functions can work on it. Note that some
+    preprocessing steps are already applied so pipelines may need adjusting.
+    --------------------------------------------------------------------------
     :param file_name: Filename of csv file
     :type file_name: str
 
@@ -362,9 +384,10 @@ def dvrmn_csv_to_array(file_name):
 
 def dvrmn_csv_freq_find(file_name):
     """
-    This is means to extract the frequency of a Duiverman type csv of EMG. Note
+    LEGACY FUNCTION
+    Extract the sampling frequency of a Duiverman type csv of EMG. Note
     this data may be resampled down by a factor of 10.
-
+    --------------------------------------------------------------------------
     :param file_name: Filename of csv file
     :type file_name: str
 

@@ -316,7 +316,7 @@ def derivative(signal, fs, window_s=None):
 
     :param signal: signal to calculate the derivate over
     :type signal: ~numpy.ndarray
-    :param fs: sample rate
+    :param fs: sampling rate
     :type fs: int
     :param window_s: centralised averaging window length in samples
     :type window_s: int

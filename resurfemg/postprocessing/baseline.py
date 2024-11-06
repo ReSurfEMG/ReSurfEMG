@@ -67,7 +67,7 @@ def slopesum_baseline(
     :type window_s: int
     :param step_s: number of consecutive samples with the same baseline value
     :type step_s: int
-    :param emg_fs: sample rate from recording
+    :param emg_fs: emg sampling rating 
     :type emg_fs: int
     :param set_percentile
     :type set_percentile: float (0-100)

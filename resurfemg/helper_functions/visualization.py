@@ -32,7 +32,7 @@ def show_my_power_spectrum(signal, fs_emg, t_window_s, axis_spec=1,
     :rtype: Tuple[float, float]
     """
     n_samples = len(signal)
-    # for our emgs sample rate is usually 2048
+    # for our emgs sampling rate is usually 2048
     y_f = np.abs(fft(signal))**2
     x_f = fftfreq(n_samples, 1 / fs_emg)
 

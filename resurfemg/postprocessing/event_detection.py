@@ -170,7 +170,7 @@ def onoffpeak_slope_extrapolation(
     indices, and overlapping peaks.
     :param signal_env: signal to identify on- and offsets in
     :type signal_env: ~numpy.ndarray
-    :param fs: sample rate
+    :param fs: sampling rate
     :type fs: int
     :param peak_idxs: list of peak indices for which to find on- and offset
     :type peak_idxs: ~numpy.ndarray
