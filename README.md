@@ -15,7 +15,7 @@
 of respiratory electromyography (EMG). On the same site as 
 the repository for this library we keep [related resources](https://github.com/ReSurfEMG?tab=repositories). 
 
-ReSurfEMG includes a [main code library](https://github.com/ReSurfEMG/ReSurfEMG) where the user can access the code to change various filter and analysis settings directly and/or in our [researcher interface notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/researcher_interface).
+ReSurfEMG includes a [main code library](https://github.com/ReSurfEMG/ReSurfEMG) where the user can access the code to change various filter and analysis settings directly and/or in our [researcher interface notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/notebooks/researcher_interface).
 In addition, ReSurfEMG has a [dashboard interface](https://github.com/ReSurfEMG/ReSurfEMG-dashboard) which contains default settings for preprocessing and analysis which can be changed through a graphical (no code) interface. We have some functionality available through a [command line interface](#command-line-interface) as well.
 
 The library was initially built for surface EMG, however many functions will also work for
@@ -27,20 +27,17 @@ invasively measured respiratory EMG.  This library supports the ongoing research
 The core functions of ReSurfEMG are in the folder [resurfemg](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/resurfemg):
 
 -   **cli:** Scripts for the command line interface
--   **config:** Configure all paths for data analysis
--   **data_connector:**  Converter functions for various hardware/software and the TMSisdk lite module
+-   **data_connector:**  Converter functions for discovering, loading, simulating and handling data.
 -   **helper_functions:** General functions to support the functions in this repository
--   **pre_processing:** Process the raw respiratory EMG signal
-      - filtering: cutters, low-, high- and bandpass, notchfilter, computer power loss
-      - ecg-removal: independent component analysis (ICA) and gating
-      - envelope: root-mean-square (RMS), average rectified (ARV) and smoothers
--   **post_processing:** Aspects of pre-processed the respiratory EMG data:
+-   **preprocessing:** Process the raw respiratory EMG signal
+      - filtering: low-, high- and bandpass filters, notch filter, computer power loss
+      - ecg-removal: gating and wavelet denoising
+      - envelope: root-mean-square (RMS), average rectified (ARV)
+-   **postprocessing:** Aspects of pre-processed the respiratory EMG data:
       - moving baselines
       - event detection: find pneumatic and EMG breaths, on- and offset detection
-      - features: area under the curve, slope, area under the baseline
-      - quality assessment: signal-to-noise ratio, end-expiratory occlussion manoeuvre quality, interpeak distance, area under the baseline, consecutive manoeuvres, bell-curve error
--   **visualization:** Show powerspectrum
--   **data_classes:** Store and process EMG and ventilator data in an object-oriented way.
+      - features: amplitude, area under the curve, slope, area under the baseline, respiratory rate
+      - quality assessment: signal-to-noise ratio, end-expiratory occlussion manoeuvre quality, interpeak distance, area under the baseline, consecutive manoeuvres, bell-curve error, relative peak timing, relative area under the baseline, relative ETP
 
 
 ### Folders and Notebooks
@@ -65,13 +62,12 @@ Dr. Eline Mos-Oppersma( 📫 e.mos-oppersma@utwente.nl) to discuss any
 questions on data configuration for your datasets.
 
 If you want to use a standardized dataset for any purpose we recommend
-the data in the ReSurfEMG/synthetic_data repository
-
-[![DOI](https://zenodo.org/badge/635680008.svg)](https://zenodo.org/badge/latestdoi/635680008)
-
+the data in the [ReSurfEMG/test_data](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/test_data), which is also used in testing the ReSurfEMG functions. 
 Data there can be used with any respiratory EMG algorithms in any program. Thus that data can function as a benchmarking set to compare algorithms across different programs.
 
-Alternatively, the data in the [test data folder](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/test_data/), which is also used in testing the ReSurfEMG functions.
+Alternatively, the data in the ReSurfEMG/synthetic_data repository:
+
+[![DOI](https://zenodo.org/badge/635680008.svg)](https://zenodo.org/badge/latestdoi/635680008)
 
 
 ### Configuring (to work with your data)
@@ -82,9 +78,10 @@ able to locate the raw data you want it to find.
 There are several ways to specify the location of the following
 directories:
 
--   **root_emg_directory:** Special directory. The rest of the directory layout can be derived from its location.
--   **preprocessed:** The directory that will be used by preprocessing
+-   **root_data:** Special directory. The rest of the directory layout can be derived from its location.
+-   **preprocessed_data:** The directory that will be used by preprocessing
     code to output to.
+-   **test_data:** The directory for running sanity tests.
 
 You can store this information persistently in several locations.
 
@@ -97,14 +94,16 @@ However, we highly recommend using the home directory.
 This file can have this or similar contents:
 ```
 {
-    "root_emg_directory": "/mnt/data",
-    "preprocessed": "/mnt/data/preprocessed",
-    "output": "/mnt/data/output",
+    "root_data": "/mnt/data",
+    "patient_data": "/mnt/patient_data",
+    "simulated_data": "/mnt/simulated_data",
+    "preprocessed_data": "/mnt/data/preprocessed",
+    "output_data": "/mnt/data/output",
 }
 ```
-The file is read as follows: if the files specifies `root_emg_directory`
+The file is read as follows: if the files specifies `root_data`
 directory, then the missing entries are assumed to be relative to
-the root.  You don't need to specify all entries.
+the root.  You do not need to specify all entries.
 
 ### Test data
 
@@ -114,16 +113,15 @@ Test data is provided in the repository in the test_data folder.
 
 ReSurfEMG is a pure Python package. Below is the list of
 platforms that should work. Other platforms may work, but have had less extensive testing.
-Please note that where
-python.org Python stated as supported, it means
-that versions 3.9 and 3.10 are supported.
+Please note that where python.org Python stated as supported, it means
+that versions 3.9 - 3.11 are supported.
 
 #### AMD64 (x86)
 
 |                             | Linux     | Win       | OSX       |
 |:---------------------------:|:---------:|:---------:|:---------:|
-| ![p](etc/python-logo.png)   | Supported | Supported   | Unknown   |
-| ![a](etc/anaconda-logo.png) | Supported | Supported | Supported |
+| ![p](etc/python-logo.png)   | Supported | Supported | Supported |
+| ![a](etc/anaconda-logo.png) | Discontinued | Discontinued | Discontinued |
 
 ### Installation for all supported platforms
 
@@ -136,42 +134,40 @@ If you wish to install with pip:
 
 
 ## Getting Started
-#### with the recommended Python venv setup
+### With the recommended Python venv setup
 
 How to get the notebooks running? Assuming the raw data set and
-metadata is available. Note for non-conda installations see next sections.
+metadata is available.
 
-0. Create a virtual environment using Python
+### 0a. Create a virtual environment using Python
 
-  # On Linux/OSX:
+  #### On Linux/OSX:
 ``` sh
 python3 -m venv .venv
 ```
 
-  **This might require the python3-venv.**
+  This might **require** the python3-venv.
     
-  # On Windows:
+  #### On Windows:
   ``` sh
   python -m venv .venv
-  pip install -e resurfemg[dev]
   ```
 
-1. Activate the virtual environment and install ReSurfEMG
+### 0b. Activate the virtual environment and install ReSurfEMG
 
-  # On Linux/OSX:
+  #### On Linux/OSX:
 ``` sh
 source .venv/bin/activate
-pip install -e resurfemg[dev]
+pip install resurfemg[dev]
 ```
     
-  # On Windows:
+  #### On Windows:
   ``` sh
-  python -m venv .venv
   .venv\Scripts\activate.bat
-  pip install -e resurfemg[dev]
+  pip install resurfemg[dev]
   ```
 
-2. Open a notebook
+### 1. Open a notebook
    Start a local Jupyter Notebook server by running the `jupyter notebook` 
    command in your terminal. This opens a browser window where you can browse, 
    open and run the notebooks. (We use [Jupyter notebooks](https://jupyter.org/try-jupyter/retro/notebooks/?path=notebooks/Intro.ipynb))
@@ -204,21 +200,21 @@ active environment.  This will also install development tools we use
 s.a. `pytest` and `codestyle` and will also install tools we use for
 working with the library, such as `jupyter`.
 
-# On Linux/OSX:
+### On Linux/OSX:
 ``` sh
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .[dev]
 ``` 
   
-# On Windows:
+### On Windows:
 ``` sh
 python -m venv .venv
 .venv\Scripts\activate.bat
 pip install -e .[dev]
 ```
 
-These installs differ in two ways from the regular install: 1) The `.[dev]` 
+These installs differ in two ways from the regular install: 1) The `.[dev]` (as compared to `resurfemg[dev]`) 
 installs the library as it currently is including all your local changes, 
 instead of pulling it from the PyPI repository.  2) The `-e` flag ensures an 
 editable install, such that any changes to the library are automatically 
@@ -234,7 +230,7 @@ Online documentation can be found at https://resurfemg.github.io/ReSurfEMG/
 or on https://readthedocs.org/ by searching for ReSurfEMG. Up-to-date 
 documentation can be generated in command-line as follows in terminal:
 
-# On Linux/OSX:
+### On Linux/OSX:
 ``` sh
 python3 -m venv .venv
 source .venv/bin/activate
@@ -243,7 +239,7 @@ python setup.py apidoc
 python setup.py build_sphinx
 ``` 
   
-# On Windows:
+### On Windows:
 ``` sh
 python -m venv .venv
 .venv\Scripts\activate.bat
@@ -255,8 +251,7 @@ python setup.py build_sphinx
 
 ## Automation
 
-The project comes with several modifications to the typical
-default `setup.py`.
+The project comes with several modifications to the typical default `setup.py`.
 
 The project has a sub-project of a related dashboard. Dashboard is a GUI that
 exposes some of the project's functionality. In the past, we kept a a legacy 
@@ -274,10 +269,9 @@ https://github.com/ReSurfEMG/ReSurfEMG-dashboard
 
 ### Testing
 
-The project includes testing data. This test data is synthetic, not acquired 
-from human, and certainly not a patient.
+The project includes testing data. This test data is synthetic and generated by the ReSurfEMG `data_connector.synthetic_data` methods.
 
-# On Linux/OSX:
+### On Linux/OSX:
 ``` sh
 python3 -m venv .venv
 source .venv/bin/activate
@@ -285,7 +279,7 @@ pip install -e .[tests]
 pytest
 ``` 
   
-# On Windows:
+### On Windows:
 ``` sh
 python -m venv .venv
 .venv\Scripts\activate.bat
@@ -301,12 +295,10 @@ in some cases, create files in the correct format for our Dashboard in a per
 folder batch process.
 
 You can make synthetic data. To explore this start with
-    `python -m resurfemg synth --help`
-You can also make from horizontally formated csv files 
-that can be read by the dashboard. To explore this start with
-    `python -m resurfemg save_np --help`
 
-All long options have short aliases.
+    `python -m resurfemg simulate_emg --help`
+
+    `python -m resurfemg simulate_ventilator --help`
 
 
 ✨Copyright 2022 Netherlands eScience Center and U. Twente

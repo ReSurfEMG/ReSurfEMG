@@ -53,7 +53,7 @@ def detect_ecg_peaks(
         peak_distance = fs // 3
 
     if bp_filter:
-        lp_cf = min([500, 0.95 * fs /2])
+        lp_cf = min([500, 0.95 * fs / 2])
         ecg_filt = filt.emg_bandpass_butter(
             ecg_raw, high_pass=1, low_pass=lp_cf, fs_emg=fs)
         ecg_rms = evl.full_rolling_rms(ecg_filt, fs // 200)

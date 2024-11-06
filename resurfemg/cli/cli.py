@@ -1,5 +1,5 @@
 """
-Copyright 2022 Netherlands eScience Center and U. Twente
+Copyright 2022 Netherlands eScience Center and Univeristy of  Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
 
 This file contains functions designed to help with command line interface for

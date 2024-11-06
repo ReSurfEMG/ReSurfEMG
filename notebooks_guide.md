@@ -4,18 +4,14 @@ ReSurfEMG contains various notebooks you can use and adapt alongside our package
 
 ## **Researcher_interface**
 
-### Getting started
-
-> This [notebook](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/getting.ipynb): describes in more detail why certain steps are taken in Notebooks.
-
 ### Basic EMG analysis
 
 > This notebook provides [the basic EMG analysis](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/researcher_interface/basic_emg_pipeline.ipynb): picking a data file and sample, visualization, filter and ECG removal, envelope calculation, detection of peaks including on- and offset, feature calculation, and quality assessment.
 
 
-### Synthetic ecg maker
+### Synthetic EMG maker
 
-> This [notebook](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/researcher_interface/synthetic_ecg_maker.ipynb): provides the code to generate your own synthetic EMG data and store it to csv.
+> This [notebook](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/researcher_interface/synthetic_data_generation.ipynb): provides the code to generate your own synthetic EMG data and store it to csv.
 
 ### Neuro-muscular coupling
 
@@ -64,20 +60,9 @@ ReSurfEMG contains various notebooks you can use and adapt alongside our package
 
 > There are multiple entropy notebooks; this notebook provides [multiple approaches to use entropy for breath detection](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/open_work/entropy_eline_near_final.ipynb), using different thresholds and visualization on breath by breath basis, as well as a manual check of breath count. We can use it in various ways to automatically identify inhalation [using multiple cut-offs](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/open_work/entropy_eline_near_final.ipynb/entropy_widgeted_updated_june.ipynb). Entropy is also used as part of some workflows to determine strength of respiratory efforts (listed in a separate section).
 
-#### Align
-
-> Lag lead mismatch: You can either upsample the less sampled lead or downsample the more frequently sampled lead. For us only upsampling works as shown [in this lag-lead notebook](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/open_work/lag_lead_match_upsample.ipynb), but you can also try it the other way i.e. downsampling the fast signal [here](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/open_work/lag_lead_match.ipynb).
-
 #### Information loss
 
 > Reading EMG requires a pre-processing pipeline, but how much information is lost in each step? We explored this using the power spectrum in a notebook on [information loss](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/open_work/information_loss_widgeted_seconds.ipynb)
-
-#### Independent component analysis (ICA)
-
-> Our explorations on Independent Component Analysis (ICA), a way to reduce the heart signal, are shown in
-[this](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/open_work/ica_ecg_subtraction.ipynb), and
-[this](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/open_work/ica_methods.ipynb)
- Notebook. The ICA functionality of ReSurfEMG is not fully functional yet.
 
 ## Historical notebooks :ghost:
 Our historical notebooks are basically notebooks we keep around just in case we want to look back on them, or that we are still working on. If you feel one of these or your own contribution is relevant to the entire community, let us know and we will add it to the researcher interface in a more polished form.
@@ -92,3 +77,9 @@ These notebooks are:
 * [ica remix function](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/open_work/ica_remix_function.ipynb)
 * [various ICA examples](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/open_work/ica_various_examples.ipynb)
 * [example of bad working ICA](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/open_work/ica_why_n_ICA_is_bad.ipynb)
+* [ica_ecg_subtraction](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/open_work/ica_ecg_subtraction.ipynb)
+* [ica_methods](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/open_work/ica_methods.ipynb)
+
+### Lag lead mismatch
+* [upsampling](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/open_work/lag_lead_match_upsample.ipynb)
+* [downsampling](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks/open_work/lag_lead_match.ipynb).
