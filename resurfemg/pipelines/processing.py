@@ -37,8 +37,10 @@ def quick_look(
     :param plot_power_spectrum: Plot the powerspectrum of the raw signal
     :type plot_power_spectrum: bool
 
-    :returns (emg_filt, emg_env): filtered and enveloped EMG data
-    :rtype (emg_filt, emg_env): (numpy.ndarray[float], numpy.ndarray[float])
+    :returns emg_filt: The bandpass filtered EMG data
+    :rtype emg_filt: ~numpy.ndarray
+    :returns emg_env: The envelope of the EMG data
+    :rtype emg_env: ~numpy.ndarray
     """
     emg_filt = filt.emg_bandpass_butter(
         emg_raw=emg_raw,

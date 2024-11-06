@@ -82,8 +82,8 @@ def simulate_muscle_dynamics(
     :param tau_mus_down: Muscle relaxation time constant (s)
     :type tau_mus_down: float
 
-    :returns: muscle_activation: The simulated muscle activation pattern.
-    :rtype: np.array[float]
+    :returns muscle_activation: The simulated muscle activation pattern.
+    :rtype muscle_activation: np.array[float]
     """
     # simulate up- and downslope dynamics of EMG
     muscle_activation = np.zeros((len(block_pattern),))
@@ -115,8 +115,8 @@ def simulate_ventilator_data(
     :param t_occ_bool: Boolean array. Is true when a Pocc manoeuver is done
     :type t_occ_bool: numpy.ndarray[bool]
 
-    :returns: y_vent The synthetic ventilator pressure, flow and volume
-    :rtype: np.array[float]
+    :returns y_vent: The synthetic ventilator pressure, flow and volume
+    :rtype y_vent: np.array[float]
     """
     def evaluate_ventilator_status(
         idx,
@@ -248,7 +248,7 @@ def simulate_emg(
     :param noise_amp: Approximate baseline noise RMS amplitude (uV)
     :type noise_amp: float
 
-    :returns: emg_raw: The raw synthetic EMG without the ECG added.
+    :returns emg_raw: The raw synthetic EMG without the ECG added.
     :rtype: np.array[float]
     """
     n_samp = len(muscle_activation)

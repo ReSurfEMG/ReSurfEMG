@@ -32,7 +32,7 @@ def full_rolling_rms(emg_clean, window_length):
 
 def naive_rolling_rms(emg_clean, window_length):
     """This function computes a root mean squared envelope over an
-    array :code:`emg_clean`. 
+    array `emg_clean`.
     ---------------------------------------------------------------------------
     :param emg_clean: Samples from the EMG
     :type emg_clean: ~numpy.ndarray
@@ -50,7 +50,7 @@ def naive_rolling_rms(emg_clean, window_length):
 
 def full_rolling_arv(emg_clean, window_length):
     """This function computes an average rectified value envelope over an
-    array :code:`emg_clean`.
+    array `emg_clean`.
     ---------------------------------------------------------------------------
     :param emg_clean: Samples from the EMG
     :type emg_clean: ~numpy.ndarray

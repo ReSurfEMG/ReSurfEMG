@@ -20,9 +20,9 @@ def emg_bandpass_butter(
     ---------------------------------------------------------------------------
     :param emg_raw: The raw EMG signal
     :type emg_raw: ~numpy.ndarray
-    :param high_pass: High pass cut-off frequency :code:`frequenceisabove`
+    :param high_pass: High pass cut-off frequency `frequenceisabove`
     :type high_pass: ~float
-    :param low_pass: Low pass cut-off frequency :code:`frequenciesbelow`
+    :param low_pass: Low pass cut-off frequency `frequenciesbelow`
     :type low_pass: ~float
     :param fs_emg: Sampling frequency
     :type fs_emg: int
@@ -54,7 +54,7 @@ def emg_lowpass_butter(
     ---------------------------------------------------------------------------
     :param emg_raw: The raw EMG signal
     :type emg_raw: ~numpy.ndarray
-    :param low_pass: Low pass cut-off frequency :code:`frequenciesbelow`
+    :param low_pass: Low pass cut-off frequency `frequenciesbelow`
     :type low_pass: ~float
     :param fs_emg: Sampling frequency
     :type fs_emg: int
@@ -86,7 +86,7 @@ def emg_highpass_butter(
     ---------------------------------------------------------------------------
     :param emg_raw: The raw EMG signal
     :type emg_raw: ~numpy.ndarray
-    :param high_pass: High pass cut-off frequency :code:`frequenceisabove`
+    :param high_pass: High pass cut-off frequency `frequenceisabove`
     :type high_pass: ~float
     :param fs_emg: Sampling frequency
     :type fs_emg: int

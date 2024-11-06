@@ -22,12 +22,12 @@ class Range(namedtuple('RangeBase', 'start,end')):
     """
 
     def intersects(self, other):
-        """Returns :code:`True` if this range intersects :code:`other` range.
+        """Returns `True` if this range intersects `other` range.
         -----------------------------------------------------------------------
         :param other: Another range to compare this one to
         :type other: ~resurfemg.helper_functions.Range
 
-        :returns: :code:`True` if this range intersects another range
+        :returns: `True` if this range intersects another range
         :rtype: bool
         """
         return (
@@ -37,12 +37,12 @@ class Range(namedtuple('RangeBase', 'start,end')):
         )
 
     def precedes(self, other):
-        """Returns :code:`True` if this range precedes :code:`other` range.
+        """Returns `True` if this range precedes `other` range.
 
         :param other: Another range to compare this one to
         :type other: ~resurfemg.helper_functions.Range
 
-        :returns: :code:`True` if this range strictly precedes another range
+        :returns: `True` if this range strictly precedes another range
         :rtype: bool
         """
         return self.end < other.start
@@ -67,8 +67,8 @@ def zero_one_for_jumps_base(array, cut_off):
     :param cut_off: The number defining a cut-off line for binarization
     :type cut_off: float
 
-    :returns: Binarized list that can be turned into array
-    :rtype: list
+    :returns array_list: Binarized list that can be turned into array
+    :rtype array_list: list
     """
     array_list = []
     for i in array:
@@ -83,7 +83,7 @@ def zero_one_for_jumps_base(array, cut_off):
 def slices_slider(array_sample, slice_len):
     """This function produces continuous sequential slices over an
     array of a certain length.  The inputs are the following -
-    :code:`array_sample`, the signal and :code:`slice_len` - the
+    `array_sample`, the signal and `slice_len` - the
     window which you wish to slide with. The function yields, does
     not return these slices.
     ---------------------------------------------------------------------------
@@ -144,8 +144,8 @@ def ranges_of(array):
 
 
 def intersections(left, right):
-    """This function works over two arrays, :code:`left` and
-    :code:`right`, and allows a picking based on intersections.  It
+    """This function works over two arrays, `left` and
+    `right`, and allows a picking based on intersections.  It
     only takes ranges on the left that intersect ranges on the right.
     ---------------------------------------------------------------------------
     :param left: List of ranges
@@ -153,8 +153,8 @@ def intersections(left, right):
     :param right: List of ranges
     :type right: List[Range]
 
-    :returns result: Ranges from the :code:`left` that intersect ranges from
-    the :code:`right`.
+    :returns result: Ranges from the `left` that intersect ranges from
+    the `right`.
     :rtype result: List[Range]
     """
     i, j = 0, 0

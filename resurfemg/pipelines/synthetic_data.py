@@ -171,8 +171,10 @@ def simulate_ventilator_data(
     :type **kwargs: float, float, float, list[int], float, float, float, float,
     float, float, float
 
-    :returns (y_vent, p_mus): Ventilator data [Pvent, Fvent, Vvent], and Pmus
-    :rtype (y_vent, p_mus): (numpy.ndarray[float], numpy.ndarray[float])
+    :returns y_vent: The realistic synthetic ventilator data
+    :rtype y_vent: numpy.ndarray
+    :returns p_mus: The respiratory muscle pressure
+    :rtype p_mus: numpy.ndarray
     """
     sim_parameters = {
         'ie_ratio': 1/2,  # ratio btw insp + expir phase

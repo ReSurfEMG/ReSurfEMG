@@ -41,8 +41,13 @@ def load_file(
     :type force_col_reading: bool
     :param verbose: Print verbose output
     :type verbose: bool
-    :returns: loaded_file
+
+    :returns np_float_data: Numpy array of the loaded data
     :rtype: ~numpy.ndarray
+    :returns data_df: Pandas DataFrame of the loaded data
+    :rtype: ~pandas.DataFrame
+    :returns metadata: Metadata of the loaded data
+    :rtype: dict
     """
 
     if not isinstance(file_path, str):
@@ -131,8 +136,10 @@ def load_poly5(file_path, verbose=True):
     :param verbose: Print verbose output
     :type verbose: bool
 
-    :returns: data_df, metadata
-    :rtype: ~pandas.DataFrame, dict
+    :returns data_df: Pandas DataFrame of the loaded data
+    :rtype data_df: ~pandas.DataFrame
+    :returns metadata: Metadata of the loaded data
+    :rtype metadata: dict
     """
     if verbose:
         print('Loading .Poly5 ...')
@@ -165,8 +172,10 @@ def load_mat(file_path, key_name, verbose=True):
     :param verbose: Print verbose output
     :type verbose: bool
 
-    :returns: data_df
-    :rtype: ~pandas.DataFrame
+    :returns data_df: Pandas DataFrame of the loaded data
+    :rtype data_df: ~pandas.DataFrame
+    :returns metadata: Metadata of the loaded data
+    :rtype metadata: dict
     """
     if verbose:
         print('Loading .mat ...')
@@ -199,8 +208,10 @@ def load_csv(file_path, force_col_reading, verbose=True):
     :param verbose: Print verbose output
     :type verbose: bool
 
-    :returns: data_df, metadata
-    :rtype: ~pandas.DataFrame, dict
+    :returns data_df: Pandas DataFrame of the loaded data
+    :rtype data_df: ~pandas.DataFrame
+    :returns metadata: Metadata of the loaded data
+    :rtype metadata: dict
     """
     def has_header(file_path, nrows=20):
         df = pd.read_csv(file_path, header=None, nrows=nrows)
@@ -259,8 +270,10 @@ def load_npy(file_path, verbose=True):
     :param verbose: Print verbose output
     :type verbose: bool
 
-    :returns: loaded_file
-    :rtype: ~numpy.ndarray
+    :returns data_df: Pandas DataFrame of the loaded data
+    :rtype data_df: ~pandas.DataFrame
+    :returns metadata: Metadata of the loaded data
+    :rtype metadata: dict
     """
     print('Loaded .npy, extracting data ...')
     np_data = np.load(file_path)
@@ -281,8 +294,8 @@ def poly5unpad(to_be_read):
     :param to_be_read: Filename of python read Poly5
     :type to_be_read: str
 
-    :returns: unpadded array
-    :rtype: ~numpy.ndarray
+    :returns unpadded: Unpadded array
+    :rtype unpadded: ~numpy.ndarray
     """
     read_object = Poly5Reader(to_be_read)
     sample_number = read_object.num_samples
@@ -300,8 +313,8 @@ def matlab5_jkmn_to_array(file_name):
     :param file_name: Filename of matlab5 files
     :type file_name: str
 
-    :returns: arrayed
-    :rtype: ~numpy.ndarray
+    :returns arrayed: Arrayed data
+    :rtype arrayed: ~numpy.ndarray
     """
     file = sio.loadmat(file_name, mdict=None, appendmat=False)
     arrayed = np.rot90(file['data_emg'])
@@ -322,8 +335,8 @@ def csv_from_jkmn_to_array(file_name):
     :param file_name: Filename of csv files
     :type file_name: str
 
-    :returns: arrayed
-    :rtype: ~numpy.ndarray
+    :returns arrayed: Arrayed data
+    :rtype arrayed: ~numpy.ndarray
     """
     file = pd.read_csv(file_name)
     new_df = (
@@ -353,8 +366,8 @@ def poly_dvrman(file_name):
     :param file_name: Filename of Poly5 Duiverman type file
     :type file_name: str
 
-    :returns: samps
-    :rtype: ~numpy.ndarray
+    :returns samps: Arrayed data
+    :rtype samps: ~numpy.ndarray
     """
     data_samples = Poly5Reader(file_name)
     samps = np.vstack([data_samples.samples[:6], data_samples.samples[12:]])
@@ -386,14 +399,14 @@ def dvrmn_csv_to_array(file_name):
 def dvrmn_csv_freq_find(file_name):
     """
     LEGACY FUNCTION
-    Extract the sampling frequency of a Duiverman type csv of EMG. Note
+    Extract the sampling rate of a Duiverman type csv of EMG. Note
     this data may be resampled down by a factor of 10.
     --------------------------------------------------------------------------
     :param file_name: Filename of csv file
     :type file_name: str
 
-    :returns: freq
-    :rtype: int
+    :returns fs: Sampling frequency
+    :rtype fs: int
     """
     file = pd.read_csv(file_name)
     sample_points = len(file)
@@ -402,6 +415,6 @@ def dvrmn_csv_freq_find(file_name):
     minutes = float(time_string[2:4])
     hours = int(time_string[0:1])
     sum_time = (hours*3600) + (minutes*60) + seconds
-    freq = round(sample_points/sum_time)
+    fs = round(sample_points/sum_time)
 
-    return freq
+    return fs

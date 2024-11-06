@@ -270,8 +270,8 @@ def hash_it_up_right_all(origin_directory, file_extension):
     :param file_extension: File extension
     :type file_extension: str
 
-    :returns: Dataframe with hashes for what is in directory
-    :rtype: ~pandas.DataFrame
+    :returns df: The hash values of the files
+    :rtype df: pandas.DataFrame
     """
     hash_list = []
     file_names = []

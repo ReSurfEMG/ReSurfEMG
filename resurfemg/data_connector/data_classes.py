@@ -98,8 +98,8 @@ class TimeSeries:
         :param signal_type: one of 'env', 'clean', or 'raw'
         :type signal_type: str
 
-        :returns: y_data
-        :rtype: numpy.ndarray
+        :returns y_data: data of the selected signal type
+        :rtype y_data: ~numpy.ndarray
         """
         y_data = np.zeros(self.y_raw.shape)
         if signal_type is None:

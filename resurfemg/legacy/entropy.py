@@ -26,13 +26,14 @@ def entropical(sig):
     :param sig: array containin the signal
     :type sig: ~numpy.ndarray
 
-    :returns: number for an entropy-like signal using math.log w/base 2
-    :rtype: float
+    :returns sum_e_x: number for an entropy-like signal using math.log w/base 2
+    :rtype sum_e_x: float
 
     """
     probabilit = [n_x/len(sig) for x, n_x in collections.Counter(sig).items()]
     e_x = [-p_x*math.log(p_x, 2) for p_x in probabilit]
-    return sum(e_x)
+    sum_e_x = sum(e_x)
+    return sum_e_x
 
 
 def entropy_scipy(sli, base=None):
@@ -44,8 +45,8 @@ def entropy_scipy(sli, base=None):
     :param sli: array
     :type sli: ~numpy.ndarray
 
-    :returns: entropy_count
-    :rtype: float
+    :returns entropy_count: the entropy of the slice
+    :rtype entropy_count: float
     """
 
     _, counts = np.unique(sli, return_counts=True)
@@ -110,8 +111,8 @@ def sampen(
     :param distance: function to calculate distance
     :type distance: function
 
-    :returns: saen
-    :rtype: float
+    :returns saen: sample entropy
+    :rtype saen: float
     """
     data = np.asarray(data)
 
