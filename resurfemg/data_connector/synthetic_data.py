@@ -167,9 +167,9 @@ def simulate_ventilator_data(
         'tau_dp_down': 5,
     }
     for key, value in kwargs.items():
-        if key in lung_mechanics.keys():
+        if key in lung_mechanics:
             lung_mechanics[key] = value
-        elif key in vent_settings.keys():
+        elif key in vent_settings:
             vent_settings[key] = value
         else:
             raise UserWarning(f"kwarg `{key}` not available.")

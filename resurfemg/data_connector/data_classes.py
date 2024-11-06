@@ -177,7 +177,7 @@ class TimeSeries:
         :returns: None
         :rtype: None
         """
-        if 'ecg' in self.peaks.keys() and not overwrite:
+        if 'ecg' in self.peaks and not overwrite:
             raise UserWarning('ECG peaks already detected. Use overwrite=True')
         else:
             if ecg_raw is None:
@@ -452,7 +452,7 @@ class TimeSeries:
         :return: None
         :rtype: None
         """
-        if peak_set_name in self.peaks.keys():
+        if peak_set_name in self.peaks:
             peak_set = self.peaks[peak_set_name]
         else:
             raise KeyError("Non-existent PeaksSet key")
@@ -512,7 +512,7 @@ class TimeSeries:
         :returns: None
         :rtype: None
         """
-        if peak_set_name in self.peaks.keys():
+        if peak_set_name in self.peaks:
             peak_set = self.peaks[peak_set_name]
         else:
             raise KeyError("Non-existent PeaksSet key")
@@ -830,7 +830,7 @@ class TimeSeries:
         :returns: None
         :rtype: None
         """
-        if peak_set_name in self.peaks.keys():
+        if peak_set_name in self.peaks:
             peak_set = self.peaks[peak_set_name]
         else:
             raise KeyError("Non-existent PeaksSet key")
@@ -952,7 +952,7 @@ class TimeSeries:
         :returns: None
         :rtype: None
         """
-        if peak_set_name in self.peaks.keys():
+        if peak_set_name in self.peaks:
             peak_set = self.peaks[peak_set_name]
         else:
             raise KeyError("Non-existent PeaksSet key")
@@ -1020,7 +1020,7 @@ class TimeSeries:
         :returns: None
         :rtype: None
         """
-        if peak_set_name in self.peaks.keys():
+        if peak_set_name in self.peaks:
             peak_set = self.peaks[peak_set_name]
         else:
             raise KeyError("Non-existent PeaksSet key")
@@ -1091,7 +1091,7 @@ class TimeSeries:
         :returns: None
         :rtype: None
         """
-        if peak_set_name in self.peaks.keys():
+        if peak_set_name in self.peaks:
             peak_set = self.peaks[peak_set_name]
         else:
             raise KeyError("Non-existent PeaksSet key")
@@ -1378,7 +1378,7 @@ class TimeSeriesGroup:
                              + 'channels to plot.')
 
         for idx, channel_idx in enumerate(channel_idxs):
-            if peak_set_name in self.channels[channel_idx].peaks.keys():
+            if peak_set_name in self.channels[channel_idx].peaks:
                 axes_row = axes[idx, :]
                 self.channels[channel_idx].plot_peaks(
                     axes=axes_row,
@@ -1437,7 +1437,7 @@ class TimeSeriesGroup:
                              + 'channels to plot.')
 
         for idx, channel_idx in enumerate(channel_idxs):
-            if peak_set_name in self.channels[channel_idx].peaks.keys():
+            if peak_set_name in self.channels[channel_idx].peaks:
                 axes_row = axes[idx, :]
                 self.channels[channel_idx].plot_markers(
                     peak_set_name=peak_set_name,

@@ -20,7 +20,7 @@ def initialize_emg_tests(
     Initialize local parameters. See TimeSeries.test_emg_quality method in
     resurfemg.data_connector.data_classes for more information.
     """
-    if peak_set_name in timeseries.peaks.keys():
+    if peak_set_name in timeseries.peaks:
         peak_set = timeseries.peaks[peak_set_name]
     else:
         raise KeyError("Non-existent PeaksSet key")
@@ -64,7 +64,7 @@ def initialize_emg_tests(
             'interpeak_distance', 'snr', 'aub', 'curve_fit', ]
         for _, test in enumerate(tests):
             if test not in skip_tests:
-                if test not in cutoff.keys():
+                if test not in cutoff:
                     raise KeyError(
                         'No cut-off value provided for: ' + test)
                 elif isinstance(cutoff, float):
@@ -94,7 +94,7 @@ def initialize_emg_tests(
         parameter_names = dict()
 
     for parameter in ['ecg', 'time_product']:
-        if parameter not in parameter_names.keys():
+        if parameter not in parameter_names:
             parameter_names[parameter] = parameter
 
     n_peaks = len(peak_set.peak_df['peak_idx'].to_numpy())
@@ -271,7 +271,7 @@ def initialize_pocc_tests(
     """Initialize local parameters. See TimeSeries.test_pocc_quality method in
     resurfemg.data_connector.data_classes for more information.
     """
-    if peak_set_name in timeseries.peaks.keys():
+    if peak_set_name in timeseries.peaks:
         peak_set = timeseries.peaks[peak_set_name]
     else:
         raise KeyError("Non-existent PeaksSet key")
@@ -297,7 +297,7 @@ def initialize_pocc_tests(
         for _, test in enumerate(tests):
             if test not in skip_tests:
                 for test_crit in tests_crit[test]:
-                    if test_crit not in cutoff.keys():
+                    if test_crit not in cutoff:
                         raise KeyError(
                             'No cut-off value provided for: ' + test)
 
@@ -305,7 +305,7 @@ def initialize_pocc_tests(
         parameter_names = dict()
 
     for parameter in ['ventilator_breaths', 'time_product', 'AUB']:
-        if parameter not in parameter_names.keys():
+        if parameter not in parameter_names:
             parameter_names[parameter] = parameter
 
     n_peaks = len(peak_set.peak_df['peak_idx'].to_numpy())
@@ -329,7 +329,7 @@ def test_consecutive_poccs(
         timeseries, peak_set, quality_outcomes_df, parameter_names):
     """Test for consecutive Pocc manoeuvres. See TimeSeries.test_pocc_quality
     method in resurfemg.data_connector.data_classes for more information."""
-    if parameter_names['ventilator_breaths'] not in timeseries.peaks.keys():
+    if parameter_names['ventilator_breaths'] not in timeseries.peaks:
         raise ValueError('Ventilator breaths not determined, but required for '
                          + 'consecutive Pocc evaluation.')
     vent_breaths = parameter_names['ventilator_breaths']
@@ -384,12 +384,12 @@ def initialize_linked_peaks_tests(
 ):
     """Initialize local parameter. See TimeSeries.test_linked_peak_sets method
     in resurfemg.data_connector.data_classes for more information."""
-    if peak_set_name in timeseries.peaks.keys():
+    if peak_set_name in timeseries.peaks:
         peak_set = timeseries.peaks[peak_set_name]
     else:
         raise KeyError("Non-existent PeaksSet key")
 
-    if linked_peak_set_name in linked_timeseries.peaks.keys():
+    if linked_peak_set_name in linked_timeseries.peaks:
         linked_peak_set = linked_timeseries.peaks[linked_peak_set_name]
     else:
         raise KeyError("Non-existent linked PeaksSet key")

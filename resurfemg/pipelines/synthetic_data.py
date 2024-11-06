@@ -129,7 +129,7 @@ def synthetic_emg_cli(n_emg, output_directory, **kwargs):
         'ecg_amplitude': 200,
     }
     for key, value in kwargs.items():
-        if key in sim_parameters.keys():
+        if key in sim_parameters:
             sim_parameters[key] = value
         else:
             raise UserWarning(f"kwarg `{key}` not available.")
@@ -189,7 +189,7 @@ def simulate_ventilator_data(
     }
 
     for key, value in kwargs.items():
-        if key in sim_parameters.keys():
+        if key in sim_parameters:
             sim_parameters[key] = value
         else:
             raise UserWarning(f"kwarg `{key}` not available.")
@@ -224,9 +224,9 @@ def simulate_ventilator_data(
         'tau_dp_down': 5,
     }
     for key, value in sim_parameters.items():
-        if key in lung_mechanics.keys():
+        if key in lung_mechanics:
             lung_mechanics[key] = value
-        elif key in vent_settings.keys():
+        elif key in vent_settings:
             vent_settings[key] = value
 
     y_vent = synth.simulate_ventilator_data(**{
