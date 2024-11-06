@@ -1,9 +1,9 @@
 """
-The following module is a modification of a
-few classes from a larger code base
-created by Twente Medical Systems International B.V., Oldenzaal
-The Netherlands. Some docstrings, formatting,
-variables, variable names and even classes have been changed.
+The following module is a modification of a few classes from a larger code base
+created by Twente Medical Systems International B.V., Oldenzaal The
+Netherlands. Some docstrings, formatting, variables, variable names and even
+classes have been changed.
+
 The Twente Medical Systems International B.V.
 lisencing information is as below:
 
@@ -21,12 +21,10 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
 """
 
 import numpy as np
 import struct
-import datetime
 import mne
 import tkinter as tk
 from tkinter import filedialog
