@@ -23,7 +23,7 @@ jobs:
   Test-Sphinx:
     runs-on: ubuntu-latest
     if: |
-      github.pull_request.base.ref == 'refs/heads/main'
+      github.event.pull_request.base.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v3
         with:
