@@ -117,7 +117,7 @@ def notch_filter(emg_raw, f_notch, fs_emg, q):
     :param fs_emg: Sampling frequency
     :type fs_emg: int
     :param q: quality factor of notch filter, Q = f_notch/band_width of band-
-    stop, see scipy.signal.iirnotch
+        stop, see scipy.signal.iirnotch
     :type q: float
 
     :returns emg_filt: The notch filtered EMG data

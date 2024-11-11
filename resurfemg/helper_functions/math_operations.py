@@ -51,7 +51,7 @@ class Range(namedtuple('RangeBase', 'start,end')):
         """Converts this range to a :class:`slice`.
         -----------------------------------------------------------------------
         :returns: A slice with its start set to this range's start and end set
-        to this range's end
+            to this range's end
 
         :rtype: slice
         """
@@ -153,8 +153,7 @@ def intersections(left, right):
     :param right: List of ranges
     :type right: List[Range]
 
-    :returns result: Ranges from the `left` that intersect ranges from
-    the `right`.
+    :returns result: Ranges from the left that intersect ranges from the right.
     :rtype result: List[Range]
     """
     i, j = 0, 0

@@ -33,14 +33,14 @@ def detect_ecg_peaks(
     :param fs: Sampling rate of the emg signals.
     :type fs: int
     :param peak_fraction: ECG peaks amplitude threshold relative to the
-    specified fraction of the min-max values in the ECG signal
+        specified fraction of the min-max values in the ECG signal
     :type peak_fraction: float
     :param peak_width_s: ECG peaks width threshold in samples.
     :type peak_width_s: int
     :param peak_distance: Minimum time between ECG peaks in samples.
     :type peak_distance: int
     :param filter: Bandpass filter the ecg_raw between 1-500 Hz before peak
-    detection.
+        detection.
     :type filter: bool
 
     :returns ecg_peak_idxs: ECG peak indices
@@ -220,28 +220,6 @@ def wavelet_denoising(
     removal of baseline, powerline, and aliasing. N.B. This is a Python
     implementation of the SWT, as previously implemented in MATLAB by Jan
     Graßhoff. See Copyright notice below.
-    ---------------------------------------------------------------------------
-    :param emg_raw: 1D raw EMG data
-    :type emg_raw: numpy.ndarray
-    :param ecg_peak_idxs: list of R-peaks indices
-    :type ecg_peak_idxs: numpy.ndarray
-    :param fs: Sampling rate of emg_raw
-    :type fs: int
-    :param hard_thresholding: True: hard (default), False: soft
-    :type hard_thresholding: bool
-    :param n: True: decomposition level (default: 4)
-    :type n: int
-    :param wavelet_type: wavelet type (default: 'db2', see pywt.swt help)
-    :type wavelet_type: str
-
-    :returns emg_clean: cleaned EMG signal
-    :rtype emg_clean: numpy.ndarray
-    :returns wav_dec: wavelet decomposition
-    :rtype wav_dec: numpy.ndarray
-    :returns thresholds: threshold values
-    :rtype thresholds: numpy.ndarray
-    :returns gate_bool_array: gated signal based on R-peaks, where gate == 1
-    :rtype gate_bool_array: numpy.ndarray
     --------------------------------------------------------------------------
     Copyright 2019 Institute for Electrical Engineering in Medicine,
     University of Luebeck
@@ -264,6 +242,28 @@ def wavelet_denoising(
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
     DEALINGS IN THE SOFTWARE.
+    ---------------------------------------------------------------------------
+    :param emg_raw: 1D raw EMG data
+    :type emg_raw: numpy.ndarray
+    :param ecg_peak_idxs: list of R-peaks indices
+    :type ecg_peak_idxs: numpy.ndarray
+    :param fs: Sampling rate of emg_raw
+    :type fs: int
+    :param hard_thresholding: True: hard (default), False: soft
+    :type hard_thresholding: bool
+    :param n: True: decomposition level (default: 4)
+    :type n: int
+    :param wavelet_type: wavelet type (default: 'db2', see pywt.swt help)
+    :type wavelet_type: str
+
+    :returns emg_clean: cleaned EMG signal
+    :rtype emg_clean: numpy.ndarray
+    :returns wav_dec: wavelet decomposition
+    :rtype wav_dec: numpy.ndarray
+    :returns thresholds: threshold values
+    :rtype thresholds: numpy.ndarray
+    :returns gate_bool_array: gated signal based on R-peaks, where gate == 1
+    :rtype gate_bool_array: numpy.ndarray
     """
     def estimate_noise(signal, window_length):
         """

@@ -34,7 +34,7 @@ def respiratory_pattern_generator(
     :type t_p_occs: float
 
     :returns respiratory_pattern: The simulated on/off respiratory muscle
-    pattern.
+        pattern.
     :rtype respiratory_pattern: np.array[float]
     """
     ie_fraction = ie_ratio/(ie_ratio + 1)
