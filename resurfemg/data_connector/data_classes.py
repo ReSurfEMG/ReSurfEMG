@@ -658,7 +658,7 @@ class TimeSeries:
         consecutiveness of Pocc manoeuvre (consecutive_poccs), and p_vent
         upslope (dP_up_10, dP_up_90, and dP_up_90_norm). 'tolerant' and
         'strict' can also be provided instead of a dict to use the respective
-         values from Warnaar et al.
+        values from Warnaar et al.
         :type cutoff: dict
         :param skip_tests: List of tests to skip.
         :type skip_tests: list
