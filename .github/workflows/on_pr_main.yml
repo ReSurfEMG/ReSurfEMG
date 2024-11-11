@@ -1,8 +1,8 @@
 name: Deployability
 on:
-  pull_request_target:
-    branches:
-      - 'main'
+    pull_request:
+        branches:
+            - 'main'
 jobs:
   Test-Sphinx:
     runs-on: ubuntu-latest
