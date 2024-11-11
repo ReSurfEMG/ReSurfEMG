@@ -1,4 +1,3 @@
-
 """
 Copyright 2022 Netherlands eScience Center and University of Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.
@@ -32,11 +31,12 @@ def simulate_raw_emg(
     :type emg_amp: ~float
     :param rr: Respiratory rate (/min)
     :type rr: float
-    :param **kwargs: Optional arguments: ie_ratio, tau_mus_up, tau_mus_down,
-    t_p_occs, drift_amp, noise_amp, ecg_acceleration, ecg_amplitude. See
-    data_connector.synthetic_data respiratory_pattern_generator,
-    simulate_muscle_dynamics, and simulate_emg functions for specifics
-    :type **kwargs: float, float, float, list[int], float, float, float
+    :param ``**kwargs``: Optional arguments: ie_ratio, tau_mus_up,
+        tau_mus_down, t_p_occs, drift_amp, noise_amp, ecg_acceleration,
+        ecg_amplitude. See data_connector.synthetic_data
+        respiratory_pattern_generator, simulate_muscle_dynamics, and
+        simulate_emg functions for specifics
+    :type ``**kwargs``: float, float, float, list[int], float, float, float
 
     :returns emg_raw: The realistic synthetic EMG
     :rtype emg_raw: numpy.ndarray
@@ -103,13 +103,13 @@ def synthetic_emg_cli(n_emg, output_directory, **kwargs):
     :param output_directory: file directory where synthetic emg will be put
     :type output_directory: str
 
-    :param **kwargs: Optional arguments: t_end, fs_emg, emg_amp, rr, ie_ratio,
-    tau_mus_up, tau_mus_down, t_p_occs, drift_amp, noise_amp, heart_rate,
-    ecg_acceleration, ecg_amplitude. See data_connector.synthetic_data
-    respiratory_pattern_generator, simulate_muscle_dynamics, and simulate_emg
-    functions for specifics
-    :type **kwargs: float, float, float, float, float, float, float, list[int],
-    float, float, float, float, float
+    :param ``**kwargs``: Optional arguments: t_end, fs_emg, emg_amp, rr,
+        ie_ratio, tau_mus_up, tau_mus_down, t_p_occs, drift_amp, noise_amp,
+        heart_rate, ecg_acceleration, ecg_amplitude. See
+        data_connector.synthetic_data respiratory_pattern_generator,
+        simulate_muscle_dynamics, and simulate_emg functions for specifics
+    :type ``**kwargs``: float, float, float, float, float, float, float,
+        list[int], float, float, float, float, float
 
     :returns: None
     :rtype: None
@@ -164,12 +164,13 @@ def simulate_ventilator_data(
     :type p_mus_amp: float
     :param rr: Respiratory rate
     :type rr: float
-    :param **kwargs: Optional arguments: ie_ratio, tau_mus_up, tau_mus_down,
-    t_p_occs, c, r, peep, flow_cycle, flow_trigger, tau_dp_up, tau_dp_down. See
-    data_connector.synthetic_data respiratory_pattern_generator,
-    simulate_muscle_dynamics, simulate_ventilator_data functions for specifics
-    :type **kwargs: float, float, float, list[int], float, float, float, float,
-    float, float, float
+    :param ``**kwargs``: Optional arguments: ie_ratio, tau_mus_up,
+        tau_mus_down, t_p_occs, c, r, peep, flow_cycle, flow_trigger,
+        tau_dp_up, tau_dp_down. See data_connector.synthetic_data
+        respiratory_pattern_generator, simulate_muscle_dynamics,
+        simulate_ventilator_data functions for specifics
+    :type ``**kwargs``: float, float, float, list[int], float, float, float,
+        float, float, float, float
 
     :returns y_vent: The realistic synthetic ventilator data
     :rtype y_vent: numpy.ndarray
@@ -254,13 +255,13 @@ def synthetic_ventilator_data_cli(n_datasets, output_directory, **kwargs):
     :param output_directory: file directory where synthetic emg will be put
     :type output_directory: str
 
-    :param **kwargs: Optional arguments: t_end, fs_vent, p_mus_amp, rr, dp,
-    ie_ratio, tau_mus_up, tau_mus_down, t_p_occs, c, r, peep, flow_cycle,
-    flow_trigger, tau_dp_up, tau_dp_down. See data_connector.synthetic_data
-    respiratory_pattern_generator, simulate_muscle_dynamics,
-    simulate_ventilator_data functions for specifics
-    :type **kwargs: float, float, float, float, float, float, float, float,
-    list[int], float, float, float, float, float, float
+    :param ``**kwargs``: Optional arguments: t_end, fs_vent, p_mus_amp, rr, dp,
+        ie_ratio, tau_mus_up, tau_mus_down, t_p_occs, c, r, peep, flow_cycle,
+        flow_trigger, tau_dp_up, tau_dp_down. See data_connector.synthetic_data
+        respiratory_pattern_generator, simulate_muscle_dynamics,
+        simulate_ventilator_data functions for specifics
+    :type ``**kwargs``: float, float, float, float, float, float, float, float,
+        list[int], float, float, float, float, float, float
 
     :returns: None
     :rtype: None

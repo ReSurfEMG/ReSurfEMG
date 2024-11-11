@@ -395,7 +395,7 @@ def find_linked_peaks(
     :type signal_2_t_peaks: ~numpy.ndarray
 
     :returns peaks_idxs_signal_1_in_2: Peak indices of signal 2 closest to the
-    peaks in signal 1
+        peaks in signal 1
     :rtype peaks_idxs_signal_1_in_2: ~numpy.ndarray[int]
     """
     if not isinstance(signal_1_t_peaks, np.ndarray):
