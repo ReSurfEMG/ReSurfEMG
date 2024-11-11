@@ -1,6 +1,6 @@
-cff-version: 0.3.1
+cff-version: 1.0.0
 title: ReSurfEMG
-message: "If you use this software please cite as below"
+message: "Please cite as below, if you use this software "
 type: software
 authors:
   -
@@ -24,6 +24,10 @@ authors:
     orcid: "https://orcid.org/0000-0001-9443-4069"
   -
     affiliation: "University of Twente"
+    family-names: Soleimani
+    given-names: Farnaz
+  -
+    affiliation: "University of Twente"
     family-names: Mos-Oppersma
     given-names: Eline
     orcid: "https://orcid.org/0000-0002-0150-306X"
@@ -38,5 +42,5 @@ keywords:
   - Python
   - surface EMG
 license: Apache-2.0
-version: "0.3.1"
-date-released: 30/05/2024
+version: "1.0.0"
+date-released: 07/11/2024

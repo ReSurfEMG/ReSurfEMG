@@ -1,5 +1,5 @@
 ReSurfEMG
-  Copyright 2022 The Netherlands eScience Center, U. Twente
+  Copyright 2022 The Netherlands eScience Center, University of Twente
 
   This product includes software developed at
   The Netherlands eScience Center (https://www.esciencecenter.nl/)

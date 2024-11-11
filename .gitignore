@@ -7,19 +7,6 @@ __pycache__/
 *.so
 
 # # Distribution / packaging
-# .Python
-# build/
-# 
-# dist/
-# downloads/
-#
-# lib/
-# lib64/
-# parts/
-# sdist/
-# var/
-# wheels/
-# share/python-wheels/
 resurfemg/__version__.py
 .coverage
 
@@ -82,7 +69,7 @@ venv.bak/
 /researcher_interface/output_emg_processed_upsampled
 /researcher_interface/output_emg_processed_upsampled/*
 /researcher_interface/ML_files/*
-/open_work/hidden/*
+/notebooks/open_work/hidden/*
 /ML_files/*
 /not_pushed/
 /notebooks/my_saved_experiments.csv
@@ -96,3 +83,4 @@ venv.bak/
 *.ipynb_checkpoints
 not_pushed
 conda-pkg/meta.yaml
+config.json
