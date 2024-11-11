@@ -2,7 +2,7 @@ name: Deployability
 on:
   pull_request_target:
     branches:
-      - main
+      - 'main'
 jobs:
   Test-Sphinx:
     runs-on: ubuntu-latest
