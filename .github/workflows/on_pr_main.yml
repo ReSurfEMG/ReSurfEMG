@@ -1,0 +1,22 @@
+name: Deployability
+on:
+  pull_request_target:
+    branches:
+      - main
+jobs:
+  Test-Sphinx:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        submodules: recursive
+    - uses: s-weigand/setup-conda@v1
+      with:
+        conda-channels: conda-forge
+        python-version: 3.9
+    - run: python3 -m venv .venv
+    - run: .venv/bin/python -m pip install wheel sphinx
+    - run: .venv/bin/python -m pip install -e .[docs]
+    - run: .venv/bin/python setup.py apidoc
+    - run: .venv/bin/python setup.py build_sphinx -W
