@@ -5,10 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>resurfemg.postprocessing.baseline module &#8212; resurfemg 0.3.0 documentation</title>
+    <title>resurfemg.postprocessing.baseline module &#8212; resurfemg 0.3.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
-    <script src="_static/documentation_options.js?v=e259d695"></script>
+    <script src="_static/documentation_options.js?v=4621528c"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -16,7 +16,7 @@
     <link rel="next" title="resurfemg.postprocessing.event_detection module" href="resurfemg.postprocessing.event_detection.html" />
     <link rel="prev" title="resurfemg.postprocessing package" href="resurfemg.postprocessing.html" /> 
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="resurfemg.postprocessing.html" title="resurfemg.postprocessing package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="resurfemg.postprocessing.html" accesskey="U">resurfemg.postprocessing package</a> &#187;</li>
@@ -49,50 +49,80 @@
 <dl class="simple">
 <dt>Copyright 2024 University of Twente Licensed under the Apache License, version</dt><dd><p>2.0. See LICENSE for details.</p>
 </dd>
-<dt>This file contains functions to calculate moving baselines from a filtered</dt><dd><p>EMG envelope. First the moving baseline (from Graßhoff et al. (2021)) and
-then the augmented version of a slope sum baseline</p>
-</dd>
 </dl>
+<p>This file contains functions to calculate moving baselines from a filtered
+EMG envelope.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.postprocessing.baseline.moving_baseline">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.baseline.</span></span><span class="sig-name descname"><span class="pre">moving_baseline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">33</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.baseline.moving_baseline" title="Link to this definition">¶</a></dt>
-<dd><p>This function calculates a moving baseline from a filtered EMG
-envelope in accordance with Graßhoff et al. (2021)
-:param emg_env: filtered envelope signal of EMG data
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.baseline.</span></span><span class="sig-name descname"><span class="pre">moving_baseline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">33</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.baseline.moving_baseline" title="Link to this definition">¶</a></dt>
+<dd><p>This function calculates a moving baseline from a envelope data in
+accordance with Graßhoff et al. (2021)
+—————————————————————————
+:param emg_env: envelope signal
 :type emg_env: ~numpy.ndarray
 :param window_s: window length in samples
 :type window_s: int
-:param step_s: number of consecutive samples with the same baseline
-value
+:param step_s: number of consecutive samples with the same baseline value
 :type step_s: int
 :param: set_percentile
-:type: numpy percentile
-:returns: The rolling baseline for the filtered EMG data
-:rtype: ~numpy.ndarray</p>
+:type: numpy percentile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns rolling_baseline<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The moving baseline for the signal envelope</p>
+</dd>
+<dt class="field-even">Rtype rolling_baseline<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.postprocessing.baseline.slopesum_baseline">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.baseline.</span></span><span class="sig-name descname"><span class="pre">slopesum_baseline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">33</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">augm_percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ma_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perc_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.baseline.slopesum_baseline" title="Link to this definition">¶</a></dt>
-<dd><p>This function calculates the augmented version of the moving baseline from
-a filtered EMG, using a slope sum.
-:param emg_env: filtered envelope signal of EMG data
-:type emg_env: ~numpy.ndarray
+<span class="sig-prename descclassname"><span class="pre">resurfemg.postprocessing.baseline.</span></span><span class="sig-name descname"><span class="pre">slopesum_baseline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_env</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">33</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">augm_percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ma_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perc_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.postprocessing.baseline.slopesum_baseline" title="Link to this definition">¶</a></dt>
+<dd><p>This function calculates the augmented version of the moving baseline over
+a signal envelope, using a slope sum.
+—————————————————————————
+:param signal_env: envelope signal
+:type signal_env: ~numpy.ndarray
 :param window_s: window length in seconds
 :type window_s: int
 :param step_s: number of consecutive samples with the same baseline value
 :type step_s: int
-:param emg_sample_rate: sample rate from recording
-:type emg_sample_rate: int
+:param emg_fs: emg sampling rating
+:type emg_fs: int
 :param set_percentile
 :type set_percentile: float (0-100)
 :param ma_window: moving average window in samples for average dy/dt
 :type ma_window: int
 :param perc_window: number of consecutive samples with the same
 baseline value
-:type perc_window: int
-:returns: The slopesum baseline for the filtered EMG data
-:rtype: ~numpy.ndarray</p>
+:type perc_window: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns _slopesum_baseline<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The slopesum baseline for the signal envelope</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+</dd>
+<dt class="field-odd">Returns y_baseline_mean<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The running mean baseline of the baseline</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+</dd>
+<dt class="field-odd">Returns y_baseline_std<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The running standard deviation of the baseline</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+</dd>
+<dt class="field-odd">Returns y_baseline_series<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The running baseline series</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v2.2.3)">pandas.Series</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -102,7 +132,7 @@ baseline value
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
@@ -146,7 +176,7 @@ baseline value
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -161,7 +191,7 @@ baseline value
         <li class="right" >
           <a href="resurfemg.postprocessing.html" title="resurfemg.postprocessing package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="resurfemg.postprocessing.html" >resurfemg.postprocessing package</a> &#187;</li>
@@ -169,8 +199,8 @@ baseline value
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2022, c.moore@esciencecenter.nl.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    &#169; Copyright 2022, e.oppersma@utwente.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
     </div>
   </body>
 </html>

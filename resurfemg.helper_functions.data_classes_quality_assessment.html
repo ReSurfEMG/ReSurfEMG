@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>resurfemg.helper_functions.data_classes_quality_assessment module &#8212; resurfemg 0.3.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
+    <script src="_static/documentation_options.js?v=4621528c"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="resurfemg.helper_functions.math_operations module" href="resurfemg.helper_functions.math_operations.html" />
+    <link rel="prev" title="resurfemg.helper_functions package" href="resurfemg.helper_functions.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.helper_functions.math_operations.html" title="resurfemg.helper_functions.math_operations module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.helper_functions.html" title="resurfemg.helper_functions package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.helper_functions.html" accesskey="U">resurfemg.helper_functions package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.helper_functions.data_classes_quality_assessment module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-resurfemg.helper_functions.data_classes_quality_assessment">
+<span id="resurfemg-helper-functions-data-classes-quality-assessment-module"></span><h1>resurfemg.helper_functions.data_classes_quality_assessment module<a class="headerlink" href="#module-resurfemg.helper_functions.data_classes_quality_assessment" title="Link to this heading">¶</a></h1>
+<p>Copyright 2022 Netherlands eScience Center and University of Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
+<p>This file contains the quality assessment methods for data classes.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.initialize_emg_tests">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">initialize_emg_tests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_tests</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.initialize_emg_tests" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize local parameters. See TimeSeries.test_emg_quality method in
+resurfemg.data_connector.data_classes for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.initialize_linked_peaks_tests">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">initialize_linked_peaks_tests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linked_timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linked_peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_tests</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.initialize_linked_peaks_tests" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize local parameter. See TimeSeries.test_linked_peak_sets method
+in resurfemg.data_connector.data_classes for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.initialize_pocc_tests">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">initialize_pocc_tests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_tests</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.initialize_pocc_tests" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize local parameters. See TimeSeries.test_pocc_quality method in
+resurfemg.data_connector.data_classes for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_aub">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_aub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_outcomes_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_values_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_aub" title="Link to this definition">¶</a></dt>
+<dd><p>Test percentage area under the baselineSee TimeSeries.test_emg_quality
+method in resurfemg.data_connector.data_classes for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_consecutive_poccs">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_consecutive_poccs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_outcomes_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_consecutive_poccs" title="Link to this definition">¶</a></dt>
+<dd><p>Test for consecutive Pocc manoeuvres. See TimeSeries.test_pocc_quality
+method in resurfemg.data_connector.data_classes for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_curve_fits">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_curve_fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_outcomes_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_values_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_curve_fits" title="Link to this definition">¶</a></dt>
+<dd><p>Test curve fit. See TimeSeries.test_emg_quality method in
+resurfemg.data_connector.data_classes for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_event_timing">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_event_timing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linked_timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linked_peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_outcomes_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_values_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_event_timing" title="Link to this definition">¶</a></dt>
+<dd><p>Test event timing relative to other peak_set. See
+TimeSeries.test_linked_peak_sets method in
+resurfemg.data_connector.data_classes for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_fraction_detected_breaths">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_fraction_detected_breaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">native_peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linked_time_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_outcomes_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_values_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_peaks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_fraction_detected_breaths" title="Link to this definition">¶</a></dt>
+<dd><p>Test detected peak fraction. See TimeSeries.test_linked_peak_sets method
+in resurfemg.data_connector.data_classes for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_interpeak_distance">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_interpeak_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_outcomes_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_peaks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_interpeak_distance" title="Link to this definition">¶</a></dt>
+<dd><p>Test interpeak distance. See TimeSeries.test_emg_quality method in
+resurfemg.data_connector.data_classes for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_pocc_upslope">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_pocc_upslope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_outcomes_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_values_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_pocc_upslope" title="Link to this definition">¶</a></dt>
+<dd><p>Test for sudden Pocc release. See TimeSeries.test_pocc_quality method in
+resurfemg.data_connector.data_classes for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_relative_aub">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_relative_aub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_outcomes_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_relative_aub" title="Link to this definition">¶</a></dt>
+<dd><p>Test the relative area under the baseline. See
+TimeSeries.test_emg_quality method in resurfemg.data_connector.data_classes
+for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_relative_etp">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_relative_etp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_outcomes_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_relative_etp" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate extremely low and high timeproducts. See
+TimeSeries.test_emg_quality method in resurfemg.data_connector.data_classes
+for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_snr">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_snr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_outcomes_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_values_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_snr" title="Link to this definition">¶</a></dt>
+<dd><p>Test signal-to-noise ratio. See TimeSeries.test_emg_quality method in
+resurfemg.data_connector.data_classes for more information.</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">resurfemg.helper_functions.data_classes_quality_assessment module</a><ul>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.initialize_emg_tests"><code class="docutils literal notranslate"><span class="pre">initialize_emg_tests()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.initialize_linked_peaks_tests"><code class="docutils literal notranslate"><span class="pre">initialize_linked_peaks_tests()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.initialize_pocc_tests"><code class="docutils literal notranslate"><span class="pre">initialize_pocc_tests()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_aub"><code class="docutils literal notranslate"><span class="pre">test_aub()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_consecutive_poccs"><code class="docutils literal notranslate"><span class="pre">test_consecutive_poccs()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_curve_fits"><code class="docutils literal notranslate"><span class="pre">test_curve_fits()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_event_timing"><code class="docutils literal notranslate"><span class="pre">test_event_timing()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_fraction_detected_breaths"><code class="docutils literal notranslate"><span class="pre">test_fraction_detected_breaths()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_interpeak_distance"><code class="docutils literal notranslate"><span class="pre">test_interpeak_distance()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_pocc_upslope"><code class="docutils literal notranslate"><span class="pre">test_pocc_upslope()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_relative_aub"><code class="docutils literal notranslate"><span class="pre">test_relative_aub()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_relative_etp"><code class="docutils literal notranslate"><span class="pre">test_relative_etp()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_snr"><code class="docutils literal notranslate"><span class="pre">test_snr()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="resurfemg.helper_functions.html"
+                          title="previous chapter">resurfemg.helper_functions package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="resurfemg.helper_functions.math_operations.html"
+                          title="next chapter">resurfemg.helper_functions.math_operations module</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/resurfemg.helper_functions.data_classes_quality_assessment.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.helper_functions.math_operations.html" title="resurfemg.helper_functions.math_operations module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.helper_functions.html" title="resurfemg.helper_functions package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.helper_functions.html" >resurfemg.helper_functions package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.helper_functions.data_classes_quality_assessment module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2022, e.oppersma@utwente.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    </div>
+  </body>
+</html>

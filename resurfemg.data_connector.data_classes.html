@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>resurfemg.data_connector.data_classes module &#8212; resurfemg 0.3.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
+    <script src="_static/documentation_options.js?v=4621528c"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="resurfemg.data_connector.file_discovery module" href="resurfemg.data_connector.file_discovery.html" />
+    <link rel="prev" title="resurfemg.data_connector.converter_functions module" href="resurfemg.data_connector.converter_functions.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.data_connector.file_discovery.html" title="resurfemg.data_connector.file_discovery module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.data_connector.converter_functions.html" title="resurfemg.data_connector.converter_functions module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.data_connector.html" accesskey="U">resurfemg.data_connector package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.data_connector.data_classes module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-resurfemg.data_connector.data_classes">
+<span id="resurfemg-data-connector-data-classes-module"></span><h1>resurfemg.data_connector.data_classes module<a class="headerlink" href="#module-resurfemg.data_connector.data_classes" title="Link to this heading">¶</a></h1>
+<p>Copyright 2022 Netherlands eScience Center and University of Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
+<p>This file contains data classes for standardized data storage and method
+automation.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.EmgDataGroup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.data_classes.</span></span><span class="sig-name descname"><span class="pre">EmgDataGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_raw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.EmgDataGroup" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup" title="resurfemg.data_connector.data_classes.TimeSeriesGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeriesGroup</span></code></a></p>
+<p>Child-class of TimeSeriesGroup to store and handle emg data in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.EmgDataGroup.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hp_cf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lp_cf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.EmgDataGroup.filter" title="Link to this definition">¶</a></dt>
+<dd><p>Filter raw EMG signals to remove baseline wander and high frequency
+components. See TimeSeries.filter_emg.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.EmgDataGroup.gating">
+<span class="sig-name descname"><span class="pre">gating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'filt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate_width_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_peak_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.EmgDataGroup.gating" title="Link to this definition">¶</a></dt>
+<dd><p>Eliminate ECG artifacts from the provided signal. See
+TimeSeries.gating.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.EmgDataGroup.wavelet_denoising">
+<span class="sig-name descname"><span class="pre">wavelet_denoising</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'filt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_peak_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.EmgDataGroup.wavelet_denoising" title="Link to this definition">¶</a></dt>
+<dd><p>Eliminate ECG artifacts from the provided signal. See
+TimeSeries.wavelet_denoising.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.data_classes.</span></span><span class="sig-name descname"><span class="pre">TimeSeries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_raw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<section id="data-class-to-store-process-and-plot-single-channel-time-series-data">
+<h2>Data class to store, process, and plot single channel time series data<a class="headerlink" href="#data-class-to-store-process-and-plot-single-channel-time-series-data" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.baseline">
+<span class="sig-name descname"><span class="pre">baseline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">33</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">augm_percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ma_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perc_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.baseline" title="Link to this definition">¶</a></dt>
+<dd><p>Derive the moving baseline of the provided signal. See
+postprocessing.baseline submodule.
+———————————————————————–
+:returns: None
+:rtype: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.calculate_time_products">
+<span class="sig-name descname"><span class="pre">calculate_time_products</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_aub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aub_window_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aub_reference_signal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.calculate_time_products" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the time product, i.e. area under the curve for a PeaksSet.
+The results are stored as
+self.peaks[peak_set_name].peak_df[parameter_name]. If no parameter_name
+is provided, parameter_name = ‘time_product’
+———————————————————————–
+:param peak_set_name: PeaksSet name in self.peaks dict
+:type peak_set_name: str
+:param include_aub: Include the area under the baseline in the
+time product
+:type include_aub: bool
+:param signal_type: one of ‘env’, ‘clean’, ‘filt’, or ‘raw’
+:param aub_window_s: window length in samples in which the local
+extreme is sought.
+:param aub_window_s: int
+:param aub_reference_signal: Optional reference signal to find the
+local extreme in, else the signal underlying the PeaksSet is taken.
+:type aub_reference_signal: ~numpy.ndarray
+:param parameter_name: parameter name in Dataframe
+self.peaks[peak_set_name].peak_df
+:type parameter_name: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.detect_emg_breaths">
+<span class="sig-name descname"><span class="pre">detect_emg_breaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prominence_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_peak_width_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'breaths'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.detect_emg_breaths" title="Link to this definition">¶</a></dt>
+<dd><p>Find breath peaks in provided EMG envelope signal. See
+postprocessing.event_detection submodule.
+———————————————————————–
+:returns: None
+:rtype: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.envelope">
+<span class="sig-name descname"><span class="pre">envelope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'clean'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.envelope" title="Link to this definition">¶</a></dt>
+<dd><p>Derive the moving envelope of the provided signal. See
+preprocessing.envelope submodule.
+———————————————————————–
+:returns: None
+:rtype: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.filter_emg">
+<span class="sig-name descname"><span class="pre">filter_emg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hp_cf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lp_cf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.filter_emg" title="Link to this definition">¶</a></dt>
+<dd><p>Filter raw EMG signal to remove baseline wander and high frequency
+components. See preprocessing.emg_bandpass_butter submodule.
+———————————————————————–
+:returns: None
+:rtype: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.gating">
+<span class="sig-name descname"><span class="pre">gating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'filt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate_width_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_peak_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.gating" title="Link to this definition">¶</a></dt>
+<dd><p>Eliminate ECG artifacts from the provided signal. See
+preprocessing.ecg_removal and pipelines.ecg_removal_gating submodules.
+———————————————————————–
+:returns: None
+:rtype: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.get_ecg_peaks">
+<span class="sig-name descname"><span class="pre">get_ecg_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ecg_raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.get_ecg_peaks" title="Link to this definition">¶</a></dt>
+<dd><p>Detect ECG peaks in the provided signal. See preprocessing.ecg_removal
+submodule.
+———————————————————————–
+:param ecg_raw: ECG signal, if None, the raw signal is used
+:type ecg_raw: ~numpy.ndarray
+:bp_filter: Apply band-pass filter to the ECG signal
+:type bp_filter: bool
+:overwrite: Overwrite existing peaks
+:type overwrite: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.link_peak_set">
+<span class="sig-name descname"><span class="pre">link_peak_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_reference_peaks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linked_peak_set_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.link_peak_set" title="Link to this definition">¶</a></dt>
+<dd><p>Find the peaks in the PeaksSet with the peak_set_name closest in time
+to the provided peak timings in t_reference_peaks
+———————————————————————–
+:param peak_set_name: PeaksSet name in self.peaks dict
+:type peak_set_name: str
+:param t_reference_peaks: Refernce peak timings in t_reference_peaks
+:type t_reference_peaks: ~numpy.ndarray
+:param linked_peak_set_name: Name of the new PeaksSet
+:type linked_peak_set_name: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.plot_aub">
+<span class="sig-name descname"><span class="pre">plot_aub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.plot_aub" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the area under the baseline (AUB) for the peak set in the provided
+axes in the provided colours using the provided markers.
+———————————————————————–
+:param peak_set_name: PeaksSet name in self.peaks dict
+:type peak_set_name: str
+:param axes: matplotlib Axes object. If none provided, a new figure is
+created.
+:type axes: matplotlib.Axes
+:param signal_type: the signal (‘env’, ‘clean’, ‘filt’, ‘raw’) to plot
+:type signal_type: str
+:param valid_only: when True, only valid peaks are plotted.
+:type valid_only: bool
+:param colors: 1 color or list of up to 3 colors for the peak
+:type colors: str or list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.plot_curve_fits">
+<span class="sig-name descname"><span class="pre">plot_curve_fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.plot_curve_fits" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the curve-fits for the peak set in the provided axes in the
+provided colours using the provided markers.
+———————————————————————–
+:param peak_set_name: PeaksSet name in self.peaks dict
+:type peak_set_name: str
+:param axes: matplotlib Axes object. If none provided, a new figure is
+created.
+:type axes: matplotlib.Axes
+:param valid_only: when True, only valid peaks are plotted.
+:type valid_only: bool
+:param colors: 1 color or list of colors for the fitted curve peak
+:type colors: str or list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.plot_full">
+<span class="sig-name descname"><span class="pre">plot_full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.plot_full" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the indicated signals in the provided axes. By default the most
+advanced signal type (envelope &gt; clean &gt; filt &gt; raw) is plotted in the
+provided colours.
+———————————————————————–
+:param axis: matplotlib Axis object. If none provided, a new figure is
+created.
+:type axis: matplotlib.Axis
+:param signal_type: the signal (‘env’, ‘clean’, ‘filt’, ‘raw’) to plot
+:type signal_type: str
+:param colors: list of colors to plot the 1) signal, 2) the baseline
+:type colors: list
+:param baseline_bool: plot the baseline
+:type baseline_bool: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.plot_markers">
+<span class="sig-name descname"><span class="pre">plot_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.plot_markers" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the markers for the peak set in the provided axes in the
+provided colours using the provided markers.
+———————————————————————–
+:param peak_set_name: PeaksSet name in self.peaks dict
+:type peak_set_name: str
+:param axes: matplotlib Axes object. If none provided, a new figure is
+created.
+:type axes: matplotlib.Axes
+:param valid_only: when True, only valid peaks are plotted.
+:type valid_only: bool
+:param colors: 1 color of list of up to 3 colors for the markers, peak,
+start, and end markers. If 2 colors are provided, start and end have
+the same colors
+:type colors: str or list
+:param markers: 1 markers or list of up to 3 markers for peak, start,
+and end markers. If 2 markers are provided, start and end have the same
+marker
+:type markers: str or list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.plot_peaks">
+<span class="sig-name descname"><span class="pre">plot_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.plot_peaks" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the indicated peaks in the provided axes. By default the most
+advanced signal type (envelope &gt; clean &gt; filt &gt; raw) is plotted in the
+provided colours.
+———————————————————————–
+:param peak_set_name: The name of the peak_set to be plotted.
+:type peak_set_name: str
+:param axes: matplotlib Axes object. If none provided, a new figure is
+created.
+:type axes: matplotlib.Axes
+:param signal_type: the signal (‘env’, ‘clean’, ‘filt’ ‘raw’) to plot
+:type signal_type: str
+:param margin_s: margins in samples plotted before the peak onset and
+after the peak offset
+:param valid_only: when True, only valid peaks are plotted.
+:type valid_only: bool
+:param colors: list of colors to plot the 1) signal, 2) the baseline
+:type colors: list
+:param baseline_bool: plot the baseline
+:type baseline_bool: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.set_peaks">
+<span class="sig-name descname"><span class="pre">set_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.set_peaks" title="Link to this definition">¶</a></dt>
+<dd><section id="store-a-new-peaksset-object-in-the-self-peaks-dict">
+<h3>Store a new PeaksSet object in the self.peaks dict<a class="headerlink" href="#store-a-new-peaksset-object-in-the-self-peaks-dict" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.signal_type_data">
+<span class="sig-name descname"><span class="pre">signal_type_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.signal_type_data" title="Link to this definition">¶</a></dt>
+<dd><p>Automatically select the most advanced data type eligible for a
+subprocess (‘env’ {=envelope} &gt; ‘clean’ &gt; ‘raw’)
+———————————————————————–
+:param signal_type: one of ‘env’, ‘clean’, or ‘raw’
+:type signal_type: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns y_data<span class="colon">:</span></dt>
+<dd class="field-odd"><p>data of the selected signal type</p>
+</dd>
+<dt class="field-even">Rtype y_data<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.test_emg_quality">
+<span class="sig-name descname"><span class="pre">test_emg_quality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_tests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.test_emg_quality" title="Link to this definition">¶</a></dt>
+<dd><p>Test EMG PeaksSet according to quality criteria in Warnaar et al.
+(2024), extended with relative area under the baseline and relative ETP
+evaluation. Peak validity is updated in the PeaksSet object.
+———————————————————————–
+:param peak_set_name: PeaksSet name in self.peaks dict
+:type peak_set_name: str
+:param cutoff: Cut-off criteria for passing the tests, including
+ratio between ECG and EMG interpeak time (interpeak_distance), signal-
+to-noise ratio (snr), percentage area under the baseline (aub),
+percentage miss fit with bell curve (curve_fit), the aub relative to
+all detected aubs (relative_aub), and the electrical time product (ETP)
+relative to all ETPs (relative_ETP). ‘tolerant’ and
+‘strict’ can also be provided instead of a dict to use the respective
+values from Warnaar et al.
+:type cutoff: dict
+:param skip_tests: List of tests to skip.
+:type skip_tests: list
+:param parameter_names: Optionally refer to custom parameter names for
+default PeaksSet (ecg)
+:type parameter_names: dict
+:param verbose: Output the test values, and pass/fail to console.
+:type verbose: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.test_linked_peak_sets">
+<span class="sig-name descname"><span class="pre">test_linked_peak_sets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linked_timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linked_peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_tests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.test_linked_peak_sets" title="Link to this definition">¶</a></dt>
+<dd><p>Test number of detected breaths in the native PeaksSet compared to
+number of and timing peaks in the linked PeaksSet. Peak validity is
+updated in the PeaksSet object.
+———————————————————————–
+:param peak_set_name: PeaksSet name in self.peaks dict
+:type peak_set_name: str
+:param linked_timeseries: TimeSeries object with linked signal
+:type linked_timeseries: TimeSeries
+:param linked_peak_set_name: PeaksSet name in linked_timeseries.peaks
+:type linked_peak_set_name: str
+:param parameter_names: Optionally refer to custom parameter names for
+default PeaksSet and parameter names (‘rr’, )
+:type parameter_names: dict
+:param cutoff: Cut-off criteria for passing the tests, including
+fraction of detected breaths (fraction_emg_breaths), and event timing
+(event_timing). ‘tolerant’ and ‘strict’ can also be provided instead of
+a dict to use the pre-defined values.
+:type cutoff: dict
+:param skip_tests: List of tests to skip.
+:type skip_tests: list
+:param verbose: Output the test values, and pass/fail to console.
+:type verbose: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.test_pocc_quality">
+<span class="sig-name descname"><span class="pre">test_pocc_quality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_tests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.test_pocc_quality" title="Link to this definition">¶</a></dt>
+<dd><p>Test EMG PeaksSet according to quality criteria in Warnaar et al.
+(2024). Peak validity is updated in the PeaksSet object.
+———————————————————————–
+:param peak_set_name: PeaksSet name in self.peaks dict
+:type peak_set_name: str
+:param cutoff: Cut-off criteria for passing the tests, including
+consecutiveness of Pocc manoeuvre (consecutive_poccs), and p_vent
+upslope (dP_up_10, dP_up_90, and dP_up_90_norm). ‘tolerant’ and
+‘strict’ can also be provided instead of a dict to use the respective
+values from Warnaar et al.
+:type cutoff: dict
+:param skip_tests: List of tests to skip.
+:type skip_tests: list
+:param parameter_names: Optionally refer to custom parameter names for
+default PeaksSet and parameter names (ventilator_breaths,
+time_product, AUB, )
+:type parameter_names: dict
+:param verbose: Output the test values, and pass/fail to console.
+:type verbose: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeries.wavelet_denoising">
+<span class="sig-name descname"><span class="pre">wavelet_denoising</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'filt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_peak_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bp_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeries.wavelet_denoising" title="Link to this definition">¶</a></dt>
+<dd><p>Eliminate ECG artifacts from the provided signal. See
+preprocessing.wavelet_denoising submodules.
+———————————————————————–
+:returns: None
+:rtype: None</p>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeriesGroup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.data_classes.</span></span><span class="sig-name descname"><span class="pre">TimeSeriesGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_raw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Data class to store, process, and plot time series data</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeriesGroup.baseline">
+<span class="sig-name descname"><span class="pre">baseline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">33</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">augm_percentile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ma_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perc_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup.baseline" title="Link to this definition">¶</a></dt>
+<dd><p>Derive the moving baseline of the provided signal. See
+TimeSeries.baseline.
+———————————————————————–
+:returns: None
+:rtype: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeriesGroup.envelope">
+<span class="sig-name descname"><span class="pre">envelope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'clean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup.envelope" title="Link to this definition">¶</a></dt>
+<dd><p>Derive the moving envelope of the provided signal. See
+TimeSeries.envelope.
+———————————————————————–
+:returns: None
+:rtype: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeriesGroup.plot_full">
+<span class="sig-name descname"><span class="pre">plot_full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup.plot_full" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the indicated signals in the provided axes. By default the most
+advanced signal type (envelope &gt; clean &gt; filt &gt; raw) is plotted in the
+provided colours. See TimeSeries.plot_full.
+———————————————————————–
+:param axes: matplotlib Axes object. If none provided, a new figure is
+created.
+:type axes: ~numpy.ndarray
+:param channel_idxs: list of which channels indices to plot. If none
+provided, all channels are plot.
+:type channel_idxs: list
+:param signal_type: the signal (‘env’, ‘clean’, ‘filt’, ‘raw’) to plot
+:type signal_type: str
+:param colors: list of colors to plot the 1) signal, 2) the baseline
+:type colors: list
+:param baseline_bool: plot the baseline
+:type baseline_bool: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeriesGroup.plot_markers">
+<span class="sig-name descname"><span class="pre">plot_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup.plot_markers" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the indicated peak markers for all provided channels in the
+provided axes using the provided colours and markers.
+See TimeSeries.plot_markers
+———————————————————————–
+:param peak_set_name: PeaksSet name in self.peaks dict
+:type peak_set_name: str
+:param axes: matplotlib Axes object. If none provided, a new figure is
+created.
+:type axes: matplotlib.Axes
+:param channel_idxs: list of which channels indices to plot. If none
+provided, all channels are plot.
+:type channel_idxs: list
+:param valid_only: when True, only valid peaks are plotted.
+:type valid_only: bool
+:param colors: 1 color of list of up to 3 colors for the markers, peak,
+start, and end markers. If 2 colors are provided, start and end have
+the same colors
+:type colors: str or list
+:param markers: 1 markers or list of up to 3 markers for peak, start,
+and end markers. If 2 markers are provided, start and end have the same
+marker
+:type markers: str or list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.TimeSeriesGroup.plot_peaks">
+<span class="sig-name descname"><span class="pre">plot_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup.plot_peaks" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the indicated peaks for all provided channels in the provided
+axes. By default the most advanced signal type (env &gt; clean &gt; filt &gt;
+raw) is plotted in the provided colours. See TimeSeries.plot_peaks
+———————————————————————–
+:param peak_set_name: The name of the peak_set to be plotted.
+:type peak_set_name: str
+:param axes: matplotlib Axes object. If none provided, a new figure is
+created.
+:type axes: matplotlib.Axes
+:param channel_idxs: list of which channels indices to plot. If none
+provided, all channels are plot.
+:type channel_idxs: list
+:param signal_type: the signal (‘env’, ‘clean’, ‘filt’, ‘raw’) to plot
+:type signal_type: str
+:param margin_s: margins in samples plotted before the peak onset and
+after the peak offset
+:type margin_s: int
+:param valid_only: when True, only valid peaks are plotted.
+:type valid_only: bool
+:param colors: list of colors to plot the 1) signal, 2) the baseline
+:type colors: list
+:param baseline_bool: plot the baseline
+:type baseline_bool: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.VentilatorDataGroup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.data_classes.</span></span><span class="sig-name descname"><span class="pre">VentilatorDataGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_raw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.VentilatorDataGroup" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup" title="resurfemg.data_connector.data_classes.TimeSeriesGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeriesGroup</span></code></a></p>
+<p>Child-class of TimeSeriesGroup to store and handle ventilator data in.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.VentilatorDataGroup.find_occluded_breaths">
+<span class="sig-name descname"><span class="pre">find_occluded_breaths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pressure_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prominence_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_width_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.VentilatorDataGroup.find_occluded_breaths" title="Link to this definition">¶</a></dt>
+<dd><p>Find end-expiratory occlusion manoeuvres in ventilator pressure
+timeseries data. See postprocessing.event_detection submodule.
+———————————————————————–
+:param pressure_idx: Channel index of the ventilator pressure data
+:type pressure_idx: int
+For other arguments, see postprocessing.event_detection submodule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.VentilatorDataGroup.find_peep">
+<span class="sig-name descname"><span class="pre">find_peep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pressure_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume_idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.VentilatorDataGroup.find_peep" title="Link to this definition">¶</a></dt>
+<dd><section id="calculate-peep-as-the-median-value-of-p-vent-at-end-expiration">
+<h2>Calculate PEEP as the median value of p_vent at end-expiration.<a class="headerlink" href="#calculate-peep-as-the-median-value-of-p-vent-at-end-expiration" title="Link to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">param pressure_idx<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Channel index of the ventilator pressure data</p>
+</dd>
+<dt class="field-even">type pressure_idx<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">param volume_idx<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Channel index of the ventilator volume data</p>
+</dd>
+<dt class="field-even">type volume_idx<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.data_connector.data_classes.VentilatorDataGroup.find_tidal_volume_peaks">
+<span class="sig-name descname"><span class="pre">find_tidal_volume_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prominence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_new</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prominence_new</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressure_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.data_classes.VentilatorDataGroup.find_tidal_volume_peaks" title="Link to this definition">¶</a></dt>
+<dd><p>Find tidal-volume peaks in ventilator volume signal. Peaks are stored
+in PeaksSet named ‘ventilator_breaths’ in ventilator pressure and
+volume TimeSeries.
+———————————————————————–
+:param volume_idx: Channel index of the ventilator volume data
+:type volume_idx: int
+For other arguments, see postprocessing.event_detection submodule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">resurfemg.data_connector.data_classes module</a><ul>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.EmgDataGroup"><code class="docutils literal notranslate"><span class="pre">EmgDataGroup</span></code></a><ul>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.EmgDataGroup.filter"><code class="docutils literal notranslate"><span class="pre">EmgDataGroup.filter()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.EmgDataGroup.gating"><code class="docutils literal notranslate"><span class="pre">EmgDataGroup.gating()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.EmgDataGroup.wavelet_denoising"><code class="docutils literal notranslate"><span class="pre">EmgDataGroup.wavelet_denoising()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries"><code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code></a><ul>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.baseline"><code class="docutils literal notranslate"><span class="pre">TimeSeries.baseline()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.calculate_time_products"><code class="docutils literal notranslate"><span class="pre">TimeSeries.calculate_time_products()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.detect_emg_breaths"><code class="docutils literal notranslate"><span class="pre">TimeSeries.detect_emg_breaths()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.envelope"><code class="docutils literal notranslate"><span class="pre">TimeSeries.envelope()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.filter_emg"><code class="docutils literal notranslate"><span class="pre">TimeSeries.filter_emg()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.gating"><code class="docutils literal notranslate"><span class="pre">TimeSeries.gating()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.get_ecg_peaks"><code class="docutils literal notranslate"><span class="pre">TimeSeries.get_ecg_peaks()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.link_peak_set"><code class="docutils literal notranslate"><span class="pre">TimeSeries.link_peak_set()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.plot_aub"><code class="docutils literal notranslate"><span class="pre">TimeSeries.plot_aub()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.plot_curve_fits"><code class="docutils literal notranslate"><span class="pre">TimeSeries.plot_curve_fits()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.plot_full"><code class="docutils literal notranslate"><span class="pre">TimeSeries.plot_full()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.plot_markers"><code class="docutils literal notranslate"><span class="pre">TimeSeries.plot_markers()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.plot_peaks"><code class="docutils literal notranslate"><span class="pre">TimeSeries.plot_peaks()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.set_peaks"><code class="docutils literal notranslate"><span class="pre">TimeSeries.set_peaks()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.signal_type_data"><code class="docutils literal notranslate"><span class="pre">TimeSeries.signal_type_data()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.test_emg_quality"><code class="docutils literal notranslate"><span class="pre">TimeSeries.test_emg_quality()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.test_linked_peak_sets"><code class="docutils literal notranslate"><span class="pre">TimeSeries.test_linked_peak_sets()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.test_pocc_quality"><code class="docutils literal notranslate"><span class="pre">TimeSeries.test_pocc_quality()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeries.wavelet_denoising"><code class="docutils literal notranslate"><span class="pre">TimeSeries.wavelet_denoising()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGroup</span></code></a><ul>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup.baseline"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGroup.baseline()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup.envelope"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGroup.envelope()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup.plot_full"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGroup.plot_full()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup.plot_markers"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGroup.plot_markers()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.TimeSeriesGroup.plot_peaks"><code class="docutils literal notranslate"><span class="pre">TimeSeriesGroup.plot_peaks()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.VentilatorDataGroup"><code class="docutils literal notranslate"><span class="pre">VentilatorDataGroup</span></code></a><ul>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.VentilatorDataGroup.find_occluded_breaths"><code class="docutils literal notranslate"><span class="pre">VentilatorDataGroup.find_occluded_breaths()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.VentilatorDataGroup.find_peep"><code class="docutils literal notranslate"><span class="pre">VentilatorDataGroup.find_peep()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.data_classes.VentilatorDataGroup.find_tidal_volume_peaks"><code class="docutils literal notranslate"><span class="pre">VentilatorDataGroup.find_tidal_volume_peaks()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="resurfemg.data_connector.converter_functions.html"
+                          title="previous chapter">resurfemg.data_connector.converter_functions module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="resurfemg.data_connector.file_discovery.html"
+                          title="next chapter">resurfemg.data_connector.file_discovery module</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/resurfemg.data_connector.data_classes.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.data_connector.file_discovery.html" title="resurfemg.data_connector.file_discovery module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.data_connector.converter_functions.html" title="resurfemg.data_connector.converter_functions module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.data_connector.html" >resurfemg.data_connector package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.data_connector.data_classes module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2022, e.oppersma@utwente.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    </div>
+  </body>
+</html>

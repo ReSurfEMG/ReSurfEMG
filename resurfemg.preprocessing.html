@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>resurfemg.preprocessing package &#8212; resurfemg 0.3.0 documentation</title>
+    <title>resurfemg.preprocessing package &#8212; resurfemg 0.3.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
-    <script src="_static/documentation_options.js?v=e259d695"></script>
+    <script src="_static/documentation_options.js?v=4621528c"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="resurfemg.preprocessing.ecg_removal module" href="resurfemg.preprocessing.ecg_removal.html" />
-    <link rel="prev" title="resurfemg.postprocessing.features module" href="resurfemg.postprocessing.features.html" /> 
+    <link rel="prev" title="resurfemg.postprocessing.quality_assessment module" href="resurfemg.postprocessing.quality_assessment.html" /> 
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -29,9 +29,9 @@
           <a href="resurfemg.preprocessing.ecg_removal.html" title="resurfemg.preprocessing.ecg_removal module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="resurfemg.postprocessing.features.html" title="resurfemg.postprocessing.features module"
+          <a href="resurfemg.postprocessing.quality_assessment.html" title="resurfemg.postprocessing.quality_assessment module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" accesskey="U">resurfemg package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">resurfemg.preprocessing package</a></li> 
@@ -50,41 +50,22 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html">resurfemg.preprocessing.ecg_removal module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html#resurfemg.preprocessing.ecg_removal.compute_ICA_n_comp"><code class="docutils literal notranslate"><span class="pre">compute_ICA_n_comp()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html#resurfemg.preprocessing.ecg_removal.compute_ICA_n_comp_selective_zeroing"><code class="docutils literal notranslate"><span class="pre">compute_ICA_n_comp_selective_zeroing()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html#resurfemg.preprocessing.ecg_removal.compute_ICA_two_comp_selective"><code class="docutils literal notranslate"><span class="pre">compute_ICA_two_comp_selective()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html#resurfemg.preprocessing.ecg_removal.compute_ica_two_comp"><code class="docutils literal notranslate"><span class="pre">compute_ica_two_comp()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html#resurfemg.preprocessing.ecg_removal.compute_ica_two_comp_multi"><code class="docutils literal notranslate"><span class="pre">compute_ica_two_comp_multi()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html#resurfemg.preprocessing.ecg_removal.find_peaks_in_ecg_signal"><code class="docutils literal notranslate"><span class="pre">find_peaks_in_ecg_signal()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html#resurfemg.preprocessing.ecg_removal.detect_ecg_peaks"><code class="docutils literal notranslate"><span class="pre">detect_ecg_peaks()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html#resurfemg.preprocessing.ecg_removal.gating"><code class="docutils literal notranslate"><span class="pre">gating()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html#resurfemg.preprocessing.ecg_removal.pick_highest_correlation_array"><code class="docutils literal notranslate"><span class="pre">pick_highest_correlation_array()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html#resurfemg.preprocessing.ecg_removal.pick_highest_correlation_array_multi"><code class="docutils literal notranslate"><span class="pre">pick_highest_correlation_array_multi()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html#resurfemg.preprocessing.ecg_removal.pick_lowest_correlation_array"><code class="docutils literal notranslate"><span class="pre">pick_lowest_correlation_array()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html#resurfemg.preprocessing.ecg_removal.pick_more_peaks_array"><code class="docutils literal notranslate"><span class="pre">pick_more_peaks_array()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.ecg_removal.html#resurfemg.preprocessing.ecg_removal.wavelet_denoising"><code class="docutils literal notranslate"><span class="pre">wavelet_denoising()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="resurfemg.preprocessing.envelope.html">resurfemg.preprocessing.envelope module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.envelope.html#resurfemg.preprocessing.envelope.full_rolling_arv"><code class="docutils literal notranslate"><span class="pre">full_rolling_arv()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.envelope.html#resurfemg.preprocessing.envelope.full_rolling_rms"><code class="docutils literal notranslate"><span class="pre">full_rolling_rms()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.envelope.html#resurfemg.preprocessing.envelope.hi_envelope"><code class="docutils literal notranslate"><span class="pre">hi_envelope()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.envelope.html#resurfemg.preprocessing.envelope.naive_rolling_rms"><code class="docutils literal notranslate"><span class="pre">naive_rolling_rms()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.envelope.html#resurfemg.preprocessing.envelope.running_smoother"><code class="docutils literal notranslate"><span class="pre">running_smoother()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.envelope.html#resurfemg.preprocessing.envelope.smooth_for_baseline"><code class="docutils literal notranslate"><span class="pre">smooth_for_baseline()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.envelope.html#resurfemg.preprocessing.envelope.smooth_for_baseline_with_overlay"><code class="docutils literal notranslate"><span class="pre">smooth_for_baseline_with_overlay()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.envelope.html#resurfemg.preprocessing.envelope.vect_naive_rolling_rms"><code class="docutils literal notranslate"><span class="pre">vect_naive_rolling_rms()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="resurfemg.preprocessing.filtering.html">resurfemg.preprocessing.filtering module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.filtering.html#resurfemg.preprocessing.filtering.bad_end_cutter"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.filtering.html#resurfemg.preprocessing.filtering.bad_end_cutter_better"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter_better()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.filtering.html#resurfemg.preprocessing.filtering.bad_end_cutter_for_samples"><code class="docutils literal notranslate"><span class="pre">bad_end_cutter_for_samples()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.filtering.html#resurfemg.preprocessing.filtering.compute_power_loss"><code class="docutils literal notranslate"><span class="pre">compute_power_loss()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.filtering.html#resurfemg.preprocessing.filtering.emg_bandpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_bandpass_butter()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.filtering.html#resurfemg.preprocessing.filtering.emg_bandpass_butter_sample"><code class="docutils literal notranslate"><span class="pre">emg_bandpass_butter_sample()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.filtering.html#resurfemg.preprocessing.filtering.emg_highpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_highpass_butter()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.filtering.html#resurfemg.preprocessing.filtering.emg_highpass_butter_sample"><code class="docutils literal notranslate"><span class="pre">emg_highpass_butter_sample()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.filtering.html#resurfemg.preprocessing.filtering.emg_lowpass_butter"><code class="docutils literal notranslate"><span class="pre">emg_lowpass_butter()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.filtering.html#resurfemg.preprocessing.filtering.emg_lowpass_butter_sample"><code class="docutils literal notranslate"><span class="pre">emg_lowpass_butter_sample()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.filtering.html#resurfemg.preprocessing.filtering.helper_lowpass"><code class="docutils literal notranslate"><span class="pre">helper_lowpass()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="resurfemg.preprocessing.filtering.html#resurfemg.preprocessing.filtering.notch_filter"><code class="docutils literal notranslate"><span class="pre">notch_filter()</span></code></a></li>
 </ul>
 </li>
@@ -101,7 +82,7 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
@@ -116,8 +97,8 @@
   </div>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="resurfemg.postprocessing.features.html"
-                          title="previous chapter">resurfemg.postprocessing.features module</a></p>
+    <p class="topless"><a href="resurfemg.postprocessing.quality_assessment.html"
+                          title="previous chapter">resurfemg.postprocessing.quality_assessment module</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
@@ -145,7 +126,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -158,17 +139,17 @@
           <a href="resurfemg.preprocessing.ecg_removal.html" title="resurfemg.preprocessing.ecg_removal module"
              >next</a> |</li>
         <li class="right" >
-          <a href="resurfemg.postprocessing.features.html" title="resurfemg.postprocessing.features module"
+          <a href="resurfemg.postprocessing.quality_assessment.html" title="resurfemg.postprocessing.quality_assessment module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">resurfemg.preprocessing package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2022, c.moore@esciencecenter.nl.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    &#169; Copyright 2022, e.oppersma@utwente.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
     </div>
   </body>
 </html>

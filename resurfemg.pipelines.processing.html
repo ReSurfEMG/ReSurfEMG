@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>resurfemg.pipelines.processing module &#8212; resurfemg 0.3.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
+    <script src="_static/documentation_options.js?v=4621528c"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="resurfemg.pipelines.synthetic_data module" href="resurfemg.pipelines.synthetic_data.html" />
+    <link rel="prev" title="resurfemg.pipelines.ipy_widgets module" href="resurfemg.pipelines.ipy_widgets.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.pipelines.synthetic_data.html" title="resurfemg.pipelines.synthetic_data module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.pipelines.ipy_widgets.html" title="resurfemg.pipelines.ipy_widgets module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.pipelines.html" accesskey="U">resurfemg.pipelines package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.pipelines.processing module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-resurfemg.pipelines.processing">
+<span id="resurfemg-pipelines-processing-module"></span><h1>resurfemg.pipelines.processing module<a class="headerlink" href="#module-resurfemg.pipelines.processing" title="Link to this heading">¶</a></h1>
+<p>Copyright 2022 Netherlands eScience Center and University of Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
+<p>This file contains functions to perform default signal processing procedures.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.pipelines.processing.ecg_removal_gating">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.pipelines.processing.</span></span><span class="sig-name descname"><span class="pre">ecg_removal_gating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_raw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_peaks_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate_width_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ecg_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.pipelines.processing.ecg_removal_gating" title="Link to this definition">¶</a></dt>
+<dd><section id="eliminate-the-ecg-peaks-from-the-emg-raw-signal">
+<h2>Eliminate the ECG peaks from the emg_raw signal.<a class="headerlink" href="#eliminate-the-ecg-peaks-from-the-emg-raw-signal" title="Link to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">param emg_raw<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1 dimensional emg signal to gate</p>
+</dd>
+<dt class="field-even">type emg_raw<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray</p>
+</dd>
+<dt class="field-odd">param ecg_peaks_idxs<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of ECG peak sample numbers to gate.</p>
+</dd>
+<dt class="field-even">type ecg_peaks_idxs<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray</p>
+</dd>
+<dt class="field-odd">param gate_width_samples<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of samples to gate</p>
+</dd>
+<dt class="field-even">type gate_width_samples<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">param fs<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sampling rate of emg_raw</p>
+</dd>
+<dt class="field-even">type fs<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">param method<span class="colon">:</span></dt>
+<dd class="field-odd"><p>gating method. See the ecg_removal.gating function.</p>
+</dd>
+<dt class="field-even">type method<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">param ecg_shift<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Shift gate windows relative to detected peaks in samples.</p>
+</dd>
+<dt class="field-even">type ecg_shift<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">returns emg_gated<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The gated EMG signal</p>
+</dd>
+<dt class="field-even">rtype emg_gated<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.pipelines.processing.quick_look">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.pipelines.processing.</span></span><span class="sig-name descname"><span class="pre">quick_look</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_raw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs_emg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_power_spectrum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.pipelines.processing.quick_look" title="Link to this definition">¶</a></dt>
+<dd><section id="method-for-quick-inspection-of-emg-data-based-on-high-pass-filtering-80hz">
+<h2>Method for quick inspection of EMG data based on high-pass filtering &#64;80Hz.<a class="headerlink" href="#method-for-quick-inspection-of-emg-data-based-on-high-pass-filtering-80hz" title="Link to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">param emg_raw<span class="colon">:</span></dt>
+<dd class="field-odd"><p>raw single channel EMG data</p>
+</dd>
+<dt class="field-even">type emg_raw<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray</p>
+</dd>
+<dt class="field-odd">param fs_emg<span class="colon">:</span></dt>
+<dd class="field-odd"><p>sampling frequency</p>
+</dd>
+<dt class="field-even">type fs_emg<span class="colon">:</span></dt>
+<dd class="field-even"><p>~int</p>
+</dd>
+<dt class="field-odd">param plot_raw<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Plot the raw signal</p>
+</dd>
+<dt class="field-even">type plot_raw<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+<dt class="field-odd">param plot_clean<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Plot the filtered signal</p>
+</dd>
+<dt class="field-even">type plot_clean<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+<dt class="field-odd">param plot_env<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Plot the envelope of the signal</p>
+</dd>
+<dt class="field-even">type plot_env<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+<dt class="field-odd">param plot_power_spectrum<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Plot the powerspectrum of the raw signal</p>
+</dd>
+<dt class="field-even">type plot_power_spectrum<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+<dt class="field-odd">returns emg_filt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The bandpass filtered EMG data</p>
+</dd>
+<dt class="field-even">rtype emg_filt<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray</p>
+</dd>
+<dt class="field-odd">returns emg_env<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The envelope of the EMG data</p>
+</dd>
+<dt class="field-even">rtype emg_env<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">resurfemg.pipelines.processing module</a><ul>
+<li><a class="reference internal" href="#resurfemg.pipelines.processing.ecg_removal_gating"><code class="docutils literal notranslate"><span class="pre">ecg_removal_gating()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.pipelines.processing.quick_look"><code class="docutils literal notranslate"><span class="pre">quick_look()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="resurfemg.pipelines.ipy_widgets.html"
+                          title="previous chapter">resurfemg.pipelines.ipy_widgets module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="resurfemg.pipelines.synthetic_data.html"
+                          title="next chapter">resurfemg.pipelines.synthetic_data module</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/resurfemg.pipelines.processing.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.pipelines.synthetic_data.html" title="resurfemg.pipelines.synthetic_data module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.pipelines.ipy_widgets.html" title="resurfemg.pipelines.ipy_widgets module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.pipelines.html" >resurfemg.pipelines package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.pipelines.processing module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2022, e.oppersma@utwente.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    </div>
+  </body>
+</html>

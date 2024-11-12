@@ -5,10 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>resurfemg.preprocessing.envelope module &#8212; resurfemg 0.3.0 documentation</title>
+    <title>resurfemg.preprocessing.envelope module &#8212; resurfemg 0.3.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
-    <script src="_static/documentation_options.js?v=e259d695"></script>
+    <script src="_static/documentation_options.js?v=4621528c"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -16,7 +16,7 @@
     <link rel="next" title="resurfemg.preprocessing.filtering module" href="resurfemg.preprocessing.filtering.html" />
     <link rel="prev" title="resurfemg.preprocessing.ecg_removal module" href="resurfemg.preprocessing.ecg_removal.html" /> 
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="resurfemg.preprocessing.ecg_removal.html" title="resurfemg.preprocessing.ecg_removal module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="resurfemg.preprocessing.html" accesskey="U">resurfemg.preprocessing package</a> &#187;</li>
@@ -50,143 +50,61 @@
 Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
 <p>This file contains functions extract the envelopes from EMG arrays.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.preprocessing.envelope.full_rolling_rms">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.envelope.</span></span><span class="sig-name descname"><span class="pre">full_rolling_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_emg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.envelope.full_rolling_rms" title="Link to this definition">¶</a></dt>
-<dd><p>This function computes a root mean squared envelope over an
-array <code class="code docutils literal notranslate"><span class="pre">data_emg</span></code>.  To do this it uses number of sample values
-<code class="code docutils literal notranslate"><span class="pre">window_length</span></code>. It differs from <a class="reference internal" href="#resurfemg.preprocessing.envelope.naive_rolling_rms" title="resurfemg.preprocessing.envelope.naive_rolling_rms"><code class="xref py py-func docutils literal notranslate"><span class="pre">naive_rolling_rms()</span></code></a>
-by that the     output is the same length as the input vector.</p>
+<dt class="sig sig-object py" id="resurfemg.preprocessing.envelope.full_rolling_arv">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.envelope.</span></span><span class="sig-name descname"><span class="pre">full_rolling_arv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_clean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.envelope.full_rolling_arv" title="Link to this definition">¶</a></dt>
+<dd><p>This function computes an average rectified value envelope over an
+array <cite>emg_clean</cite>.
+—————————————————————————
+:param emg_clean: Samples from the EMG
+:type emg_clean: ~numpy.ndarray
+:param window_length: Length of the sample use as window for function
+:type window_length: int</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data_emg</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – Samples from the EMG</p></li>
-<li><p><strong>window_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Length of the sample use as window for function</p></li>
-</ul>
+<dt class="field-odd">Returns emg_arv<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The average rectified value EMG sample data</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The root-mean-squared EMG sample data</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+<dt class="field-even">Rtype emg_arv<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray[float]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.preprocessing.envelope.hi_envelope">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.envelope.</span></span><span class="sig-name descname"><span class="pre">hi_envelope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">our_signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">24</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.envelope.hi_envelope" title="Link to this definition">¶</a></dt>
-<dd><p>Takes a 1d signal array, and extracts ‘high’envelope,
-then makes high envelope, based on connecting peaks
-dmax: int, size of chunks,</p>
+<dt class="sig sig-object py" id="resurfemg.preprocessing.envelope.full_rolling_rms">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.envelope.</span></span><span class="sig-name descname"><span class="pre">full_rolling_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_clean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.envelope.full_rolling_rms" title="Link to this definition">¶</a></dt>
+<dd><p>This function computes a root mean squared envelope over an
+array cleaned (filtered and ECG eliminated) EMG.
+—————————————————————————
+:param emg_clean: Samples from the EMG
+:type emg_clean: ~numpy.ndarray
+:param window_length: Length of the sample use as window for function
+:type window_length: int</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>our_signal</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – 1d signal array usually of emg</p></li>
-<li><p><strong>dmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – length of chunk to look for local max in</p></li>
-</ul>
+<dt class="field-odd">Returns emg_rms<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The root-mean-squared EMG sample data</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>src_signal_gated, the gated result</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+<dt class="field-even">Rtype emg_rms<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray[float]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.preprocessing.envelope.naive_rolling_rms">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.envelope.</span></span><span class="sig-name descname"><span class="pre">naive_rolling_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_emg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.envelope.naive_rolling_rms" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.envelope.</span></span><span class="sig-name descname"><span class="pre">naive_rolling_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_clean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.envelope.naive_rolling_rms" title="Link to this definition">¶</a></dt>
 <dd><p>This function computes a root mean squared envelope over an
-array <code class="code docutils literal notranslate"><span class="pre">data_emg</span></code>. To do this it uses number of sample values
-<code class="code docutils literal notranslate"><span class="pre">window_length</span></code>.</p>
+array <cite>emg_clean</cite>.
+—————————————————————————
+:param emg_clean: Samples from the EMG
+:type emg_clean: ~numpy.ndarray
+:param window_length: Length of the sample use as window for function
+:type window_length: int</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data_emg</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – Samples from the EMG</p></li>
-<li><p><strong>window_length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Length of the sample use as window for function</p></li>
-</ul>
+<dt class="field-odd">Returns emg_rms<span class="colon">:</span></dt>
+<dd class="field-odd"><p>: The root-mean-squared EMG sample data</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The root-mean-squared EMG sample data</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.preprocessing.envelope.running_smoother">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.envelope.</span></span><span class="sig-name descname"><span class="pre">running_smoother</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.envelope.running_smoother" title="Link to this definition">¶</a></dt>
-<dd><p>This is the smoother to use in time calculations</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.preprocessing.envelope.smooth_for_baseline">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.envelope.</span></span><span class="sig-name descname"><span class="pre">smooth_for_baseline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">single_filtered_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.envelope.smooth_for_baseline" title="Link to this definition">¶</a></dt>
-<dd><p>This is an adaptive smoothing a series that overvalues closer numbers.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>single_filtered_array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – Array.</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The number of samples to work from</p></li>
-<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The number of samples to work until</p></li>
-<li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The number of samples to work over</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple of arrays</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.preprocessing.envelope.smooth_for_baseline_with_overlay">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.envelope.</span></span><span class="sig-name descname"><span class="pre">smooth_for_baseline_with_overlay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_own_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.envelope.smooth_for_baseline_with_overlay" title="Link to this definition">¶</a></dt>
-<dd><p>This is the same as smooth for baseline, but we also get an
-overlay 0 or 1 mask tagging the baseline.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>my_own_array</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – Array</p></li>
-<li><p><strong>threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Number where to cut the mask for overlay</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The number of samples to work from</p></li>
-<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The number of samples to work until</p></li>
-<li><p><strong>smooth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The number of samples to work over</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple of arrays</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.preprocessing.envelope.vect_naive_rolling_rms">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.envelope.</span></span><span class="sig-name descname"><span class="pre">vect_naive_rolling_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.envelope.vect_naive_rolling_rms" title="Link to this definition">¶</a></dt>
-<dd><p>This function computes a root mean squared envelope over an
-array <code class="code docutils literal notranslate"><span class="pre">x</span></code>.  To do this it uses number of sample values
-<code class="code docutils literal notranslate"><span class="pre">N</span></code>. It differs from <a class="reference internal" href="#resurfemg.preprocessing.envelope.naive_rolling_rms" title="resurfemg.preprocessing.envelope.naive_rolling_rms"><code class="xref py py-func docutils literal notranslate"><span class="pre">naive_rolling_rms()</span></code></a> by the way
-the signal is put in.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>xc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a>) – Samples from the EMG</p></li>
-<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Legnth of the sample use as window for function</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The root-mean-squared EMG sample data</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><em>ndarray</em></a></p>
+<dt class="field-even">Rtype emg_rms<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray[float]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -198,19 +116,15 @@ the signal is put in.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">resurfemg.preprocessing.envelope module</a><ul>
+<li><a class="reference internal" href="#resurfemg.preprocessing.envelope.full_rolling_arv"><code class="docutils literal notranslate"><span class="pre">full_rolling_arv()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.preprocessing.envelope.full_rolling_rms"><code class="docutils literal notranslate"><span class="pre">full_rolling_rms()</span></code></a></li>
-<li><a class="reference internal" href="#resurfemg.preprocessing.envelope.hi_envelope"><code class="docutils literal notranslate"><span class="pre">hi_envelope()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.preprocessing.envelope.naive_rolling_rms"><code class="docutils literal notranslate"><span class="pre">naive_rolling_rms()</span></code></a></li>
-<li><a class="reference internal" href="#resurfemg.preprocessing.envelope.running_smoother"><code class="docutils literal notranslate"><span class="pre">running_smoother()</span></code></a></li>
-<li><a class="reference internal" href="#resurfemg.preprocessing.envelope.smooth_for_baseline"><code class="docutils literal notranslate"><span class="pre">smooth_for_baseline()</span></code></a></li>
-<li><a class="reference internal" href="#resurfemg.preprocessing.envelope.smooth_for_baseline_with_overlay"><code class="docutils literal notranslate"><span class="pre">smooth_for_baseline_with_overlay()</span></code></a></li>
-<li><a class="reference internal" href="#resurfemg.preprocessing.envelope.vect_naive_rolling_rms"><code class="docutils literal notranslate"><span class="pre">vect_naive_rolling_rms()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -247,7 +161,7 @@ the signal is put in.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -262,7 +176,7 @@ the signal is put in.</p>
         <li class="right" >
           <a href="resurfemg.preprocessing.ecg_removal.html" title="resurfemg.preprocessing.ecg_removal module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="resurfemg.preprocessing.html" >resurfemg.preprocessing package</a> &#187;</li>
@@ -270,8 +184,8 @@ the signal is put in.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2022, c.moore@esciencecenter.nl.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    &#169; Copyright 2022, e.oppersma@utwente.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
     </div>
   </body>
 </html>

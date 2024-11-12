@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>resurfemg.data_connector.tmsisdk_lite module &#8212; resurfemg 0.3.0 documentation</title>
+    <title>resurfemg.data_connector.tmsisdk_lite module &#8212; resurfemg 0.3.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
-    <script src="_static/documentation_options.js?v=e259d695"></script>
+    <script src="_static/documentation_options.js?v=4621528c"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="resurfemg.helper_functions package" href="resurfemg.helper_functions.html" />
-    <link rel="prev" title="resurfemg.data_connector.converter_functions module" href="resurfemg.data_connector.converter_functions.html" /> 
+    <link rel="prev" title="resurfemg.data_connector.synthetic_data module" href="resurfemg.data_connector.synthetic_data.html" /> 
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -29,9 +29,9 @@
           <a href="resurfemg.helper_functions.html" title="resurfemg.helper_functions package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="resurfemg.data_connector.converter_functions.html" title="resurfemg.data_connector.converter_functions module"
+          <a href="resurfemg.data_connector.synthetic_data.html" title="resurfemg.data_connector.synthetic_data module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="resurfemg.data_connector.html" accesskey="U">resurfemg.data_connector package</a> &#187;</li>
@@ -46,12 +46,11 @@
             
   <section id="module-resurfemg.data_connector.tmsisdk_lite">
 <span id="resurfemg-data-connector-tmsisdk-lite-module"></span><h1>resurfemg.data_connector.tmsisdk_lite module<a class="headerlink" href="#module-resurfemg.data_connector.tmsisdk_lite" title="Link to this heading">¶</a></h1>
-<p>The following module is a modification of a
-few classes from a larger code base
-created by Twente Medical Systems International B.V., Oldenzaal
-The Netherlands. Some docstrings, formatting,
-variables, variable names and even classes have been changed.
-The Twente Medical Systems International B.V.
+<p>The following module is a modification of a few classes from a larger code base
+created by Twente Medical Systems International B.V., Oldenzaal The
+Netherlands. Some docstrings, formatting, variables, variable names and even
+classes have been changed.</p>
+<p>The Twente Medical Systems International B.V.
 lisencing information is as below:</p>
 <p>(c) 2022 Twente Medical Systems International B.V.,
 Oldenzaal The Netherlands</p>
@@ -69,13 +68,13 @@ limitations under the License.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="resurfemg.data_connector.tmsisdk_lite.Channel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.tmsisdk_lite.</span></span><span class="sig-name descname"><span class="pre">Channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.tmsisdk_lite.Channel" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>‘Channel’ represents a device channel. It has the next properties:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the name of the channel</p></li>
-<li><p><strong>unit_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the name of unit (e.g. ‘μVolt’) of channel sample-data</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the name of the channel</p></li>
+<li><p><strong>unit_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the name of unit (e.g. ‘μVolt’) of channel sample-data</p></li>
 </ul>
 </dd>
 </dl>
@@ -84,7 +83,7 @@ limitations under the License.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="resurfemg.data_connector.tmsisdk_lite.Poly5Reader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.tmsisdk_lite.</span></span><span class="sig-name descname"><span class="pre">Poly5Reader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readAll</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.tmsisdk_lite.Poly5Reader" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>This class allows reading in various file types
 created on TMSi devices and/or in Poly5 format.</p>
 <dl class="py method">
@@ -122,7 +121,7 @@ created on TMSi devices and/or in Poly5 format.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
@@ -142,8 +141,8 @@ created on TMSi devices and/or in Poly5 format.</p>
   </div>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="resurfemg.data_connector.converter_functions.html"
-                          title="previous chapter">resurfemg.data_connector.converter_functions module</a></p>
+    <p class="topless"><a href="resurfemg.data_connector.synthetic_data.html"
+                          title="previous chapter">resurfemg.data_connector.synthetic_data module</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
@@ -171,7 +170,7 @@ created on TMSi devices and/or in Poly5 format.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -184,9 +183,9 @@ created on TMSi devices and/or in Poly5 format.</p>
           <a href="resurfemg.helper_functions.html" title="resurfemg.helper_functions package"
              >next</a> |</li>
         <li class="right" >
-          <a href="resurfemg.data_connector.converter_functions.html" title="resurfemg.data_connector.converter_functions module"
+          <a href="resurfemg.data_connector.synthetic_data.html" title="resurfemg.data_connector.synthetic_data module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="resurfemg.data_connector.html" >resurfemg.data_connector package</a> &#187;</li>
@@ -194,8 +193,8 @@ created on TMSi devices and/or in Poly5 format.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2022, c.moore@esciencecenter.nl.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    &#169; Copyright 2022, e.oppersma@utwente.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
     </div>
   </body>
 </html>

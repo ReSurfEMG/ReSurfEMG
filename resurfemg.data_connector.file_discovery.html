@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>resurfemg.data_connector.file_discovery module &#8212; resurfemg 0.3.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
+    <script src="_static/documentation_options.js?v=4621528c"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="resurfemg.data_connector.peakset_class module" href="resurfemg.data_connector.peakset_class.html" />
+    <link rel="prev" title="resurfemg.data_connector.data_classes module" href="resurfemg.data_connector.data_classes.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.data_connector.peakset_class.html" title="resurfemg.data_connector.peakset_class module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.data_connector.data_classes.html" title="resurfemg.data_connector.data_classes module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.data_connector.html" accesskey="U">resurfemg.data_connector package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.data_connector.file_discovery module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-resurfemg.data_connector.file_discovery">
+<span id="resurfemg-data-connector-file-discovery-module"></span><h1>resurfemg.data_connector.file_discovery module<a class="headerlink" href="#module-resurfemg.data_connector.file_discovery" title="Link to this heading">¶</a></h1>
+<p>Copyright 2022 Netherlands eScience Center and University of Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
+<p>This file contains functions to automatically find specified files and folders.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.data_connector.file_discovery.find_files">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.file_discovery.</span></span><span class="sig-name descname"><span class="pre">find_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name_regex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension_regex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.file_discovery.find_files" title="Link to this definition">¶</a></dt>
+<dd><p>Find files with the file name and extension according to filename pattern
+<cite>file_name_regex</cite>.`extension_regex` starting from the provided base_path
+according to the provided folder_leves. If <cite>folder_levels</cite> is None, all
+files matching the name pattern included, no matter the data organisation.
+—————————————————————————
+:param base_path: Path to starting directory
+:type base_path: str
+:param file_name_regex: file name pattern, see Python Regex docs
+:type file_name_regex: str
+:param extension_regex: file extension pattern, see Python Regex docs
+:type extension_regex: str
+:param folder_levels: data directory organisation, e.g. [‘patient’, ‘date’]
+:type folder_levels: list(str) or str
+:param verbose: Provide feedback about non-included files
+:type verbose: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns files<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Matching file paths tabled by the folder_levels</p>
+</dd>
+<dt class="field-even">Rtype files<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.data_connector.file_discovery.find_folders">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.data_connector.file_discovery.</span></span><span class="sig-name descname"><span class="pre">find_folders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.data_connector.file_discovery.find_folders" title="Link to this definition">¶</a></dt>
+<dd><p>Find folders up to the depth of the provided folder_levels starting from
+the provided base_path. If <cite>folder_levels</cite> is None, all folders in the
+provided are included, no matter the data organisation.
+—————————————————————————
+:param base_path: Path to starting directory
+:type base_path: str
+:param folder_levels: data directory organisation, e.g. [‘patient’, ‘date’]
+:type folder_levels: list(str) or str
+:param verbose: Provide feedback about non-included files
+:type verbose: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns folders<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Folder paths tabled by the folder_levels</p>
+</dd>
+<dt class="field-even">Rtype folders<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">resurfemg.data_connector.file_discovery module</a><ul>
+<li><a class="reference internal" href="#resurfemg.data_connector.file_discovery.find_files"><code class="docutils literal notranslate"><span class="pre">find_files()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.data_connector.file_discovery.find_folders"><code class="docutils literal notranslate"><span class="pre">find_folders()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="resurfemg.data_connector.data_classes.html"
+                          title="previous chapter">resurfemg.data_connector.data_classes module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="resurfemg.data_connector.peakset_class.html"
+                          title="next chapter">resurfemg.data_connector.peakset_class module</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/resurfemg.data_connector.file_discovery.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.data_connector.peakset_class.html" title="resurfemg.data_connector.peakset_class module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.data_connector.data_classes.html" title="resurfemg.data_connector.data_classes module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.data_connector.html" >resurfemg.data_connector package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.data_connector.file_discovery module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2022, e.oppersma@utwente.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    </div>
+  </body>
+</html>

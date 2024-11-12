@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>resurfemg.cli.cli module &#8212; resurfemg 0.3.0 documentation</title>
+    <title>resurfemg.cli.cli module &#8212; resurfemg 0.3.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
-    <script src="_static/documentation_options.js?v=e259d695"></script>
+    <script src="_static/documentation_options.js?v=4621528c"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="resurfemg.config package" href="resurfemg.config.html" />
+    <link rel="next" title="resurfemg.data_connector package" href="resurfemg.data_connector.html" />
     <link rel="prev" title="resurfemg.cli package" href="resurfemg.cli.html" /> 
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -26,12 +26,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="resurfemg.config.html" title="resurfemg.config package"
+          <a href="resurfemg.data_connector.html" title="resurfemg.data_connector package"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="resurfemg.cli.html" title="resurfemg.cli package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="resurfemg.cli.html" accesskey="U">resurfemg.cli package</a> &#187;</li>
@@ -46,28 +46,38 @@
             
   <section id="module-resurfemg.cli.cli">
 <span id="resurfemg-cli-cli-module"></span><h1>resurfemg.cli.cli module<a class="headerlink" href="#module-resurfemg.cli.cli" title="Link to this heading">¶</a></h1>
-<p>Copyright 2022 Netherlands eScience Center and U. Twente
+<p>Copyright 2022 Netherlands eScience Center and Univeristy of  Twente
 Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
-<p>This file contains functions designed to help with command line
-interface for reproduction of previous work. Here we are building
-APIs for pre-processing and machine learning at speed.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="resurfemg.cli.cli.common">
-<span class="sig-prename descclassname"><span class="pre">resurfemg.cli.cli.</span></span><span class="sig-name descname"><span class="pre">common</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.cli.cli.common" title="Link to this definition">¶</a></dt>
-<dd><p>This function defines some arguments that can be called from any command
-line function to be defined.</p>
-</dd></dl>
-
+<p>This file contains functions designed to help with command line interface for
+reproduction of previous work. Here we are building APIs for pre-, and post-
+processing.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.cli.cli.main">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.cli.cli.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.cli.cli.main" title="Link to this definition">¶</a></dt>
-<dd><p>This runs the parser and subparsers.</p>
+<dd><p>The main function is called from the command line interface. It runs the
+parser and subparsers specified in the make_parser function.
+It can be run via the command line as follows:
+python -m resurfemg.cli.cli &lt;action&gt; &lt;options&gt;
+where &lt;action&gt; is one of the following:
+- simulate_emg
+- simulate_ventilator
+- save_to_numpy
+&lt;options&gt; are the options specific to the action.
+————————————————————————–</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.cli.cli.make_parser">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.cli.cli.</span></span><span class="sig-name descname"><span class="pre">make_parser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.cli.cli.make_parser" title="Link to this definition">¶</a></dt>
-<dd><p>This is the setting up parser for our CLI.</p>
+<dd><p>Set up the parser for the CLI.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.cli.cli.set_common_args">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.cli.cli.</span></span><span class="sig-name descname"><span class="pre">set_common_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.cli.cli.set_common_args" title="Link to this definition">¶</a></dt>
+<dd><p>This function defines some arguments that can be provided to any command
+line function to be defined. See the make_parser function for more details.
+————————————————————————–</p>
 </dd></dl>
 
 </section>
@@ -77,15 +87,15 @@ line function to be defined.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">resurfemg.cli.cli module</a><ul>
-<li><a class="reference internal" href="#resurfemg.cli.cli.common"><code class="docutils literal notranslate"><span class="pre">common()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.cli.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.cli.cli.make_parser"><code class="docutils literal notranslate"><span class="pre">make_parser()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.cli.cli.set_common_args"><code class="docutils literal notranslate"><span class="pre">set_common_args()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -98,8 +108,8 @@ line function to be defined.</p>
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="resurfemg.config.html"
-                          title="next chapter">resurfemg.config package</a></p>
+    <p class="topless"><a href="resurfemg.data_connector.html"
+                          title="next chapter">resurfemg.data_connector package</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
@@ -122,7 +132,7 @@ line function to be defined.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -132,12 +142,12 @@ line function to be defined.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="resurfemg.config.html" title="resurfemg.config package"
+          <a href="resurfemg.data_connector.html" title="resurfemg.data_connector package"
              >next</a> |</li>
         <li class="right" >
           <a href="resurfemg.cli.html" title="resurfemg.cli package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="resurfemg.cli.html" >resurfemg.cli package</a> &#187;</li>
@@ -145,8 +155,8 @@ line function to be defined.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2022, c.moore@esciencecenter.nl.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    &#169; Copyright 2022, e.oppersma@utwente.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
     </div>
   </body>
 </html>

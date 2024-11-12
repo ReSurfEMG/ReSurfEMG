@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>resurfemg.postprocessing package &#8212; resurfemg 0.3.0 documentation</title>
+    <title>resurfemg.postprocessing package &#8212; resurfemg 0.3.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
-    <script src="_static/documentation_options.js?v=e259d695"></script>
+    <script src="_static/documentation_options.js?v=4621528c"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="resurfemg.postprocessing.baseline module" href="resurfemg.postprocessing.baseline.html" />
-    <link rel="prev" title="resurfemg.pipelines.pipelines module" href="resurfemg.pipelines.pipelines.html" /> 
+    <link rel="prev" title="resurfemg.pipelines.synthetic_data module" href="resurfemg.pipelines.synthetic_data.html" /> 
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -29,9 +29,9 @@
           <a href="resurfemg.postprocessing.baseline.html" title="resurfemg.postprocessing.baseline module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="resurfemg.pipelines.pipelines.html" title="resurfemg.pipelines.pipelines module"
+          <a href="resurfemg.pipelines.synthetic_data.html" title="resurfemg.pipelines.synthetic_data module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" accesskey="U">resurfemg package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">resurfemg.postprocessing package</a></li> 
@@ -55,26 +55,34 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="resurfemg.postprocessing.event_detection.html">resurfemg.postprocessing.event_detection module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.event_detection.html#resurfemg.postprocessing.event_detection.detect_emg_breaths"><code class="docutils literal notranslate"><span class="pre">detect_emg_breaths()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.event_detection.html#resurfemg.postprocessing.event_detection.detect_ventilator_breath"><code class="docutils literal notranslate"><span class="pre">detect_ventilator_breath()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.event_detection.html#resurfemg.postprocessing.event_detection.find_linked_peaks"><code class="docutils literal notranslate"><span class="pre">find_linked_peaks()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.event_detection.html#resurfemg.postprocessing.event_detection.find_occluded_breaths"><code class="docutils literal notranslate"><span class="pre">find_occluded_breaths()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.event_detection.html#resurfemg.postprocessing.event_detection.onoffpeak_baseline_crossing"><code class="docutils literal notranslate"><span class="pre">onoffpeak_baseline_crossing()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.event_detection.html#resurfemg.postprocessing.event_detection.onoffpeak_slope_extrapolation"><code class="docutils literal notranslate"><span class="pre">onoffpeak_slope_extrapolation()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="resurfemg.postprocessing.features.html">resurfemg.postprocessing.features module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.area_under_curve"><code class="docutils literal notranslate"><span class="pre">area_under_curve()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.calc_closed_sampent"><code class="docutils literal notranslate"><span class="pre">calc_closed_sampent()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.calc_open_sampent"><code class="docutils literal notranslate"><span class="pre">calc_open_sampent()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.entropical"><code class="docutils literal notranslate"><span class="pre">entropical()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.entropy_maker"><code class="docutils literal notranslate"><span class="pre">entropy_maker()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.entropy_scipy"><code class="docutils literal notranslate"><span class="pre">entropy_scipy()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.find_peak_in_breath"><code class="docutils literal notranslate"><span class="pre">find_peak_in_breath()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.amplitude"><code class="docutils literal notranslate"><span class="pre">amplitude()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.area_under_baseline"><code class="docutils literal notranslate"><span class="pre">area_under_baseline()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.pseudo_slope"><code class="docutils literal notranslate"><span class="pre">pseudo_slope()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.rowwise_chebyshev"><code class="docutils literal notranslate"><span class="pre">rowwise_chebyshev()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.sampen"><code class="docutils literal notranslate"><span class="pre">sampen()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.sampen_optimized"><code class="docutils literal notranslate"><span class="pre">sampen_optimized()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.simple_area_under_curve"><code class="docutils literal notranslate"><span class="pre">simple_area_under_curve()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.snr_pseudo"><code class="docutils literal notranslate"><span class="pre">snr_pseudo()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.times_under_curve"><code class="docutils literal notranslate"><span class="pre">times_under_curve()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.variability_maker"><code class="docutils literal notranslate"><span class="pre">variability_maker()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.respiratory_rate"><code class="docutils literal notranslate"><span class="pre">respiratory_rate()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.time_product"><code class="docutils literal notranslate"><span class="pre">time_product()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.features.html#resurfemg.postprocessing.features.time_to_peak"><code class="docutils literal notranslate"><span class="pre">time_to_peak()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="resurfemg.postprocessing.quality_assessment.html">resurfemg.postprocessing.quality_assessment module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.quality_assessment.html#resurfemg.postprocessing.quality_assessment.detect_extreme_time_products"><code class="docutils literal notranslate"><span class="pre">detect_extreme_time_products()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.quality_assessment.html#resurfemg.postprocessing.quality_assessment.detect_local_high_aub"><code class="docutils literal notranslate"><span class="pre">detect_local_high_aub()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.quality_assessment.html#resurfemg.postprocessing.quality_assessment.detect_non_consecutive_manoeuvres"><code class="docutils literal notranslate"><span class="pre">detect_non_consecutive_manoeuvres()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.quality_assessment.html#resurfemg.postprocessing.quality_assessment.evaluate_bell_curve_error"><code class="docutils literal notranslate"><span class="pre">evaluate_bell_curve_error()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.quality_assessment.html#resurfemg.postprocessing.quality_assessment.evaluate_event_timing"><code class="docutils literal notranslate"><span class="pre">evaluate_event_timing()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.quality_assessment.html#resurfemg.postprocessing.quality_assessment.evaluate_respiratory_rates"><code class="docutils literal notranslate"><span class="pre">evaluate_respiratory_rates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.quality_assessment.html#resurfemg.postprocessing.quality_assessment.interpeak_dist"><code class="docutils literal notranslate"><span class="pre">interpeak_dist()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.quality_assessment.html#resurfemg.postprocessing.quality_assessment.percentage_under_baseline"><code class="docutils literal notranslate"><span class="pre">percentage_under_baseline()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.quality_assessment.html#resurfemg.postprocessing.quality_assessment.pocc_quality"><code class="docutils literal notranslate"><span class="pre">pocc_quality()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="resurfemg.postprocessing.quality_assessment.html#resurfemg.postprocessing.quality_assessment.snr_pseudo"><code class="docutils literal notranslate"><span class="pre">snr_pseudo()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -90,7 +98,7 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
@@ -105,8 +113,8 @@
   </div>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="resurfemg.pipelines.pipelines.html"
-                          title="previous chapter">resurfemg.pipelines.pipelines module</a></p>
+    <p class="topless"><a href="resurfemg.pipelines.synthetic_data.html"
+                          title="previous chapter">resurfemg.pipelines.synthetic_data module</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
@@ -134,7 +142,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -147,17 +155,17 @@
           <a href="resurfemg.postprocessing.baseline.html" title="resurfemg.postprocessing.baseline module"
              >next</a> |</li>
         <li class="right" >
-          <a href="resurfemg.pipelines.pipelines.html" title="resurfemg.pipelines.pipelines module"
+          <a href="resurfemg.pipelines.synthetic_data.html" title="resurfemg.pipelines.synthetic_data module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">resurfemg.postprocessing package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2022, c.moore@esciencecenter.nl.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    &#169; Copyright 2022, e.oppersma@utwente.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
     </div>
   </body>
 </html>

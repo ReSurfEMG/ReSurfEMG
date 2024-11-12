@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>resurfemg.helper_functions.math_operations module &#8212; resurfemg 0.3.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
+    <script src="_static/documentation_options.js?v=4621528c"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="resurfemg.helper_functions.visualization module" href="resurfemg.helper_functions.visualization.html" />
+    <link rel="prev" title="resurfemg.helper_functions.data_classes_quality_assessment module" href="resurfemg.helper_functions.data_classes_quality_assessment.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.helper_functions.visualization.html" title="resurfemg.helper_functions.visualization module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.helper_functions.data_classes_quality_assessment.html" title="resurfemg.helper_functions.data_classes_quality_assessment module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.helper_functions.html" accesskey="U">resurfemg.helper_functions package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.helper_functions.math_operations module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-resurfemg.helper_functions.math_operations">
+<span id="resurfemg-helper-functions-math-operations-module"></span><h1>resurfemg.helper_functions.math_operations module<a class="headerlink" href="#module-resurfemg.helper_functions.math_operations" title="Link to this heading">¶</a></h1>
+<p>Copyright 2022 Netherlands eScience Center and University of Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
+<p>This file contains functions for math operations to support the functions in
+ReSurfEMG</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.Range">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">Range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.Range" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">RangeBase</span></code></p>
+<section id="utility-class-for-working-with-ranges-intervals">
+<h2>Utility class for working with ranges (intervals).<a class="headerlink" href="#utility-class-for-working-with-ranges-intervals" title="Link to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">param start<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Start of the range</p>
+</dd>
+<dt class="field-even">type start<span class="colon">:</span></dt>
+<dd class="field-even"><p>~int</p>
+</dd>
+<dt class="field-odd">param end<span class="colon">:</span></dt>
+<dd class="field-odd"><p>End of the range</p>
+</dd>
+<dt class="field-even">type end<span class="colon">:</span></dt>
+<dd class="field-even"><p>~int</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.Range.intersects">
+<span class="sig-name descname"><span class="pre">intersects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.Range.intersects" title="Link to this definition">¶</a></dt>
+<dd><section id="returns-true-if-this-range-intersects-other-range">
+<h3>Returns <cite>True</cite> if this range intersects <cite>other</cite> range.<a class="headerlink" href="#returns-true-if-this-range-intersects-other-range" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">param other<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Another range to compare this one to</p>
+</dd>
+<dt class="field-even">type other<span class="colon">:</span></dt>
+<dd class="field-even"><p>~resurfemg.helper_functions.Range</p>
+</dd>
+<dt class="field-odd">returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>True</cite> if this range intersects another range</p>
+</dd>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.Range.precedes">
+<span class="sig-name descname"><span class="pre">precedes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.Range.precedes" title="Link to this definition">¶</a></dt>
+<dd><p>Returns <cite>True</cite> if this range precedes <cite>other</cite> range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> (<em>Range</em>) – Another range to compare this one to</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>True</cite> if this range strictly precedes another range</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.Range.to_slice">
+<span class="sig-name descname"><span class="pre">to_slice</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.Range.to_slice" title="Link to this definition">¶</a></dt>
+<dd><section id="converts-this-range-to-a-slice">
+<h3>Converts this range to a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a>.<a class="headerlink" href="#converts-this-range-to-a-slice" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A slice with its start set to this range’s start and end set
+to this range’s end</p>
+</dd>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>slice</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.bell_curve">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">bell_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.bell_curve" title="Link to this definition">¶</a></dt>
+<dd><p>This function calculates a bell curve on the samples of <cite>x</cite>, shifted by
+b, amplified by a for a standard amplitude of 1.
+—————————————————————————
+:param x: x values to calculate the bell_curve for
+:type x: ~numpy.ndarray
+:param a: amplitude of the bell-curve
+:type a: ~float
+:param b: time shift of the bell-curve along the x-axis.
+:type b: ~float
+:param c: steepness factor of bell-curve.
+:type c: ~float</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bell curve</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.delay_embedding">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">delay_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.delay_embedding" title="Link to this definition">¶</a></dt>
+<dd><p>The following code is adapted from openly licensed code written by
+Christopher Schölzel in his package nolds (NOnLinear measures for Dynamical
+Systems).It performs a time-delay embedding of a time series
+—————————————————————————
+:param data: array-like
+:type data: array
+:param emb_dim: the embedded dimension
+:type emb_dim: int
+:param lag: the lag between elements in the embedded vectors
+:type lag: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns matrix_vectors<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the embedded vectors</p>
+</dd>
+<dt class="field-even">Rtype matrix_vectors<span class="colon">:</span></dt>
+<dd class="field-even"><p>~nd.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.derivative">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">derivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.derivative" title="Link to this definition">¶</a></dt>
+<dd><p>This function calculates the first derivative of a signal. If
+window_s is given, the signal is smoothed before derivative calculation.
+—————————————————————————
+:param signal: signal to calculate the derivate over
+:type signal: ~numpy.ndarray
+:param fs: sampling rate
+:type fs: int
+:param window_s: centralised averaging window length in samples
+:type window_s: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns dsignal_dt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The 1st derivative of the signal length len(signal)-1.</p>
+</dd>
+<dt class="field-even">Rtype dsignal_dt<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.intersections">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">intersections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.intersections" title="Link to this definition">¶</a></dt>
+<dd><p>This function works over two arrays, <cite>left</cite> and
+<cite>right</cite>, and allows a picking based on intersections.  It
+only takes ranges on the left that intersect ranges on the right.
+—————————————————————————
+:param left: List of ranges
+:type left: List[Range]
+:param right: List of ranges
+:type right: List[Range]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns result<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ranges from the left that intersect ranges from the right.</p>
+</dd>
+<dt class="field-even">Rtype result<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[Range]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.merge">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.merge" title="Link to this definition">¶</a></dt>
+<dd><section id="merge-two-lists-based-linear-order">
+<h2>Merge two lists based linear order.<a class="headerlink" href="#merge-two-lists-based-linear-order" title="Link to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">param left<span class="colon">:</span></dt>
+<dd class="field-odd"><p>First list</p>
+</dd>
+<dt class="field-even">type left<span class="colon">:</span></dt>
+<dd class="field-even"><p>List</p>
+</dd>
+<dt class="field-odd">param right<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Second list</p>
+</dd>
+<dt class="field-even">type right<span class="colon">:</span></dt>
+<dd class="field-even"><p>List</p>
+</dd>
+<dt class="field-odd">returns output<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Merged lists</p>
+</dd>
+<dt class="field-even">rtpe output<span class="colon">:</span></dt>
+<dd class="field-even"><p>List</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.ranges_of">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">ranges_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.ranges_of" title="Link to this definition">¶</a></dt>
+<dd><p>This function is made to work with <a class="reference internal" href="#resurfemg.helper_functions.math_operations.Range" title="resurfemg.helper_functions.math_operations.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a> class objects, such
+that is selects ranges and returns tuples of boundaries.
+—————————————————————————
+:param array: array
+:type  array: ~numpy.ndarray</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>range_return</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.raw_overlap_percent">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">raw_overlap_percent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.raw_overlap_percent" title="Link to this definition">¶</a></dt>
+<dd><p>This function takes two binary 0 or 1 signal arrays and gives
+the percentage of overlap.
+—————————————————————————
+:param signal1: Binary signal 1
+:type signal1: ~numpy.ndarray
+:param rsignal2: Binary signal 2
+:type rsignal2: ~numpy.ndarray</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns _raw_overlap_percent<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Raw overlap percent</p>
+</dd>
+<dt class="field-even">Rtype _raw_overlap_percent<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.running_smoother">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">running_smoother</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.running_smoother" title="Link to this definition">¶</a></dt>
+<dd><section id="this-is-the-smoother-to-use-in-time-calculations">
+<h2>This is the smoother to use in time calculations<a class="headerlink" href="#this-is-the-smoother-to-use-in-time-calculations" title="Link to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">param array<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array to be smoothed</p>
+</dd>
+<dt class="field-even">type array<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray</p>
+</dd>
+<dt class="field-odd">returns smoothed_array<span class="colon">:</span></dt>
+<dd class="field-odd"><p>smoothed array</p>
+</dd>
+<dt class="field-even">rtype smoothed_array<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.save_preprocessed">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">save_preprocessed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.save_preprocessed" title="Link to this definition">¶</a></dt>
+<dd><p>This function is written to be called by the cli module.
+It stores arrays in a directory.
+—————————————————————————
+:param array: array to be stored
+:type array: ~nd.array
+:param out_fname: output file name
+:type out_fname: str
+:param force: force writing the file
+:type force: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.scale_arrays">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">scale_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.scale_arrays" title="Link to this definition">¶</a></dt>
+<dd><p>This function will scale all arrays along the vertical axis to have an
+absolute maximum value of the maximum parameter
+—————————————————————————
+:param array: Original signal array with any number iflayers
+:type array: ~numpy.ndarray
+:param maximum: the absolute maximum below which the new array exists
+:type maximum: float
+:param minimum: the absolute maximum below which the new array exists
+:type minimum: float</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns reformed<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a new array with absolute max of maximum</p>
+</dd>
+<dt class="field-even">Rtype reformed<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.slices_jump_slider">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">slices_jump_slider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array_sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jump</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.slices_jump_slider" title="Link to this definition">¶</a></dt>
+<dd><p>This function produces continuous sequential slices over an
+array of a certain length spaced out by a ‘jump’.
+The function yields, does not return these slices.
+—————————————————————————
+:param array_sample: array containing the signal
+:type array_sample: ~numpy.ndarray
+:param slice_len: the length of window on the array
+:type slice_len: int
+:param jump: the amount by which the window is moved at iteration
+:type jump: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Actually yields, no return</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.slices_slider">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">slices_slider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array_sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_len</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.slices_slider" title="Link to this definition">¶</a></dt>
+<dd><p>This function produces continuous sequential slices over an
+array of a certain length.  The inputs are the following -
+<cite>array_sample</cite>, the signal and <cite>slice_len</cite> - the
+window which you wish to slide with. The function yields, does
+not return these slices.
+—————————————————————————
+:param array_sample: array containing the signal
+:type array_sample: ~numpy.ndarray
+:param slice_len: the length of window on the array
+:type slice_len: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Actually yields, no return</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><em>ndarray</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.math_operations.zero_one_for_jumps_base">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.math_operations.</span></span><span class="sig-name descname"><span class="pre">zero_one_for_jumps_base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut_off</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.math_operations.zero_one_for_jumps_base" title="Link to this definition">¶</a></dt>
+<dd><p>This function takes an array and makes it binary (0, 1) based
+on a cut-off value.
+—————————————————————————
+:param array: An array
+:type array: ~numpy.ndarray
+:param cut_off: The number defining a cut-off line for binarization
+:type cut_off: float</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns array_list<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Binarized list that can be turned into array</p>
+</dd>
+<dt class="field-even">Rtype array_list<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">resurfemg.helper_functions.math_operations module</a><ul>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.Range"><code class="docutils literal notranslate"><span class="pre">Range</span></code></a><ul>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.Range.intersects"><code class="docutils literal notranslate"><span class="pre">Range.intersects()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.Range.precedes"><code class="docutils literal notranslate"><span class="pre">Range.precedes()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.Range.to_slice"><code class="docutils literal notranslate"><span class="pre">Range.to_slice()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.bell_curve"><code class="docutils literal notranslate"><span class="pre">bell_curve()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.delay_embedding"><code class="docutils literal notranslate"><span class="pre">delay_embedding()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.derivative"><code class="docutils literal notranslate"><span class="pre">derivative()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.intersections"><code class="docutils literal notranslate"><span class="pre">intersections()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.merge"><code class="docutils literal notranslate"><span class="pre">merge()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.ranges_of"><code class="docutils literal notranslate"><span class="pre">ranges_of()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.raw_overlap_percent"><code class="docutils literal notranslate"><span class="pre">raw_overlap_percent()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.running_smoother"><code class="docutils literal notranslate"><span class="pre">running_smoother()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.save_preprocessed"><code class="docutils literal notranslate"><span class="pre">save_preprocessed()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.scale_arrays"><code class="docutils literal notranslate"><span class="pre">scale_arrays()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.slices_jump_slider"><code class="docutils literal notranslate"><span class="pre">slices_jump_slider()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.slices_slider"><code class="docutils literal notranslate"><span class="pre">slices_slider()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.math_operations.zero_one_for_jumps_base"><code class="docutils literal notranslate"><span class="pre">zero_one_for_jumps_base()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="resurfemg.helper_functions.data_classes_quality_assessment.html"
+                          title="previous chapter">resurfemg.helper_functions.data_classes_quality_assessment module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="resurfemg.helper_functions.visualization.html"
+                          title="next chapter">resurfemg.helper_functions.visualization module</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/resurfemg.helper_functions.math_operations.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.helper_functions.visualization.html" title="resurfemg.helper_functions.visualization module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.helper_functions.data_classes_quality_assessment.html" title="resurfemg.helper_functions.data_classes_quality_assessment module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.helper_functions.html" >resurfemg.helper_functions package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.helper_functions.math_operations module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2022, e.oppersma@utwente.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>resurfemg.pipelines.synthetic_data module &#8212; resurfemg 0.3.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css?v=0f882399" />
+    <script src="_static/documentation_options.js?v=4621528c"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="resurfemg.postprocessing package" href="resurfemg.postprocessing.html" />
+    <link rel="prev" title="resurfemg.pipelines.processing module" href="resurfemg.pipelines.processing.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.postprocessing.html" title="resurfemg.postprocessing package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.pipelines.processing.html" title="resurfemg.pipelines.processing module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.pipelines.html" accesskey="U">resurfemg.pipelines package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.pipelines.synthetic_data module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-resurfemg.pipelines.synthetic_data">
+<span id="resurfemg-pipelines-synthetic-data-module"></span><h1>resurfemg.pipelines.synthetic_data module<a class="headerlink" href="#module-resurfemg.pipelines.synthetic_data" title="Link to this heading">¶</a></h1>
+<p>Copyright 2022 Netherlands eScience Center and University of Twente
+Licensed under the Apache License, version 2.0. See LICENSE for details.</p>
+<p>This file contains functions to generate mixed (signal and noise) synthetic
+data.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.pipelines.synthetic_data.simulate_raw_emg">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.pipelines.synthetic_data.</span></span><span class="sig-name descname"><span class="pre">simulate_raw_emg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs_emg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emg_amp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">22</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.pipelines.synthetic_data.simulate_raw_emg" title="Link to this definition">¶</a></dt>
+<dd><section id="generate-realistic-synthetic-respiratory-emg-data-remixed-with-ecg">
+<h2>Generate realistic synthetic respiratory EMG data remixed with ECG<a class="headerlink" href="#generate-realistic-synthetic-respiratory-emg-data-remixed-with-ecg" title="Link to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">param t_end<span class="colon">:</span></dt>
+<dd class="field-odd"><p>length of synthetic EMG tracing in seconds</p>
+</dd>
+<dt class="field-even">type t_end<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">param fs_emg<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sampling rate</p>
+</dd>
+<dt class="field-even">type fs_emg<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">param emg_amp<span class="colon">:</span></dt>
+<dd class="field-odd"><p>EMG amplitude</p>
+</dd>
+<dt class="field-even">type emg_amp<span class="colon">:</span></dt>
+<dd class="field-even"><p>~float</p>
+</dd>
+<dt class="field-odd">param rr<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Respiratory rate (/min)</p>
+</dd>
+<dt class="field-even">type rr<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">param <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional arguments: ie_ratio, tau_mus_up,
+tau_mus_down, t_p_occs, drift_amp, noise_amp, ecg_acceleration,
+ecg_amplitude. See data_connector.synthetic_data
+respiratory_pattern_generator, simulate_muscle_dynamics, and
+simulate_emg functions for specifics</p>
+</dd>
+<dt class="field-even">type <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>float, float, float, list[int], float, float, float</p>
+</dd>
+<dt class="field-odd">returns emg_raw<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The realistic synthetic EMG</p>
+</dd>
+<dt class="field-even">rtype emg_raw<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.pipelines.synthetic_data.simulate_ventilator_data">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.pipelines.synthetic_data.</span></span><span class="sig-name descname"><span class="pre">simulate_ventilator_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs_vent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_mus_amp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">22</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.pipelines.synthetic_data.simulate_ventilator_data" title="Link to this definition">¶</a></dt>
+<dd><section id="generate-realistic-synthetic-ventilator-tracings">
+<h2>Generate realistic synthetic ventilator tracings<a class="headerlink" href="#generate-realistic-synthetic-ventilator-tracings" title="Link to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">param t_end<span class="colon">:</span></dt>
+<dd class="field-odd"><p>length of synthetic ventilator tracings in seconds</p>
+</dd>
+<dt class="field-even">type t_end<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">param fs_vent<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sampling rate</p>
+</dd>
+<dt class="field-even">type fs_vent<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">param p_mus_amp<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Respiratory muscle pressure amplitude (positive)</p>
+</dd>
+<dt class="field-even">type p_mus_amp<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">param rr<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Respiratory rate</p>
+</dd>
+<dt class="field-even">type rr<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">param <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional arguments: ie_ratio, tau_mus_up,
+tau_mus_down, t_p_occs, c, r, peep, flow_cycle, flow_trigger,
+tau_dp_up, tau_dp_down. See data_connector.synthetic_data
+respiratory_pattern_generator, simulate_muscle_dynamics,
+simulate_ventilator_data functions for specifics</p>
+</dd>
+<dt class="field-even">type <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code><span class="colon">:</span></dt>
+<dd class="field-even"><p>float, float, float, list[int], float, float, float,
+float, float, float, float</p>
+</dd>
+<dt class="field-odd">returns y_vent<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The realistic synthetic ventilator data</p>
+</dd>
+<dt class="field-even">rtype y_vent<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-odd">returns p_mus<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The respiratory muscle pressure</p>
+</dd>
+<dt class="field-even">rtype p_mus<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.pipelines.synthetic_data.synthetic_emg_cli">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.pipelines.synthetic_data.</span></span><span class="sig-name descname"><span class="pre">synthetic_emg_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_emg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_directory</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.pipelines.synthetic_data.synthetic_emg_cli" title="Link to this definition">¶</a></dt>
+<dd><p>Generate realistic, single lead, synthetic respiratory EMG data remixed
+with ECG through command line using the cli.
+—————————————————————————
+:param file_directory: file directory where synthetic ecg are
+:type file_directory: str
+:param n_emg: number of EMGs to simulate
+:type n_emg: int
+:param output_directory: file directory where synthetic emg will be put
+:type output_directory: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>,
+</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Optional arguments: t_end, fs_emg, emg_amp, rr,
+ie_ratio, tau_mus_up, tau_mus_down, t_p_occs, drift_amp, noise_amp,
+heart_rate, ecg_acceleration, ecg_amplitude. See
+data_connector.synthetic_data respiratory_pattern_generator,
+simulate_muscle_dynamics, and simulate_emg functions for specifics</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.pipelines.synthetic_data.synthetic_ventilator_data_cli">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.pipelines.synthetic_data.</span></span><span class="sig-name descname"><span class="pre">synthetic_ventilator_data_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_datasets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_directory</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.pipelines.synthetic_data.synthetic_ventilator_data_cli" title="Link to this definition">¶</a></dt>
+<dd><p>Generate realistic synthetic respiratory EMG data remixed with ECG through
+command line using the cli.
+—————————————————————————
+:param file_directory: file directory where synthetic ecg are
+:type file_directory: str
+:param n_emg: number of EMGs to simulate
+:type n_emg: int
+:param output_directory: file directory where synthetic emg will be put
+:type output_directory: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>,
+</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Optional arguments: t_end, fs_vent, p_mus_amp, rr, dp,
+ie_ratio, tau_mus_up, tau_mus_down, t_p_occs, c, r, peep, flow_cycle,
+flow_trigger, tau_dp_up, tau_dp_down. See data_connector.synthetic_data
+respiratory_pattern_generator, simulate_muscle_dynamics,
+simulate_ventilator_data functions for specifics</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">resurfemg.pipelines.synthetic_data module</a><ul>
+<li><a class="reference internal" href="#resurfemg.pipelines.synthetic_data.simulate_raw_emg"><code class="docutils literal notranslate"><span class="pre">simulate_raw_emg()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.pipelines.synthetic_data.simulate_ventilator_data"><code class="docutils literal notranslate"><span class="pre">simulate_ventilator_data()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.pipelines.synthetic_data.synthetic_emg_cli"><code class="docutils literal notranslate"><span class="pre">synthetic_emg_cli()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.pipelines.synthetic_data.synthetic_ventilator_data_cli"><code class="docutils literal notranslate"><span class="pre">synthetic_ventilator_data_cli()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="resurfemg.pipelines.processing.html"
+                          title="previous chapter">resurfemg.pipelines.processing module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="resurfemg.postprocessing.html"
+                          title="next chapter">resurfemg.postprocessing package</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/resurfemg.pipelines.synthetic_data.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.postprocessing.html" title="resurfemg.postprocessing package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="resurfemg.pipelines.processing.html" title="resurfemg.pipelines.processing module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">resurfemg 0.3.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >resurfemg</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="resurfemg.html" >resurfemg package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="resurfemg.pipelines.html" >resurfemg.pipelines package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">resurfemg.pipelines.synthetic_data module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2022, e.oppersma@utwente.nl.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+    </div>
+  </body>
+</html>
