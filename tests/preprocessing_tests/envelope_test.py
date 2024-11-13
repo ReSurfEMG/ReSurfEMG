@@ -55,5 +55,43 @@ class TestArvMethods(unittest.TestCase):
             np.any(peak_errors > 0.05)
         )
 
+
+    class TestRmsCIMethods(unittest.TestCase):
+        fs_emg = 2048
+        t_emg = np.array(range(3*fs_emg))/fs_emg
+        x_sin = np.sin(t_emg * 2 * np.pi)
+        x_sin[x_sin < 0] = 0
+        x_rand = np.random.normal(0, 1, size=len(x_sin))
+        x_t = x_sin * x_rand
+        peak_idxs_source, _ = find_peaks(x_sin, prominence=0.1)
+
+        def test_rolling_rms_ci_length(self):
+            lower_ci, upper_ci = evl.rolling_rms_ci(self.x_t, self.fs_emg//5)
+            self.assertEqual(len(self.x_t), len(lower_ci))
+            self.assertEqual(len(self.x_t), len(upper_ci))
+
+        def test_rolling_rms_ci_values(self):
+            lower_ci, upper_ci = evl.rolling_rms_ci(self.x_t, self.fs_emg//5)
+            self.assertTrue(np.all(lower_ci <= upper_ci))
+
+
+    class TestArvCIMethods(unittest.TestCase):
+        fs_emg = 2048
+        t_emg = np.array(range(3*fs_emg))/fs_emg
+        x_sin = np.sin(t_emg * 2 * np.pi)
+        x_sin[x_sin < 0] = 0
+        x_rand = np.random.normal(0, 1, size=len(x_sin))
+        x_t = x_sin * x_rand
+        peak_idxs_source, _ = find_peaks(x_sin, prominence=0.1)
+
+        def test_rolling_arv_ci_length(self):
+            lower_ci, upper_ci = evl.rolling_arv_ci(self.x_t, self.fs_emg//5)
+            self.assertEqual(len(self.x_t), len(lower_ci))
+            self.assertEqual(len(self.x_t), len(upper_ci))
+
+        def test_rolling_arv_ci_values(self):
+            lower_ci, upper_ci = evl.rolling_arv_ci(self.x_t, self.fs_emg//5)
+            self.assertTrue(np.all(lower_ci <= upper_ci))
+
 if __name__ == '__main__':
     unittest.main()
