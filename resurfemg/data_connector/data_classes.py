@@ -221,7 +221,7 @@ class TimeSeries:
         if ecg_peak_idxs is None:
             self.get_ecg_peaks(
                 ecg_raw=ecg_raw, bp_filter=bp_filter, overwrite=overwrite)
-            ecg_peak_idxs = self.peaks['ecg'].peak_df['peak_idx'].to_numpy()
+            ecg_peak_idxs = self.peaks['ecg']['peak_idx']
 
         if gate_width_samples is None:
             gate_width_samples = self.param['fs'] // 10
@@ -255,7 +255,7 @@ class TimeSeries:
         if ecg_peak_idxs is None:
             self.get_ecg_peaks(
                 ecg_raw=ecg_raw, bp_filter=bp_filter, overwrite=overwrite)
-            ecg_peak_idxs = self.peaks['ecg'].peak_df['peak_idx'].to_numpy()
+            ecg_peak_idxs = self.peaks['ecg']['peak_idx']
 
         if n is None:
             n = int(np.log(self.param['fs']/20) // np.log(2))
@@ -460,7 +460,7 @@ class TimeSeries:
         if linked_peak_set_name is None:
             linked_peak_set_name = peak_set_name + '_linked'
 
-        t_PeaksSet_peaks = (peak_set.peak_df['peak_idx'].to_numpy() /
+        t_PeaksSet_peaks = (peak_set['peak_idx'] /
                             self.param['fs'])
         link_peak_nrs = evt.find_linked_peaks(
             t_reference_peaks,
@@ -532,8 +532,8 @@ class TimeSeries:
         time_products = feat.time_product(
             signal=peak_set.signal,
             fs=self.param['fs'],
-            start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
-            end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
+            start_idxs=peak_set['start_idx'],
+            end_idxs=peak_set['end_idx'],
             baseline=baseline,
         )
 
@@ -545,9 +545,9 @@ class TimeSeries:
             aub, y_refs = feat.area_under_baseline(
                 signal=peak_set.signal,
                 fs=self.param['fs'],
-                start_idxs=peak_set.peak_df['start_idx'].to_numpy(),
-                peak_idxs=peak_set.peak_df['peak_idx'].to_numpy(),
-                end_idxs=peak_set.peak_df['end_idx'].to_numpy(),
+                start_idxs=peak_set['start_idx'],
+                peak_idxs=peak_set['peak_idx'],
+                end_idxs=peak_set['end_idx'],
                 aub_window_s=aub_window_s,
                 baseline=baseline,
                 ref_signal=aub_reference_signal,
@@ -839,23 +839,23 @@ class TimeSeries:
             axes = np.array([axes])
 
         x_vals_peak = peak_set.t_data[
-            peak_set.peak_df['peak_idx'].to_numpy()]
+            peak_set['peak_idx']]
         y_vals_peak = peak_set.signal[
-            peak_set.peak_df['peak_idx'].to_numpy()]
-        n_peaks = len(peak_set.peak_df['peak_idx'].to_numpy())
+            peak_set['peak_idx']]
+        n_peaks = len(peak_set['peak_idx'])
         if 'start_idx' in peak_set.peak_df.columns:
             x_vals_start = peak_set.t_data[
-                peak_set.peak_df['start_idx'].to_numpy()]
+                peak_set['start_idx']]
             y_vals_start = peak_set.signal[
-                peak_set.peak_df['start_idx'].to_numpy()]
+                peak_set['start_idx']]
         else:
             x_vals_start = n_peaks * [None]
             y_vals_start = n_peaks * [None]
         if 'end_idx' in peak_set.peak_df.columns:
             x_vals_end = peak_set.t_data[
-                peak_set.peak_df['end_idx'].to_numpy()]
+                peak_set['end_idx']]
             y_vals_end = peak_set.signal[
-                peak_set.peak_df['end_idx'].to_numpy()]
+                peak_set['end_idx']]
         else:
             x_vals_end = n_peaks * [None]
             y_vals_end = n_peaks * [None]
@@ -957,8 +957,8 @@ class TimeSeries:
         else:
             raise KeyError("Non-existent PeaksSet key")
 
-        start_idxs = peak_set.peak_df['start_idx'].to_numpy()
-        end_idxs = peak_set.peak_df['end_idx'].to_numpy()
+        start_idxs = peak_set['start_idx']
+        end_idxs = peak_set['end_idx']
 
         if valid_only and peak_set.valid is not None:
             start_idxs = start_idxs[peak_set.valid]
@@ -1148,7 +1148,9 @@ class TimeSeries:
 
 class TimeSeriesGroup:
     """
-    Data class to store, process, and plot time series data
+    Data class to store, process, and plot time series data. Channels can be
+    accessed by index or by label.
+
     """
 
     def __init__(self, y_raw, t_data=None, fs=None, labels=None, units=None):
@@ -1170,6 +1172,10 @@ class TimeSeriesGroup:
         self.channels = []
         self.param = dict()
         self.param['fs'] = fs
+        self._available_methods = [
+            'envelope',
+            'baseline',
+        ]
         data_shape = list(np.array(y_raw).shape)
         data_dims = len(data_shape)
         if data_dims == 1:
@@ -1223,67 +1229,42 @@ class TimeSeriesGroup:
             )
             self.channels.append(new_timeseries)
 
-    def envelope(
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            return self.channels[key]
+        elif isinstance(key, str):
+            for channel in self.channels:
+                if channel.label == key:
+                    return channel
+            raise KeyError('Channel not found')
+        else:
+            raise ValueError('Invalid key type')
+
+    def __iter__(self):
+        return iter(self.channels)
+
+    def run(
         self,
-        env_window=None,
-        env_type=None,
-        signal_type='clean',
+        method,
         channel_idxs=None,
+        **kwargs,
     ):
         """
-        Derive the moving envelope of the provided signal. See
-        TimeSeries.envelope.
-        -----------------------------------------------------------------------
-        :returns: None
-        :rtype: None
+        Run a TimeSeries function on the provided channels in the group. The
+        function is run with the provided keyword arguments.
         """
         if channel_idxs is None:
             channel_idxs = np.arange(self.param['n_channel'])
         elif isinstance(channel_idxs, int):
             channel_idxs = np.array([channel_idxs])
 
-        for _, channel_idx in enumerate(channel_idxs):
-            self.channels[channel_idx].envelope(
-                env_window=env_window,
-                env_type=env_type,
-                signal_type=signal_type,
-            )
-
-    def baseline(
-        self,
-        percentile=33,
-        window_s=None,
-        step_s=None,
-        method='default',
-        signal_type=None,
-        augm_percentile=25,
-        ma_window=None,
-        perc_window=None,
-        channel_idxs=None,
-    ):
-        """
-        Derive the moving baseline of the provided signal. See
-        TimeSeries.baseline.
-        -----------------------------------------------------------------------
-        :returns: None
-        :rtype: None
-        """
-        if channel_idxs is None:
-            channel_idxs = np.arange(self.param['n_channel'])
-        elif isinstance(channel_idxs, int):
-            channel_idxs = np.array([channel_idxs])
-
-        for _, channel_idx in enumerate(channel_idxs):
-            self.channels[channel_idx].baseline(
-                percentile=percentile,
-                window_s=window_s,
-                step_s=step_s,
-                method=method,
-                signal_type=signal_type,
-                augm_percentile=augm_percentile,
-                ma_window=ma_window,
-                perc_window=perc_window,
-            )
+        if method in self._available_methods:
+            for _, channel_idx in enumerate(channel_idxs):
+                getattr(self.channels[channel_idx], method)(
+                    **kwargs
+                )
+        else:
+            raise ValueError('Invalid method')
 
     def plot_full(self, axes=None, channel_idxs=None, signal_type=None,
                   colors=None, baseline_bool=True):
@@ -1409,16 +1390,6 @@ class TimeSeriesGroup:
         :param channel_idxs: list of which channels indices to plot. If none
         provided, all channels are plot.
         :type channel_idxs: list
-        :param valid_only: when True, only valid peaks are plotted.
-        :type valid_only: bool
-        :param colors: 1 color of list of up to 3 colors for the markers, peak,
-        start, and end markers. If 2 colors are provided, start and end have
-        the same colors
-        :type colors: str or list
-        :param markers: 1 markers or list of up to 3 markers for peak, start,
-        and end markers. If 2 markers are provided, start and end have the same
-        marker
-        :type markers: str or list
 
         :returns: None
         :rtype: None
@@ -1462,6 +1433,9 @@ class EmgDataGroup(TimeSeriesGroup):
     def __init__(self, y_raw, t_data=None, fs=None, labels=None, units=None):
         super().__init__(
             y_raw, t_data=t_data, fs=fs, labels=labels, units=units)
+        self._available_methods.append('filter_emg')
+        self._available_methods.append('gating')
+        self._available_methods.append('wavelet_denoising')
 
         labels_lc = [label.lower() for label in labels]
         if 'ecg' in labels_lc:
@@ -1470,111 +1444,11 @@ class EmgDataGroup(TimeSeriesGroup):
         else:
             self.ecg_idx = None
 
-    def filter(
-        self,
-        signal_type='raw',
-        hp_cf=20.0,
-        lp_cf=500.0,
-        order=3,
-        channel_idxs=None,
-    ):
-        """
-        Filter raw EMG signals to remove baseline wander and high frequency
-        components. See TimeSeries.filter_emg.
-        """
-        if channel_idxs is None:
-            channel_idxs = np.arange(self.param['n_channel'])
-        elif isinstance(channel_idxs, int):
-            channel_idxs = np.array([channel_idxs])
-
-        for _, channel_idx in enumerate(channel_idxs):
-            self.channels[channel_idx].filter_emg(
-                signal_type=signal_type,
-                hp_cf=hp_cf,
-                lp_cf=lp_cf,
-                order=order,
-            )
-
-    def gating(
-        self,
-        signal_type='filt',
-        gate_width_samples=None,
-        ecg_peak_idxs=None,
-        ecg_raw=None,
-        bp_filter=True,
-        fill_method=3,
-        channel_idxs=None,
-        overwrite=False,
-    ):
-        """
-        Eliminate ECG artifacts from the provided signal. See
-        TimeSeries.gating.
-        """
-        if channel_idxs is None:
-            channel_idxs = np.arange(self.param['n_channel'])
-        elif isinstance(channel_idxs, int):
-            channel_idxs = np.array([channel_idxs])
-
-        if ecg_raw is None and ecg_peak_idxs is None:
-            if self.ecg_idx is not None:
-                ecg_raw = self.channels[self.ecg_idx].y_raw
-                print('Auto-detected ECG channel from labels.')
-            else:
-                raise UserWarning("No ECG index or signal provided.")
-
-        for _, channel_idx in enumerate(channel_idxs):
-            self.channels[channel_idx].gating(
-                signal_type=signal_type,
-                gate_width_samples=gate_width_samples,
-                ecg_peak_idxs=ecg_peak_idxs,
-                ecg_raw=ecg_raw,
-                bp_filter=bp_filter,
-                fill_method=fill_method,
-                overwrite=overwrite,
-            )
-
-    def wavelet_denoising(
-        self,
-        signal_type='filt',
-        ecg_peak_idxs=None,
-        ecg_raw=None,
-        bp_filter=True,
-        n=None,
-        fixed_threshold=None,
-        channel_idxs=None,
-        overwrite=False,
-    ):
-        """
-        Eliminate ECG artifacts from the provided signal. See
-        TimeSeries.wavelet_denoising.
-        """
-        if channel_idxs is None:
-            channel_idxs = np.arange(self.param['n_channel'])
-        elif isinstance(channel_idxs, int):
-            channel_idxs = np.array([channel_idxs])
-
-        if ecg_raw is None and ecg_peak_idxs is None:
-            if self.ecg_idx is not None:
-                ecg_raw = self.channels[self.ecg_idx].y_raw
-                print('Auto-detected ECG channel from labels.')
-            else:
-                raise UserWarning("No ECG index or signal provided.")
-
-        for _, channel_idx in enumerate(channel_idxs):
-            self.channels[channel_idx].wavelet_denoising(
-                signal_type=signal_type,
-                ecg_peak_idxs=ecg_peak_idxs,
-                ecg_raw=ecg_raw,
-                bp_filter=bp_filter,
-                n=n,
-                fixed_threshold=fixed_threshold,
-                overwrite=overwrite,
-            )
-
 
 class VentilatorDataGroup(TimeSeriesGroup):
     """
     Child-class of TimeSeriesGroup to store and handle ventilator data in.
+    Default channels are 'Paw'/ 'Pvent', 'F', and 'Vvent'.
     """
     def __init__(self, y_raw, t_data=None, fs=None, labels=None, units=None):
         super().__init__(
@@ -1634,16 +1508,7 @@ class VentilatorDataGroup(TimeSeriesGroup):
         self.peep = np.round(np.median(
             self.channels[pressure_idx].y_raw[v_ee_pks]))
 
-    def find_occluded_breaths(
-        self,
-        pressure_idx,
-        peep=None,
-        start_idx=0,
-        end_idx=None,
-        prominence_factor=0.8,
-        min_width_s=None,
-        distance_s=None,
-    ):
+    def find_occluded_breaths(self, pressure_idx, peep=None, **kwargs):
         """
         Find end-expiratory occlusion manoeuvres in ventilator pressure
         timeseries data. See postprocessing.event_detection submodule.
@@ -1655,22 +1520,17 @@ class VentilatorDataGroup(TimeSeriesGroup):
         :returns: None
         :rtype: None
         """
-        if peep is None and self.peep is None:
-            raise ValueError('PEEP is not defined.')
-        elif peep is None:
-            peep = self.peep
+        kwargs['p_vent'] = self.channels[pressure_idx].y_raw
+        kwargs['fs'] = self.param['fs']
 
-        peak_idxs = evt.find_occluded_breaths(
-            p_vent=self.channels[pressure_idx].y_raw,
-            fs=self.param['fs'],
-            peep=peep,
-            start_idx=start_idx,
-            end_idx=end_idx,
-            prominence_factor=prominence_factor,
-            min_width_s=min_width_s,
-            distance_s=distance_s,
-        )
-        peak_idxs = peak_idxs + start_idx
+        if peep not in kwargs:
+            if self.peep is not None:
+                kwargs['peep'] = self.peep
+            else:
+                raise ValueError('PEEP is not defined.')
+
+        peak_idxs = evt.find_occluded_breaths(**kwargs)
+        peak_idxs = peak_idxs + kwargs['start_idx']
         self.channels[pressure_idx].set_peaks(
             signal=self.channels[pressure_idx].y_raw,
             peak_idxs=peak_idxs,
@@ -1678,16 +1538,7 @@ class VentilatorDataGroup(TimeSeriesGroup):
         )
 
     def find_tidal_volume_peaks(
-        self,
-        volume_idx=None,
-        start_idx=0,
-        end_idx=None,
-        width_s=None,
-        threshold=None,
-        prominence=None,
-        threshold_new=None,
-        prominence_new=None,
-        pressure_idx=None,
+        self, volume_idx=None, pressure_idx=None, **kwargs,
     ):
         """
         Find tidal-volume peaks in ventilator volume signal. Peaks are stored
@@ -1696,33 +1547,34 @@ class VentilatorDataGroup(TimeSeriesGroup):
         -----------------------------------------------------------------------
         :param volume_idx: Channel index of the ventilator volume data
         :type volume_idx: int
+        :param pressure_idx: Channel index of the ventilator pressure data
+        :type pressure_idx: int
         For other arguments, see postprocessing.event_detection submodule.
 
         :returns: None
         :rtype: None
         """
-        if volume_idx is None:
-            if self.v_vent_idx is not None:
-                volume_idx = self.v_vent_idx
-            else:
-                raise ValueError(
-                    'volume_idx and v_vent_idx not defined')
+        if 'volume_idx' in kwargs:
+            volume_idx = kwargs['volume_idx']
+            kwargs.pop('volume_idx')
+        elif self.v_vent_idx is not None:
+            volume_idx = self.v_vent_idx
+        else:
+            raise ValueError(
+                'volume_idx and v_vent_idx not defined')
+        kwargs['v_vent'] = self.channels[volume_idx].y_raw
 
-        if end_idx is None:
-            end_idx = len(self.channels[volume_idx].y_raw) - 1
+        if 'start_idx' not in kwargs:
+            kwargs['start_idx'] = 0
 
-        if width_s is None:
-            width_s = self.param['fs'] // 4
+        if 'end_idx' not in kwargs:
+            kwargs['end_idx'] = len(self.channels[volume_idx].y_raw) - 1
+
+        if 'width_s' not in kwargs:
+            kwargs['width_s'] = self.param['fs'] // 4
 
         peak_idxs = evt.detect_ventilator_breath(
-            v_vent=self.channels[volume_idx].y_raw,
-            start_idx=start_idx,
-            end_idx=end_idx,
-            width_s=width_s,
-            threshold=threshold,
-            prominence=prominence,
-            threshold_new=threshold_new,
-            prominence_new=prominence_new
+            **kwargs,
         )
 
         self.channels[volume_idx].set_peaks(

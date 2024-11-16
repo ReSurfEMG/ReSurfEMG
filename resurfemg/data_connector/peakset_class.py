@@ -55,6 +55,18 @@ class PeaksSet:
             data=peak_idxs, columns=['peak_idx'])
         self.time_products = None
 
+    def __len__(self):
+        return len(self.peak_df)
+
+    def __getitem__(self, key):
+        return self.peak_df[key].to_numpy()
+
+    def __str__(self):
+        return str(self.peak_df)
+
+    def keys(self):
+        return self.peak_df.keys()
+
     def detect_on_offset(
         self,
         baseline=None,

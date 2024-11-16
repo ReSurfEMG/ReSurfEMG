@@ -39,13 +39,13 @@ class TestTimeSeriesGroup(unittest.TestCase):
             3.0
         )
 
-    vent_timeseries.baseline(channel_idxs=[0], signal_type='raw')
+    vent_timeseries.run('baseline', channel_idxs=[0], signal_type='raw')
 
     # Find occlusion pressures
     vent_timeseries.find_occluded_breaths(
         vent_timeseries.p_vent_idx,
         start_idx=360*vent_timeseries.param['fs'])
-    p_vent = vent_timeseries.channels[vent_timeseries.p_vent_idx]
+    p_vent = vent_timeseries[vent_timeseries.p_vent_idx]
     p_vent.peaks['Pocc'].detect_on_offset(baseline=p_vent.y_baseline)
     def test_find_occluded_breaths(self):
         np.testing.assert_array_equal(
@@ -54,7 +54,7 @@ class TestTimeSeriesGroup(unittest.TestCase):
         )
 
     # Find supported breath pressures
-    v_vent = vent_timeseries.channels[vent_timeseries.v_vent_idx]
+    v_vent = vent_timeseries[vent_timeseries.v_vent_idx]
     vent_timeseries.find_tidal_volume_peaks()
     def test_find_tidal_volume_peaks(self):
         peak_df = self.p_vent.peaks['ventilator_breaths'].peak_df
@@ -109,58 +109,58 @@ class TestTimeSeriesGroup(unittest.TestCase):
 
     def test_raw_data(self):
         self.assertEqual(
-            len(self.emg_timeseries.channels[0].y_raw),
+            len(self.emg_timeseries[0].y_raw),
             len(self.y_emg[0, :])
         )
 
     def test_time_data(self):
         self.assertEqual(
-            len(self.emg_timeseries.channels[0].t_data),
+            len(self.emg_timeseries[0].t_data),
             len(self.y_emg[0, :])
         )
-    emg_timeseries.filter()
+    emg_timeseries.run('filter_emg')
     def test_filtered_data(self):
         self.assertEqual(
-            len(self.emg_timeseries.channels[0].y_filt),
+            len(self.emg_timeseries[0].y_filt),
             len(self.y_emg[0, :])
         )
-    emg_timeseries.wavelet_denoising(overwrite=True)
+    emg_timeseries.run('wavelet_denoising', overwrite=True)
     def test_clean_data_wavelet_denosing(self):
         self.assertEqual(
-            len(self.emg_timeseries.channels[0].y_clean),
+            len(self.emg_timeseries[0].y_clean),
             len(self.y_emg[0, :])
         )
 
-    emg_timeseries.gating(overwrite=True)
+    emg_timeseries.run('gating', overwrite=True)
     def test_clean_data_gating(self):
         self.assertEqual(
-            len(self.emg_timeseries.channels[0].y_clean),
+            len(self.emg_timeseries[0].y_clean),
             len(self.y_emg[0, :])
         )
 
-    emg_timeseries.envelope(env_type='rms', signal_type='clean')
+    emg_timeseries.run('envelope', env_type='rms', signal_type='clean')
     def test_env_data_rms(self):
         self.assertEqual(
-            len(self.emg_timeseries.channels[0].y_env),
+            len(self.emg_timeseries[0].y_env),
             len(self.y_emg[0, :])
         )
 
-    emg_timeseries.envelope(env_type='arv', signal_type='clean')
+    emg_timeseries.run('envelope', env_type='arv', signal_type='clean')
     def test_env_data_arv(self):
         self.assertEqual(
-            len(self.emg_timeseries.channels[0].y_env),
+            len(self.emg_timeseries[0].y_env),
             len(self.y_emg[0, :])
         )
 
-    emg_timeseries.baseline()
+    emg_timeseries.run('baseline')
     def test_baseline_data(self):
         self.assertEqual(
-            len(self.emg_timeseries.channels[0].y_baseline),
+            len(self.emg_timeseries[0].y_baseline),
             len(self.y_emg[0, :])
         )
 
     # Find sEAdi peaks in one channel (sEAdi)
-    emg_di = emg_timeseries.channels[1]
+    emg_di = emg_timeseries[1]
     emg_di.detect_emg_breaths(peak_set_name='breaths')
     emg_di.peaks['breaths'].detect_on_offset(
         baseline=emg_di.y_baseline
@@ -194,10 +194,10 @@ class TestTimeSeriesGroup(unittest.TestCase):
     def test_emg_time_product(self):
         self.assertIn(
             'ETPdi',
-            self.emg_di.peaks['Pocc'].peak_df.columns.values
+            self.emg_di.peaks['Pocc'].keys()
         )
         np.testing.assert_array_almost_equal(
-            self.emg_di.peaks['Pocc'].peak_df['ETPdi'].values,
+            self.emg_di.peaks['Pocc']['ETPdi'],
             np.array([3.575323, 3.722479, 3.461432])
         )
 
@@ -265,7 +265,7 @@ class TestTimeSeriesGroup(unittest.TestCase):
         _, y_plot_data = axes[-1].lines[0].get_xydata().T
 
         np.testing.assert_array_equal(
-            self.emg_timeseries.channels[-1].y_env, y_plot_data)
+            self.emg_timeseries[-1].y_env, y_plot_data)
 
     def test_plot_peaks(self):
         _, axes = plt.subplots(
