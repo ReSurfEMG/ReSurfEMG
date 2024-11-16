@@ -565,7 +565,7 @@ def test_pocc_quality(self, peak_set_name, cutoff=None, skip_tests=None,
     :param skip_tests: List of tests to skip.
     :type skip_tests: list
     :param parameter_names: Refer to custom parameter names for default
-        PeaksSet and parameters (ventilator_breaths, time_product, AUB)
+    PeaksSet and parameters (ventilator_breaths, time_product, AUB)
     :type parameter_names: dict
     :param verbose: Output the test values, and pass/fail to console.
     :type verbose: bool
@@ -608,10 +608,10 @@ def test_linked_peak_sets(
     :param linked_peak_set_name: PeaksSet name in linked_timeseries.peaks
     :type linked_peak_set_name: str
     :param parameter_names: Optionally refer to custom parameter names for
-        default PeaksSet and parameter names ('rr', )
+    default PeaksSet and parameter names ('rr', )
     :type parameter_names: dict
     :param cutoff: Cut-off criteria for passing the tests. 'tolerant' and
-        'strict' can also be provided use the pre-defined values.
+    'strict' can also be provided use the pre-defined values.
     :type cutoff: dict
     :param skip_tests: List of tests to skip.
     :type skip_tests: list
