@@ -62,6 +62,7 @@ class TimeSeries:
         self.y_filt = None
         self.y_clean = None
         self.y_env = None
+        self.y_env_ci = None
         self.y_baseline = None
 
         if t_data is None and fs is None:
@@ -221,7 +222,8 @@ class TimeSeries:
             y_data, ecg_peak_idxs, fs=self.param['fs'], hard_thresholding=True,
             n=n, fixed_threshold=fixed_threshold, wavelet_type='db2')
 
-    def envelope(self, env_window=None, env_type=None, signal_type='clean'):
+    def envelope(self, env_window=None, env_type=None, signal_type='clean',
+                 ci_alpha=None):
         """
         Derive the moving envelope of the provided signal. See
         preprocessing.envelope submodule.
@@ -239,8 +241,14 @@ class TimeSeries:
         y_data = self.signal_type_data(signal_type=signal_type)
         if env_type == 'rms' or env_type is None:
             self.y_env = evl.full_rolling_rms(y_data, env_window)
+            if ci_alpha is not None:
+                self.y_env_ci = evl.rolling_rms_ci(
+                    y_data, env_window, alpha=ci_alpha)
         elif env_type == 'arv':
             self.y_env = evl.full_rolling_arv(y_data, env_window)
+            if ci_alpha is not None:
+                self.y_env_ci = evl.rolling_arv_ci(
+                    y_data, env_window, alpha=ci_alpha)
         else:
             raise ValueError('Invalid envelope type')
 
@@ -449,7 +457,7 @@ class TimeSeries:
             parameter_names, cutoff, skip_tests, verbose)
 
     def plot_full(self, axis=None, signal_type=None, colors=None,
-                  baseline_bool=True):
+                  baseline_bool=True, plot_ci=False, ci_alpha=0.05):
         """Plot the indicated signals in the provided axes. By default the most
         advanced signal type (envelope > clean > filt > raw) is plotted in the
         provided colours.
@@ -480,6 +488,9 @@ class TimeSeries:
                 and self.y_baseline is not None
                 and np.any(~np.isnan(self.y_baseline), axis=0)):
             axis.plot(self.t_data, self.y_baseline, color=colors[1])
+        if plot_ci and self.y_env_ci is not None:
+            axis.fill_between(self.t_data, self.y_env_ci[0], self.y_env_ci[1],
+                              color=colors[0])
 
     def plot_markers(self, peak_set_name, axes, valid_only=False,
                      colors=None, markers=None):
@@ -554,7 +565,7 @@ class TimeSeries:
 
     def plot_peaks(self, peak_set_name, axes=None, signal_type=None,
                    margin_s=None, valid_only=False, colors=None,
-                   baseline_bool=True):
+                   baseline_bool=True, plot_ci=False, ci_alpha=0.05):
         """Plot the indicated peaks in the provided axes. By default the most
         advanced signal type (envelope > clean > filt > raw) is plotted in the
         provided colours.
@@ -595,7 +606,7 @@ class TimeSeries:
         y_data = (peak_set.signal if signal_type is None
                   else self.signal_type_data(signal_type=signal_type))
         m_s = margin_s if margin_s is not None else self.param['fs'] // 2
-
+        ci = self.y_env_ci
         for axis, x_start, x_end in zip(
                 np.atleast_1d(axes), start_idxs, end_idxs):
             s_start, s_end = max(0, x_start - m_s), max(0, x_end + m_s)
@@ -606,6 +617,10 @@ class TimeSeries:
                     ~np.isnan(self.y_baseline), axis=0):
                 axis.plot(self.t_data[s_start:s_end],
                           self.y_baseline[s_start:s_end], color=colors[1])
+            if plot_ci and self.y_env_ci is not None:
+                axis.fill_between(
+                    self.t_data[s_start:s_end], ci[0][s_start:s_end],
+                    ci[1][s_start:s_end], color=colors[0], alpha=0.5)
 
         axes[0].set_ylabel(f"{self.label} ({self.y_units})")
 
@@ -857,8 +872,9 @@ class TimeSeriesGroup:
         else:
             raise ValueError('Invalid method')
 
-    def plot_full(self, axes=None, channel_idxs=None, signal_type=None,
-                  colors=None, baseline_bool=True):
+    def plot_full(
+            self, axes=None, channel_idxs=None, signal_type=None, colors=None,
+            baseline_bool=True, plot_ci=False, ci_alpha=0.05):
         """
         Plot the indicated signals in the provided axes. By default the most
         advanced signal type (envelope > clean > filt > raw) is plotted in the
@@ -892,14 +908,14 @@ class TimeSeriesGroup:
 
         for idx, channel_idx in enumerate(channel_idxs):
             self.channels[channel_idx].plot_full(
-                axis=axes[idx],
-                signal_type=signal_type,
-                colors=colors,
-                baseline_bool=baseline_bool)
+                axis=axes[idx], signal_type=signal_type, colors=colors,
+                baseline_bool=baseline_bool, plot_ci=plot_ci,
+                ci_alpha=ci_alpha)
 
-    def plot_peaks(self, peak_set_name, axes=None, channel_idxs=None,
-                   signal_type=None, margin_s=None, valid_only=False,
-                   colors=None, baseline_bool=True):
+    def plot_peaks(
+            self, peak_set_name, axes=None, channel_idxs=None,
+            signal_type=None, margin_s=None, valid_only=False, colors=None,
+            baseline_bool=True, plot_ci=False, ci_alpha=0.05):
         """
         Plot the indicated peaks for all provided channels in the provided
         axes. By default the most advanced signal type (env > clean > filt >
@@ -934,12 +950,10 @@ class TimeSeriesGroup:
             if peak_set_name in self.channels[channel_idx].peaks:
                 self.channels[channel_idx].plot_peaks(
                     axes=axes[idx, :],
-                    peak_set_name=peak_set_name,
-                    signal_type=signal_type,
-                    margin_s=margin_s,
-                    valid_only=valid_only,
-                    colors=colors,
-                    baseline_bool=baseline_bool)
+                    peak_set_name=peak_set_name, signal_type=signal_type,
+                    margin_s=margin_s, valid_only=valid_only, colors=colors,
+                    baseline_bool=baseline_bool, plot_ci=plot_ci,
+                    ci_alpha=ci_alpha)
             else:
                 warnings.warn(f"""peak_set_name not occurring in channel:
                               {self.channels[channel_idx].label}. Skipping this
