@@ -266,7 +266,7 @@ class Config:
                 print(79*'-')
                 print(f' {"Name": <15}\t{"Path": <50}')
                 print(79*'-')
-                print(f' {"root": <15}\t{self._loaded['root_data']: <50}')
+                print(f' {"root": <15}\t{self._loaded["root_data"]: <50}')
                 for key, value in self._loaded.items():
                     if key != 'root_data':
                         print(f' {key: <15}\t{value: <50}')
