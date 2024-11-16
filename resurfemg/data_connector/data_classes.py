@@ -1259,6 +1259,19 @@ class TimeSeriesGroup:
             channel_idxs = np.array([channel_idxs])
 
         if method in self._available_methods:
+            if method in ['gating', 'wavelet_denoising']:
+                if 'ecg_peak_idxs' in kwargs:
+                    print('Provided ECG peak indices used for ECG removal.')
+                elif 'ecg_raw' in kwargs:
+                    print('Provided raw ECG used for ECG removal.')
+                else:
+                    if self.ecg_idx is not None:
+                        kwargs['ecg_raw'] = self[self.ecg_idx].y_raw
+                        print('Set ECG channel used for ECG removal.')
+                    else:
+                        raise ValueError("No ECG channel and peak indices "
+                                         "provided")
+
             for _, channel_idx in enumerate(channel_idxs):
                 getattr(self.channels[channel_idx], method)(
                     **kwargs
@@ -1442,7 +1455,24 @@ class EmgDataGroup(TimeSeriesGroup):
             self.ecg_idx = labels_lc.index('ecg')
             print('Auto-detected ECG channel from labels.')
         else:
+            print("No ECG channel detected. Set ECG channel index with "
+                  "`EmgDataGroup.set_ecg_idx(arg)` method.")
             self.ecg_idx = None
+
+    def set_ecg_idx(self, ecg_idx):
+        """
+        Set the ECG channel index in the group.
+        -----------------------------------------------------------------------
+        :param ecg_idx: ECG channel index or label
+        :type ecg_idx: int
+
+        :returns: None
+        :rtype: None
+        """
+        if isinstance(ecg_idx, int):
+            self.ecg_idx = ecg_idx
+        elif isinstance(ecg_idx, str):
+            self.ecg_idx = self.labels.index(ecg_idx)
 
 
 class VentilatorDataGroup(TimeSeriesGroup):
