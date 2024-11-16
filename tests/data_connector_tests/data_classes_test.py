@@ -274,9 +274,9 @@ class TestTimeSeriesGroup(unittest.TestCase):
         self.emg_di.plot_aub(
             axes=axes[1], signal_type='env', peak_set_name='Pocc')
         self.emg_timeseries.plot_peaks(peak_set_name='Pocc', axes=axes,
-                                  channel_idxs=1, margin_s=0)
+                                       channel_idxs=1, margin_s=0)
         self.emg_timeseries.plot_markers(peak_set_name='Pocc', axes=axes,
-                                    channel_idxs=1)
+                                         channel_idxs=1)
         peak_df = self.emg_di.peaks['Pocc'].peak_df
         len_peaks = len(peak_df)
         len_last_peak = (peak_df.loc[len_peaks-1, 'end_idx']

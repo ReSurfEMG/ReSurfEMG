@@ -594,7 +594,7 @@ class TimeSeries:
             'tab:blue', 'tab:orange', 'tab:red', 'tab:cyan', 'tab:green']
         y_data = (peak_set.signal if signal_type is None
                   else self.signal_type_data(signal_type=signal_type))
-        m_s = margin_s or self.param['fs'] // 2
+        m_s = margin_s if margin_s is not None else self.param['fs'] // 2
 
         for axis, x_start, x_end in zip(
                 np.atleast_1d(axes), start_idxs, end_idxs):
