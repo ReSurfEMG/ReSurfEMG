@@ -456,15 +456,15 @@ class TimeSeries:
             self, peak_set_name, linked_timeseries, linked_peak_set_name,
             parameter_names, cutoff, skip_tests, verbose)
 
-    def plot_full(self, axis=None, signal_type=None, colors=None,
-                  baseline_bool=True, plot_ci=False, ci_alpha=0.05):
+    def plot_full(self, axes=None, signal_type=None, colors=None,
+                  baseline_bool=True, plot_ci=False):
         """Plot the indicated signals in the provided axes. By default the most
         advanced signal type (envelope > clean > filt > raw) is plotted in the
         provided colours.
         -----------------------------------------------------------------------
-        :param axis: matplotlib Axis object. If none provided, a new figure is
+        :param axes: matplotlib Axis object. If none provided, a new figure is
         created.
-        :type axis: matplotlib.Axis
+        :type axes: matplotlib.Axis
         :param signal_type: the signal ('env', 'clean', 'filt', 'raw') to plot
         :type signal_type: str
         :param colors: list of colors to plot the 1) signal, 2) the baseline
@@ -475,8 +475,8 @@ class TimeSeries:
         :returns: None
         :rtype: None
         """
-        axis = axis or plt.subplots()[1]
-        colors = colors or [
+        axis = axes if axes is not None else plt.subplots()[1]
+        colors = colors if colors is not None else [
             'tab:blue', 'tab:orange', 'tab:red', 'tab:cyan', 'tab:green']
 
         y_data = self.signal_type_data(signal_type=signal_type)
@@ -601,7 +601,7 @@ class TimeSeries:
         if axes is None:
             _, axes = plt.subplots(nrows=1, ncols=len(start_idxs), sharey=True)
 
-        colors = colors or [
+        colors = colors if colors is not None else [
             'tab:blue', 'tab:orange', 'tab:red', 'tab:cyan', 'tab:green']
         y_data = (peak_set.signal if signal_type is None
                   else self.signal_type_data(signal_type=signal_type))
@@ -773,8 +773,7 @@ class TimeSeriesGroup:
         self.param = dict()
         self.param['fs'] = fs
         self._available_methods = [
-            'envelope',
-            'baseline',
+            'envelope', 'baseline', 'plot_full', 'plot_peaks', 'plot_markers',
         ]
         data_shape = list(np.array(y_raw).shape)
         data_dims = len(data_shape)
@@ -864,144 +863,38 @@ class TimeSeriesGroup:
                     else:
                         raise ValueError("No ECG channel and peak indices "
                                          "provided")
+            elif method.startswith('plot_'):
+                if 'axes' not in kwargs:
+                    _, kwargs['axes'] = plt.subplots(
+                        nrows=len(channel_idxs), ncols=1, figsize=(10, 6),
+                        sharex=True)
+                if method == 'plot_full':
+                    kwargs['axes'] = np.atleast_1d(kwargs['axes'])
 
-            for _, channel_idx in enumerate(channel_idxs):
-                getattr(self.channels[channel_idx], method)(
-                    **kwargs
-                )
+                    if len(channel_idxs) > len(kwargs['axes']):
+                        raise ValueError("Provided axes have not enough rows "
+                                         "for all channels to plot.")
+                    elif len(channel_idxs) < len(kwargs['axes']):
+                        warnings.warn(
+                            'More axes provided than channels to plot.')
+                elif method in ['plot_peaks', 'plot_markers']:
+                    kwargs['axes'] = np.atleast_2d(kwargs['axes'])
+
+                    if kwargs['axes'].shape[0] < len(channel_idxs):
+                        raise ValueError("Provided axes have not enough rows "
+                                         "for all channels to plot.")
+                    if 'peak_set_name' not in kwargs:
+                        raise ValueError('No peak_set_name provided.')
+            _kwargs = kwargs.copy()
+            for idx, channel_idx in enumerate(channel_idxs):
+                if method.startswith('plot_'):
+                    if method in ['plot_peaks', 'plot_markers']:
+                        _kwargs['axes'] = kwargs['axes'][idx, :]
+                    else:
+                        _kwargs['axes'] = kwargs['axes'][idx]
+                getattr(self.channels[channel_idx], method)(**_kwargs)
         else:
             raise ValueError('Invalid method')
-
-    def plot_full(
-            self, axes=None, channel_idxs=None, signal_type=None, colors=None,
-            baseline_bool=True, plot_ci=False, ci_alpha=0.05):
-        """
-        Plot the indicated signals in the provided axes. By default the most
-        advanced signal type (envelope > clean > filt > raw) is plotted in the
-        provided colours. See TimeSeries.plot_full for colors, baseline_bool.
-        -----------------------------------------------------------------------
-        :param axes: matplotlib Axes object. If none provided, a new figure is
-        created.
-        :type axes: ~numpy.ndarray
-        :param channel_idxs: list of which channels indices to plot. If none
-        provided, all channels are plot.
-        :type channel_idxs: list
-        :param signal_type: the signal ('env', 'clean', 'filt', 'raw') to plot
-        :type signal_type: str
-
-        :returns: None
-        :rtype: None
-        """
-        channel_idxs = (np.arange(self.param['n_channel'])
-                        if channel_idxs is None
-                        else np.atleast_1d(channel_idxs))
-        if axes is None:
-            _, axes = plt.subplots(
-                nrows=len(channel_idxs), ncols=1, figsize=(10, 6), sharex=True)
-        axes = np.atleast_1d(axes)
-
-        if len(channel_idxs) > len(axes):
-            raise ValueError(
-                'Provided axes have not enough rows for all channels to plot.')
-        elif len(channel_idxs) < len(axes):
-            warnings.warn('More axes provided than channels to plot.')
-
-        for idx, channel_idx in enumerate(channel_idxs):
-            self.channels[channel_idx].plot_full(
-                axis=axes[idx], signal_type=signal_type, colors=colors,
-                baseline_bool=baseline_bool, plot_ci=plot_ci,
-                ci_alpha=ci_alpha)
-
-    def plot_peaks(
-            self, peak_set_name, axes=None, channel_idxs=None,
-            signal_type=None, margin_s=None, valid_only=False, colors=None,
-            baseline_bool=True, plot_ci=False, ci_alpha=0.05):
-        """
-        Plot the indicated peaks for all provided channels in the provided
-        axes. By default the most advanced signal type (env > clean > filt >
-        raw) is plotted in the provided colours. See TimeSeries.plot_peaks for
-        signal_type, margin_s, valid_only, colors, baseline_bool.
-        -----------------------------------------------------------------------
-        :param peak_set_name: The name of the peak_set to be plotted.
-        :type peak_set_name: str
-        :param axes: matplotlib Axes object. If none provided, a new figure is
-        created.
-        :type axes: matplotlib.Axes
-        :param channel_idxs: list of which channels indices to plot. If none
-        provided, all channels are plot.
-        :type channel_idxs: list
-
-        :returns: None
-        :rtype: None
-        """
-        channel_idxs = (np.arange(self.param['n_channel'])
-                        if channel_idxs is None
-                        else np.atleast_1d(channel_idxs))
-        if axes is None:
-            _, axes = plt.subplots(
-                nrows=len(channel_idxs), ncols=1, figsize=(10, 6), sharex=True)
-        axes = np.atleast_2d(axes)
-
-        if axes.shape[0] < len(channel_idxs):
-            raise ValueError(
-                'Provided axes have not enough rows for all channels to plot.')
-
-        for idx, channel_idx in enumerate(channel_idxs):
-            if peak_set_name in self.channels[channel_idx].peaks:
-                self.channels[channel_idx].plot_peaks(
-                    axes=axes[idx, :],
-                    peak_set_name=peak_set_name, signal_type=signal_type,
-                    margin_s=margin_s, valid_only=valid_only, colors=colors,
-                    baseline_bool=baseline_bool, plot_ci=plot_ci,
-                    ci_alpha=ci_alpha)
-            else:
-                warnings.warn(f"""peak_set_name not occurring in channel:
-                              {self.channels[channel_idx].label}. Skipping this
-                                channel.""")
-
-    def plot_markers(self, peak_set_name, axes=None, channel_idxs=None,
-                     valid_only=False, colors=None, markers=None):
-        """
-        Plot the indicated peak markers for all provided channels in the
-        provided axes using the provided colours and markers.
-        See TimeSeries.plot_markers for valid_only, colors, markers.
-        -----------------------------------------------------------------------
-        :param peak_set_name: PeaksSet name in self.peaks dict
-        :type peak_set_name: str
-        :param axes: matplotlib Axes object. If none provided, a new figure is
-        created.
-        :type axes: matplotlib.Axes
-        :param channel_idxs: list of which channels indices to plot. If none
-        provided, all channels are plot.
-        :type channel_idxs: list
-
-        :returns: None
-        :rtype: None
-        """
-        channel_idxs = (np.arange(self.param['n_channel'])
-                        if channel_idxs is None
-                        else np.atleast_1d(channel_idxs))
-        if axes is None:
-            _, axes = plt.subplots(
-                nrows=len(channel_idxs), ncols=1, figsize=(10, 6), sharex=True)
-        axes = np.atleast_2d(axes)
-
-        if axes.shape[0] < len(channel_idxs):
-            raise ValueError(
-                'Provided axes have not enough rows for all channels to plot.')
-
-        for idx, channel_idx in enumerate(channel_idxs):
-            if peak_set_name in self.channels[channel_idx].peaks:
-                self.channels[channel_idx].plot_markers(
-                    peak_set_name=peak_set_name,
-                    axes=axes[idx, :],
-                    valid_only=valid_only,
-                    colors=colors,
-                    markers=markers)
-            else:
-                warnings.warn("peak_set_name not occurring in channel: "
-                              f"{self.channels[channel_idx].label}. "
-                              "Skipping this channel.")
 
 
 class EmgDataGroup(TimeSeriesGroup):

@@ -260,7 +260,7 @@ class TestTimeSeriesGroup(unittest.TestCase):
     def test_plot_full(self):
         _, axes = plt.subplots(
             nrows=self.y_emg.shape[0], ncols=1, figsize=(10, 6), sharex=True)
-        self.emg_timeseries.plot_full(axes)
+        self.emg_timeseries.run('plot_full', axes=axes)
 
         _, y_plot_data = axes[-1].lines[0].get_xydata().T
 
@@ -270,13 +270,13 @@ class TestTimeSeriesGroup(unittest.TestCase):
     def test_plot_peaks(self):
         _, axes = plt.subplots(
             nrows=1, ncols=3, figsize=(10, 6), sharex=True)
-        self.emg_di.plot_curve_fits(axes=axes[1], peak_set_name='Pocc')
+        self.emg_di.plot_curve_fits(axes=axes, peak_set_name='Pocc')
         self.emg_di.plot_aub(
-            axes=axes[1], signal_type='env', peak_set_name='Pocc')
-        self.emg_timeseries.plot_peaks(peak_set_name='Pocc', axes=axes,
-                                       channel_idxs=1, margin_s=0)
-        self.emg_timeseries.plot_markers(peak_set_name='Pocc', axes=axes,
-                                         channel_idxs=1)
+            axes=axes, signal_type='env', peak_set_name='Pocc')
+        self.emg_timeseries.run('plot_peaks', peak_set_name='Pocc',
+                                axes=axes, channel_idxs=1, margin_s=0)
+        self.emg_timeseries.run('plot_markers', peak_set_name='Pocc',
+                                axes=axes, channel_idxs=1)
         peak_df = self.emg_di.peaks['Pocc'].peak_df
         len_peaks = len(peak_df)
         len_last_peak = (peak_df.loc[len_peaks-1, 'end_idx']
@@ -287,7 +287,9 @@ class TestTimeSeriesGroup(unittest.TestCase):
             y_plot_data_list.append(len(y_plot_data))
 
         # Length of plotted data:
-        # [signal, baseline, peak_idx, start_idx, end_idx]
+        # [bell, bell, aub_y, aub_x, aub_y, signal, baseline, peak_idx,
+        # start_idx, end_idx]
         np.testing.assert_array_equal(
-            [len_last_peak, len_last_peak, 1, 1, 1],
+            [len_last_peak, len_last_peak, 2, 2, 2, len_last_peak,
+             len_last_peak, 1, 1, 1],
             y_plot_data_list)
