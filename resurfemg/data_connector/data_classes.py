@@ -490,7 +490,7 @@ class TimeSeries:
             axis.plot(self.t_data, self.y_baseline, color=colors[1])
         if plot_ci and self.y_env_ci is not None:
             axis.fill_between(self.t_data, self.y_env_ci[0], self.y_env_ci[1],
-                              color=colors[0])
+                              color=colors[0], alpha=0.5)
 
     def plot_markers(self, peak_set_name, axes, valid_only=False,
                      colors=None, markers=None):
