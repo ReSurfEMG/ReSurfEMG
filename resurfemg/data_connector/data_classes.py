@@ -233,7 +233,7 @@ class TimeSeries:
         """
         if env_window is None:
             if 'fs' in self.param:
-                env_window = int(0.2 * self.param['fs'])
+                env_window = self.param['fs'] // 4
             else:
                 raise ValueError(
                     'Evelope window and sampling rate are not defined.')
@@ -600,15 +600,14 @@ class TimeSeries:
 
         if axes is None:
             _, axes = plt.subplots(nrows=1, ncols=len(start_idxs), sharey=True)
-
+        axes = np.atleast_1d(axes)
         colors = colors if colors is not None else [
             'tab:blue', 'tab:orange', 'tab:red', 'tab:cyan', 'tab:green']
         y_data = (peak_set.signal if signal_type is None
                   else self.signal_type_data(signal_type=signal_type))
         m_s = margin_s if margin_s is not None else self.param['fs'] // 2
         ci = self.y_env_ci
-        for axis, x_start, x_end in zip(
-                np.atleast_1d(axes), start_idxs, end_idxs):
+        for axis, x_start, x_end in zip(axes, start_idxs, end_idxs):
             s_start, s_end = max(0, x_start - m_s), max(0, x_end + m_s)
             axis.grid(True)
             axis.plot(self.t_data[s_start:s_end], y_data[s_start:s_end],
@@ -1032,11 +1031,12 @@ class VentilatorDataGroup(TimeSeriesGroup):
             raise ValueError('volume_idx and v_vent_idx not defined')
         kwargs['v_vent'] = self.channels[volume_idx].y_raw
 
-        kwargs.setdefault('start_idx', 0)
-        kwargs.setdefault('end_idx', len(self.channels[volume_idx].y_raw) - 1)
-        kwargs.setdefault('width_s', self.param['fs'] // 4)
-
-        peak_idxs = evt.detect_ventilator_breath(**kwargs)
+        kwargs['start_idx'] = kwargs.setdefault('start_idx', 0)
+        kwargs['end_idx'] = kwargs.setdefault(
+            'end_idx', len(self.channels[volume_idx].y_raw) - 1)
+        kwargs['width_s'] = kwargs.setdefault('width_s', self.param['fs'] // 4)
+        peak_idxs = (evt.detect_ventilator_breath(**kwargs)
+                     + kwargs['start_idx'])
 
         self.channels[volume_idx].set_peaks(
             signal=self.channels[volume_idx].y_raw, peak_idxs=peak_idxs,
