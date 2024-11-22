@@ -179,7 +179,8 @@ class Config:
             except Exception as e:
                 logging.info('Failed to load %s: %s', _path, e)
         else:
-            if self.repo_root is not None:
+            if (self.repo_root is not None and os.path.isfile(
+                    os.path.join(self.repo_root, 'config.json'))):
                 self.create_config_from_example(
                     os.path.join(self.repo_root, self.example))
                 with open(os.path.join(self.repo_root, 'config.json')) as f:
