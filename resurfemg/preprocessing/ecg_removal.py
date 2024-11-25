@@ -59,8 +59,8 @@ def detect_ecg_peaks(
         ecg_rms = evl.full_rolling_rms(ecg_filt, fs // 200)
     else:
         ecg_rms = evl.full_rolling_rms(ecg_raw, fs // 200)
-    max_ecg_rms = max(ecg_rms)
-    min_ecg_rms = min(ecg_rms)
+    max_ecg_rms = np.percentile(ecg_rms, 95)
+    min_ecg_rms = np.percentile(ecg_rms, 5)
     peak_height = peak_fraction * (max_ecg_rms - min_ecg_rms)
 
     ecg_peak_idxs, _ = scipy.signal.find_peaks(
