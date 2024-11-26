@@ -9,7 +9,7 @@ __pycache__/
 # # Distribution / packaging
 # .Python
 # build/
-# 
+#
 # dist/
 # downloads/
 #
@@ -58,7 +58,7 @@ celerybeat.pid
 
 # Environments
 .env
-.venv
+.venv*
 env/
 venv/
 ENV/
