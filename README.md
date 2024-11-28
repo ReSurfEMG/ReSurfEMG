@@ -114,7 +114,7 @@ Test data is provided in the repository in the test_data folder.
 ReSurfEMG is a pure Python package. Below is the list of
 platforms that should work. Other platforms may work, but have had less extensive testing.
 Please note that where python.org Python stated as supported, it means
-that versions 3.9 - 3.11 are supported.
+that versions 3.9 - 3.12 are supported.
 
 #### AMD64 (x86)
 
@@ -194,7 +194,7 @@ We have transitioned to a fully Python 3.9+ environment.
 adapt them if using Windows and/or a different Python version than
 Python.org Python. e.g. you may need to use `.venv\Scripts\activate.bat` in
 place of `.venv/bin/activate`) 
-The instructions below are for our newer versions above 3.0.0. This will create 
+The instructions below are for our newer versions above 1.0.0. This will create 
 a distributable package from the source code, then install it in the currently
 active environment.  This will also install development tools we use
 s.a. `pytest` and `codestyle` and will also install tools we use for

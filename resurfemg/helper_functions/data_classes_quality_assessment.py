@@ -487,3 +487,159 @@ def test_event_timing(
     quality_outcomes_df['event_timing'] = correct_timing
     quality_values_df['event_delta_time'] = delta_time
     return quality_outcomes_df, quality_values_df
+
+
+def test_emg_quality(self, peak_set_name, cutoff=None, skip_tests=None,
+                     parameter_names=None, verbose=True):
+    """Test EMG PeaksSet according to quality criteria in Warnaar et al.
+    (2024): interpeak_distance, snr, aub, curve_fit, and extended with
+    relative area under the baseline (relative_aub) and relative ETP
+    (relative_ETP). Peak validity is updated in the PeaksSet object.
+    See postprocessing.quality_assessment submodule for details.
+    -----------------------------------------------------------------------
+    :param peak_set_name: PeaksSet name in self.peaks dict
+    :type peak_set_name: str
+    :param cutoff: Cut-off criteria for passing the tests 'tolerant' and
+    'strict' can also be providedto use the values from Warnaar et al.
+    :type cutoff: dict
+    :param skip_tests: List of tests to skip.
+    :type skip_tests: list
+    :param parameter_names: Optionally refer to custom parameter names for
+    default PeaksSet (ecg)
+    :type parameter_names: dict
+    :param verbose: Output the test values, and pass/fail to console.
+    :type verbose: bool
+
+    :returns: None
+    :rtype: None
+    """
+    output = initialize_emg_tests(
+        self, peak_set_name, cutoff, skip_tests, parameter_names)
+    (skip_tests, cutoff, peak_set, parameter_names, n_peaks,
+        quality_values_df, quality_outcomes_df) = output
+
+    if 'interpeak_dist' not in skip_tests:
+        quality_outcomes_df = test_interpeak_distance(
+            self, peak_set, quality_outcomes_df, n_peaks, cutoff)
+
+    if 'snr' not in skip_tests:
+        quality_outcomes_df = test_snr(
+            self, peak_set, quality_outcomes_df, quality_values_df, cutoff)
+
+    if 'aub' not in skip_tests:
+        quality_outcomes_df, quality_values_df = test_aub(
+            self, peak_set, quality_outcomes_df, quality_values_df, cutoff)
+
+    if 'curve_fit' not in skip_tests:
+        quality_outcomes_df, quality_values_df, peak_set = \
+            test_curve_fits(
+                self, peak_set, quality_outcomes_df, quality_values_df,
+                cutoff, parameter_names)
+
+    if 'relative_aub' not in skip_tests:
+        quality_outcomes_df = test_relative_aub(
+            peak_set, quality_outcomes_df, cutoff)
+
+    if 'relative_etp' not in skip_tests:
+        quality_outcomes_df = test_relative_etp(
+            peak_set, quality_outcomes_df, cutoff, parameter_names)
+
+    peak_set.update_test_outcomes(quality_values_df)
+    peak_set.evaluate_validity(quality_outcomes_df)
+    if verbose:
+        print('Test values:\n', peak_set.quality_values_df)
+        print('Test outcomes:\n', peak_set.quality_outcomes_df)
+
+
+def test_pocc_quality(self, peak_set_name, cutoff=None, skip_tests=None,
+                      parameter_names=None, verbose=True):
+    """Test EMG PeaksSet according to quality criteria in Warnaar et al.
+    (2024): consecutive_poccs, and pocc_upslope. Peak validity is updated
+    in the PeaksSet object.
+    -----------------------------------------------------------------------
+    :param peak_set_name: PeaksSet name in self.peaks dict
+    :type peak_set_name: str
+    :param cutoff: Cut-off criteria for passing the tests. 'tolerant' and
+    'strict' can also be provided  to use the values from Warnaar et al.
+    :type cutoff: dict
+    :param skip_tests: List of tests to skip.
+    :type skip_tests: list
+    :param parameter_names: Refer to custom parameter names for default
+    PeaksSet and parameters (ventilator_breaths, time_product, AUB)
+    :type parameter_names: dict
+    :param verbose: Output the test values, and pass/fail to console.
+    :type verbose: bool
+
+    :returns: None
+    :rtype: None
+    """
+    output = initialize_pocc_tests(
+        self, peak_set_name, cutoff, skip_tests, parameter_names)
+    (skip_tests, cutoff, peak_set, parameter_names, _, quality_values_df,
+        quality_outcomes_df) = output
+
+    if 'consecutive_poccs' not in skip_tests:
+        quality_outcomes_df = test_consecutive_poccs(
+            self, peak_set, quality_outcomes_df, parameter_names)
+
+    if 'pocc_upslope' not in skip_tests:
+        quality_outcomes_df, quality_values_df = test_pocc_upslope(
+            self, peak_set, quality_outcomes_df, quality_values_df, cutoff,
+            parameter_names)
+
+    peak_set.update_test_outcomes(quality_values_df)
+    peak_set.evaluate_validity(quality_outcomes_df)
+    if verbose:
+        print('Test values:\n', peak_set.quality_values_df)
+        print('Test outcomes:\n', peak_set.quality_outcomes_df)
+
+
+def test_linked_peak_sets(
+        self, peak_set_name, linked_timeseries, linked_peak_set_name,
+        parameter_names=None, cutoff=None, skip_tests=None, verbose=True):
+    """Test number of detected breaths in the native PeaksSet compared to
+    number (fraction_emg_breaths) of and timing peaks (event_timing) in the
+    linked PeaksSet. Peak validity is updated in the PeaksSet object.
+    -----------------------------------------------------------------------
+    :param peak_set_name: PeaksSet name in self.peaks dict
+    :type peak_set_name: str
+    :param linked_timeseries: TimeSeries object with linked signal
+    :type linked_timeseries: TimeSeries
+    :param linked_peak_set_name: PeaksSet name in linked_timeseries.peaks
+    :type linked_peak_set_name: str
+    :param parameter_names: Optionally refer to custom parameter names for
+    default PeaksSet and parameter names ('rr', )
+    :type parameter_names: dict
+    :param cutoff: Cut-off criteria for passing the tests. 'tolerant' and
+    'strict' can also be provided use the pre-defined values.
+    :type cutoff: dict
+    :param skip_tests: List of tests to skip.
+    :type skip_tests: list
+    :param verbose: Output the test values, and pass/fail to console.
+    :type verbose: bool
+
+    :returns: None
+    :rtype: None
+    """
+    output = initialize_linked_peaks_tests(
+        self, peak_set_name, linked_timeseries, linked_peak_set_name,
+        cutoff, skip_tests, parameter_names)
+    (skip_tests, cutoff, native_peak_set, linked_peak_set, parameter_names,
+        n_peaks, quality_values_df, quality_outcomes_df) = output
+
+    if 'fraction_emg_breaths' not in skip_tests:
+        quality_outcomes_df, quality_values_df = \
+            test_fraction_detected_breaths(
+                native_peak_set, linked_timeseries, quality_outcomes_df,
+                quality_values_df, n_peaks, cutoff, parameter_names)
+
+    if 'event_timing' not in skip_tests:
+        quality_outcomes_df, quality_values_df = test_event_timing(
+            self, native_peak_set, linked_timeseries, linked_peak_set,
+            quality_outcomes_df, quality_values_df, cutoff)
+
+    native_peak_set.update_test_outcomes(quality_values_df)
+    native_peak_set.evaluate_validity(quality_outcomes_df)
+    if verbose:
+        print('Test values:\n', native_peak_set.quality_values_df)
+        print('Test outcomes:\n', native_peak_set.quality_outcomes_df)

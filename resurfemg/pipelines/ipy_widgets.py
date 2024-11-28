@@ -80,10 +80,16 @@ def file_select(
 
         button_list.append(_btn)
         btn_dict[folder_level] = _btn
+    prev_values = len(folder_levels) * [None]
 
     @widgets.interact(**btn_dict)
     def update_select(**btn_dict):
         """Update the dropdown options based on the previous selection."""
+        btn_changed = []
+        for _idx in range(len(folder_levels)):
+            btn_changed.append(
+                button_list[_idx].value != prev_values[_idx])
+
         for idx, dict_key in enumerate(btn_dict):
             btn_idx = folder_levels.index(dict_key)
             _btn = button_list[btn_idx]
@@ -101,19 +107,20 @@ def file_select(
 
             options = list(set(filter_files[dict_key].values))
             options.sort()
-            # if value_options_bool[btn_idx] is True:
-            #     if default_value_select[btn_idx] in options:
-            #         value = options[
-            #             options.index(default_value_select[btn_idx])]
-            #     elif len(options) > 0:
-            #         value = options[0]
-            # elif idx_options_bool[btn_idx] is True:
-            #     if default_idx_select[btn_idx] < len(options):
-            #         value = options[default_idx_select[btn_idx]]
-            #     elif len(options) > 0:
-            #         value = options[0]
-            # else:
-            if _btn.value in options:
+
+            if any(btn_changed[:btn_idx]) or prev_values[btn_idx] is None:
+                if value_options_bool[btn_idx] is True:
+                    if default_value_select[btn_idx] in options:
+                        value = options[
+                            options.index(default_value_select[btn_idx])]
+                    elif len(options) > 0:
+                        value = options[0]
+                elif idx_options_bool[btn_idx] is True:
+                    if default_idx_select[btn_idx] < len(options):
+                        value = options[default_idx_select[btn_idx]]
+                    elif len(options) > 0:
+                        value = options[0]
+            elif _btn.value in options:
                 value = options[options.index(_btn.value)]
             elif len(options) > 0:
                 value = options[0]
@@ -121,4 +128,6 @@ def file_select(
             _btn.options = options
             if len(options) > 0:
                 _btn.value = value
+                prev_values[btn_idx] = value
+
     return button_list

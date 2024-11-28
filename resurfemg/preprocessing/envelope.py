@@ -7,6 +7,7 @@ This file contains functions extract the envelopes from EMG arrays.
 
 import numpy as np
 import pandas as pd
+from scipy import stats
 
 
 def full_rolling_rms(emg_clean, window_length):
@@ -67,3 +68,68 @@ def full_rolling_arv(emg_clean, window_length):
         center=True).mean().values
 
     return emg_arv
+
+
+def rolling_rms_ci(emg_clean, window_length, alpha=0.05):
+    """
+    This function estimates the confidence interval for each window of the RMS.
+    ---------------------------------------------------------------------------
+    :param emg_clean: Samples from the EMG
+    :type emg_clean: ~numpy.ndarray[float]
+    :param window_length: Length of the sample used as window for function
+    :type window_length: int
+    :param alpha: Significance level for the confidence interval
+    :type alpha: float
+
+    :returns lower_ci: Lower bound of the confidence interval
+    :rtype lower_ci: ~numpy.ndarray[float]
+    :returns upper_ci: Upper bound of the confidence interval
+    :rtype upper_ci: ~numpy.ndarray[float]
+    """
+    emg_clean_sqr = pd.Series(np.power(emg_clean, 2))
+    emg_ms = emg_clean_sqr.rolling(
+        window=window_length, min_periods=1, center=True).mean().values
+    emg_sem = emg_clean_sqr.rolling(
+        window=window_length, min_periods=1, center=True).sem().values
+    # Calculate the confidence interval
+    confidence_level = 1 - alpha
+    df = window_length - 1
+    ci = stats.t.interval(confidence_level, df, emg_ms, emg_sem)
+
+    lower_ci = np.sqrt(ci[0])
+    upper_ci = np.sqrt(ci[1])
+
+    return lower_ci, upper_ci
+
+
+def rolling_arv_ci(emg_clean, window_length, alpha=0.05):
+    """
+    This function estimates the confidence interval for each window.
+    ---------------------------------------------------------------------------
+    :param emg_clean: Samples from the EMG
+    :type emg_clean: ~numpy.ndarray[float]
+    :param window_length: Length of the sample used as window for function
+    :type window_length: int
+    :param alpha: Significance level for the confidence interval
+    :type alpha: float
+
+    :returns lower_ci: Lower bound of the confidence interval
+    :rtype lower_ci: ~numpy.ndarray[float]
+    :returns upper_ci: Upper bound of the confidence interval
+    :rtype upper_ci: ~numpy.ndarray[float]
+    """
+    emg_clean_abs = pd.Series(np.abs(emg_clean))
+    emg_arv = emg_clean_abs.rolling(
+        window=window_length, min_periods=1, center=True).mean().values
+    emg_sem = pd.Series(emg_clean).rolling(
+        window=window_length, min_periods=1, center=True).sem().values
+
+    # Calculate the confidence interval
+    confidence_level = 1 - alpha
+    df = window_length - 1
+    ci = stats.t.interval(confidence_level, df, emg_arv, emg_sem)
+
+    lower_ci = ci[0]
+    upper_ci = ci[1]
+
+    return lower_ci, upper_ci

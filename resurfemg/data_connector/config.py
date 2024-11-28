@@ -179,7 +179,8 @@ class Config:
             except Exception as e:
                 logging.info('Failed to load %s: %s', _path, e)
         else:
-            if self.repo_root is not None:
+            if (self.repo_root is not None and os.path.isfile(
+                    os.path.join(self.repo_root, 'config.json'))):
                 self.create_config_from_example(
                     os.path.join(self.repo_root, self.example))
                 root_path = os.path.join(self.repo_root, 'not_pushed')
@@ -261,7 +262,19 @@ class Config:
         :rtype: str
         """
         if value is None:
-            return self._loaded[directory]
+            if directory in self._loaded:
+                return self._loaded[directory]
+            else:
+                print(f"Directory `{directory}` not found in config. The "
+                      "following directories are configured:"
+                      )
+                print(79*'-')
+                print(f' {"Name": <15}\t{"Path": <50}')
+                print(79*'-')
+                print(f' {"root": <15}\t{self._loaded["root_data"]: <50}')
+                for key, value in self._loaded.items():
+                    if key != 'root_data':
+                        print(f' {key: <15}\t{value: <50}')
         return value
 
 
