@@ -183,6 +183,10 @@ class Config:
                     os.path.join(self.repo_root, 'config.json'))):
                 self.create_config_from_example(
                     os.path.join(self.repo_root, self.example))
+                root_path = os.path.join(self.repo_root, 'not_pushed')
+                if not os.path.isdir(root_path):
+                    os.makedirs(root_path)
+                    print(f'Created root directory at:\n {root_path}\n')
                 with open(os.path.join(self.repo_root, 'config.json')) as f:
                     self._raw = json.load(f)
                 self.created_config = True
@@ -219,7 +223,7 @@ class Config:
                     self.default_layout[m].format(root))
 
         if self.created_config:
-            print(f'Created config at:\n {_path}\n')
+            print(f'Created config. See and edit it at:\n {_path}\n')
         elif verbose:
             print(f'Loaded config from:\n {_path}\n')
         if verbose or self.created_config:
