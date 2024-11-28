@@ -92,6 +92,37 @@ resurfemg.data_connector.data_classes for more information.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_emg_quality">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_emg_quality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_tests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_emg_quality" title="Link to this definition">¶</a></dt>
+<dd><p>Test EMG PeaksSet according to quality criteria in Warnaar et al.
+(2024): interpeak_distance, snr, aub, curve_fit, and extended with
+relative area under the baseline (relative_aub) and relative ETP
+(relative_ETP). Peak validity is updated in the PeaksSet object.
+See postprocessing.quality_assessment submodule for details.
+———————————————————————–
+:param peak_set_name: PeaksSet name in self.peaks dict
+:type peak_set_name: str
+:param cutoff: Cut-off criteria for passing the tests ‘tolerant’ and
+‘strict’ can also be providedto use the values from Warnaar et al.
+:type cutoff: dict
+:param skip_tests: List of tests to skip.
+:type skip_tests: list
+:param parameter_names: Optionally refer to custom parameter names for
+default PeaksSet (ecg)
+:type parameter_names: dict
+:param verbose: Output the test values, and pass/fail to console.
+:type verbose: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_event_timing">
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_event_timing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linked_timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linked_peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_outcomes_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_values_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_event_timing" title="Link to this definition">¶</a></dt>
 <dd><p>Test event timing relative to other peak_set. See
@@ -111,6 +142,68 @@ in resurfemg.data_connector.data_classes for more information.</p>
 <span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_interpeak_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quality_outcomes_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_peaks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_interpeak_distance" title="Link to this definition">¶</a></dt>
 <dd><p>Test interpeak distance. See TimeSeries.test_emg_quality method in
 resurfemg.data_connector.data_classes for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_linked_peak_sets">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_linked_peak_sets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linked_timeseries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linked_peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_tests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_linked_peak_sets" title="Link to this definition">¶</a></dt>
+<dd><p>Test number of detected breaths in the native PeaksSet compared to
+number (fraction_emg_breaths) of and timing peaks (event_timing) in the
+linked PeaksSet. Peak validity is updated in the PeaksSet object.
+———————————————————————–
+:param peak_set_name: PeaksSet name in self.peaks dict
+:type peak_set_name: str
+:param linked_timeseries: TimeSeries object with linked signal
+:type linked_timeseries: TimeSeries
+:param linked_peak_set_name: PeaksSet name in linked_timeseries.peaks
+:type linked_peak_set_name: str
+:param parameter_names: Optionally refer to custom parameter names for
+default PeaksSet and parameter names (‘rr’, )
+:type parameter_names: dict
+:param cutoff: Cut-off criteria for passing the tests. ‘tolerant’ and
+‘strict’ can also be provided use the pre-defined values.
+:type cutoff: dict
+:param skip_tests: List of tests to skip.
+:type skip_tests: list
+:param verbose: Output the test values, and pass/fail to console.
+:type verbose: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.helper_functions.data_classes_quality_assessment.test_pocc_quality">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.helper_functions.data_classes_quality_assessment.</span></span><span class="sig-name descname"><span class="pre">test_pocc_quality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_set_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_tests</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_pocc_quality" title="Link to this definition">¶</a></dt>
+<dd><p>Test EMG PeaksSet according to quality criteria in Warnaar et al.
+(2024): consecutive_poccs, and pocc_upslope. Peak validity is updated
+in the PeaksSet object.
+———————————————————————–
+:param peak_set_name: PeaksSet name in self.peaks dict
+:type peak_set_name: str
+:param cutoff: Cut-off criteria for passing the tests. ‘tolerant’ and
+‘strict’ can also be provided  to use the values from Warnaar et al.
+:type cutoff: dict
+:param skip_tests: List of tests to skip.
+:type skip_tests: list
+:param parameter_names: Refer to custom parameter names for default
+PeaksSet and parameters (ventilator_breaths, time_product, AUB)
+:type parameter_names: dict
+:param verbose: Output the test values, and pass/fail to console.
+:type verbose: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -162,9 +255,12 @@ resurfemg.data_connector.data_classes for more information.</p>
 <li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_aub"><code class="docutils literal notranslate"><span class="pre">test_aub()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_consecutive_poccs"><code class="docutils literal notranslate"><span class="pre">test_consecutive_poccs()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_curve_fits"><code class="docutils literal notranslate"><span class="pre">test_curve_fits()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_emg_quality"><code class="docutils literal notranslate"><span class="pre">test_emg_quality()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_event_timing"><code class="docutils literal notranslate"><span class="pre">test_event_timing()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_fraction_detected_breaths"><code class="docutils literal notranslate"><span class="pre">test_fraction_detected_breaths()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_interpeak_distance"><code class="docutils literal notranslate"><span class="pre">test_interpeak_distance()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_linked_peak_sets"><code class="docutils literal notranslate"><span class="pre">test_linked_peak_sets()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_pocc_quality"><code class="docutils literal notranslate"><span class="pre">test_pocc_quality()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_pocc_upslope"><code class="docutils literal notranslate"><span class="pre">test_pocc_upslope()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_relative_aub"><code class="docutils literal notranslate"><span class="pre">test_relative_aub()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.helper_functions.data_classes_quality_assessment.test_relative_etp"><code class="docutils literal notranslate"><span class="pre">test_relative_etp()</span></code></a></li>

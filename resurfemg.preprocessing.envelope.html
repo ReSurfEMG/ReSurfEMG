@@ -109,6 +109,86 @@ array <cite>emg_clean</cite>.
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.preprocessing.envelope.rolling_arv_ci">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.envelope.</span></span><span class="sig-name descname"><span class="pre">rolling_arv_ci</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_clean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.envelope.rolling_arv_ci" title="Link to this definition">¶</a></dt>
+<dd><section id="this-function-estimates-the-confidence-interval-for-each-window">
+<h2>This function estimates the confidence interval for each window.<a class="headerlink" href="#this-function-estimates-the-confidence-interval-for-each-window" title="Link to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">param emg_clean<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Samples from the EMG</p>
+</dd>
+<dt class="field-even">type emg_clean<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray[float]</p>
+</dd>
+<dt class="field-odd">param window_length<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Length of the sample used as window for function</p>
+</dd>
+<dt class="field-even">type window_length<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">param alpha<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Significance level for the confidence interval</p>
+</dd>
+<dt class="field-even">type alpha<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">returns lower_ci<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Lower bound of the confidence interval</p>
+</dd>
+<dt class="field-even">rtype lower_ci<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray[float]</p>
+</dd>
+<dt class="field-odd">returns upper_ci<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Upper bound of the confidence interval</p>
+</dd>
+<dt class="field-even">rtype upper_ci<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray[float]</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="resurfemg.preprocessing.envelope.rolling_rms_ci">
+<span class="sig-prename descclassname"><span class="pre">resurfemg.preprocessing.envelope.</span></span><span class="sig-name descname"><span class="pre">rolling_rms_ci</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_clean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#resurfemg.preprocessing.envelope.rolling_rms_ci" title="Link to this definition">¶</a></dt>
+<dd><section id="this-function-estimates-the-confidence-interval-for-each-window-of-the-rms">
+<h2>This function estimates the confidence interval for each window of the RMS.<a class="headerlink" href="#this-function-estimates-the-confidence-interval-for-each-window-of-the-rms" title="Link to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">param emg_clean<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Samples from the EMG</p>
+</dd>
+<dt class="field-even">type emg_clean<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray[float]</p>
+</dd>
+<dt class="field-odd">param window_length<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Length of the sample used as window for function</p>
+</dd>
+<dt class="field-even">type window_length<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+<dt class="field-odd">param alpha<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Significance level for the confidence interval</p>
+</dd>
+<dt class="field-even">type alpha<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+<dt class="field-odd">returns lower_ci<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Lower bound of the confidence interval</p>
+</dd>
+<dt class="field-even">rtype lower_ci<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray[float]</p>
+</dd>
+<dt class="field-odd">returns upper_ci<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Upper bound of the confidence interval</p>
+</dd>
+<dt class="field-even">rtype upper_ci<span class="colon">:</span></dt>
+<dd class="field-even"><p>~numpy.ndarray[float]</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
 </section>
 
 
@@ -125,6 +205,8 @@ array <cite>emg_clean</cite>.
 <li><a class="reference internal" href="#resurfemg.preprocessing.envelope.full_rolling_arv"><code class="docutils literal notranslate"><span class="pre">full_rolling_arv()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.preprocessing.envelope.full_rolling_rms"><code class="docutils literal notranslate"><span class="pre">full_rolling_rms()</span></code></a></li>
 <li><a class="reference internal" href="#resurfemg.preprocessing.envelope.naive_rolling_rms"><code class="docutils literal notranslate"><span class="pre">naive_rolling_rms()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.preprocessing.envelope.rolling_arv_ci"><code class="docutils literal notranslate"><span class="pre">rolling_arv_ci()</span></code></a></li>
+<li><a class="reference internal" href="#resurfemg.preprocessing.envelope.rolling_rms_ci"><code class="docutils literal notranslate"><span class="pre">rolling_rms_ci()</span></code></a></li>
 </ul>
 </li>
 </ul>
