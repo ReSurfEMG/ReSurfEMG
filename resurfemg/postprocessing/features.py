@@ -16,6 +16,7 @@ def time_to_peak(
     emg_env,
     start_idxs,
     end_idxs,
+    smoothing=False,
 ):
     """
     Calculates the absolute and relative time to peak
@@ -26,6 +27,8 @@ def time_to_peak(
     :type start_idxs: ~[int]
     :param end_idxs: list of individual peak end indices
     :type end_idxs: ~[int]
+    :param smoothing: smoothing which can or can not run before calculations
+    :type smoothing: bool
 
     :returns abs_times: absolute time-to_peak
     :rtype abs_times: numpy.ndarray[int]
@@ -38,8 +41,11 @@ def time_to_peak(
     percent_times = np.zeros(start_idxs.shape)
     for idx, (start_idx, end_idx) in enumerate(zip(start_idxs, end_idxs)):
         breath_arc = emg_env[start_idx:end_idx]
-        smoothed_breath = running_smoother(breath_arc)
-        abs_times[idx] = smoothed_breath.argmax()
+        if smoothing:
+            smoothed_breath = running_smoother(breath_arc)
+            abs_times[idx] = smoothed_breath.argmax()
+        else:
+            abs_times[idx] = breath_arc.argmax()
         percent_times[idx] = abs_times[idx] / len(breath_arc)
 
     return abs_times, percent_times
@@ -49,7 +55,7 @@ def pseudo_slope(
     emg_env,
     start_idxs,
     end_idxs,
-    smoothing=True,
+    smoothing=False,
 ):
     """
     This is a function to get the shape/slope of the take-off angle of the
@@ -80,7 +86,7 @@ def pseudo_slope(
             abs_time = smoothed_breath.argmax()
         else:
             abs_time = pos_arc.argmax()
-        abs_height = pos_arc[abs_time]
+        abs_height = pos_arc[abs_time] - min(pos_arc)
         pseudoslopes[idx] = abs_height / abs_time
     return pseudoslopes
 
