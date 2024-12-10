@@ -51,6 +51,8 @@ def find_files(
         extension_regex = '**'
     elif not isinstance(extension_regex, str):
         raise ValueError('extension_regex should be a str.')
+    if extension_regex.startswith('.'):
+        extension_regex = extension_regex[1:]
 
     if isinstance(folder_levels, list):
         depth = len(folder_levels)
