@@ -108,22 +108,29 @@ def file_select(
             options = list(set(filter_files[dict_key].values))
             options.sort()
 
-            if any(btn_changed[:btn_idx]) or prev_values[btn_idx] is None:
-                if value_options_bool[btn_idx] is True:
-                    if default_value_select[btn_idx] in options:
-                        value = options[
-                            options.index(default_value_select[btn_idx])]
-                    elif len(options) > 0:
+            if len(options) > 0:
+                if any(btn_changed[:btn_idx]) or prev_values[btn_idx] is None:
+                    if value_options_bool[btn_idx] is True:
+                        if default_value_select[btn_idx] in options:
+                            value = options[
+                                options.index(default_value_select[btn_idx])]
+                        else:
+                            value = options[0]
+                    elif idx_options_bool[btn_idx] is True:
+                        if default_idx_select[btn_idx] < len(options):
+                            value = options[default_idx_select[btn_idx]]
+                        else:
+                            value = options[0]
+                    elif _btn.value in options:
+                        value = options[options.index(_btn.value)]
+                    else:
                         value = options[0]
-                elif idx_options_bool[btn_idx] is True:
-                    if default_idx_select[btn_idx] < len(options):
-                        value = options[default_idx_select[btn_idx]]
-                    elif len(options) > 0:
-                        value = options[0]
-            elif _btn.value in options:
-                value = options[options.index(_btn.value)]
-            elif len(options) > 0:
-                value = options[0]
+                elif _btn.value in options:
+                    value = options[options.index(_btn.value)]
+                else:
+                    value = options[0]
+            else:
+                value = None
 
             _btn.options = options
             if len(options) > 0:
