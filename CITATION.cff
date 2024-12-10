@@ -1,8 +1,13 @@
-cff-version: 1.0.0
+cff-version: 1.0.1
 title: ReSurfEMG
 message: "Please cite as below, if you use this software "
 type: software
 authors:
+  -
+    affiliation: "University of Twente"
+    family-names: Warnaar
+    given-names: Robertus (Rob) Simon Petrus
+    orcid: "https://orcid.org/0000-0001-9443-4069"
   -
     affiliation: "Netherlands eScience Center"
     family-names: Moore
@@ -19,13 +24,9 @@ authors:
     given-names: Oleg 
   -
     affiliation: "University of Twente"
-    family-names: Warnaar
-    given-names: Robertus (Rob) Simon Petrus Warnaar
-    orcid: "https://orcid.org/0000-0001-9443-4069"
-  -
-    affiliation: "University of Twente"
     family-names: Soleimani
     given-names: Farnaz
+    orcid: "https://orcid.org/0009-0003-3300-506X"
   -
     affiliation: "University of Twente"
     family-names: Mos-Oppersma
@@ -41,6 +42,7 @@ keywords:
   - respiratory
   - Python
   - surface EMG
+  - sEAdi
 license: Apache-2.0
-version: "1.0.0"
-date-released: 07/11/2024
+version: "1.0.1"
+date-released: 10/12/2024
