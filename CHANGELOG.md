@@ -324,3 +324,13 @@
 		- --> legacy.calc_closed_sampent
 		- --> legacy.calc_open_sampent
 		- --> legacy.entropy_maker
+
+## Release 1.0.1
+* Patch
+	- Fix: config file generation from template showed unexpected behaviour in overwriting existing config files and failing when not_pushed did not exist.
+	- postprocessing.features methods time_to_peak and pseudo_slope methods smoothed by default. Changed to smoothing on smooth=True
+	- Add subpackages and modules to init files for smoother imports
+
+## Release 1.0.2
+* Patch
+	- Move ReSurfEMG repo from https://github.com/ReSurfEMG/ReSurfEMG/ to https://github.com/resurfemg-org/ReSurfEMG/
