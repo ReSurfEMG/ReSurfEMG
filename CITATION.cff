@@ -33,7 +33,7 @@ authors:
     given-names: Eline
     orcid: "https://orcid.org/0000-0002-0150-306X"
 
-repository-code: 'https://github.com/ReSurfEMG/ReSurfEMG'
+repository-code: 'https://github.com/resurfemg-org/ReSurfEMG'
 repository-artifact: 'https://pypi.org/project/resurfemg/'
 
 keywords:

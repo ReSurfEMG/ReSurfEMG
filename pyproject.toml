@@ -39,9 +39,9 @@ dynamic = ["version"]
 [project.urls]
 Homepage = "https://github.com/ReSurfEMG"
 Documentation = "https://resurfemg.github.io/ReSurfEMG/"
-Repository = "https://github.com/ReSurfEMG/ReSurfEMG"
-Issues = "https://github.com/ReSurfEMG/ReSurfEMG/issues"
-Changelog = "https://github.com/ReSurfEMG/ReSurfEMG/blob/main/CHANGELOG.md"
+Repository = "https://github.com/resurfemg-org/ReSurfEMG"
+Issues = "https://github.com/resurfemg-org/ReSurfEMG/issues"
+Changelog = "https://github.com/resurfemg-org/ReSurfEMG/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 tests = ['pytest', 

@@ -1,11 +1,11 @@
 <p align="center">
-    <img style="width: 35%; height: 35%" src="https://github.com/resurfemg/resurfemg/blob/main/Logo_rond_tekst.svg">
+    <img style="width: 35%; height: 35%" src="https://github.com/resurfemg-org/ReSurfEMG/blob/main/Logo_rond_tekst.svg">
 </p>
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6811553.svg)](https://doi.org/10.5281/zenodo.6811553)
 [![PyPI](https://img.shields.io/pypi/v/resurfemg.svg)](https://pypi.python.org/pypi/resurfemg/)
-[![Sanity](https://github.com/resurfemg/resurfemg/actions/workflows/on-commit.yml/badge.svg)](https://github.com/resurfemg/resurfemg/actions/workflows/on-commit.yml)
-[![Sanity](https://github.com/resurfemg/resurfemg/actions/workflows/on-tag.yml/badge.svg)](https://github.com/resurfemg/resurfemg/actions/workflows/on-tag.yml)
+[![Sanity](https://github.com/resurfemg-org/ReSurfEMG/actions/workflows/on-commit.yml/badge.svg)](https://github.com/resurfemg-org/ReSurfEMG/actions/workflows/on-commit.yml)
+[![Sanity](https://github.com/resurfemg-org/ReSurfEMG/actions/workflows/on-tag.yml/badge.svg)](https://github.com/resurfemg-org/ReSurfEMG/actions/workflows/on-tag.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/6487/badge)](https://bestpractices.coreinfrastructure.org/projects/6487)
 [![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F-green)](https://fair-software.eu)
@@ -15,8 +15,8 @@
 of respiratory electromyography (EMG). On the same site as 
 the repository for this library we keep [related resources](https://github.com/ReSurfEMG?tab=repositories). 
 
-ReSurfEMG includes a [main code library](https://github.com/ReSurfEMG/ReSurfEMG) where the user can access the code to change various filter and analysis settings directly and/or in our [researcher interface notebooks](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/notebooks/researcher_interface).
-In addition, ReSurfEMG has a [dashboard interface](https://github.com/ReSurfEMG/ReSurfEMG-dashboard) which contains default settings for preprocessing and analysis which can be changed through a graphical (no code) interface. We have some functionality available through a [command line interface](#command-line-interface) as well.
+ReSurfEMG includes a [main code library](https://github.com/resurfemg-org/ReSurfEMG) where the user can access the code to change various filter and analysis settings directly and/or in our [researcher interface notebooks](https://github.com/resurfemg-org/ReSurfEMG/tree/main/notebooks/researcher_interface).
+In addition, ReSurfEMG has a [dashboard interface](https://github.com/resurfemg-org/ReSurfEMG-dashboard) which contains default settings for preprocessing and analysis which can be changed through a graphical (no code) interface. We have some functionality available through a [command line interface](#command-line-interface) as well.
 
 The library was initially built for surface EMG, however many functions will also work for
 invasively measured respiratory EMG.  This library supports the ongoing research at University of Twente on respiratory EMG.
@@ -24,7 +24,7 @@ invasively measured respiratory EMG.  This library supports the ongoing research
 
 ### Program files
 
-The core functions of ReSurfEMG are in the folder [resurfemg](https://github.com/ReSurfEMG/ReSurfEMG/tree/main/resurfemg):
+The core functions of ReSurfEMG are in the folder [resurfemg](https://github.com/resurfemg-org/ReSurfEMG/tree/main/resurfemg):
 
 -   **cli:** Scripts for the command line interface
 -   **data_connector:**  Converter functions for discovering, loading, simulating and handling data.
@@ -42,7 +42,7 @@ The core functions of ReSurfEMG are in the folder [resurfemg](https://github.com
 
 ### Folders and Notebooks
 
-Our [guide to notebooks](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/notebooks_guide.md) is under construction. To look around keep in mind the following distinction on folders:
+Our [guide to notebooks](https://github.com/resurfemg-org/ReSurfEMG/blob/main/notebooks_guide.md) is under construction. To look around keep in mind the following distinction on folders:
 
 dev:
 - These notebooks are used in feature development and debugging by core members of the ReSurfEMG team. They can provide a basic example how to use some of the functionality.
@@ -62,7 +62,7 @@ Dr. Eline Mos-Oppersma( 📫 e.mos-oppersma@utwente.nl) to discuss any
 questions on data configuration for your datasets.
 
 If you want to use a standardized dataset for any purpose we recommend
-the data in the [ReSurfEMG/test_data](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/test_data), which is also used in testing the ReSurfEMG functions. 
+the data in the [ReSurfEMG/test_data](https://github.com/resurfemg-org/ReSurfEMG/blob/main/test_data), which is also used in testing the ReSurfEMG functions. 
 Data there can be used with any respiratory EMG algorithms in any program. Thus that data can function as a benchmarking set to compare algorithms across different programs.
 
 Alternatively, the data in the ReSurfEMG/synthetic_data repository:
@@ -172,7 +172,7 @@ pip install resurfemg[dev]
    command in your terminal. This opens a browser window where you can browse, 
    open and run the notebooks. (We use [Jupyter notebooks](https://jupyter.org/try-jupyter/retro/notebooks/?path=notebooks/Intro.ipynb))
    The ReSurfEMG notebooks are located in the notebooks folder. Navigate there 
-   and open a notebook of interest. The [basic_emg_analysis](https://github.com/ReSurfEMG/ReSurfEMG/blob/main/researcher_interface/basic_emg_analysis.ipynb) 
+   and open a notebook of interest. The [basic_emg_analysis](https://github.com/resurfemg-org/ReSurfEMG/blob/main/researcher_interface/basic_emg_analysis.ipynb) 
    notebook can be used to understand how to use the package.
 
 
@@ -257,7 +257,7 @@ The project has a sub-project of a related dashboard. Dashboard is a GUI that
 exposes some of the project's functionality. In the past, we kept a a legacy 
 dashboard in the same repository with ReSurfEMG code but we have deleted it. 
 The current version of the dashboard into it's own repository:
-https://github.com/ReSurfEMG/ReSurfEMG-dashboard
+https://github.com/resurfemg-org/ReSurfEMG-dashboard
 
 
 ### New commands
