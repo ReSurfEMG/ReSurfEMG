@@ -7,23 +7,20 @@ on:
 
 jobs:
   PyPIBuild:
-    if: ${{ github.repository == 'resurfemg/resurfemg' }}
+    if: ${{ github.repository == 'resurfemg-org/resurfemg' }}
     name: Tagged Release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: recursive
-        # Unfortunately, wheel will try to do setup.py install to
-        # build a wheel... and we need this stuff to be able to build
-        # for CPython.
 
-      - name: Set up Python 3.9
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: 3.9
-      - run: python3.9 -m venv .venv
+          python-version: 3.12
+      - run: python3.12 -m venv .venv
       - run: .venv/bin/python -m pip install build wheel twine
       - run: .venv/bin/python -m build
       # - run: .venv/bin/python setup.py bdist_egg
