@@ -111,8 +111,8 @@ This project has CI setup that uses GitHub Actions
 platform.  
 
 
-.. _GitHub repo: https://github.com/ReSurfEMG/ReSurfEMG
-.. _GitHub Actions dashboard: https://github.com/ReSurfEMG/ReSurfEMG/actions
+.. _GitHub repo: https://github.com/resurfemg-org/ReSurfEMG
+.. _GitHub Actions dashboard: https://github.com/resurfemg-org/ReSurfEMG/actions
 
 
 Style
