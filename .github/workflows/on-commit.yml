@@ -6,14 +6,14 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-latest']
-        python-version: ['3.9']
+        python-version: ['3.12']
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
       - uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: 3.12
       - run: python3 -m venv .venv
       - run: .venv/bin/python -m pip install wheel
       - run: .venv/bin/python -m pip install -e .[tests]
@@ -30,7 +30,7 @@ jobs:
           submodules: recursive
       - uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: 3.12
       - run: python3 -m venv .venv
       - run: .venv/bin/python -m pip install wheel sphinx
       - run: .venv/bin/python -m pip install -e .[docs]
