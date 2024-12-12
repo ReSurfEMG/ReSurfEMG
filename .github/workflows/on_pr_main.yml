@@ -15,7 +15,7 @@ jobs:
       with:
         python-version: 3.12
     - run: python3 -m venv .venv
-    - run: .venv/bin/python -m pip install wheel sphinx
+    - run: .venv/bin/python -m pip install wheel sphinx setuptools
     - run: .venv/bin/python -m pip install -e .[docs]
     - run: .venv/bin/python setup.py apidoc
     - run: .venv/bin/python setup.py build_sphinx -W
